@@ -53,7 +53,7 @@ every window and client sees the same value.
 
 - `streamerMode` defaults to false. Set it with
   `bb settings general streamerMode <true|false|on|off>`.
-- When enabled, every `customModels` entry from `~/.bb/config.json` is hidden
+- When enabled, every `customModels` entry from `~/.beam/config.json` is hidden
   in all model lists: the pickers, `bb provider models`, and
   `sdk.providers.models`. Use it during a screen share so a private or
   early-access model id does not appear.

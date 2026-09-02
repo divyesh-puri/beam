@@ -6,23 +6,32 @@
   </picture>
 </p>
 
-# bb
+# bb-app compatibility package
 
 [![npm version](https://img.shields.io/npm/v/bb-app.svg)](https://www.npmjs.com/package/bb-app)
 
 bb is an agentic IDE that builds itself. It can control, customize, and automate
 itself, laying the groundwork for your own software factory.
 
-This package provides the `npx bb-app` launcher, bundled `bb` CLI entry, and
-Node SDK export. Every surface — the web app, CLI, and HTTP API — is a
+Beam's source tree retains this upstream-named package for compatibility. Its
+local Beam build provides the runtime launcher, the primary `beam` CLI, the
+`bb` alias, and the Node SDK export. Every surface — the web app, CLI, and HTTP API — is a
 first-class way to drive bb. Work runs in threads you can follow live, steer at
 any point, or hand off to another agent.
 
-> Note: bb is in active development. Workflows and surfaces are still evolving.
+> **Beam installation:** The `bb-app` package on npm is upstream BB, not Beam.
+> No Beam npm package or release has been published. Build `Beam.app` from the
+> repository root using the instructions in the main README.
 
-## Quick Start
+The local Beam build defaults to `~/.beam`, server port `48886`, and host-daemon
+port `48887`. Ambient `BB_DATA_DIR`, `BB_SERVER_PORT`, `BB_HOST_DAEMON_PORT`,
+and `BB_SERVER_URL` values override those defaults and can defeat isolation
+from an upstream BB installation.
 
-bb runs from npm and orchestrates coding agents you already have installed.
+## Upstream BB npm compatibility
+
+The commands in this section install upstream BB and are retained only as
+compatibility documentation. They do not install Beam.
 
 ### Prerequisites
 
@@ -85,7 +94,7 @@ Or set the policy once for all global installs:
 npm config set allow-scripts=better-sqlite3,node-pty,@parcel/watcher --location=user
 ```
 
-`npx bb-app@latest` downloads the published `bb-app` package, starts the server and
+`npx bb-app@latest` downloads upstream BB's published package, starts the server and
 local host daemon, and serves the web app. It stores bb-managed state under
 `~/.bb/` by default. If either managed child process exits unexpectedly, the
 launcher restarts that child without stopping the other one. Press `Ctrl+C` in
@@ -106,7 +115,8 @@ you want that thread to use.
 
 ## CLI
 
-The package also exposes the `bb` CLI for an already-running bb server:
+The local Beam build exposes `beam` as the primary CLI and `bb` as an alias.
+The published upstream package exposes `bb` for an already-running BB server:
 
 ```bash
 npx --package bb-app bb --help

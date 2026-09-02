@@ -1,0 +1,5 @@
+Beam is a distribution fork of BB (https://github.com/get-bb/bb).
+
+The original BB copyright and MIT license are retained in LICENSE. Beam's
+name, icon, bundle identity, storage defaults, CLI entrypoint, and release feed
+are independent distribution changes.

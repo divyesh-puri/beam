@@ -2,87 +2,57 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/e40bda56-54a4-47f8-a417-6bbadf2e5b40">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/4d9d02fb-c179-449b-a38a-041955143232">
-    <img alt="bb" src="https://github.com/user-attachments/assets/4d9d02fb-c179-449b-a38a-041955143232" width="128">
+    <img alt="Beam" src="apps/desktop/assets/icon.png" width="128">
   </picture>
 </p>
 
-# bb
+# Beam
 
-[![npm version](https://img.shields.io/npm/v/bb-app.svg)](https://www.npmjs.com/package/bb-app)
 [![Join Discord](https://img.shields.io/badge/Discord-Join%20server-5865F2?logo=discord&logoColor=white)](https://discord.gg/kvBU6tJhcJ)
 
-bb is an agentic IDE that builds itself. It can control, customize, and automate
+Beam is a standalone distribution of the bb agentic IDE. It can control, customize, and automate
 itself, laying the groundwork for your own software factory.
 
 Every surface — the desktop app, web app, CLI, and HTTP API — is a first-class
-way to drive bb. Work runs in threads you can follow live, steer at any point,
+way to drive Beam. Work runs in threads you can follow live, steer at any point,
 or hand off to another agent.
 
 > [!NOTE]
-> bb is in active development. Core architecture is stable, but workflows
-> and surfaces are still evolving.
+> No Beam release has been published yet. Do not use upstream BB downloads or
+> `npx bb-app` as a Beam installer.
 
 <p align="center">
-  <img alt="bb desktop app showing a code review thread, dispatch panel, and task board" src="assets/app-screenshot.png" width="800">
+  <img alt="Beam desktop app showing a code review thread, dispatch panel, and task board" src="assets/app-screenshot.png" width="800">
 </p>
 
-## Use bb
+## Build Beam locally
 
-### Download the desktop app
-
-The recommended way to start using bb is the desktop app:
-
-**[Download the latest desktop app](https://github.com/get-bb/bb/releases/tag/desktop-latest)**
-
-The desktop app supports macOS on Apple Silicon (arm64). The Linux x64 AppImage
-is alpha: expect problems, and please report them. Intel Mac users should run bb
-with `npx` instead. On Windows, run bb inside
-[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/windows/wsl/install):
-install WSL2 first, then run the same `npx` command below from your WSL2 (Linux)
-shell. Native Windows PowerShell and CMD are not supported.
-
-Early adopters can install
-**[bb Nightly](https://github.com/get-bb/bb/releases/tag/desktop-nightly)**
-alongside the stable desktop app. It has a separate application identity,
-yellow icon, and auto-update feed.
-
-### Or run it anywhere with npx
+Beam currently has no public binary or npm installation path. From this
+checkout, install dependencies and produce the separately installable Apple
+Silicon application with:
 
 ```bash
-npx bb-app@latest
+npm exec -- pnpm install --frozen-lockfile
+npm exec -- pnpm --dir apps/desktop run package
+open apps/desktop/release/mac-arm64/Beam.app
 ```
 
-Then open `http://localhost:38886`.
+The artifact is `apps/desktop/release/mac-arm64/Beam.app`. Its production state
+defaults to `~/.beam`, its local server defaults to `http://127.0.0.1:48886`,
+and the primary CLI is `beam`; `bb` is retained as a compatibility alias.
 
-To run the newest automated build instead:
+Do not globally export upstream values such as `BB_DATA_DIR=~/.bb`,
+`BB_SERVER_PORT=38886`, `BB_HOST_DAEMON_PORT=38887`, or an upstream
+`BB_SERVER_URL` when launching Beam. Explicit ambient `BB_*` overrides take
+precedence and can intentionally defeat side-by-side isolation.
 
-```bash
-npx bb-app@nightly
-```
-
-npm 12 and later block dependency install scripts by default. bb needs those
-scripts to build its native add-ons. If your npm version is 12 or later, allow
-the scripts for the install:
-
-```bash
-npx --allow-scripts=better-sqlite3,node-pty,@parcel/watcher bb-app@latest
-```
-
-Or set the policy once for all global installs:
-
-```bash
-npm config set allow-scripts=better-sqlite3,node-pty,@parcel/watcher --location=user
-```
-
-bb uses the provider CLI you already have authenticated.
-
-For install requirements, provider setup, configuration, and package-focused
-docs, start with
-[`packages/bb-app`](./packages/bb-app/README.md).
+The internal `@bb/*`, `BB_*`, and workspace `.bb/` names remain compatibility
+contracts to keep upstream synchronization practical. See [NOTICE](NOTICE) for
+attribution.
 
 ### Telemetry
 
-Production runs (the desktop app and `npx bb-app`) send anonymous usage
+Production Beam runs send anonymous usage
 telemetry (app starts, thread creation counts, user message counts, and plugin
 installs) to help us understand adoption. Identification is a random per-install
 id stored in your data dir — no user, host, project, workspace, or message

@@ -31,8 +31,8 @@ describe("formatStartedAt", () => {
 });
 
 describe("formatSurface", () => {
-  it("names how bb was started", () => {
-    expect(formatSurface("desktop")).toBe("the bb desktop app");
+  it("names how Beam was started", () => {
+    expect(formatSurface("desktop")).toBe("the Beam desktop app");
     expect(formatSurface("web")).toBe("a terminal");
   });
 });

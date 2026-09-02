@@ -38,6 +38,7 @@ async function buildPublicSdkDeclarations() {
 
 const entrypoints = [
   ["bb-app", "bb-app.js"],
+  ["beam", "beam.js"],
   ["bb", "bb.js"],
   ["bb-server", "bb-server.js"],
   ["bb-host-daemon", "bb-host-daemon.js"],

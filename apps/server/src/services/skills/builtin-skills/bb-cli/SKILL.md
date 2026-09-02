@@ -21,7 +21,7 @@ Run `bb --version` for the CLI version. Use `bb --help` or `bb help [command]`
 for help. Run bb guide for the system overview. Run bb guide <chapter> for one
 area. Use bb <group> --help for current flags and defaults.
 
-A standalone CLI targets http://127.0.0.1:38886. Use BB_SERVER_URL and
+A standalone CLI targets http://127.0.0.1:48886. Use BB_SERVER_URL and
 BB_HOST_DAEMON_PORT only for an intentional non-default target.
 
 ## Read only the relevant reference

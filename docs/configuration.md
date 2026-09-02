@@ -1,8 +1,8 @@
 # Configuration
 
 The packaged `npx bb-app` flow stores persistent package settings under
-`~/.bb/config.json`, provider environment values under `~/.bb/env.json`, and
-client SSH target mappings under `~/.bb/client.json`.
+`~/.beam/config.json`, provider environment values under `~/.beam/env.json`, and
+client SSH target mappings under `~/.beam/client.json`.
 
 Use `bb-app config` for non-secret bb settings:
 
@@ -80,8 +80,8 @@ or `--base-url ...` targets take precedence, and packaged/production bb keeps
 the `https://getbb.app` default. This value is launcher-managed, not a
 `bb-app config` setting.
 
-After `bb-app config` writes `~/.bb/config.json` or `bb-app env` writes
-`~/.bb/env.json`, it asks the running local server to reload. If bb is not
+After `bb-app config` writes `~/.beam/config.json` or `bb-app env` writes
+`~/.beam/env.json`, it asks the running local server to reload. If Beam is not
 running, the new values apply on the next start. If you edit either file by
 hand, run `npx bb-app config refresh` to apply the files to a running server.
 
@@ -124,7 +124,7 @@ the version, the start time, and how bb was started. Do not edit it.
 Two things read that file:
 
 - `npx bb-app stop` stops the bb that owns the data directory. Pass the same
-  `--data-dir` you started with when it is not the default `~/.bb/`.
+  `--data-dir` you started with when it is not the default `~/.beam/`.
 - The macOS desktop app asks before it uses a bb it did not start, and offers to
   stop that copy for you.
 
@@ -140,10 +140,10 @@ signal it, so a stale file left by a crash cannot stop an unrelated process.
 | `BB_INFERENCE_FALLBACK` | `bb-app config`                                    | Optional                | Helper model used after a transient primary timeout, rate limit, or service-unavailable failure. Defaults to `codex/gpt-5.4-mini`.                                                                                                                                                                                                                                                                    |
 | `BB_TRANSCRIPTION`      | `bb-app config`                                    | Optional                | Voice transcription model in `<service>/<model>` format: a plugin-registered AI service (`codex` with the codex plugin; audio up to 5MB) or `openai/<model>` with `OPENAI_API_KEY`. Defaults to `codex/gpt-transcribe`.                                                                                                                                                                               |
 | `BB_MARKETPLACE_URL`    | `bb-app env`, or environment                       | Startup-only testing    | Manifest URL of the reserved `bb-community` plugin marketplace, which lists as BB Community. Defaults to `https://getbb.app/marketplace/v1/marketplace.json`; point it at a local file server to test catalog refreshes. It sets only the reserved `bb-community` marketplace; other marketplaces are added at runtime with `bb marketplace add`. A full launcher or desktop app restart is required. |
-| `BB_SERVER_URL`         | `bb-app config`                                    | Remote CLI/host use     | Server URL for standalone `bb` CLI and `host-daemon` commands on the current machine. The CLI defaults to `http://127.0.0.1:38886` when unset.                                                                                                                                                                                                                                                        |
+| `BB_SERVER_URL`         | `bb-app config`                                    | Remote CLI/host use     | Server URL for standalone `beam`/`bb` CLI and `host-daemon` commands on the current machine. The CLI defaults to `http://127.0.0.1:48886` when unset.                                                                                                                                                                                                                                                 |
 | `BB_SERVER_BIND_HOST`   | `bb-app env`, environment, or `--server-bind-host` | Startup-only            | Server listener host. Defaults to `127.0.0.1`; accepts only `127.0.0.1` or `0.0.0.0`. A full launcher or desktop app restart is required; until then, a previous `0.0.0.0` listener remains exposed. This is not a `bb-app config` key.                                                                                                                                                               |
-| `BB_SERVER_PORT`        | `bb-app env`, environment, or `--server-port`      | Startup-only            | HTTP listener port. Defaults to `38886`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                          |
-| `BB_HOST_DAEMON_PORT`   | `bb-app env`, environment, or `--host-daemon-port` | Startup-only            | Local host-daemon API port. Defaults to `38887`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                  |
+| `BB_SERVER_PORT`        | `bb-app env`, environment, or `--server-port`      | Startup-only            | HTTP listener port. Defaults to `48886`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                          |
+| `BB_HOST_DAEMON_PORT`   | `bb-app env`, environment, or `--host-daemon-port` | Startup-only            | Local host-daemon API port. Defaults to `48887`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                  |
 | `BB_LOG_LEVEL`          | `bb-app config`                                    | Startup-only debugging  | Log level: `trace`, `debug`, `info`, `warn`, `error`, or `fatal`. A full launcher or desktop app restart is required.                                                                                                                                                                                                                                                                                 |
 | `OPENAI_API_KEY`        | `bb-app env`                                       | OpenAI opt-in routes    | Required only when selecting explicit OpenAI provider routes such as `openai/gpt-4o-mini` or `openai/gpt-transcribe`.                                                                                                                                                                                                                                                                                 |
 
@@ -196,7 +196,7 @@ Command+Enter queues. Set it with
 "Steer".
 
 The "Streamer mode" toggle in Settings → General hides every `customModels`
-entry from `~/.bb/config.json` in all model lists: the web and mobile pickers,
+entry from `~/.beam/config.json` in all model lists: the web and mobile pickers,
 `bb provider models`, and `sdk.providers.models`. Turn it on before a screen
 share so a private or early-access model id does not appear. It defaults to
 off. The entries stay in `config.json`, and a thread that names a hidden model
@@ -301,12 +301,12 @@ configuration.
 `BB_SERVER_URL` does not change where full `npx bb-app` startup binds locally.
 It is for commands that need to target an already-running server, such as the
 bundled `bb` CLI or a standalone host daemon. The CLI can omit it when targeting
-the default local packaged server at `http://127.0.0.1:38886`; set it for remote
+the default local packaged server at `http://127.0.0.1:48886`; set it for remote
 or non-default servers.
 
 ## Client SSH Targets
 
-`~/.bb/client.json` is local to the machine showing the UI. The CLI resolves the
+`~/.beam/client.json` is local to the machine showing the UI. The CLI resolves the
 remote server's host ID and stores a mapping from that server/work-host to an SSH
 target known to the local machine. The remote server does not read this file.
 
@@ -378,7 +378,7 @@ co-located daemon.
 ### The deprecated `customAcpAgents` config array
 
 Before ACP agents were plugin-owned, custom agents lived in `customAcpAgents`
-in `~/.bb/config.json`. bb still **reads** that array so an existing agent keeps
+in `~/.beam/config.json`. Beam still **reads** that array so an existing agent keeps
 working, logs a deprecation warning for each one, and never writes to it.
 Support ends in 0.41 — move each entry into the `customAgents` setting above.
 The two shapes are identical except that the setting has no `logo` field: a
@@ -390,7 +390,7 @@ it reads the old array. A setting entry wins over a config entry with the same
 ## Custom Models
 
 Register extra picker models by editing top-level `customModels` in
-`~/.bb/config.json`. Use this for a model the provider accepts but does not
+`~/.beam/config.json`. Use this for a model the provider accepts but does not
 list, such as a non-public preview id. This list has no set/unset CLI surface:
 edit the JSON, then run `npx bb-app config refresh` or restart bb. `bb-app config list` prints the entries.
 
@@ -461,7 +461,7 @@ for guidance you want every bb thread to receive regardless of provider.
 ## Skills
 
 User-level bb skills live under `<dataDir>/skills/<name>/SKILL.md`; for the
-packaged app this is usually `~/.bb/skills`. Project skills live under
+packaged app this is usually `~/.beam/skills`. Project skills live under
 `<workspace>/.bb/skills/<name>/SKILL.md` and override same-named user or built-in
 skills. Running plugins contribute a third tier: every `skills/<name>/SKILL.md`
 in an installed plugin (relocatable via the manifest's `bb.skills` field) is
@@ -578,7 +578,7 @@ proxying relayed requests to the server's own loopback (which serves the SPA
 - `/api` + `/ws`), and reconnecting with capped backoff. The tunnel therefore
   lives as long as the bb server runs (with the plugin enabled) and
   re-establishes on restart; there is no foreground client. Pair from a machine
-  without an installed bb via `npx -p bb-app@latest bb connect …`.
+  with Beam installed via `beam connect …`.
   `bb connect status` shows the connect state and every share's host and URL;
   `bb connect off` disconnects and clears the pairing. After pairing,
   `bb connect expose <port>` run from a thread shares that thread environment's
@@ -691,7 +691,7 @@ start, not a product setting.
 
 Timeline builds slower than 150ms log `Thread timeline build blocked the event
 loop` with a per-stage breakdown, and event-loop stalls over 500ms log `Event
-loop stalled`. Both log at `info`, so they are visible in `~/.bb/logs/` without
+loop stalled`. Both log at `info`, so they are visible in `~/.beam/logs/` without
 raising `BB_LOG_LEVEL`.
 
 ## Plugins
@@ -901,11 +901,18 @@ The data directory is the root directory for all bb-managed state: the SQLite
 database, logs, host identity, thread storage, custom themes (`theme/`,
 including optional Pierre / VS Code `pierre-dark.json` and `pierre-light.json`),
 and
-plugins. It defaults to `~/.bb/` for the packaged app. The `pnpm dev` source launcher derives an isolated data
+plugins. It defaults to `~/.beam/` for the packaged app and never migrates or
+falls back to `~/.bb/`. The `pnpm dev` source launcher derives an isolated data
 directory under `~/.bb-dev/<checkout-instance>/` from the checkout path. The
 checkout instance id is the sanitized path to the checkout, relative to your
 home directory, plus a short hash suffix. Use `--data-dir` to point packaged-app
 instances at different data directories for fully isolated environments.
+
+Explicit ambient compatibility overrides take precedence over Beam defaults.
+Do not globally export `BB_DATA_DIR=~/.bb`, upstream `BB_SERVER_PORT` or
+`BB_HOST_DAEMON_PORT` values, or an upstream `BB_SERVER_URL` when launching
+Beam unless sharing that upstream runtime is intentional; inherited values can
+defeat side-by-side data, port, and server isolation.
 
 If the default ports are already in use, set explicit ports before starting:
 
@@ -916,7 +923,7 @@ npx bb-app --server-port 48886 --host-daemon-port 48887
 The Settings → Machines installer assigns every enrolled standalone host daemon
 a stable local API port so it can coexist with the desktop app and with daemons
 enrolled to other servers. Atomic reservations under
-`~/.bb-machines/host-daemon-ports/` cover both default and custom
+`~/.beam/machines/host-daemon-ports/` cover both default and custom
 `BB_DATA_DIR` locations. Its generated command accepts `--host-daemon-port
 <port>` when an explicit port is required.
 

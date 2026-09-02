@@ -248,7 +248,8 @@ function makeInventory(overrides: Partial<UpdateInventory>): UpdateInventory {
       source: "npm",
       updateAvailable: false,
       isDevelopment: false,
-      upgradeCommand: "npx bb-app@latest",
+      releaseUrl:
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
     },
     desktopInfo: null,
     appUpdateAvailable: false,
@@ -1310,7 +1311,7 @@ The canonical release summary.
     );
   });
 
-  it("forces the web update check and shows the upgrade command inline", async () => {
+  it("forces the web update check and opens the Beam release page", async () => {
     useDesktopUpdateInfoMock.mockReturnValue({
       desktopApi: null,
       desktopInfo: null,
@@ -1322,7 +1323,8 @@ The canonical release summary.
       source: "npm" as const,
       updateAvailable: true,
       isDevelopment: false,
-      upgradeCommand: "npx bb-app@latest",
+      releaseUrl:
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
     };
     useUpdateInventoryMock.mockReturnValue(
       makeInventory({
@@ -1335,13 +1337,21 @@ The canonical release summary.
     vi.mocked(sdk.system.version).mockResolvedValue(availableVersion);
 
     renderSection();
-    expect(screen.getByText("npx bb-app@latest")).toBeDefined();
+    expect(
+      screen.getByText(
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
+      ),
+    ).toBeDefined();
     expect(screen.getByText("0.0.6")).toBeDefined();
-    const copyButton = screen.getByRole("button", {
-      name: "Update available · Copy the upgrade command",
+    const releaseButton = screen.getByRole("button", {
+      name: "Update available · Open the Beam release page",
     });
-    expect(copyButton.textContent).toBe("");
-    expect(copyButton.className).not.toContain("bg-secondary");
+    expect(releaseButton.textContent).toBe("");
+    expect(releaseButton.className).not.toContain("bg-secondary");
+    fireEvent.click(releaseButton);
+    expect(openUrlInExternalBrowserMock).toHaveBeenCalledWith(
+      "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
+    );
     const updateSurface = document.querySelector(
       '[data-updates-machine="host_primary"]',
     );

@@ -50,6 +50,7 @@ env:
 jobs:
   publish:
     name: Publish bb-app
+    if: ${{ github.repository == 'get-bb/bb' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: npm-release
@@ -242,7 +243,7 @@ jobs:
   # failure here cannot roll back the stable release that already shipped.
   publish-nightly:
     name: Publish bb-app nightly after the release
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.npm_tag == 'latest' && inputs.dry_run == false }}
+    if: ${{ github.repository == 'get-bb/bb' && github.event_name == 'workflow_dispatch' && inputs.npm_tag == 'latest' && inputs.dry_run == false }}
     needs: publish
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -368,6 +369,7 @@ jobs:
   # docs/bb-release-process.md#publishing-the-plugin-sdk.
   publish-plugin-sdk:
     name: Publish @get-bb/plugin-sdk
+    if: ${{ github.repository == 'get-bb/bb' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: npm-release
@@ -495,7 +497,8 @@ jobs:
     # scheduled and manual nightly paths, and a skipped need would otherwise
     # skip this job too.
     if: >-
-      ${{ !cancelled()
+      ${{ github.repository == 'get-bb/bb'
+      && !cancelled()
       && needs.publish.result == 'success'
       && (github.event_name == 'schedule'
       || (inputs.npm_tag == 'nightly' && inputs.dry_run == false)
@@ -628,7 +631,8 @@ jobs:
     name: Build bb Nightly desktop (Linux)
     # See the macOS job for why this condition uses `!cancelled()`.
     if: >-
-      ${{ !cancelled()
+      ${{ github.repository == 'get-bb/bb'
+      && !cancelled()
       && needs.publish.result == 'success'
       && (github.event_name == 'schedule'
       || (inputs.npm_tag == 'nightly' && inputs.dry_run == false)
@@ -734,7 +738,8 @@ jobs:
     # the scheduled or manual nightly path. The reusable workflow starts an
     # EAS production build that auto-submits to TestFlight.
     if: >-
-      ${{ !cancelled()
+      ${{ github.repository == 'get-bb/bb'
+      && !cancelled()
       && needs.publish.result == 'success'
       && (github.event_name == 'schedule'
       || (inputs.npm_tag == 'nightly' && inputs.dry_run == false)
@@ -767,7 +772,8 @@ jobs:
     # override this job is skipped on exactly the paths that exist to produce
     # a nightly, and only a stable release run ever moves the release.
     if: >-
-      ${{ !cancelled()
+      ${{ github.repository == 'get-bb/bb'
+      && !cancelled()
       && needs.nightly-desktop-macos.result == 'success'
       && needs.nightly-desktop-linux.result == 'success' }}
     needs:

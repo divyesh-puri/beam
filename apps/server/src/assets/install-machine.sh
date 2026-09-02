@@ -171,7 +171,7 @@ service_slug=$(printf '%s' "$server_host" | tr '.' '-')
 
 # Each server gets its own data dir and daemon instance, so one machine can
 # serve several bb servers and a full local bb install keeps ~/.bb to itself.
-data_dir=${BB_DATA_DIR:-"$HOME/.bb-machines/$server_host"}
+data_dir=${BB_DATA_DIR:-"$HOME/.beam/machines/$server_host"}
 mkdir -p "$data_dir"
 mkdir -p "$data_dir/logs"
 canonical_data_dir=$(node -e '
@@ -188,7 +188,7 @@ machine_npm_prefix="$canonical_data_dir/npm"
 # npm 10 ignores the unknown flag; npm 11 accepts it.
 bb_app_native_modules="better-sqlite3,node-pty,@parcel/watcher"
 bb_app_allow_scripts="--allow-scripts=$bb_app_native_modules"
-port_registry_dir="$HOME/.bb-machines/host-daemon-ports"
+port_registry_dir="$HOME/.beam/machines/host-daemon-ports"
 mkdir -p "$port_registry_dir"
 
 valid_port() {
@@ -289,7 +289,7 @@ release_port_for_data_dir() {
 # per-port mkdir is the allocation lock: concurrent installers cannot claim the
 # same port even after its availability probe closes.
 register_existing_default_ports() {
-  for existing_data_dir in "$HOME/.bb-machines"/*; do
+  for existing_data_dir in "$HOME/.beam/machines"/*; do
     [ -d "$existing_data_dir" ] || continue
     existing_port_file="$existing_data_dir/host-daemon-port"
     [ -f "$existing_port_file" ] || continue
@@ -304,7 +304,7 @@ register_existing_default_ports() {
 }
 
 find_and_claim_available_host_daemon_port() {
-  candidate_port=38888
+  candidate_port=48888
   while [ "$candidate_port" -le 65535 ]; do
     if claim_port_for_data_dir "$candidate_port" "$canonical_data_dir"; then
       if port_is_available "$candidate_port"; then
@@ -369,9 +369,9 @@ if valid_port "$previous_host_daemon_port" && [ "$previous_host_daemon_port" != 
 fi
 complete_step "Using local host-daemon port $host_daemon_port"
 
-# The server's own build is always installed when it offers one: version
-# strings cannot distinguish unpublished builds, so an existing bb-app is
-# trusted only when the server provides no package (404) or is unreachable.
+# Install only the build served by this Beam server. Falling back to PATH or
+# npm could silently enroll an upstream or unrelated bb-app under Beam's
+# service identity.
 package_url="${server_url%/}/install/bb-app.tgz"
 package_dir=$(mktemp -d "${TMPDIR:-/tmp}/bb-app.XXXXXX")
 package_file="$package_dir/bb-app.tgz"
@@ -389,8 +389,6 @@ package_status=$(curl "$curl_output_mode" --show-error --location \
   --write-out '%{http_code}' \
   "$package_url") || package_status=000
 
-bb_app=
-bb_app_npm_prefix=
 if [ "$package_status" -ge 200 ] && [ "$package_status" -lt 300 ]; then
   require_npm
   complete_step "Downloaded the server's bb-app package"
@@ -400,52 +398,33 @@ if [ "$package_status" -ge 200 ] && [ "$package_status" -lt 300 ]; then
     fail_step "Could not install bb-app for this machine. Check the npm error above, then rerun this command."
     exit 1
   fi
-  bb_app_npm_prefix=$machine_npm_prefix
   complete_step "Installed the server's bb-app build"
-elif command -v bb-app >/dev/null 2>&1; then
-  bb_app=$(command -v bb-app)
-  if [ "$package_status" = 404 ]; then
-    warning_step "The server does not provide its bb-app package; using bb-app at $bb_app"
-  else
-    warning_step "Could not download the server's bb-app package (HTTP $package_status); using bb-app at $bb_app"
-  fi
-elif [ "$package_status" = 404 ]; then
-  require_npm
-  warning_step "The server does not provide its bb-app package"
-  active_step "Installing bb-app from the npm registry"
-  if ! npm install -g "$bb_app_allow_scripts" --prefix "$machine_npm_prefix" bb-app; then
-    rm -rf "$package_dir"
-    fail_step "Could not install bb-app for this machine. Check the npm error above, then rerun this command."
-    exit 1
-  fi
-  bb_app_npm_prefix=$machine_npm_prefix
-  complete_step "Installed bb-app from the npm registry"
 else
   rm -rf "$package_dir"
-  fail_step "Could not download the server's bb-app package from $package_url (HTTP $package_status)."
+  fail_step "Could not download this Beam server's bb-app package from $package_url (HTTP $package_status)."
+  detail "The installer will not use bb-app from PATH or the npm registry." >&2
   exit 1
 fi
 rm -rf "$package_dir"
 
-if [ -n "$bb_app_npm_prefix" ]; then
-  bb_app="$bb_app_npm_prefix/bin/bb-app"
-  if [ ! -x "$bb_app" ]; then
-    fail_step "npm installed bb-app, but did not create the expected executable at $bb_app."
-    exit 1
-  fi
-  # Fail loudly if npm skipped the native add-on install scripts (npm >= 12
-  # allowScripts policy, or ignore-scripts=true in an npmrc). Without this
-  # check the join only fails later, in the daemon, with a raw stack trace.
-  bb_app_root="$bb_app_npm_prefix/lib/node_modules/bb-app"
-  if ! node -e '
+bb_app="$machine_npm_prefix/bin/bb-app"
+bb_app_npm_prefix=$machine_npm_prefix
+if [ ! -x "$bb_app" ]; then
+  fail_step "npm installed bb-app, but did not create the expected executable at $bb_app."
+  exit 1
+fi
+# Fail loudly if npm skipped the native add-on install scripts (npm >= 12
+# allowScripts policy, or ignore-scripts=true in an npmrc). Without this
+# check the join only fails later, in the daemon, with a raw stack trace.
+bb_app_root="$machine_npm_prefix/lib/node_modules/bb-app"
+if ! node -e '
     const root = process.argv[1];
     require(root + "/node_modules/better-sqlite3");
     require(root + "/node_modules/node-pty");
   ' "$bb_app_root" >/dev/null 2>&1; then
-    fail_step "npm installed bb-app, but its native add-ons (better-sqlite3, node-pty) did not load."
-    detail "npm did not run their install scripts. Check the npm warnings above. If they mention allowScripts or ignore-scripts, rerun this command with: npm_config_allow_scripts=$bb_app_native_modules npm_config_ignore_scripts=false" >&2
-    exit 1
-  fi
+  fail_step "npm installed bb-app, but its native add-ons (better-sqlite3, node-pty) did not load."
+  detail "npm did not run their install scripts. Check the npm warnings above. If they mention allowScripts or ignore-scripts, rerun this command with: npm_config_allow_scripts=$bb_app_native_modules npm_config_ignore_scripts=false" >&2
+  exit 1
 fi
 
 if [ -n "$machine_code" ]; then
@@ -612,7 +591,7 @@ systemd_escape() {
 
 if [ "$platform" = darwin ]; then
   service_dir="$HOME/Library/LaunchAgents"
-  service_label="app.getbb.host-daemon.$service_slug"
+  service_label="com.divyeshpuri.beam.host-daemon.$service_slug"
   service_file="$service_dir/$service_label.plist"
   mkdir -p "$service_dir"
   escaped_node_bin=$(xml_escape "$node_bin")
@@ -678,7 +657,7 @@ EOF
   detail "Uninstall: launchctl bootout gui/$(id -u) '$service_file' && rm '$service_file'"
 else
   service_dir="$HOME/.config/systemd/user"
-  service_name="bb-host-daemon-$service_slug"
+  service_name="beam-host-daemon-$service_slug"
   service_file="$service_dir/$service_name.service"
   mkdir -p "$service_dir"
   escaped_node_bin=$(systemd_escape "$node_bin")

@@ -41,7 +41,8 @@ const NPM_VERSION = {
   source: "npm" as const,
   updateAvailable: false,
   isDevelopment: false,
-  upgradeCommand: "npx bb-app@latest",
+  releaseUrl:
+    "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
 };
 
 const DESKTOP_UPDATE = {
@@ -360,7 +361,7 @@ export function UpdateStates() {
 
         <State
           name="Update available"
-          note="A web install cannot replace itself, so its action copies the upgrade command."
+          note="A web install cannot replace itself, so its action opens the Beam release page."
         >
           <StoryAppState>
             <BbAppUpdateRows

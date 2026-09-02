@@ -66,7 +66,7 @@ const macConfigSchema = z
 const linuxConfigSchema = z
   .object({
     category: z.literal("Development"),
-    executableName: z.enum(["bb", "bb-nightly"]),
+    executableName: z.enum(["beam", "beam-nightly"]),
     icon: z.string().min(1),
     target: z.tuple([
       z
@@ -484,6 +484,9 @@ describe("electron-builder signing config", () => {
     );
     const config = electronBuilderConfigSchema.parse(JSON.parse(configText));
 
+    expect(config.appId).toBe("com.divyeshpuri.beam");
+    expect(config.productName).toBe("Beam");
+
     expect(config.mac.target).toEqual([
       { arch: ["arm64"], target: "dmg" },
       { arch: ["arm64"], target: "zip" },
@@ -499,7 +502,7 @@ describe("electron-builder signing config", () => {
 
     expect(config.linux).toMatchObject({
       category: "Development",
-      executableName: "bb",
+      executableName: "beam",
       target: [{ arch: ["x64"], target: "AppImage" }],
     });
     await expect(
@@ -528,7 +531,7 @@ describe("electron-builder signing config", () => {
     }
   });
 
-  it("keeps the updater provider pointed at desktop-latest release assets", async () => {
+  it("keeps the updater provider pointed at Beam release assets", async () => {
     const configText = await readFile(
       resolve(desktopPackageRoot, "electron-builder.config.json"),
       "utf8",
@@ -537,7 +540,7 @@ describe("electron-builder signing config", () => {
 
     expect(config.publish[0]).toMatchObject(DESKTOP_AUTO_UPDATE_FEED_CONFIG);
     expect(DESKTOP_AUTO_UPDATE_FEED_CONFIG.url).toBe(
-      "https://github.com/get-bb/bb/releases/download/desktop-latest/",
+      "https://github.com/divyesh-puri/beam/releases/download/beam-desktop-latest/",
     );
   });
 
@@ -547,11 +550,11 @@ describe("electron-builder signing config", () => {
     });
     const nightlyRelease = createDesktopReleaseInfo("nightly");
 
-    expect(config.appId).toBe("dev.bb.desktop.nightly");
-    expect(config.productName).toBe("bb Nightly");
-    expect(config.artifactName).toBe("bb-nightly-${version}-${arch}.${ext}");
+    expect(config.appId).toBe("com.divyeshpuri.beam.nightly");
+    expect(config.productName).toBe("Beam Nightly");
+    expect(config.artifactName).toBe("beam-nightly-${version}-${arch}.${ext}");
     expect(config.linux.icon).toBe("assets/icon-nightly.png");
-    expect(config.linux.executableName).toBe("bb-nightly");
+    expect(config.linux.executableName).toBe("beam-nightly");
     expect(config.mac.icon).toBe("assets/icon-nightly.icns");
     await expect(
       access(resolve(desktopPackageRoot, config.mac.icon)),

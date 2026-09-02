@@ -1,5 +1,11 @@
 # Releasing bb-app
 
+> This is the retained upstream BB npm/nightly runbook. Every job in
+> `publish-bb-app.yml` is restricted to `get-bb/bb`, so this workflow cannot run
+> in `divyesh-puri/beam` and must not be used to release Beam. Beam desktop
+> release configuration lives in `build-desktop.yml`; no Beam release has been
+> published yet.
+
 This runbook is for agents preparing and publishing the `bb-app` npm package.
 Official plugins bundle into the app during packaging and ship with this same
 release; see

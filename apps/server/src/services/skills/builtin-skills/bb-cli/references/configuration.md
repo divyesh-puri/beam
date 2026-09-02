@@ -26,7 +26,7 @@
 
 ## Agent Instructions
 
-- Add `AGENTS.md` to the bb data dir (usually `~/.bb/AGENTS.md`) to inject
+- Add `AGENTS.md` to the bb data dir (usually `~/.beam/AGENTS.md`) to inject
   user-level default instructions for every provider-backed thread across all
   projects.
 - Add `.bb/AGENTS.md` at a workspace root to inject repo-specific instructions

@@ -80,7 +80,7 @@ describe("common config", () => {
         },
         homeDir: "/Users/tester",
       }).BB_DATA_DIR,
-    ).toBe("/Users/tester/.bb");
+    ).toBe("/Users/tester/.beam");
   });
 
   it("requires repoRoot or BB_DATA_DIR for development data dir resolution", () => {
@@ -631,8 +631,8 @@ describe("consumer-specific config", () => {
       },
     });
 
-    expect(cliConfig.BB_SERVER_URL).toBe("http://127.0.0.1:38886");
-    expect(cliConfig.BB_HOST_DAEMON_PORT).toBe(38887);
+    expect(cliConfig.BB_SERVER_URL).toBe("http://127.0.0.1:48886");
+    expect(cliConfig.BB_HOST_DAEMON_PORT).toBe(48887);
   });
 
   it("lets explicit CLI env overrides win over NODE_ENV-selected defaults", () => {

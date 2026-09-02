@@ -66,8 +66,8 @@ describe("run-dev", () => {
     expect(Object.values(config.ports)).not.toContain(5173);
     expect(Object.values(config.ports)).not.toContain(3334);
     expect(Object.values(config.ports)).not.toContain(3002);
-    expect(Object.values(config.ports)).not.toContain(38886);
-    expect(Object.values(config.ports)).not.toContain(38887);
+    expect(Object.values(config.ports)).not.toContain(48886);
+    expect(Object.values(config.ports)).not.toContain(48887);
   });
 
   it("keeps Cloud gateway ports out of the worker band and packaged ports", () => {
@@ -149,7 +149,7 @@ describe("run-dev", () => {
 
     const inheritedSkillsRootPaths = [
       "/Users/tester/.bb-dev/code-bb-abc123/skills",
-      "/Users/tester/.bb/skills",
+      "/Users/tester/.beam/skills",
     ];
     expect(resolveInheritedDevSkillsRootPaths({ homeDir, repoRoot })).toEqual(
       inheritedSkillsRootPaths,
@@ -159,7 +159,7 @@ describe("run-dev", () => {
     });
   });
 
-  it("dedupes inherited bb skills for prod-managed worktree dev apps", () => {
+  it("does not inherit upstream BB skills for BB-managed Beam worktrees", () => {
     const homeDir = "/Users/tester";
     const repoRoot = "/Users/tester/.bb/worktrees/env_feature/bb";
     const config = resolveDevInstanceConfig({
@@ -168,14 +168,14 @@ describe("run-dev", () => {
     });
 
     expect(resolveInheritedDevSkillsRootPaths({ homeDir, repoRoot })).toEqual([
-      "/Users/tester/.bb/skills",
+      "/Users/tester/.beam/skills",
     ]);
     expect(toDevProcessEnv({ baseEnv: {}, config })).toMatchObject({
-      BB_INHERITED_SKILLS_ROOTS: "/Users/tester/.bb/skills",
+      BB_INHERITED_SKILLS_ROOTS: "/Users/tester/.beam/skills",
     });
   });
 
-  it("inherits prod bb skills for ordinary checkout dev apps", () => {
+  it("inherits production Beam skills for ordinary checkout dev apps", () => {
     const homeDir = "/Users/tester";
     const repoRoot = "/Users/tester/src/bb";
     const config = resolveDevInstanceConfig({
@@ -184,10 +184,10 @@ describe("run-dev", () => {
     });
 
     expect(resolveInheritedDevSkillsRootPaths({ homeDir, repoRoot })).toEqual([
-      "/Users/tester/.bb/skills",
+      "/Users/tester/.beam/skills",
     ]);
     expect(toDevProcessEnv({ baseEnv: {}, config })).toMatchObject({
-      BB_INHERITED_SKILLS_ROOTS: "/Users/tester/.bb/skills",
+      BB_INHERITED_SKILLS_ROOTS: "/Users/tester/.beam/skills",
     });
   });
 

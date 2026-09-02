@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "bin": {
+    "beam": "./bin/beam",
     "bb": "./bin/bb",
     "title": "./bin/title"
   },

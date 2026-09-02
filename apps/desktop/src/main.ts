@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { accessSync, constants as fsConstants } from "node:fs";
 import { arch, homedir, release, type as osType } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import {
   app,
   BrowserWindow,
@@ -23,6 +23,7 @@ import {
   APP_SURFACE_DESKTOP,
   APP_SURFACE_ENV_NAME,
 } from "@bb/config/app-surface";
+import { resolveRuntimeDataDir } from "@bb/config/runtime";
 import type { ConnectCredential } from "@bb/connect-client";
 import type { AppKeybindings } from "@bb/domain";
 import {
@@ -547,17 +548,11 @@ function createDesktopLogger(): DesktopAutoUpdateLogger {
 }
 
 function resolveDataDirFromEnv(args: ResolveDataDirFromEnvArgs): string {
-  const rawDataDir = args.env.BB_DATA_DIR?.trim();
-  if (rawDataDir === undefined || rawDataDir.length === 0) {
-    return join(args.homeDir, ".bb");
-  }
-  if (rawDataDir === "~") {
-    return args.homeDir;
-  }
-  if (rawDataDir.startsWith("~/")) {
-    return resolve(args.homeDir, rawDataDir.slice(2));
-  }
-  return resolve(rawDataDir);
+  return resolveRuntimeDataDir({
+    env: args.env,
+    homeDir: args.homeDir,
+    mode: "prod",
+  });
 }
 
 function formatLogDirectory(): string {
@@ -1970,6 +1965,18 @@ async function runDesktopApp(): Promise<void> {
     ? DESKTOP_RELEASE_INFO.applicationName
     : "bb-dev";
   app.setName(applicationName);
+  if (app.isPackaged) {
+    app.setPath(
+      "userData",
+      join(
+        resolveDataDirFromEnv({
+          env: process.env,
+          homeDir: homedir(),
+        }),
+        "desktop",
+      ),
+    );
+  }
   installAboutPanel(applicationName);
 
   if (!app.requestSingleInstanceLock()) {

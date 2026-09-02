@@ -4,6 +4,18 @@ macOS and Linux Electron shell for bb. The desktop app loads the existing bb
 web UI and uses the packaged `bb-app` launcher for server and host-daemon
 lifecycle.
 
+This fork packages the shell as `Beam.app` with bundle identifier
+`com.divyeshpuri.beam`. Stable updates use the Beam-owned
+`beam-desktop-latest` release in `divyesh-puri/beam`; nightly uses
+`beam-desktop-nightly`. Production runtime and Electron state live below
+`~/.beam`, while source development remains checkout-isolated below
+`~/.bb-dev`.
+
+The retained `publish-bb-app.yml` workflow is upstream BB compatibility only:
+every job is restricted to `get-bb/bb`, so it cannot run in this fork and is
+not a Beam release path. Beam releases use `build-desktop.yml`; none has been
+published yet.
+
 ## Development
 
 From the repo root, the full source dev loop is:
@@ -169,8 +181,9 @@ CI enforces this lockstep. Direct edits that leave
 versions fail the build. Never edit either package version directly for a
 release; use `scripts/bump-version.mjs` so both files move together.
 
-The desktop release tag uses the locked version: `desktop-v<version>` for
-immutable releases and `desktop-latest` for the moving pointer.
+The Beam desktop release tag uses the locked version:
+`beam-desktop-v<version>` for immutable releases and `beam-desktop-latest` for
+the moving pointer.
 
 `build-desktop.yml` builds macOS and Linux in parallel jobs, then publishes
 both from one job. The moving release resets all of its assets on each publish,
@@ -187,9 +200,13 @@ macOS keeps the unsuffixed feed name because released macOS builds already
 request it. Linux artifacts are unsigned; only the macOS binaries wait on the
 Apple signing secrets.
 
-## Nightly channel
+## Upstream BB nightly compatibility
 
-The scheduled `publish-bb-app.yml` workflow runs from `main` every day at
+This retained section describes upstream BB, not Beam. The
+`publish-bb-app.yml` workflow cannot run in this fork because every job is
+guarded to `get-bb/bb`.
+
+Upstream's scheduled `publish-bb-app.yml` workflow runs from `main` every day at
 3:00 AM Pacific (`America/Los_Angeles`, including daylight-saving changes). It
 derives a unique version such as `0.34.1-nightly.<run-id>.<attempt>` without
 committing that version, publishes `bb-app` with the npm `nightly` dist-tag,
@@ -273,10 +290,10 @@ GitHub Actions secrets:
 
 Once those secrets are present, the next `Build Desktop` workflow run with
 `publish=true` and `release_channel=stable` signs the `.app`, notarizes it, and
-publishes the signed `.dmg` / `.zip` assets to `desktop-latest`. If no required
-signing secrets are configured, the workflow still builds unsigned artifacts, but
+publishes the signed `.dmg` / `.zip` assets to `beam-desktop-latest`. If no
+required signing secrets are configured, the workflow still builds unsigned artifacts, but
 the release job publishes only `desktop-version.json` and withholds unsigned
-binaries from `desktop-latest`. If only some required signing secrets are set,
+binaries from `beam-desktop-latest`. If only some required signing secrets are set,
 the workflow fails before packaging so a misconfigured release cannot silently
 produce unsigned or signed-but-not-notarized artifacts.
 
@@ -284,23 +301,22 @@ produce unsigned or signed-but-not-notarized artifacts.
 
 The renderer update toast keeps using `desktop-version.json` as the lightweight
 feature surface. The installer path uses `electron-updater` against the same
-`desktop-latest` release asset directory and reads `latest-mac.yml`. These
+`beam-desktop-latest` release asset directory and reads `latest-mac.yml`. These
 checks run in parallel on launch, hourly, and when the app becomes active: the
 JSON feed can show "update available" even when CI has published metadata only,
 while the Electron updater only flips the toast to "ready to install" after a
 signed update has actually downloaded. Local dev builds skip Electron auto-update
 unless `BB_DESKTOP_AUTO_UPDATE=1` is set.
 
-`bb Nightly` follows the equivalent isolated `desktop-nightly` release and
-`nightly-mac.yml`; it never reads or moves the stable feed. The scheduled
-workflow requires the complete signing/notarization secret set before
-publishing nightly desktop assets.
+`Beam Nightly` is configured to follow the isolated `beam-desktop-nightly`
+release and `nightly-mac.yml`; it never reads the stable feed. No Beam nightly
+workflow has been added and no nightly artifact has been produced.
 
 To verify a downloaded or unpacked build:
 
 ```bash
-spctl --assess --verbose /path/to/bb.app
-codesign --verify --deep --strict --verbose=2 /path/to/bb.app
+spctl --assess --verbose /path/to/Beam.app
+codesign --verify --deep --strict --verbose=2 /path/to/Beam.app
 ```
 
 ## Debugging
@@ -309,11 +325,11 @@ Use the View menu to toggle DevTools. To open them automatically on launch, set
 `BB_DESKTOP_OPEN_DEVTOOLS=1`:
 
 ```bash
-BB_DESKTOP_OPEN_DEVTOOLS=1 apps/desktop/release/mac-arm64/bb.app/Contents/MacOS/bb
+BB_DESKTOP_OPEN_DEVTOOLS=1 apps/desktop/release/mac-arm64/Beam.app/Contents/MacOS/Beam
 ```
 
 When the desktop app spawns `bb-app`, server and daemon logs land under
-`~/.bb/logs/` or `$BB_DATA_DIR/logs/` when `BB_DATA_DIR` is set.
+`~/.beam/logs/` or `$BB_DATA_DIR/logs/` when `BB_DATA_DIR` is set.
 
 To verify attach-if-found manually, start a compatible bb first, then launch the
 desktop app:

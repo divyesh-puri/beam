@@ -15,3 +15,31 @@ it("limits concurrent Turbo test tasks to the CI runner CPU count", () => {
 
   expect(testStep).toContain("--concurrency=4");
 });
+
+it("keeps the upstream package publishing workflow disabled in forks", () => {
+  const workflow = readFileSync(
+    resolve(repoRoot, ".github", "workflows", "publish-bb-app.yml"),
+    "utf8",
+  );
+  const jobNames = [
+    "publish",
+    "publish-nightly",
+    "publish-plugin-sdk",
+    "nightly-desktop-macos",
+    "nightly-desktop-linux",
+    "nightly-mobile-ios",
+    "nightly-desktop-publish",
+  ];
+
+  for (const [index, jobName] of jobNames.entries()) {
+    const start = workflow.indexOf(`\n  ${jobName}:`);
+    const nextJob =
+      index === jobNames.length - 1
+        ? workflow.length
+        : workflow.indexOf(`\n  ${jobNames[index + 1]}:`, start + 1);
+    expect(start).toBeGreaterThan(-1);
+    expect(workflow.slice(start, nextJob)).toContain(
+      "github.repository == 'get-bb/bb'",
+    );
+  }
+});

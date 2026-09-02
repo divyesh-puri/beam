@@ -172,10 +172,10 @@ export type ThemeCatalogResponse = z.infer<typeof themeCatalogResponseSchema>;
 export const systemVersionResponseSchema = z.object({
   currentVersion: z.string(),
   latestVersion: z.string().nullable(),
-  source: z.literal("npm"),
+  source: z.enum(["github", "npm"]),
   updateAvailable: z.boolean(),
   isDevelopment: z.boolean(),
-  upgradeCommand: z.string(),
+  releaseUrl: z.string().url(),
 });
 export type SystemVersionResponse = z.infer<typeof systemVersionResponseSchema>;
 

@@ -20,7 +20,7 @@ For a private tailnet route, keep bb on its loopback default and publish it
 through Tailscale Serve:
 
 ```bash
-tailscale serve --bg --https=443 http://127.0.0.1:38886
+tailscale serve --bg --https=443 http://127.0.0.1:48886
 npx bb-app config set BB_APP_URL https://<machine>.<tailnet>.ts.net
 ```
 
@@ -29,7 +29,7 @@ boundary for this route; do not expose the server through Funnel or the public
 internet. bb connect URLs require the paired account owner's session.
 
 Existing remote host daemons that target a direct tailnet IP or
-`http://<machine>.<tailnet>.ts.net:38886` must migrate before restarting an
+`http://<machine>.<tailnet>.ts.net:48886` must migrate before restarting an
 upgraded server. Prefer pairing bb connect and re-adding the machine from
 Settings → Machines so its installer records the account-gated route. The
 private alternative is to open bb through the Tailscale Serve URL and re-run
@@ -152,13 +152,13 @@ data directory, not its system-wide global prefix, so enrollment needs neither
 `sudo` nor a PATH change.
 
 Each joined server gets its own daemon instance, data directory
-(`~/.bb-machines/<server-host>`, override with `BB_DATA_DIR` when running the
+(`~/.beam/machines/<server-host>`, override with `BB_DATA_DIR` when running the
 installer), local API port, and launchd/systemd service. The installer persists
 the selected port in that data directory and atomically reserves it under
-`~/.bb-machines/host-daemon-ports/`, including when `BB_DATA_DIR` points
+`~/.beam/machines/host-daemon-ports/`, including when `BB_DATA_DIR` points
 elsewhere. Subsequent runs reuse the reservation; pass `--host-daemon-port
 <port>` to the installer to override the selection. One machine can therefore
-serve several bb servers at once, and joining never touches a full local bb
+serve several Beam servers at once, and joining never touches an upstream BB
 install's `~/.bb`. Each instance keeps its own `bb-app` under that data
 directory and self-updates against its own server, so servers running different
 bb versions on one machine remain isolated.
@@ -171,8 +171,8 @@ exponential retry backoff from 5 seconds to 5 minutes. Settings → Machines and
 `bb machine retry-update <id-or-name>` can bypass the current backoff. A daemon
 never downgrades itself to an older server protocol. To opt out, remove
 `--auto-update` from
-`~/Library/LaunchAgents/app.getbb.host-daemon.<server>.plist` or
-`~/.config/systemd/user/bb-host-daemon-<server>.service`, then reload the
+`~/Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.<server>.plist` or
+`~/.config/systemd/user/beam-host-daemon-<server>.service`, then reload the
 service.
 
 After it connects:

@@ -67,7 +67,7 @@ CLI counterpart of Settings → Updates and the sidebar Updates badge.
     --json                                Print per-target results as JSON
 
 `bb updates apply` covers provider CLIs only. Update bb-app itself with the
-printed upgrade command (`npx bb-app@latest`) or the desktop app's relaunch;
+printed release URL or the desktop app's relaunch;
 connected daemons then follow the server version automatically.
 
 Machine selectors accept either an exact machine ID or an unambiguous machine

@@ -15,8 +15,8 @@ maybeReexecViaBbCli();
 const program = new Command();
 
 program
-  .name("bb")
-  .description("BB CLI - manage your AI coding agents")
+  .name("beam")
+  .description("Beam CLI - manage your AI coding agents")
   .enablePositionalOptions()
   .version(resolveBbCliVersion());
 
@@ -111,10 +111,10 @@ Current context:
   BB_SERVER_URL: ${context.serverUrl}
 
 Quick start:
-  bb status
-  bb project list
-  bb thread show <id>
-  bb thread spawn --project <id> --provider codex --prompt "..."
+  beam status
+  beam project list
+  beam thread show <id>
+  beam thread spawn --project <id> --provider codex --prompt "..."
 `;
   });
 

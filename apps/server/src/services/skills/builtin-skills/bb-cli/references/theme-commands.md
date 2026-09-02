@@ -7,7 +7,7 @@
   the _palette_ only; light/dark _mode_ is a separate per-client setting that the
   palette layers on top of.
 - **Custom themes live on disk** under the app data dir, one folder per theme:
-  `<bb-data-dir>/theme/<name>/theme.css` (the packaged app uses `~/.bb/theme/…`).
+  `<bb-data-dir>/theme/<name>/theme.css` (Beam uses `~/.beam/theme/…`).
   The folder name _is_ the theme id. This mirrors how user skills live under
   `<bb-data-dir>/skills/<name>/`.
 - All theme commands support `--json`.
@@ -34,7 +34,7 @@
 This is the BB habit: custom app-theme work belongs in
 `<bb-data-dir>/theme/<name>/theme.css` — never a stray `.css` file elsewhere.
 
-1. Find the directory: `bb theme dir` (e.g. `~/.bb/theme`).
+1. Find the directory: `bb theme dir` (e.g. `~/.beam/theme`).
 2. Write the stylesheet to `<that-dir>/<name>/theme.css` (create the folder). Use
    a name of at most 64 characters. Start with a letter or digit. After that,
    use letters, digits, dots, underscores, or hyphens. Avoid a built-in ID.

@@ -74,7 +74,6 @@ import {
 } from "@/hooks/useUpdateInventory";
 import { useHostDaemon } from "@/hooks/useHostDaemon";
 import { useDesktopUpdateInfo } from "@/hooks/useDesktopUpdateInfo";
-import { copyToClipboardWithToast } from "@/lib/clipboard";
 import {
   hostCanRetryUpdate,
   hostNeedsUpdate,
@@ -816,7 +815,7 @@ export function BbAppUpdateRows({
       detail={
         systemVersion.updateAvailable ? (
           <span className="hidden truncate font-mono text-2xs text-muted-foreground sm:inline">
-            {systemVersion.upgradeCommand}
+            {systemVersion.releaseUrl}
           </span>
         ) : undefined
       }
@@ -832,14 +831,11 @@ export function BbAppUpdateRows({
       name,
       <RowStateControl
         state="update-available"
-        actionIcon="Copy"
-        actionLabel="Copy the upgrade command"
-        actionTooltip="Copy command"
+        actionIcon="ExternalLink"
+        actionLabel="Open the Beam release page"
+        actionTooltip="Open release page"
         onClick={() => {
-          void copyToClipboardWithToast(systemVersion.upgradeCommand, {
-            successMessage: "Upgrade command copied",
-            errorMessage: "Couldn't copy upgrade command",
-          });
+          openUrlInExternalBrowser(systemVersion.releaseUrl);
         }}
       />,
     );

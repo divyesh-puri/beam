@@ -79,7 +79,7 @@ describe("run-host-daemon auto join", () => {
 
     const env = runHostDaemon.resolveHostDaemonRuntimeEnvironment("prod");
 
-    expect(env.BB_DATA_DIR).toBe(path.join(os.homedir(), ".bb"));
+    expect(env.BB_DATA_DIR).toBe(path.join(os.homedir(), ".beam"));
     expect(env.NODE_ENV).toBe("production");
   });
 

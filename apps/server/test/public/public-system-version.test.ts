@@ -22,7 +22,8 @@ describe("GET /api/v1/system/version", () => {
           source: "npm",
           updateAvailable: false,
           isDevelopment: true,
-          upgradeCommand: "npx bb-app@latest",
+          releaseUrl:
+            "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
         }),
         isDevelopment: true,
       },

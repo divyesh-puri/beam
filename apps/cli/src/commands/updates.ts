@@ -189,7 +189,7 @@ export function registerUpdatesCommands(
         const appState = version.isDevelopment
           ? "development mode"
           : version.updateAvailable
-            ? `${UPDATE_STATE_PRESENTATION["update-available"].label} (run: ${version.upgradeCommand})`
+            ? `${UPDATE_STATE_PRESENTATION["update-available"].label} (release: ${version.releaseUrl})`
             : UPDATE_STATE_PRESENTATION["up-to-date"].label;
         const appVersionLabel =
           version.latestVersion !== null &&

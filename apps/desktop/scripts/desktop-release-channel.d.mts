@@ -7,13 +7,13 @@ export interface DesktopUpdateMetadataFileNames {
 }
 
 export interface DesktopReleaseConfig {
-  appId: "dev.bb.desktop" | "dev.bb.desktop.nightly";
-  applicationName: "bb" | "bb Nightly";
+  appId: "com.divyeshpuri.beam" | "com.divyeshpuri.beam.nightly";
+  applicationName: "Beam" | "Beam Nightly";
   artifactName: string;
   iconFileName: "icon.png" | "icon-nightly.png";
-  linuxExecutableName: "bb" | "bb-nightly";
+  linuxExecutableName: "beam" | "beam-nightly";
   macIconPath: "assets/icon.icns" | "assets/icon-nightly.icns";
-  releaseTag: "desktop-latest" | "desktop-nightly";
+  releaseTag: "beam-desktop-latest" | "beam-desktop-nightly";
   updateMetadataFileNames: DesktopUpdateMetadataFileNames;
 }
 

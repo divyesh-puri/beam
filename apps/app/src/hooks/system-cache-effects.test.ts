@@ -207,7 +207,8 @@ describe("system cache effects", () => {
       source: "npm",
       updateAvailable: true,
       isDevelopment: false,
-      upgradeCommand: "npx bb-app@latest",
+      releaseUrl:
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
     });
 
     invalidateRealtimeQueriesAfterServerReconnect({

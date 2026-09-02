@@ -55,14 +55,15 @@ describe("createAppVersionService", () => {
       currentVersion: "0.0.5",
       isDevelopment: true,
       latestVersion: null,
-      source: "npm",
+      source: "github",
       updateAvailable: false,
-      upgradeCommand: "npx bb-app@latest",
+      releaseUrl:
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
     });
     expect(calls).toEqual([]);
   });
 
-  it("reports updateAvailable=true when npm latest is greater", async () => {
+  it("reports updateAvailable=true when the Beam release is greater", async () => {
     const calls: FetchCall[] = [];
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },
@@ -73,7 +74,25 @@ describe("createAppVersionService", () => {
     expect(response.latestVersion).toBe("0.0.6");
     expect(response.updateAvailable).toBe(true);
     expect(calls).toHaveLength(1);
-    expect(calls[0]?.url).toBe("https://registry.npmjs.org/bb-app/latest");
+    expect(calls[0]?.url).toBe(
+      "https://github.com/divyesh-puri/beam/releases/download/beam-desktop-latest/desktop-version.json",
+    );
+  });
+
+  it("returns an HTTPS update action that Linux clients can use", async () => {
+    const service = createAppVersionService({
+      config: { appVersion: "0.0.5", isDevelopment: false },
+      fetchImpl: createStubFetch([{ body: { version: "0.0.6" } }], []),
+      logger: testLogger,
+    });
+
+    const response = await service.getSystemVersion();
+
+    expect(new URL(response.releaseUrl)).toMatchObject({
+      hostname: "github.com",
+      pathname: "/divyesh-puri/beam/releases/tag/beam-desktop-latest",
+      protocol: "https:",
+    });
   });
 
   it("reports updateAvailable=false when versions are equal", async () => {
@@ -87,7 +106,7 @@ describe("createAppVersionService", () => {
     expect(response.updateAvailable).toBe(false);
   });
 
-  it("reports updateAvailable=false when local is ahead of npm latest", async () => {
+  it("reports updateAvailable=false when local is ahead of the Beam release", async () => {
     const service = createAppVersionService({
       config: { appVersion: "9.9.9", isDevelopment: false },
       fetchImpl: createStubFetch([{ body: { version: "0.0.6" } }], []),
@@ -98,7 +117,7 @@ describe("createAppVersionService", () => {
     expect(response.updateAvailable).toBe(false);
   });
 
-  it("returns latestVersion=null when npm fails and there is no cache", async () => {
+  it("returns latestVersion=null when GitHub fails and there is no cache", async () => {
     const warn = vi.fn();
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },
@@ -113,14 +132,15 @@ describe("createAppVersionService", () => {
       currentVersion: "0.0.5",
       isDevelopment: false,
       latestVersion: null,
-      source: "npm",
+      source: "github",
       updateAvailable: false,
-      upgradeCommand: "npx bb-app@latest",
+      releaseUrl:
+        "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
     });
     expect(warn).toHaveBeenCalled();
   });
 
-  it("returns latestVersion=null when npm returns a non-200 status", async () => {
+  it("returns latestVersion=null when GitHub returns a non-200 status", async () => {
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },
       fetchImpl: createStubFetch([{ ok: false, status: 429, body: {} }], []),
@@ -131,7 +151,7 @@ describe("createAppVersionService", () => {
     expect(response.updateAvailable).toBe(false);
   });
 
-  it("returns latestVersion=null when npm returns an unexpected payload", async () => {
+  it("returns latestVersion=null when GitHub returns an unexpected payload", async () => {
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },
       fetchImpl: createStubFetch([{ body: { unexpected: true } }], []),
@@ -152,7 +172,7 @@ describe("createAppVersionService", () => {
     expect(response.updateAvailable).toBe(false);
   });
 
-  it("caches the npm result and avoids repeat fetches inside the TTL", async () => {
+  it("caches the GitHub result and avoids repeat fetches inside the TTL", async () => {
     const calls: FetchCall[] = [];
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },
@@ -169,7 +189,7 @@ describe("createAppVersionService", () => {
     expect(calls).toHaveLength(1);
   });
 
-  it("bypasses the npm cache for a forced check", async () => {
+  it("bypasses the GitHub cache for a forced check", async () => {
     const calls: FetchCall[] = [];
     const service = createAppVersionService({
       config: { appVersion: "0.0.5", isDevelopment: false },

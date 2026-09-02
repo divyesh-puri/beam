@@ -142,7 +142,8 @@ const systemVersion = {
   source: "npm",
   updateAvailable: false,
   isDevelopment: false,
-  upgradeCommand: "npx bb-app@latest",
+  releaseUrl:
+    "https://github.com/divyesh-puri/beam/releases/tag/beam-desktop-latest",
 } satisfies SystemVersionResponse;
 
 const systemProviders = [

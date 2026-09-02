@@ -6,10 +6,10 @@ import {
 type DesktopReleaseChannel = "latest" | "nightly";
 
 interface DesktopReleaseInfo {
-  applicationName: "bb" | "bb Nightly";
+  applicationName: "Beam" | "Beam Nightly";
   channel: DesktopReleaseChannel;
   iconFileName: "icon.png" | "icon-nightly.png";
-  releaseTag: "desktop-latest" | "desktop-nightly";
+  releaseTag: "beam-desktop-latest" | "beam-desktop-nightly";
   updateReleaseBaseUrl: string;
 }
 
@@ -17,14 +17,14 @@ export function createDesktopReleaseInfo(
   channel: DesktopReleaseChannel,
 ): DesktopReleaseInfo {
   const nightly = channel === "nightly";
-  const releaseTag = nightly ? "desktop-nightly" : "desktop-latest";
+  const releaseTag = nightly ? "beam-desktop-nightly" : "beam-desktop-latest";
 
   return {
-    applicationName: nightly ? "bb Nightly" : "bb",
+    applicationName: nightly ? "Beam Nightly" : "Beam",
     channel,
     iconFileName: nightly ? "icon-nightly.png" : "icon.png",
     releaseTag,
-    updateReleaseBaseUrl: `https://github.com/get-bb/bb/releases/download/${releaseTag}/`,
+    updateReleaseBaseUrl: `https://github.com/divyesh-puri/beam/releases/download/${releaseTag}/`,
   };
 }
 

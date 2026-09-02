@@ -38,6 +38,7 @@
   ],
   "bin": {
     "bb-app": "dist/bb-app.js",
+    "beam": "dist/beam.js",
     "bb": "dist/bb.js",
     "bb-server": "dist/bb-server.js",
     "bb-host-daemon": "dist/bb-host-daemon.js"

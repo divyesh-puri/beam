@@ -78,10 +78,12 @@ interface ResolvePortFromEnvArgs {
   name: string;
 }
 
-const BB_PROD_DATA_DIR_NAME = ".bb";
+const BEAM_PROD_DATA_DIR_NAME = ".beam";
 const BB_DEV_DATA_ROOT_DIR = ".bb-dev";
-export const BB_PROD_SERVER_PORT = 38886;
-export const BB_PROD_HOST_DAEMON_PORT = 38887;
+const UPSTREAM_BB_PROD_SERVER_PORT = 38886;
+const UPSTREAM_BB_PROD_HOST_DAEMON_PORT = 38887;
+export const BB_PROD_SERVER_PORT = 48886;
+export const BB_PROD_HOST_DAEMON_PORT = 48887;
 export const BB_LOOPBACK_HOST = "127.0.0.1";
 const BB_SQLITE_DATABASE_FILE_NAME = "bb.db";
 
@@ -139,8 +141,8 @@ function resolvePortOffset(repoRootPath: string): number {
 }
 
 function reservePackagedAppPorts(port: number): number {
-  if (port === BB_PROD_SERVER_PORT) return 59_000;
-  if (port === BB_PROD_HOST_DAEMON_PORT) return 59_001;
+  if (port === UPSTREAM_BB_PROD_SERVER_PORT) return 59_000;
+  if (port === UPSTREAM_BB_PROD_HOST_DAEMON_PORT) return 59_001;
   return port;
 }
 
@@ -174,7 +176,7 @@ export function resolveRuntimeMode(
 }
 
 export function resolveProdDataDir(args: ResolveProdDataDirArgs): string {
-  return join(args.homeDir, BB_PROD_DATA_DIR_NAME);
+  return join(args.homeDir, BEAM_PROD_DATA_DIR_NAME);
 }
 
 export function parseDataDirEnvValue(args: ParseDataDirEnvValueArgs): string {
@@ -238,6 +240,10 @@ export function resolveInheritedDevSkillsRootPaths(
 
   const parentDataDir = segments.slice(0, worktreesIndex).join("/");
   if (parentDataDir.length === 0) {
+    return roots;
+  }
+
+  if (resolve(parentDataDir) === resolve(args.homeDir, ".bb")) {
     return roots;
   }
 

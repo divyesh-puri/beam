@@ -736,8 +736,16 @@ async function smokeHelpCommands(binDir) {
     label: "bb-app help",
   });
   await runCommand({
+    ...createInstalledBinInvocation(binDir, "beam", ["--help"]),
+    label: "Beam CLI help",
+  });
+  await runCommand({
+    ...createInstalledBinInvocation(binDir, "beam", ["--version"]),
+    label: "Beam CLI version",
+  });
+  await runCommand({
     ...createInstalledBinInvocation(binDir, "bb", ["--help"]),
-    label: "bb cli help",
+    label: "bb compatibility CLI help",
   });
   await runCommand({
     ...createInstalledBinInvocation(binDir, "bb-server", ["--help"]),
@@ -820,7 +828,7 @@ async function smokeSdkPackage(tarballPath) {
     [
       'import { BBSdk, BbHttpError } from "bb-app";',
       "",
-      'const bb = new BBSdk({ baseUrl: "http://127.0.0.1:38886" });',
+      'const bb = new BBSdk({ baseUrl: "http://127.0.0.1:48886" });',
       "const error: typeof BbHttpError = BbHttpError;",
       "void bb.status.get();",
       "void error;",

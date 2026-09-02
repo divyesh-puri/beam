@@ -578,12 +578,12 @@ describe("bb-app launcher", () => {
       homeDir: "/home/tester",
     });
 
-    expect(context.dataDir).toBe("/home/tester/.bb");
-    expect(context.configFile).toBe("/home/tester/.bb/config.json");
-    expect(context.envFile).toBe("/home/tester/.bb/env.json");
-    expect(context.serverPort).toBe(38886);
-    expect(context.daemonPort).toBe(38887);
-    expect(context.serverUrl).toBe("http://127.0.0.1:38886");
+    expect(context.dataDir).toBe("/home/tester/.beam");
+    expect(context.configFile).toBe("/home/tester/.beam/config.json");
+    expect(context.envFile).toBe("/home/tester/.beam/env.json");
+    expect(context.serverPort).toBe(48886);
+    expect(context.daemonPort).toBe(48887);
+    expect(context.serverUrl).toBe("http://127.0.0.1:48886");
     expect(context.serverEntry).toBe(
       "/repo/packages/bb-app/server/dist/index.js",
     );
@@ -783,8 +783,8 @@ describe("bb-app launcher", () => {
         bindHost: runtime.serverEnv.BB_SERVER_BIND_HOST,
         port: runtime.context.serverPort,
       }),
-    ).toBe("http://0.0.0.0:38886");
-    expect(runtime.context.serverUrl).toBe("http://127.0.0.1:38886");
+    ).toBe("http://0.0.0.0:48886");
+    expect(runtime.context.serverUrl).toBe("http://127.0.0.1:48886");
   });
 
   it("strips parent thread context from the production server without stripping the CLI", async () => {
@@ -959,7 +959,7 @@ describe("bb-app launcher", () => {
       })
     ).context;
 
-    expect(context.serverUrl).toBe("http://127.0.0.1:38886");
+    expect(context.serverUrl).toBe("http://127.0.0.1:48886");
   });
 
   it("applies managed config environment values over ambient env", async () => {

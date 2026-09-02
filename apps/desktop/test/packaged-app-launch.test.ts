@@ -19,4 +19,13 @@ describe("createPackagedAppLaunchArguments", () => {
       }),
     ).toEqual(["--user-data-dir=/tmp/smoke/user-data"]);
   });
+
+  it("can launch against the app-configured user data directory", () => {
+    expect(
+      createPackagedAppLaunchArguments({
+        platform: "darwin",
+        userDataDir: null,
+      }),
+    ).toEqual([]);
+  });
 });

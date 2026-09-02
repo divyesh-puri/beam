@@ -54,7 +54,7 @@ describe("reset-bb-data", () => {
     const targets = resolveResetTargets(new Set(["--all"]));
 
     expect(targets).toEqual([
-      join(os.homedir(), ".bb"),
+      join(os.homedir(), ".beam"),
       expectedDevDataDir({
         homeDir: os.homedir(),
         repoRoot,
