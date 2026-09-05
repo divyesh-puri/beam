@@ -18,7 +18,7 @@ import {
   ResourceSortMenu,
   ResourceToolbar,
 } from "@bb/shared-ui/resource-list";
-import { BbLogo } from "@/components/ui/bb-logo";
+import { BeamLogo } from "@/components/ui/beam-logo";
 import {
   ConfirmDeleteDialog,
   ConfirmDeleteDialogContent,
@@ -53,7 +53,7 @@ function providerLabel(
   provider: SkillProvider | null,
   providerRoster: ProviderRoster,
 ): string {
-  if (provider === null) return "bb";
+  if (provider === null) return "Beam";
   return providerRoster.get(provider)?.displayName ?? provider;
 }
 
@@ -65,7 +65,7 @@ function providerFilterLabel(
   provider: ResourceProviderFilter,
   providerRoster: ProviderRoster,
 ): string {
-  return provider === "bb" ? "bb" : providerLabel(provider, providerRoster);
+  return provider === "bb" ? "Beam" : providerLabel(provider, providerRoster);
 }
 
 function skillSourceFilterId(skill: SkillSummary): ResourceSkillSourceFilter {
@@ -77,7 +77,7 @@ function skillSourceFilterId(skill: SkillSummary): ResourceSkillSourceFilter {
 function skillSourceFilterLabel(source: ResourceSkillSourceFilter): string {
   switch (source) {
     case "bb-official":
-      return "BB Official";
+      return "Beam Official";
     case "included":
       return "Included in plugin";
     case "user":
@@ -143,7 +143,7 @@ export function SkillProvenanceTooltip({
         className="flex size-3.5 shrink-0 items-center justify-center"
       >
         {providerId === null ? (
-          <BbLogo className="size-3.5 brightness-0 invert" />
+          <BeamLogo className="size-3.5 brightness-0 invert" />
         ) : (
           <ProviderLogo
             providerId={providerId}
@@ -173,7 +173,7 @@ function SkillLeading({
       />
     );
   }
-  return <BbLogo className="size-6" />;
+  return <BeamLogo className="size-6" />;
 }
 
 function skillDescription(
@@ -233,11 +233,11 @@ const SKILLS_BROWSE_DESCRIPTION = (
     >
       skills.sh
     </a>
-    . Install one and every agent you use in bb can run it.
+    . Install one and every agent you use in Beam can run it.
   </>
 );
 const SKILLS_LIBRARY_DESCRIPTION =
-  "The skills on this bb host — yours, your providers', and those bundled with plugins. They work with every agent you use in bb.";
+  "The skills on this Beam instance host — yours, your providers', and those bundled with plugins. They work with every agent you use in Beam.";
 
 const PREFETCH_HOVER_INTENT_MS = 150;
 
@@ -279,7 +279,7 @@ function SkillRow({
         title={skill.name}
         titleMeta={
           skill.scope === "bb-builtin" ? (
-            <ProvenancePill label="BB Official" />
+            <ProvenancePill label="Beam Official" />
           ) : skill.scope === "plugin" ? (
             <ProvenancePill
               label="Included"
@@ -388,7 +388,7 @@ export function SkillsOverview({
       label: providerFilterLabel(provider, providerRoster),
       leading:
         provider === "bb" ? (
-          <BbLogo className="size-4" />
+          <BeamLogo className="size-4" />
         ) : (
           <ProviderLogo
             providerId={provider}
@@ -539,7 +539,7 @@ export function SkillsOverview({
               action={
                 <CreateWithTemplatesButton
                   kind="skill"
-                  label="New bb skill"
+                  label="New Beam skill"
                   onCreate={onCreateSkill}
                 />
               }
@@ -691,9 +691,9 @@ export function SkillDetailDialogView({
       titleBadge={
         skill.scope === "bb-builtin"
           ? {
-              label: "BB Official",
-              tooltip: "Ships with bb",
-              accessibleLabel: `${skill.name} is BB Official`,
+              label: "Beam Official",
+              tooltip: "Ships with Beam",
+              accessibleLabel: `${skill.name} is Beam Official`,
             }
           : bundledPluginName !== null
             ? {

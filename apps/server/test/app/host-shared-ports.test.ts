@@ -399,12 +399,12 @@ describe("HostSharedPortCoordinator", () => {
     expect(
       sharedPorts.recordTunnelIdentity(host.id, {
         label: "sawyer-air",
-        baseDomain: "getbb.app",
+        baseDomain: "connect.beam.invalid",
       }),
-    ).toEqual({ label: "sawyer-air", baseDomain: "getbb.app" });
+    ).toEqual({ label: "sawyer-air", baseDomain: "connect.beam.invalid" });
     expect(sharedPorts.getTunnelIdentity(host.id)).toEqual({
       label: "sawyer-air",
-      baseDomain: "getbb.app",
+      baseDomain: "connect.beam.invalid",
     });
   });
 });
@@ -524,12 +524,12 @@ describe("daemon session connect shares", () => {
         socket: daemonSocket,
         raw: JSON.stringify({
           type: "connect-tunnel.identity",
-          identity: { label: "sawyer-air", baseDomain: "getbb.app" },
+          identity: { label: "sawyer-air", baseDomain: "connect.beam.invalid" },
         }),
       });
       expect(harness.deps.sharedPorts.getTunnelIdentity("host-1")).toEqual({
         label: "sawyer-air",
-        baseDomain: "getbb.app",
+        baseDomain: "connect.beam.invalid",
       });
     });
   });
@@ -580,7 +580,7 @@ describe("daemon session connect shares", () => {
           ports: [4173],
         }),
       ).toThrow(
-        'cannot share ports from host "Host" (host-1) because it has no bb connect machine credential; enroll it via Connect in Settings > Machines',
+        'cannot share ports from host "Host" (host-1) because it has no Beam Connect machine credential; enroll it via Connect in Settings > Machines',
       );
       expect(daemonSocket.messages).toEqual(messagesBeforeDeclaration);
       expect(

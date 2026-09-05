@@ -191,7 +191,7 @@ describe("application menu", () => {
     expect(note?.enabled).toBe(false);
     expect(note?.type).toBeUndefined();
     expect(note?.click).toBeUndefined();
-    expect(note?.label).toMatch(/sign in to bb Connect/u);
+    expect(note?.label).toMatch(/sign in to Beam Connect/u);
   });
 
   it("builds a native Linux menu with the Linux DevTools accelerator", () => {

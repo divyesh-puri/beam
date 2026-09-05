@@ -6,10 +6,10 @@ describe("connect return-to URLs", () => {
   it("accepts immediate connect subdomains for the current app domain", () => {
     expect(
       connectReturnTo(
-        "https://sawyer.getbb.app/projects?tab=threads",
-        "https://getbb.app",
+        "https://sawyer.connect.beam.invalid/projects?tab=threads",
+        "https://connect.beam.invalid",
       ),
-    ).toBe("https://sawyer.getbb.app/projects?tab=threads");
+    ).toBe("https://sawyer.connect.beam.invalid/projects?tab=threads");
   });
 
   it("accepts staging connect subdomains", () => {
@@ -24,32 +24,42 @@ describe("connect return-to URLs", () => {
   it("accepts local Cloud handles under the shared cookie domain", () => {
     expect(
       connectReturnTo(
-        "http://sawyer.bb.localhost:42745/threads/thr_1",
-        "http://bb.localhost:42745",
+        "http://sawyer.beam.localhost:42745/threads/thr_1",
+        "http://beam.localhost:42745",
       ),
-    ).toBe("http://sawyer.bb.localhost:42745/threads/thr_1");
+    ).toBe("http://sawyer.beam.localhost:42745/threads/thr_1");
   });
 
   it("rejects nested subdomains and off-domain return targets", () => {
     expect(
-      connectReturnTo("https://a.b.getbb.app/", "https://getbb.app"),
+      connectReturnTo(
+        "https://a.b.connect.beam.invalid/",
+        "https://connect.beam.invalid",
+      ),
     ).toBeNull();
     expect(
-      connectReturnTo("https://evil.test/", "https://getbb.app"),
+      connectReturnTo("https://evil.test/", "https://connect.beam.invalid"),
     ).toBeNull();
   });
 
   it("rejects protocol downgrades", () => {
     expect(
-      connectReturnTo("http://sawyer.getbb.app/", "https://getbb.app"),
+      connectReturnTo(
+        "http://sawyer.connect.beam.invalid/",
+        "https://connect.beam.invalid",
+      ),
     ).toBeNull();
   });
 
   it("treats absent and the literal 'null'/'undefined' strings as no return target", () => {
-    expect(connectReturnTo(null, "https://getbb.app")).toBeNull();
-    expect(connectReturnTo(undefined, "https://getbb.app")).toBeNull();
-    expect(connectReturnTo("", "https://getbb.app")).toBeNull();
-    expect(connectReturnTo("null", "https://getbb.app")).toBeNull();
-    expect(connectReturnTo("undefined", "https://getbb.app")).toBeNull();
+    expect(connectReturnTo(null, "https://connect.beam.invalid")).toBeNull();
+    expect(
+      connectReturnTo(undefined, "https://connect.beam.invalid"),
+    ).toBeNull();
+    expect(connectReturnTo("", "https://connect.beam.invalid")).toBeNull();
+    expect(connectReturnTo("null", "https://connect.beam.invalid")).toBeNull();
+    expect(
+      connectReturnTo("undefined", "https://connect.beam.invalid"),
+    ).toBeNull();
   });
 });

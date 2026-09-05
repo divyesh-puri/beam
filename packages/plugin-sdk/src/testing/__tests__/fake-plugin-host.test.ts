@@ -140,13 +140,13 @@ describe("host control plane", () => {
   it("uses validated current-state replacements and read-only tunnel identity", async () => {
     const { bb, harness } = createFakePluginHost({
       sharedPortTunnelIdentities: {
-        "host-1": { label: "sawyer-air", baseDomain: "getbb.app" },
+        "host-1": { label: "sawyer-air", baseDomain: "connect.beam.invalid" },
       },
     });
 
     await expect(bb.hosts.ensureSharedPortTunnel("host-1")).resolves.toEqual({
       label: "sawyer-air",
-      baseDomain: "getbb.app",
+      baseDomain: "connect.beam.invalid",
     });
     bb.hosts.declareSharedPorts("host-1", [8080, 3000, 8080]);
     bb.hosts.declareSharedPorts("host-2", [4173]);
@@ -523,7 +523,7 @@ describe("cli", () => {
     expect(await harness.runCli(["crash"])).toEqual({
       exitCode: 1,
       stdout: "",
-      stderr: "bb docs failed: bad flag",
+      stderr: "beam docs failed: bad flag",
     });
   });
 
@@ -568,7 +568,7 @@ describe("cli", () => {
       expect(reservedHost.harness.logEntries).toEqual([
         {
           level: "warn",
-          message: `CLI command "${name}" collides with core command "bb ${name}"; core keeps the short form. Use "bb plugin run test-plugin" to invoke this plugin.`,
+          message: `CLI command "${name}" collides with core command "beam ${name}"; core keeps the short form. Use "beam plugin run test-plugin" to invoke this plugin.`,
         },
       ]);
     }

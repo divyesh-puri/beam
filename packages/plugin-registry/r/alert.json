@@ -3,7 +3,7 @@
   "name": "alert",
   "type": "registry:ui",
   "title": "alert",
-  "description": "BB ui \"alert\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"alert\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "class-variance-authority"
   ],

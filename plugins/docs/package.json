@@ -4,13 +4,13 @@
   "description": "Create and edit Markdown documents across local and connected-host vaults.",
   "private": true,
   "license": "MIT",
-  "homepage": "https://github.com/get-bb/bb#readme",
+  "homepage": "https://github.com/divyesh-puri/beam#readme",
   "bugs": {
-    "url": "https://github.com/get-bb/bb/issues"
+    "url": "https://github.com/divyesh-puri/beam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/get-bb/bb.git",
+    "url": "git+https://github.com/divyesh-puri/beam.git",
     "directory": "plugins/docs"
   },
   "type": "module",

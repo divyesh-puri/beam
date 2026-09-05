@@ -10,7 +10,7 @@ import { readPluginManifest } from "./manifest.js";
 
 const COLLECTION_MANIFEST_PATH = ".bb/plugins.json";
 export const COLLECTION_SCHEMA_URL =
-  "https://getbb.app/schemas/plugins.schema.json";
+  "https://raw.githubusercontent.com/divyesh-puri/beam/main/apps/web/public/schemas/plugins.schema.json";
 
 const COLLECTION_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 

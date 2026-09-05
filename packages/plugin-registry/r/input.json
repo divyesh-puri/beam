@@ -3,7 +3,7 @@
   "name": "input",
   "type": "registry:ui",
   "title": "input",
-  "description": "BB ui \"input\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"input\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "registryDependencies": [
     "@bb/coarse-pointer-sizing",
     "@bb/motion",

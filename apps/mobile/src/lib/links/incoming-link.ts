@@ -1,4 +1,4 @@
-const BB_URL_SCHEME = "bb";
+const BEAM_URL_SCHEME = "beam";
 
 export interface LinkProfileLike {
   id: string;
@@ -60,7 +60,7 @@ function splitPathAndSearch(rest: string): {
 
 export function parseIncomingLink(
   url: string,
-  scheme: string = BB_URL_SCHEME,
+  scheme: string = BEAM_URL_SCHEME,
 ): IncomingLink {
   const match = SCHEME_URL_PATTERN.exec(url.trim());
   if (!match) return { kind: "foreign" };

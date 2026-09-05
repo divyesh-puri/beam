@@ -1,16 +1,16 @@
 {
   "name": "bb-plugin-tasks",
   "version": "0.1.2",
-  "description": "Plan and track work in BB, delegate tasks to agents, and keep task context connected to worker threads.",
+  "description": "Plan and track work in Beam, delegate tasks to agents, and keep task context connected to worker threads.",
   "private": true,
   "license": "MIT",
-  "homepage": "https://github.com/get-bb/bb#readme",
+  "homepage": "https://github.com/divyesh-puri/beam#readme",
   "bugs": {
-    "url": "https://github.com/get-bb/bb/issues"
+    "url": "https://github.com/divyesh-puri/beam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/get-bb/bb.git",
+    "url": "git+https://github.com/divyesh-puri/beam.git",
     "directory": "plugins/tasks"
   },
   "type": "module",
@@ -27,7 +27,7 @@
   },
   "bb": {
     "name": "Tasks",
-    "description": "Plan and track work in BB, delegate tasks to agents, and keep task context connected to worker threads.",
+    "description": "Plan and track work in Beam, delegate tasks to agents, and keep task context connected to worker threads.",
     "branding": {
       "icon": "ListTodo"
     },

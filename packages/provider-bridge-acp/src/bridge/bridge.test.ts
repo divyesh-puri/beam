@@ -134,7 +134,7 @@ function bbThreadIdFor(providerThreadId: string): string {
       return params.threadId;
     }
   }
-  throw new Error(`No bb thread id recorded for ${providerThreadId}`);
+  throw new Error(`No Beam thread id recorded for ${providerThreadId}`);
 }
 
 const CLIENT_REQUEST_ID = "creq_abcdefghjk";
@@ -574,7 +574,7 @@ describe("acp bridge", () => {
   it("answers initialize and lists grouped models without spawning an agent", async () => {
     const initializeId = sendRequest("initialize", {
       protocolVersion: PROVIDER_BRIDGE_PROTOCOL_VERSION,
-      client: { name: "bb", version: "1.0.0" },
+      client: { name: "beam", version: "1.0.0" },
     });
     expect((await waitForResponse(initializeId)).result).toMatchObject({
       protocolVersion: PROVIDER_BRIDGE_PROTOCOL_VERSION,
@@ -1585,7 +1585,7 @@ describe("acp bridge", () => {
     });
   });
 
-  it("keeps a non-auth session failure untyped when the agent advertises a login bb cannot perform", async () => {
+  it("keeps a non-auth session failure untyped when the agent advertises a login Beam cannot perform", async () => {
     const response = await startThreadResponse({
       FAKE_ACP_AUTH_METHODS: "agent.login",
       FAKE_ACP_AUTH_OPTIONAL: "1",
@@ -1599,7 +1599,7 @@ describe("acp bridge", () => {
     expect(response.error?.data).toBeUndefined();
   });
 
-  it("keeps an agent exit during session/new untyped when the agent advertises a login bb cannot perform", async () => {
+  it("keeps an agent exit during session/new untyped when the agent advertises a login Beam cannot perform", async () => {
     const response = await startThreadResponse({
       FAKE_ACP_AUTH_METHODS: "agent.login",
       FAKE_ACP_AUTH_OPTIONAL: "1",
@@ -1957,7 +1957,7 @@ describe("acp bridge", () => {
     const prompt: unknown = JSON.parse(
       readFileSync(promptLog, "utf8").trim().split("\n")[0] ?? "null",
     );
-    expect(prompt).toContain("Available bb skills:");
+    expect(prompt).toContain("Available Beam skills:");
     expect(prompt).toContain(
       "- deploy: Ship the app. (SKILL.md: /staged/acp-skills/deploy/SKILL.md)",
     );

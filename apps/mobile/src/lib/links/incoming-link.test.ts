@@ -6,22 +6,22 @@ import {
   parseIncomingLink,
 } from "./incoming-link";
 
-const sawyer = { id: "p1", serverUrl: "https://sawyer.getbb.app" };
+const sawyer = { id: "p1", serverUrl: "https://sawyer.connect.beam.invalid" };
 const lan = { id: "p2", serverUrl: "http://192.168.1.20:3000" };
 const prefixed = { id: "p3", serverUrl: "https://home.example.com/bb" };
 
 describe("parseIncomingLink", () => {
-  it("treats the first segment of a bb:// link as a path segment, not a host", () => {
-    expect(parseIncomingLink("bb://threads/thr_1?x=1#frag")).toEqual({
+  it("treats the first segment of a `beam://` link as a path segment, not a host", () => {
+    expect(parseIncomingLink("beam://threads/thr_1?x=1#frag")).toEqual({
       kind: "scheme",
       path: "/threads/thr_1?x=1",
     });
-    expect(parseIncomingLink("bb:///settings/servers/")).toEqual({
+    expect(parseIncomingLink("beam:///settings/servers/")).toEqual({
       kind: "scheme",
       path: "/settings/servers",
     });
-    expect(parseIncomingLink("bb://")).toEqual({ kind: "scheme", path: "/" });
-    expect(parseIncomingLink("BB://e2e/reset")).toEqual({
+    expect(parseIncomingLink("beam://")).toEqual({ kind: "scheme", path: "/" });
+    expect(parseIncomingLink("beam://e2e/reset")).toEqual({
       kind: "scheme",
       path: "/e2e/reset",
     });
@@ -29,10 +29,12 @@ describe("parseIncomingLink", () => {
 
   it("parses web links into origin + path + search", () => {
     expect(
-      parseIncomingLink("https://sawyer.getbb.app/threads/thr_1/?view=full"),
+      parseIncomingLink(
+        "https://sawyer.connect.beam.invalid/threads/thr_1/?view=full",
+      ),
     ).toEqual({
       kind: "web",
-      origin: "https://sawyer.getbb.app",
+      origin: "https://sawyer.connect.beam.invalid",
       pathname: "/threads/thr_1",
       search: "?view=full",
     });
@@ -41,7 +43,7 @@ describe("parseIncomingLink", () => {
   it("leaves dev-client and other schemes alone", () => {
     expect(
       parseIncomingLink(
-        "exp+bb-app://expo-development-client/?url=http://127.0.0.1:8082",
+        "exp+beam-app://expo-development-client/?url=http://127.0.0.1:8082",
       ),
     ).toEqual({ kind: "foreign" });
     expect(parseIncomingLink("mailto:x@y.z")).toEqual({ kind: "foreign" });
@@ -53,11 +55,18 @@ describe("matchProfileForWebLink", () => {
   it("matches by origin, ignoring scheme/port differences", () => {
     const profiles = [sawyer, lan];
     expect(
-      matchProfileForWebLink(profiles, "https://sawyer.getbb.app", "/threads/x")
-        ?.profile,
+      matchProfileForWebLink(
+        profiles,
+        "https://sawyer.connect.beam.invalid",
+        "/threads/x",
+      )?.profile,
     ).toBe(sawyer);
     expect(
-      matchProfileForWebLink(profiles, "http://sawyer.getbb.app", "/threads/x"),
+      matchProfileForWebLink(
+        profiles,
+        "http://sawyer.connect.beam.invalid",
+        "/threads/x",
+      ),
     ).toBeNull();
     expect(
       matchProfileForWebLink(profiles, "http://192.168.1.20:3000", "/")
@@ -100,15 +109,18 @@ describe("isDeveloperRoutePath", () => {
 describe("addServerPathForLink", () => {
   it("prefills the add-server screen and remembers where to go next", () => {
     expect(
-      addServerPathForLink("https://bee.getbb.app", "/webview?path=%2Fthreads"),
+      addServerPathForLink(
+        "https://bee.connect.beam.invalid",
+        "/webview?path=%2Fthreads",
+      ),
     ).toBe(
-      "/settings/servers/add?serverUrl=https%3A%2F%2Fbee.getbb.app&next=%2Fwebview%3Fpath%3D%252Fthreads",
+      "/settings/servers/add?serverUrl=https%3A%2F%2Fbee.connect.beam.invalid&next=%2Fwebview%3Fpath%3D%252Fthreads",
     );
   });
 
   it("omits a follow-up path that is just the root", () => {
-    expect(addServerPathForLink("https://bee.getbb.app", "/")).toBe(
-      "/settings/servers/add?serverUrl=https%3A%2F%2Fbee.getbb.app",
+    expect(addServerPathForLink("https://bee.connect.beam.invalid", "/")).toBe(
+      "/settings/servers/add?serverUrl=https%3A%2F%2Fbee.connect.beam.invalid",
     );
   });
 });

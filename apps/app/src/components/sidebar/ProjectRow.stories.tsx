@@ -201,7 +201,7 @@ const sharedWorktreeThreadA = makeThread({
   titleFallback: "Refactor timeline row types",
   environmentId: "env_shared_worktree",
   environmentHostId: HOST_IDS.local,
-  environmentBranchName: "bb/set-default-tab-for-panel-thr_vnj2qze4fg",
+  environmentBranchName: "beam/set-default-tab-for-panel-thr_vnj2qze4fg",
   environmentWorkspaceDisplayKind: "managed-worktree",
 });
 const sharedWorktreeThreadB = makeThread({
@@ -210,7 +210,7 @@ const sharedWorktreeThreadB = makeThread({
   titleFallback: "Add story for env-grouped sidebar",
   environmentId: "env_shared_worktree",
   environmentHostId: HOST_IDS.local,
-  environmentBranchName: "bb/set-default-tab-for-panel-thr_vnj2qze4fg",
+  environmentBranchName: "beam/set-default-tab-for-panel-thr_vnj2qze4fg",
   environmentWorkspaceDisplayKind: "managed-worktree",
 });
 const parentThread = makeThread({
@@ -271,7 +271,7 @@ const deepWorktreeA = makeThread({
   parentThreadId: deepIntermediateParent.id,
   environmentId: "env_deep_worktree",
   environmentHostId: HOST_IDS.local,
-  environmentBranchName: "bb/sidebar-parent-child-nesting",
+  environmentBranchName: "beam/sidebar-parent-child-nesting",
   environmentWorkspaceDisplayKind: "managed-worktree",
 });
 const deepWorktreeB = makeThread({
@@ -281,7 +281,7 @@ const deepWorktreeB = makeThread({
   parentThreadId: deepIntermediateParent.id,
   environmentId: "env_deep_worktree",
   environmentHostId: HOST_IDS.local,
-  environmentBranchName: "bb/sidebar-parent-child-nesting",
+  environmentBranchName: "beam/sidebar-parent-child-nesting",
   environmentWorkspaceDisplayKind: "managed-worktree",
   hasPendingInteraction: true,
 });
@@ -673,7 +673,7 @@ const fullProjectAThreads: ThreadListEntry[] = [
     parentThreadId: fullParentA.id,
     environmentId: "env_full_a_codex_train",
     environmentHostId: "host_local",
-    environmentBranchName: "bb/squash-merge-ready-app-train-thr_s6fn8fuv9w",
+    environmentBranchName: "beam/squash-merge-ready-app-train-thr_s6fn8fuv9w",
     environmentWorkspaceDisplayKind: "managed-worktree",
   }),
   makeThread({
@@ -684,7 +684,7 @@ const fullProjectAThreads: ThreadListEntry[] = [
     parentThreadId: fullParentA.id,
     environmentId: "env_full_a_codex_train",
     environmentHostId: "host_local",
-    environmentBranchName: "bb/squash-merge-ready-app-train-thr_s6fn8fuv9w",
+    environmentBranchName: "beam/squash-merge-ready-app-train-thr_s6fn8fuv9w",
     environmentWorkspaceDisplayKind: "managed-worktree",
   }),
   makeThread({
@@ -711,7 +711,7 @@ const fullProjectAThreads: ThreadListEntry[] = [
     titleFallback: "Wire sidebar env-grouping data shape",
     environmentId: "env_full_a_sidebar_rail",
     environmentHostId: "host_local",
-    environmentBranchName: "bb/fix-diff-panel-issues-thr_u8cnp5fnea",
+    environmentBranchName: "beam/fix-diff-panel-issues-thr_u8cnp5fnea",
     environmentWorkspaceDisplayKind: "managed-worktree",
   }),
   makeThread({
@@ -721,7 +721,7 @@ const fullProjectAThreads: ThreadListEntry[] = [
     titleFallback: "Add story for env-grouped sidebar",
     environmentId: "env_full_a_sidebar_rail",
     environmentHostId: "host_local",
-    environmentBranchName: "bb/fix-diff-panel-issues-thr_u8cnp5fnea",
+    environmentBranchName: "beam/fix-diff-panel-issues-thr_u8cnp5fnea",
     environmentWorkspaceDisplayKind: "managed-worktree",
   }),
 ];
@@ -792,7 +792,7 @@ export function MultipleProjects() {
     <StoryCard>
       <StoryRow
         label="projects list — three projects"
-        hint="the Projects section only (no Pinned/Threads/Apps): bb (active) with a parent that has 4 loose children + a 2-thread env sub-group, plus 2 standalones and a 2-thread project-level env group; pierre with 3 standalones; ingest-pipeline with a parent + 1 standalone"
+        hint="the Projects section only (no Pinned/Threads/Apps): Beam (active) with a parent that has 4 loose children + a 2-thread env sub-group, plus 2 standalones and a 2-thread project-level env group; pierre with 3 standalones; ingest-pipeline with a parent + 1 standalone"
       >
         <SidebarStage>
           <ProjectListShell>

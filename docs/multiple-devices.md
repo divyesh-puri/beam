@@ -1,41 +1,43 @@
-# Using bb on multiple devices
+# Using Beam on multiple devices
 
-There are two separate ways to use more than one device with bb:
+There are two separate ways to use more than one device with Beam:
 
-- A browser device is a control surface for one bb server. It can view projects,
+- A browser device is a control surface for one Beam server. It can view projects,
   send prompts, and manage threads, but it does not execute them.
-- An execution machine runs a host daemon. One bb server can dispatch project
+- An execution machine runs a host daemon. One Beam server can dispatch project
   sources and thread environments across several enrolled machines.
 
 You can use either story independently or combine them.
 
-## Open bb from another browser
+## Open Beam from another browser
 
-The simplest managed route is **bb connect**. Pair the server from Settings →
-Connect (or `bb connect --code ... --server
-...`), then open its getbb.app URL. The server owns the tunnel and reconnects
-after restart.
+The simplest managed route is **Beam Connect**. Pair the server from Settings →
+Connect (or `beam connect --code ... --server
+...`), then open the URL from the configured Beam Connect service. Beam ships
+without a production Connect domain; an operator must provision one and provide
+its explicit `--server` URL. The server owns the tunnel and reconnects after
+restart.
 
-For a private tailnet route, keep bb on its loopback default and publish it
+For a private tailnet route, keep Beam on its loopback default and publish it
 through Tailscale Serve:
 
 ```bash
 tailscale serve --bg --https=443 http://127.0.0.1:48886
-npx bb-app config set BB_APP_URL https://<machine>.<tailnet>.ts.net
+beam config set BB_APP_URL https://<machine>.<tailnet>.ts.net
 ```
 
-Start bb with `npx bb-app` and open the HTTPS URL. Tailscale ACLs are the access
+Start Beam with `beam` and open the HTTPS URL. Tailscale ACLs are the access
 boundary for this route; do not expose the server through Funnel or the public
-internet. bb connect URLs require the paired account owner's session.
+internet. Beam Connect URLs require the paired account owner's session.
 
 Existing remote host daemons that target a direct tailnet IP or
 `http://<machine>.<tailnet>.ts.net:48886` must migrate before restarting an
-upgraded server. Prefer pairing bb connect and re-adding the machine from
+upgraded server. Prefer pairing Beam Connect and re-adding the machine from
 Settings → Machines so its installer records the account-gated route. The
-private alternative is to open bb through the Tailscale Serve URL and re-run
+private alternative is to open Beam through the Tailscale Serve URL and re-run
 the Add machine installer from there.
 
-For compatibility only, `npx bb-app --server-bind-host 0.0.0.0` restores direct
+For compatibility only, `beam --server-bind-host 0.0.0.0` restores direct
 IPv4 network access. The public API is unauthenticated and permits command
 execution and file reads, so use wildcard binding only behind a trusted network
 boundary and never through Funnel or the public internet.
@@ -43,24 +45,24 @@ boundary and never through Funnel or the public internet.
 Inside a container, `0.0.0.0` listens on the container's IPv4 interfaces; the
 container runtime must still publish that port to the host (for example,
 `docker run -p 3000:3000 ...`). Host firewall and upstream network rules also
-remain separate from bb's bind setting.
+remain separate from Beam's bind setting.
 
 ### Use editors installed on the browser device
 
-Local editor integration is optional. It connects the remote bb page to the
-loopback-only helper started by the bb desktop app or `npx bb-app` on the
+Local editor integration is optional. It connects the remote Beam page to the
+loopback-only helper started by the Beam desktop app or `beam` on the
 computer running the browser. The helper discovers installed editors and opens
 paths without exposing its API to the network.
 
 If that browser should open work-host files in its local editor, first make
-sure bb is running on the browser device. Verify `ssh <work-host>` succeeds
+sure Beam is running on the browser device. Verify `ssh <work-host>` succeeds
 there, then map the server/work-host to that SSH target:
 
 ```bash
-npx bb-app client ssh-target set <bb-server-origin> <ssh-target> --host-id <work-host-id>
+beam client ssh-target set <beam-server-origin> <ssh-target> --host-id <work-host-id>
 ```
 
-Copy the work-host ID from `bb machine list`. `--host-id` may be omitted when
+Copy the work-host ID from `beam machine list`. `--host-id` may be omitted when
 the server has exactly one machine. A browser running on an enrolled execution
 machine needs no SSH mapping for that same machine: connected daemons report
 their helper ports to the server, and the browser discovers the matching local
@@ -68,61 +70,61 @@ helper after you enable integration.
 
 Then open Settings → Files in that browser and enable **Local editor
 integration**. The browser may ask once for permission to connect to software
-on the computer. bb does not request that permission during normal remote page
+on the computer. Beam does not request that permission during normal remote page
 loads; it is only needed for discovering and launching local editors.
 
 If Settings reports that it cannot connect to the helper:
 
-1. Confirm the bb desktop app or `npx bb-app` is running on the browser device.
-2. Confirm the browser allows local network access for the bb page.
+1. Confirm the Beam desktop app or `beam` is running on the browser device.
+2. Confirm the browser allows local network access for the Beam page.
 3. A helper enrolled with this exact server trusts its origin automatically.
-   For a separate local bb helper serving a custom HTTPS or Tailscale browser,
+   For a separate local Beam helper serving a custom HTTPS or Tailscale browser,
    configure that exact origin with
-   `npx bb-app config set BB_APP_URL <origin>` and restart bb.
+   `beam config set BB_APP_URL <origin>` and restart Beam.
 4. Return to Settings → Files and choose **Retry**.
 
 Phones and tablets need no helper; editor-launch actions are simply unavailable.
 
-## Use the bb mobile app
+## Use the Beam mobile app
 
-The bb mobile app is a client for a bb server; it runs nothing itself. Over
-bb connect it pairs the same way the desktop app does: the phone enrolls as a
-connect machine with its own credential, which the getbb.app dashboard lists
+The Beam mobile app is a client for a Beam server; it runs nothing itself. Over
+Beam Connect it pairs the same way the desktop app does: the phone enrolls as a
+connect machine with its own credential, which the Beam Connect dashboard lists
 and can revoke.
 
-1. Pair the bb server with bb connect first (Settings → Remote access, or
-   `bb connect --code … --server …`).
+1. Pair the Beam server with Beam Connect first (Settings → Remote access, or
+   `beam connect --code … --server …`).
 2. Turn on the **Mobile app** experiment (Settings → Experiments, or
-   `bb settings experiment mobileApp true`). Mobile pairing stays hidden
+   `beam settings experiment mobileApp true`). Mobile pairing stays hidden
    without it while the app is in early access.
 3. Mint a pairing code for the phone: Settings → Remote access → **Add mobile
    device** (QR code plus the code as text, with a countdown), or run
-   `bb connect machine-code` (`--json` prints
+   `beam connect machine-code` (`--json` prints
    `{code, serverUrl, apex, expiresAt}`).
-4. In the mobile app, add a server over bb connect and scan the QR code or type
+4. In the mobile app, add a server over Beam Connect and scan the QR code or type
    the code. Codes last 10 minutes and work once.
 
 The phone keeps its credential in the device keychain and mints short-lived
 sessions from it; it never holds the server's pairing secret. To cut a phone
-off, revoke it in the getbb.app dashboard machine list. Every phone takes one of
+off, revoke it in the Beam Connect dashboard machine list. Every phone takes one of
 the account's machine slots, so a machine-limit error means an unused device
 should be revoked first. On a trusted network the app can also use a direct
 server URL (Tailscale Serve or `--server-bind-host 0.0.0.0`) with the same
 caveats as a browser. Platforms (iOS first) and what the phone cannot do are
 listed in [platform-support.md](platform-support.md).
 
-## Point the desktop app at another bb
+## Point the desktop app at another Beam
 
-The desktop app's Server menu lists "This Mac", every bb connect server on the
+The desktop app's Server menu lists "This Mac", every Beam Connect server on the
 account, and a custom URL. When you select a remote server, the app stops
-starting a bb server on this Mac. It starts one again only when you select
+starting a Beam server on this Mac. It starts one again only when you select
 "This Mac".
 
-To reach bb connect without a local server, the app enrolls itself once as a
+To reach Beam Connect without a local server, the app enrolls itself once as a
 connect machine. That step needs the local server, so the first switch to a
 remote server still starts it. The app keeps its own credential, encrypted with
 the OS keychain, and never holds the server's pairing secret. The app appears in
-the getbb.app dashboard machine list, where you can revoke it. After a revoke,
+the Beam Connect dashboard machine list, where you can revoke it. After a revoke,
 the app drops the credential and asks the local server again.
 
 A remote server has no realtime link for keybindings and theme. The app re-reads
@@ -132,23 +134,23 @@ them when it starts, when it becomes active, and every five minutes.
 
 Open Settings → Machines and choose Add machine. Run the generated one-line
 installer on the computer that should
-execute work. It installs and enrolls a host daemon; when bb connect is paired,
+execute work. It installs and enrolls a host daemon; when Beam Connect is paired,
 the installer also configures the machine credential used to reach the server
-through the account gate. Without bb connect, open the server through a
+through the account gate. Without Beam Connect, open the server through a
 Tailscale Serve URL before generating the installer; the loopback listener is
-not directly reachable from another machine. When bb connect is not paired and
+not directly reachable from another machine. When Beam Connect is not paired and
 the server URL is a loopback or unspecified address, the dialog does not show an
 installer. It links to Settings → Remote access instead.
 
 The installer always installs the exact `bb-app` package exposed by that
-server at `/install/bb-app.tgz`; a `bb-app` already on PATH is reused, and the
-npm registry consulted, only when the server provides no package. Version
-strings cannot distinguish unpublished builds, so this keeps remote machines
-aligned with development and pre-release servers whose build may not exist on
-npm. The package route is public like `/install.sh`: `bb-app` is public
-software, and exposing an unpublished build slightly early through a paired
-tunnel is an accepted tradeoff. npm installs the package into the machine's bb
-data directory, not its system-wide global prefix, so enrollment needs neither
+server at `/install/bb-app.tgz`. If the artifact is missing or unreachable,
+enrollment fails; it never substitutes a package from npm or an executable on
+`PATH`. Version strings cannot distinguish unpublished builds, so this keeps
+remote machines aligned with development and pre-release servers. The package
+route is public like `/install.sh`: `bb-app` is public software, and exposing an
+unpublished build slightly early through a paired tunnel is an accepted
+tradeoff. npm installs that downloaded tarball into the machine's Beam data
+directory, not its system-wide global prefix, so enrollment needs neither
 `sudo` nor a PATH change.
 
 Each joined server gets its own daemon instance, data directory
@@ -161,14 +163,14 @@ elsewhere. Subsequent runs reuse the reservation; pass `--host-daemon-port
 serve several Beam servers at once, and joining never touches an upstream BB
 install's `~/.bb`. Each instance keeps its own `bb-app` under that data
 directory and self-updates against its own server, so servers running different
-bb versions on one machine remain isolated.
+Beam versions on one machine remain isolated.
 
 The installed launchd/systemd service enables `--auto-update`. If session open
 reports a newer server protocol, the daemon downloads the server artifact,
 updates its private install, then exits so the service manager restarts it.
 Failed attempts fall back to normal reconnect behavior with a persisted
 exponential retry backoff from 5 seconds to 5 minutes. Settings → Machines and
-`bb machine retry-update <id-or-name>` can bypass the current backoff. A daemon
+`beam machine retry-update <id-or-name>` can bypass the current backoff. A daemon
 never downgrades itself to an older server protocol. To opt out, remove
 `--auto-update` from
 `~/Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.<server>.plist` or
@@ -180,14 +182,14 @@ After it connects:
 1. To create a project from that machine, choose New project, select the
    machine, and browse to its folder. To map an existing project there instead,
    add its path or clone source in project settings.
-2. Select the machine when creating a thread, or use `bb thread spawn --machine
+2. Select the machine when creating a thread, or use `beam thread spawn --machine
 <id-or-name> ...`.
-3. Inspect enrolled machines with `bb machine list`.
+3. Inspect enrolled machines with `beam machine list`.
 
 Machine names are conveniences and may be duplicated; CLI targeting by name
 requires an unambiguous match. IDs are always accepted. Removing a machine from
-Settings stops bb from dispatching new work to it; revoke a lost machine's bb
-connect access from the getbb.app dashboard as well.
+Settings stops Beam from dispatching new work to it; revoke a lost machine's Beam
+Connect access from the Beam Connect dashboard as well.
 
-Browser access and execution remain independent: opening bb on a laptop does
-not enroll that laptop, and enrolling it as a machine does not expose the bb UI.
+Browser access and execution remain independent: opening Beam on a laptop does
+not enroll that laptop, and enrolling it as a machine does not expose the Beam UI.

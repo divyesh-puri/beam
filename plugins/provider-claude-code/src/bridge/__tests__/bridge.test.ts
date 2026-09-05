@@ -1410,7 +1410,7 @@ describe("bridge", () => {
         },
         expected: {
           behavior: "deny",
-          messageIncludes: "bb's workspace sandbox allows work inside",
+          messageIncludes: "Beam's workspace sandbox allows work inside",
         },
       },
       {
@@ -1426,7 +1426,7 @@ describe("bridge", () => {
         },
         expected: {
           behavior: "deny",
-          messageIncludes: "bb's workspace sandbox allows work inside",
+          messageIncludes: "Beam's workspace sandbox allows work inside",
         },
       },
       {
@@ -1522,7 +1522,7 @@ describe("bridge", () => {
     });
   });
 
-  it("forwards unresolved high-risk auto-mode asks to bb", async () => {
+  it("forwards unresolved high-risk auto-mode asks to Beam", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {
@@ -2196,7 +2196,7 @@ describe("bridge", () => {
     }
   });
 
-  it("dispatches an inbound request whose id collides with a pending bb request", async () => {
+  it("dispatches an inbound request whose id collides with a pending Beam request", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {
@@ -2291,7 +2291,7 @@ describe("bridge", () => {
     }
   });
 
-  it("denies invalid AskUserQuestion input before forwarding to bb", async () => {
+  it("denies invalid AskUserQuestion input before forwarding to Beam", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {
@@ -2329,7 +2329,7 @@ describe("bridge", () => {
     }
   });
 
-  it("denies AskUserQuestion when bb returns an interactive request error", async () => {
+  it("denies AskUserQuestion when Beam returns an interactive request error", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {
@@ -2370,7 +2370,7 @@ describe("bridge", () => {
     }
   });
 
-  it("denies AskUserQuestion when bb returns an invalid response payload", async () => {
+  it("denies AskUserQuestion when Beam returns an invalid response payload", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {
@@ -2408,7 +2408,7 @@ describe("bridge", () => {
     }
   });
 
-  it("denies AskUserQuestion when bb returns a mismatched response kind", async () => {
+  it("denies AskUserQuestion when Beam returns a mismatched response kind", async () => {
     const bridge = createBridgeJsonRpcTestHarness(handleLine);
     const queries: ControlledClaudeQuery[] = [];
     queryMock.mockImplementation(() => {

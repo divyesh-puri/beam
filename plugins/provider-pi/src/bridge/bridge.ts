@@ -50,7 +50,7 @@ import {
   buildPiTurnOptions,
   type PiSessionParams,
 } from "../session-params.js";
-import { BB_PI_EXTENSION_SOURCE } from "./bb-pi-extension.js";
+import { BEAM_PI_EXTENSION_SOURCE } from "./beam-pi-extension.js";
 import {
   getPiInstallGate,
   getPiProviderInstallationRun,
@@ -218,7 +218,7 @@ function requireScratchDir(): string {
   if (scratchDir === null) {
     scratchDir = join(
       tmpdir(),
-      `bb-pi-bridge-${process.pid}-${Math.random().toString(16).slice(2)}`,
+      `beam-pi-bridge-${process.pid}-${Math.random().toString(16).slice(2)}`,
     );
     scratchDirIsPrivate = true;
     mkdirSync(scratchDir, { recursive: true });
@@ -228,8 +228,8 @@ function requireScratchDir(): string {
 
 function requireExtensionPath(): string {
   if (extensionPath === null) {
-    const path = join(requireScratchDir(), "bb-pi-extension.mjs");
-    writeFileSync(path, BB_PI_EXTENSION_SOURCE, "utf8");
+    const path = join(requireScratchDir(), "beam-pi-extension.mjs");
+    writeFileSync(path, BEAM_PI_EXTENSION_SOURCE, "utf8");
     extensionPath = path;
   }
   return extensionPath;

@@ -69,7 +69,7 @@ const sessionTtlMs = readPositiveInt(
 );
 const certDir =
   process.env.BB_MOBILE_E2E_STUB_CERT_DIR ??
-  path.join(os.homedir(), ".bb-mobile-e2e", "connect-stub-certs");
+  path.join(os.homedir(), ".beam-mobile-e2e", "connect-stub-certs");
 
 const apexUrl = `https://localhost:${gatePort}`;
 const serverUrl = `https://${handle}.localhost:${gatePort}`;
@@ -117,7 +117,7 @@ function ensureCertificates(): TlsMaterial {
       "-days",
       "3650",
       "-subj",
-      "/CN=bb mobile e2e connect stub CA",
+      "/CN=Beam mobile e2e connect stub CA",
       "-addext",
       "basicConstraints=critical,CA:TRUE",
       "-addext",
@@ -304,7 +304,7 @@ function json(res: http.ServerResponse, status: number, body: unknown): void {
 }
 
 function signInPage(label: string, url: string): string {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Sign in · ${label}</title></head><body><h1>Sign in to bb connect</h1><p>You need a session to reach <code>${label}</code>.</p><p><a href="${apexUrl}/dashboard?returnTo=${encodeURIComponent(url)}">Sign in</a></p></body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Sign in · ${label}</title></head><body><h1>Sign in to Beam Connect</h1><p>You need a session to reach <code>${label}</code>.</p><p><a href="${apexUrl}/dashboard?returnTo=${encodeURIComponent(url)}">Sign in</a></p></body></html>`;
 }
 
 function readBody(req: http.IncomingMessage): Promise<string> {
@@ -526,7 +526,7 @@ function proxyRequest(
     if (!res.headersSent) {
       res.writeHead(503, { "content-type": "text/plain" });
     }
-    res.end("bb connect: server offline\n");
+    res.end("Beam Connect: server offline\n");
   });
   req.pipe(upstream);
 }
@@ -550,7 +550,7 @@ async function handleRequest(
   if (pathname.startsWith("/__stub/")) return handleControl(req, res, pathname);
   if (pathname.startsWith("/__")) {
     res.writeHead(404, { "content-type": "text/plain" });
-    return void res.end("bb connect: not found\n");
+    return void res.end("Beam Connect: not found\n");
   }
 
   const presented = headerValue(req.headers[MACHINE_CREDENTIAL_HEADER]);
@@ -558,13 +558,13 @@ async function handleRequest(
     const machine = activeMachine(presented);
     if (!machine) {
       res.writeHead(403, { "content-type": "text/plain" });
-      return void res.end("bb connect: machine not authorized\n");
+      return void res.end("Beam Connect: machine not authorized\n");
     }
     return proxyRequest(req, res, "machine", machine.id);
   }
   if (pathname.startsWith("/internal")) {
     res.writeHead(403, { "content-type": "text/plain" });
-    return void res.end("bb connect: machine not authorized\n");
+    return void res.end("Beam Connect: machine not authorized\n");
   }
 
   const cookieHeader = headerValue(req.headers.cookie) ?? undefined;
@@ -680,7 +680,7 @@ function main(): void {
     if (pathname.startsWith("/__stub/"))
       return handleControl(req, res, pathname);
     res.writeHead(404, { "content-type": "text/plain" });
-    res.end("bb connect stub: control port only answers /__stub/*\n");
+    res.end("Beam Connect stub: control port only answers /__stub/*\n");
   });
   control.on("error", (error) => {
     process.stderr.write(

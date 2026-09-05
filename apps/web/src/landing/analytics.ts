@@ -32,7 +32,7 @@ export function initAnalytics(): void {
     return;
   }
   const key = import.meta.env.VITE_POSTHOG_KEY;
-  if (!key) {
+  if (!key || import.meta.env.VITE_TELEMETRY !== "true") {
     return;
   }
   loading = true;

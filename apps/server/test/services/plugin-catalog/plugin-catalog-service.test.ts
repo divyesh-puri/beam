@@ -54,7 +54,7 @@ function manifest(plugins: unknown[]): unknown {
   return {
     schemaVersion: 1,
     name: "bb-community",
-    displayName: "BB Community",
+    displayName: "Beam Community",
     plugins,
   };
 }
@@ -94,12 +94,14 @@ describe("plugin catalog service", () => {
       typeof createPluginCatalogService
     >[0]["bundledPlugins"];
     fetch?: MarketplaceFetch;
+    marketplaceUrl?: string;
+    schedule?: (callback: () => void, delayMs: number) => () => void;
     warn?: (message: string) => void;
   }) {
     return createPluginCatalogService({
       db,
       appVersion: "1.0.0",
-      marketplaceUrl: MANIFEST_URL,
+      marketplaceUrl: options?.marketplaceUrl ?? MANIFEST_URL,
       dataDir,
       plugins: {
         installOfficialPlugin: async (name: string) => {
@@ -119,6 +121,9 @@ describe("plugin catalog service", () => {
         ? {}
         : { bundledPlugins: options.bundledPlugins }),
       ...(options?.fetch === undefined ? {} : { fetch: options.fetch }),
+      ...(options?.schedule === undefined
+        ? {}
+        : { schedule: options.schedule }),
       ...(options?.warn === undefined ? {} : { warn: options.warn }),
     });
   }
@@ -184,6 +189,80 @@ describe("plugin catalog service", () => {
         [...categoryNames].sort((a, b) => a.localeCompare(b)),
       );
     }
+  });
+
+  it("uses the bundled Beam Community catalog without remote refresh by default", async () => {
+    let fetchCount = 0;
+    const scheduledDelays: number[] = [];
+    const warnings: string[] = [];
+    const catalog = service({
+      marketplaceUrl: "",
+      fetch: async () => {
+        fetchCount += 1;
+        return new Response(null, { status: 500 });
+      },
+      schedule: (_callback, delayMs) => {
+        scheduledDelays.push(delayMs);
+        return () => {};
+      },
+      warn: (message) => warnings.push(message),
+    });
+
+    expect(catalog.listMarketplaces()[0]).toMatchObject({
+      name: "bb-community",
+      source: "Bundled with Beam",
+      lastError: null,
+    });
+    await expect(catalog.refresh(9_000)).resolves.toBeUndefined();
+    catalog.startPeriodicRefresh();
+    await new Promise((resolve) => setImmediate(resolve));
+    catalog.stopPeriodicRefresh();
+
+    expect(fetchCount).toBe(0);
+    expect(warnings).toEqual([]);
+    expect(scheduledDelays).toEqual([2 * 60 * 60 * 1_000]);
+  });
+
+  it("clears a stored remote refresh failure when returning to the bundled catalog", async () => {
+    const remoteCatalog = service({
+      fetch: async () => new Response("missing", { status: 404 }),
+    });
+    await expect(remoteCatalog.refresh(8_000)).rejects.toThrow("HTTP 404");
+    expect(getPluginMarketplace(db, "bb-community")?.lastError).toContain(
+      "HTTP 404",
+    );
+
+    service({ marketplaceUrl: "" });
+
+    expect(getPluginMarketplace(db, "bb-community")).toMatchObject({
+      lastAttemptedRefreshAt: null,
+      lastError: null,
+    });
+  });
+
+  it("clears remotely cached curated icons when returning to the bundled catalog", async () => {
+    const remoteCatalog = service({
+      fetch: async (url) => {
+        if (url === MANIFEST_URL) {
+          return jsonResponse(manifest([remoteEntry()]));
+        }
+        if (url === ICON_URL) {
+          return new Response(VALID_SVG, {
+            status: 200,
+            headers: { "content-type": "image/svg+xml" },
+          });
+        }
+        return new Response("missing", { status: 404 });
+      },
+    });
+    await remoteCatalog.refresh(8_000);
+    expect(await remoteCatalog.icon("bb-community", "widgets")).toBeDefined();
+
+    const bundledCatalog = service({ marketplaceUrl: "" });
+
+    expect(
+      await bundledCatalog.icon("bb-community", "widgets"),
+    ).toBeUndefined();
   });
 
   it("groups a catalog entry by its curated tag", async () => {

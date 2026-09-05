@@ -356,7 +356,7 @@ describe("plugin app bundles (build policy, inventory, asset routes)", () => {
     expect(js.status).toBe(200);
   });
 
-  it("refreshes the served bundle hash on reload-by-id after dist changes (bb plugin dev cycle)", async () => {
+  it("refreshes the served bundle hash on reload-by-id after dist changes (beam plugin dev cycle)", async () => {
     const rootDir = join(harness.config.dataDir, "fixtures", "bb-plugin-devy");
     await writeAppPluginFixture(rootDir, { name: "bb-plugin-devy" });
     await mkdir(join(rootDir, "dist"), { recursive: true });

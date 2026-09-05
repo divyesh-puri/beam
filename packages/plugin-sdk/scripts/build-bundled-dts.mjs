@@ -1,4 +1,4 @@
-// Generates the self-contained `.d.ts` bundles that `bb plugin new` ships into
+// Generates the self-contained `.d.ts` bundles that `beam plugin new` ships into
 // a scaffolded plugin's `types/` directory, so authors get real BbPluginApi /
 // @get-bb/plugin-sdk/app types WITHOUT the (unpublished) @bb/* workspace packages
 // on disk.
@@ -163,12 +163,12 @@ async function bundle(input) {
 }
 
 const HEADER = [
-  "// Portable type declarations for `@get-bb/plugin-sdk`. Unpublished BB",
+  "// Portable type declarations for `@get-bb/plugin-sdk`. Unpublished Beam",
   "// workspace contracts are flattened; public subpaths may reuse the",
   "// package root without requiring any other @bb/* package.",
   "//",
-  "// Confused by the API, or need a symbol that isn't here? Clone the BB repo",
-  "// and read the real source: https://github.com/get-bb/bb",
+  "// Confused by the API, or need a symbol that isn't here? Clone the Beam repo",
+  "// and read the real source: https://github.com/divyesh-puri/beam",
 ].join("\n");
 
 function generateBundle(entry) {

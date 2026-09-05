@@ -43,7 +43,7 @@ function AlphaThreadList({
             <dd className="truncate font-mono">{searchQuery || "empty"}</dd>
           </dl>
           <p className="text-muted-foreground">
-            Use Appearance → Sidebar to switch to Beta, BB, or Automatic.
+            Use Appearance → Sidebar to switch to Beta, Beam, or Automatic.
           </p>
         </div>
       )}
@@ -108,7 +108,7 @@ function LabHeader({
           checked={embedOriginal}
           onChange={(event) => onEmbedOriginalChange(event.target.checked)}
         />
-        Embed BB original
+        Embed Beam original
       </label>
       <button
         type="button"

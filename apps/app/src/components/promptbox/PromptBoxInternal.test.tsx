@@ -3204,10 +3204,7 @@ describe("PromptBoxInternal mention triggers", () => {
 
     view.rerender(
       <Harness
-        mentionSuggestions={[
-          ...initialSuggestions,
-          delayedExactSuggestion,
-        ]}
+        mentionSuggestions={[...initialSuggestions, delayedExactSuggestion]}
       />,
     );
     await screen.findByRole("button", { name: "Atlas" });
@@ -3374,8 +3371,8 @@ describe("PromptBoxInternal prompt actions", () => {
         label,
       });
       return {
-        text: `Build a plugin capability like ${pill.text.trimEnd()} using bb's Plugin Guide. `,
-        html: `Build a plugin capability like ${pill.html.trimEnd()} using bb's Plugin Guide. `,
+        text: `Build a plugin capability like ${pill.text.trimEnd()} using Beam's Plugin Guide. `,
+        html: `Build a plugin capability like ${pill.html.trimEnd()} using Beam's Plugin Guide. `,
       };
     };
 
@@ -3402,8 +3399,8 @@ describe("PromptBoxInternal prompt actions", () => {
       getPromptEditorElement().querySelectorAll(".prompt-mention-pill"),
     ).toHaveLength(2);
     expect(latestValue(changes)).toBe(
-      "Build a plugin capability like @Inline actions using bb's Plugin Guide. " +
-        "Build a plugin capability like @Thread side-panel tabs using bb's Plugin Guide. ",
+      "Build a plugin capability like @Inline actions using Beam's Plugin Guide. " +
+        "Build a plugin capability like @Thread side-panel tabs using Beam's Plugin Guide. ",
     );
   });
 

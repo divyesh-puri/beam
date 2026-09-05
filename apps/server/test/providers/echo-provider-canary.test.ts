@@ -607,7 +607,7 @@ describe("echo-provider canary: plugin install → server command → runtime �
       command.injectedSkillSources
         .filter((source) => source.sourceType === "builtin")
         .map((source) => source.name),
-    ).toContain("bb-cli");
+    ).toContain("beam-cli");
 
     const skillDirectoryRootPath = harness.config.builtinSkillsRootPath;
     const skillRoots: AgentRuntimeSkillRoot[] = [

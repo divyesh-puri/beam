@@ -3,7 +3,7 @@
   "name": "coarse-pointer-sizing",
   "type": "registry:ui",
   "title": "coarse-pointer-sizing",
-  "description": "BB ui \"coarse-pointer-sizing\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"coarse-pointer-sizing\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "files": [
     {
       "path": "registry/components/ui/coarse-pointer-sizing.ts",

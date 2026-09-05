@@ -78,6 +78,11 @@ async function main() {
     console.log(`${target.label}: ${bundleStats.size} bytes`);
   }
 
+  const bbCommandPath = resolve(packageRoot, "dist", "bb");
+  const beamCommandPath = resolve(packageRoot, "dist", "beam");
+  await copyFile(bbCommandPath, beamCommandPath);
+  await chmod(beamCommandPath, 0o755);
+
   const titleCommandPath = resolve(
     workspaceRoot,
     "apps",

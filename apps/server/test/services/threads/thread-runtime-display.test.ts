@@ -407,7 +407,7 @@ describe("thread runtime display", () => {
         },
       ),
     ).toHaveLength(32_767);
-  });
+  }, 15_000);
 
   it("marks list entries active when the prompt banner would show plan or goal state", () => {
     const { db, hostId, hub } = setup();

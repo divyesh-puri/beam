@@ -96,7 +96,7 @@ describe("protocol self-update", () => {
         "install",
         "-g",
         "--allow-scripts=better-sqlite3,node-pty,@parcel/watcher",
-        expect.stringContaining("bb-app-update-"),
+        expect.stringContaining("beam-runtime-update-"),
       ],
       {
         env: expect.objectContaining({
@@ -122,7 +122,7 @@ describe("protocol self-update", () => {
         "--allow-scripts=better-sqlite3,node-pty,@parcel/watcher",
         "--prefix",
         "/machine-data/npm",
-        expect.stringContaining("bb-app-update-"),
+        expect.stringContaining("beam-runtime-update-"),
       ],
       expect.any(Object),
     );
@@ -142,7 +142,7 @@ describe("protocol self-update", () => {
         "install",
         "-g",
         "--allow-scripts=better-sqlite3,node-pty,@parcel/watcher",
-        expect.stringContaining("bb-app-update-"),
+        expect.stringContaining("beam-runtime-update-"),
       ],
       expect.any(Object),
     );

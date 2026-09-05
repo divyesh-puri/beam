@@ -3,8 +3,8 @@
  *
  * The root export carries the side-effect-free app and host-contract types
  * plus the backend contract (`BbPluginApi`, the
- * `server.ts` factory argument — types only, implemented by the BB server).
- * The `./app` subpath adds the runtime bindings that `bb plugin build` shims
+ * `server.ts` factory argument — types only, implemented by the Beam server).
+ * The `./app` subpath adds the runtime bindings that `beam plugin build` shims
  * to the host's shared runtime.
  */
 export * from "./app-contract.js";

@@ -54,7 +54,7 @@ export function createStartWorktreeCommand(): DevCommand {
       "--conditions=source",
       "--import",
       "tsx",
-      resolve(repoRoot, "scripts", "start-bb.mjs"),
+      resolve(repoRoot, "scripts", "start-beam.mjs"),
       "--worktree-runtime-policy",
     ],
     command: process.execPath,
@@ -160,7 +160,7 @@ async function main(): Promise<void> {
   });
   if (migration.skippedReason === "legacy-dev-process-running") {
     throw new Error(
-      "[dev] Legacy ~/.bb-dev data was found, but an old dev server or host-daemon is still running. Stop the old dev process and rerun pnpm dev to migrate it.",
+      "[dev] Legacy flat ~/.beam-dev data was found, but an old dev server or host daemon is still running. Stop the old dev process and rerun pnpm dev to migrate it.",
     );
   }
   await assertPortsAvailable(config, mode);

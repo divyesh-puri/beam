@@ -3,7 +3,7 @@
   "name": "select",
   "type": "registry:ui",
   "title": "select",
-  "description": "BB ui \"select\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"select\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "@radix-ui/react-select"
   ],

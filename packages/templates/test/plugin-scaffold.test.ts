@@ -67,16 +67,16 @@ describe("scaffoldPlugin SDK dependency", () => {
       "node_modules/@get-bb/plugin-sdk/bundled-types/bb-plugin-sdk.d.ts",
     );
     expect(readme).toContain(
-      "sync this plugin's SDK surface to the running BB",
+      "sync this plugin's SDK surface to the running Beam",
     );
     expect(readme).not.toContain("rewrite types/");
-    expect(readme).toContain("https://github.com/get-bb/bb");
+    expect(readme).toContain("https://github.com/divyesh-puri/beam");
 
     const components = JSON.parse(
       await readFile(join(targetDir, "components.json"), "utf8"),
     );
     expect(components.registries["@bb"]).toBe(
-      "https://raw.githubusercontent.com/get-bb/bb/desktop-v0.9.0/packages/plugin-registry/r/{name}.json",
+      "https://raw.githubusercontent.com/divyesh-puri/beam/beam-desktop-v0.9.0/packages/plugin-registry/r/{name}.json",
     );
     expect(pkg.dependencies["@radix-ui/react-checkbox"]).toBeDefined();
     await access(join(targetDir, "components", "ui", "checkbox.tsx"));
@@ -97,21 +97,21 @@ describe("scaffoldPlugin SDK dependency", () => {
     expect(pkg.bb.name).toBe("Scoped");
 
     const readme = await readFile(join(targetDir, "README.md"), "utf8");
-    expect(readme).toContain("bb plugin reload scoped");
-    expect(readme).toContain("bb plugin config scoped");
+    expect(readme).toContain("beam plugin reload scoped");
+    expect(readme).toContain("beam plugin config scoped");
 
     const server = await readFile(join(targetDir, "server.ts"), "utf8");
-    expect(server).toContain("bb plugin config scoped");
-    expect(server).not.toContain("bb plugin config @acme/");
+    expect(server).toContain("beam plugin config scoped");
+    expect(server).not.toContain("beam plugin config @acme/");
     expect(server).toContain('name: "scoped"');
-    expect(server).toContain("bb scoped list");
+    expect(server).toContain("beam scoped list");
     const app = await readFile(join(targetDir, "app.tsx"), "utf8");
-    expect(app).toContain("bb scoped add");
+    expect(app).toContain("beam scoped add");
     const skill = await readFile(
       join(targetDir, "skills", "example-todos", "SKILL.md"),
       "utf8",
     );
-    expect(skill).toContain("bb scoped list");
+    expect(skill).toContain("beam scoped list");
     expect(skill).not.toContain("@acme/");
   });
 });

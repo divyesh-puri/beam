@@ -17,11 +17,11 @@ import {
 } from "../plugins/install-sources.js";
 
 const MARKETPLACE_SCHEMA_URL =
-  "https://getbb.app/schemas/marketplace.schema.json";
+  "https://raw.githubusercontent.com/divyesh-puri/beam/main/apps/web/public/schemas/marketplace.schema.json";
 
 export const CURATED_MARKETPLACE_NAME = CURATED_PLUGIN_MARKETPLACE_NAME;
 
-export const BUILTIN_PUBLISHER_LABEL = "BB Official";
+export const BUILTIN_PUBLISHER_LABEL = "Beam Official";
 
 export const BUILTIN_PUBLISHER_KEY = "builtin";
 

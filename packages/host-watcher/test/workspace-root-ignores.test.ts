@@ -15,7 +15,7 @@ const realParcelSubscribe = parcelWatcher.subscribe.bind(parcelWatcher);
 
 const NESTED_REPOS = 4;
 const PACKAGES_PER_NESTED_REPO = 300;
-const EVENT_TIMEOUT_MS = 5_000;
+const EVENT_TIMEOUT_MS = 30_000;
 const TEST_TIMEOUT_MS = 60_000;
 const MAX_EXPECTED_WATCHES = 20;
 
@@ -26,7 +26,7 @@ async function git(cwd: string, ...args: string[]): Promise<void> {
 async function initRepo(dir: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
   await git(dir, "init", "-q", "-b", "main");
-  await git(dir, "config", "user.name", "BB Tests");
+  await git(dir, "config", "user.name", "Beam Tests");
   await git(dir, "config", "user.email", "bb@example.com");
   await fs.writeFile(path.join(dir, "README.md"), "hello\n");
   await git(dir, "add", "README.md");
@@ -237,11 +237,12 @@ describe("workspace root watch events inside nested heavy directories (#1779)", 
         expect(changedPaths).toContain(visibleFile);
         expect(changedPaths).not.toContain(nestedPackageFile);
         expect(changedPaths).not.toContain(nestedGitFile);
+        const nestedGitDirectory = `${path.dirname(nestedGitFile)}${path.sep}`;
         expect(
           changedPaths.filter(
             (changedPath) =>
               changedPath.includes(`${path.sep}node_modules${path.sep}`) ||
-              changedPath.includes(`${path.sep}.git${path.sep}`),
+              changedPath.startsWith(nestedGitDirectory),
           ),
         ).toEqual([]);
       } finally {

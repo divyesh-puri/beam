@@ -24,7 +24,7 @@ afterEach(() => {
 });
 
 describe("useCodeTheme", () => {
-  it("serves the document behind the name BB is rendering with", async () => {
+  it("serves the document behind the name Beam is rendering with", async () => {
     applyResolvedCodeTheme({
       dark: "nord",
       light: "gruvbox-light-medium",

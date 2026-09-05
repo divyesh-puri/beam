@@ -95,13 +95,13 @@ function providerStatus(args: {
   };
 }
 
-describe("bb updates command output", () => {
+describe("beam updates command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
     registerUpdatesCommands(program, () => "http://server");
 
-  it("bb updates renders bb-app and per-machine provider rows", async () => {
+  it("beam updates renders bb-app and per-machine provider rows", async () => {
     stubServerApi({
       "v1.system.version.$get": vi.fn(async () => version),
       "v1.hosts.$get": vi.fn(async () => hosts),
@@ -126,7 +126,7 @@ describe("bb updates command output", () => {
     expect(output).toContain("offline");
   });
 
-  it("bb updates --json prints the aggregate", async () => {
+  it("beam updates --json prints the aggregate", async () => {
     const status = providerStatus({ codexNeedsUpdate: false });
     stubServerApi({
       "v1.system.version.$get": vi.fn(async () => version),
@@ -145,7 +145,7 @@ describe("bb updates command output", () => {
     expect(payload.machines[1].providerStatus).toBeNull();
   });
 
-  it("bb updates apply runs each available provider update", async () => {
+  it("beam updates apply runs each available provider update", async () => {
     const install = vi.fn(
       async () =>
         new Response(
@@ -184,7 +184,7 @@ describe("bb updates command output", () => {
     ]);
   });
 
-  it("bb updates apply reports when everything is current", async () => {
+  it("beam updates apply reports when everything is current", async () => {
     stubServerApi({
       "v1.hosts.$get": vi.fn(async () => hosts),
       "v1.hosts.:id.provider-clis.status.$get": vi.fn(async () =>
@@ -199,7 +199,7 @@ describe("bb updates command output", () => {
     ]);
   });
 
-  it("bb updates reports but does not apply manual provider updates", async () => {
+  it("beam updates reports but does not apply manual provider updates", async () => {
     const status = providerStatus({ codexNeedsUpdate: true });
     status.codex.installAction = null;
     stubServerApi({
@@ -216,7 +216,7 @@ describe("bb updates command output", () => {
     vi.mocked(console.log).mockClear();
     await runCommand(["updates", "apply"], register);
     expect(collectLogPayloads(vi.mocked(console.log))).toEqual([
-      "No updates bb can apply. Run bb updates status for manual updates.",
+      "No updates Beam can apply. Run beam updates status for manual updates.",
     ]);
   });
 });

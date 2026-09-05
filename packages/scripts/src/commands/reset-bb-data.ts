@@ -76,7 +76,7 @@ export function ensureSafeTargets(targets: string[]): void {
 
 export function renderHelpText(): string {
   return `
-  ${bold("bb reset")}
+  ${bold("Beam reset")}
 
   ${dim("Usage")}
     pnpm reset -- [--all] [--yes]
@@ -86,7 +86,7 @@ export function renderHelpText(): string {
     --yes   Skip the interactive confirmation prompt
 
   ${dim("Notes")}
-    Removes Beam-managed state directories (${dim("~/.beam")}, ${dim("~/.bb-dev/<checkout-instance>")}).
+    Removes Beam-managed state directories (${dim("~/.beam")}, ${dim("~/.beam-dev/<checkout-instance>")}).
     Does not touch external provider config managed by other tools.
     Production resets respect BB_DATA_DIR. Development resets always target this checkout's dev data directory.
 \n`;
@@ -106,14 +106,17 @@ async function confirmReset(targets: string[]): Promise<boolean> {
 
   try {
     process.stdout.write("\n");
-    log(yellow("!"), "This will permanently delete bb-managed local data at:");
+    log(
+      yellow("!"),
+      "This will permanently delete Beam-managed local data at:",
+    );
     for (const target of targets) {
       log(" ", dim(target));
     }
     process.stdout.write("\n");
     log(
       " ",
-      dim("Provider auth/config managed outside bb will be left untouched."),
+      dim("Provider auth/config managed outside Beam will be left untouched."),
     );
     process.stdout.write("\n");
     const answer = await rl.question(
@@ -133,7 +136,7 @@ async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
     return;
   }
 
-  process.stdout.write(`\n  ${bold("bb reset")}\n`);
+  process.stdout.write(`\n  ${bold("Beam reset")}\n`);
 
   const targets = resolveResetTargets(args);
   ensureSafeTargets(targets);
@@ -167,7 +170,7 @@ async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
   process.stdout.write("\n");
 
   if (removedCount === 0) {
-    log(dim("●"), "No bb-managed data directories were present");
+    log(dim("●"), "No Beam-managed data directories were present");
   } else {
     log(green("●"), bold("Reset complete"));
   }

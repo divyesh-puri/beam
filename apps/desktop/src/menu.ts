@@ -25,11 +25,11 @@ export const CONNECT_SERVERS_SKIPPED_MENU_LABELS: Record<
   ConnectServerSyncSkipReason,
   string
 > = {
-  "no-credential": "No Connect servers — sign in to bb Connect",
+  "no-credential": "No Connect servers — sign in to Beam Connect",
   "not-paired": "No Connect servers — Connect not paired on This Mac",
   "plugin-disabled": "No Connect servers — Connect plugin disabled",
-  unauthorized: "No Connect servers — sign in to bb Connect again",
-  unavailable: "No Connect servers — could not reach bb Connect",
+  unauthorized: "No Connect servers — sign in to Beam Connect again",
+  unavailable: "No Connect servers — could not reach Beam Connect",
 };
 
 interface ApplicationMenuServerItem {

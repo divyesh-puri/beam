@@ -537,7 +537,7 @@ describe("plugin install flows", () => {
         }),
       ).rejects.toThrow(
         new RegExp(
-          `install refused.*requires bb plugin SDK >=99\\.0\\.0, running SDK is ${PLUGIN_SDK_VERSION.replaceAll(".", "\\.")}`,
+          `install refused.*requires Beam plugin SDK >=99\\.0\\.0, running SDK is ${PLUGIN_SDK_VERSION.replaceAll(".", "\\.")}`,
           "u",
         ),
       );
@@ -824,7 +824,7 @@ describe("plugin install flows", () => {
           expect.objectContaining({
             status: "rejected",
             reason: expect.objectContaining({
-              message: expect.stringContaining("bb plugin update concurrent"),
+              message: expect.stringContaining("beam plugin update concurrent"),
             }),
           }),
         ]),
@@ -848,7 +848,7 @@ describe("plugin install flows", () => {
       });
       await commitAll(repoDir, "v0.2.0");
       await expect(service.install(source, { kind: "root" })).rejects.toThrow(
-        "bb plugin update fresh",
+        "beam plugin update fresh",
       );
       expect(
         service.list().find((plugin) => plugin.id === "fresh"),
@@ -886,7 +886,7 @@ describe("plugin install flows", () => {
       await commitAll(repoDir, "broken frontend");
 
       await expect(service.install(source, { kind: "root" })).rejects.toThrow(
-        "bb plugin update managed-frontend",
+        "beam plugin update managed-frontend",
       );
       expect(getInstalledPluginRegistration(db, "managed-frontend")).toEqual(
         registrationBefore,
@@ -960,7 +960,7 @@ describe("plugin install flows", () => {
       const source = `git:${repoDir}@main`;
       await expect(
         service.install(source, { kind: "root" }),
-      ).rejects.toThrowError(/install refused.*requires bb >=99\.0\.0/);
+      ).rejects.toThrowError(/install refused.*requires Beam >=99\.0\.0/);
       expect(service.list()).toHaveLength(0);
       const managed = join(
         dataDir,
@@ -985,7 +985,7 @@ describe("plugin install flows", () => {
         service.install(`git:${repoDir}@main`, { kind: "root" }),
       ).rejects.toThrowError(
         new RegExp(
-          `install refused.*requires bb plugin SDK >=99\\.0\\.0, running SDK is ${PLUGIN_SDK_VERSION.replaceAll(".", "\\.")}`,
+          `install refused.*requires Beam plugin SDK >=99\\.0\\.0, running SDK is ${PLUGIN_SDK_VERSION.replaceAll(".", "\\.")}`,
         ),
       );
     });
@@ -1046,7 +1046,7 @@ describe("plugin install flows", () => {
 
       await expect(
         service.install(source, { kind: "root" }),
-      ).rejects.toThrowError(/install refused.*requires bb >=0\.9\.0/u);
+      ).rejects.toThrowError(/install refused.*requires Beam >=0\.9\.0/u);
       expect(materializationCount).toBe(clonesBefore);
       expect(
         getInstalledPluginRegistration(db, "cached-engine"),
@@ -1608,7 +1608,7 @@ describe("plugin install flows", () => {
     const entry = await service.installPath(rootDir);
     expect(entry.status).toBe("incompatible");
     expect(entry.statusDetail).toContain(
-      `requires bb plugin SDK >=99.0.0, running SDK is ${PLUGIN_SDK_VERSION}`,
+      `requires Beam plugin SDK >=99.0.0, running SDK is ${PLUGIN_SDK_VERSION}`,
     );
   });
 
@@ -1795,7 +1795,7 @@ describe("plugin install flows", () => {
     expect(getInstalledPluginRegistration(db, "connect")).toBeUndefined();
   });
 
-  it("the bb plugin new scaffold installs and loads through the plugin service", async () => {
+  it("the `beam plugin new` scaffold installs and loads through the plugin service", async () => {
     const targetDir = join(workDir, "bb-plugin-scaffolded");
     await scaffoldPlugin({
       targetDir,

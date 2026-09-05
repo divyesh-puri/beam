@@ -743,7 +743,7 @@ describe("Codex ChatGPT client", () => {
     expect(thrown).toMatchObject({
       detailCode: "codex_service_unavailable",
       message:
-        "Codex transcription request failed with HTTP 403: chatgpt.com answered with a Cloudflare challenge that bb cannot solve. Retry, or set BB_TRANSCRIPTION to an openai/ model with OPENAI_API_KEY.",
+        "Codex transcription request failed with HTTP 403: chatgpt.com answered with a Cloudflare challenge that Beam cannot solve. Retry, or set BB_TRANSCRIPTION to an openai/ model with OPENAI_API_KEY.",
     });
   });
 

@@ -20,7 +20,7 @@ the wire are unchanged); on `@get-bb/plugin-sdk` the tool type
 `PluginAgentToolExperimentalStatusLabels` is `PluginAgentToolLabels`, the
 type of `presentation.label`.
 
-## One-release compatibility windows (removal target: bb 0.42)
+## One-release compatibility windows (removal target: Beam 0.42)
 
 - The app runtime keeps deprecated aliases for plugin bundles compiled
   against an SDK before 0.4.16: `experimental_UrlLink` (a wrapper component
@@ -30,7 +30,7 @@ type of `presentation.label`.
   `Original` on the thread-list, file-opener, source-code renderer and diff
   renderer props (the timeline renderer never carried the old name; the
   alias warns on its first render). A bundle that never uses an alias never
-  warns. All go in bb 0.42. The two 0.4.14 `app` exports
+  warns. All go in Beam 0.42. The two 0.4.14 `app` exports
   (`experimental_ProviderModelPicker`, `experimental_PermissionModePicker`)
   are present and stay experimental; neither carries an alias.
 - The deleted `bb.agents.experimental_registerProvider` throws with the
@@ -70,7 +70,7 @@ type of `presentation.label`.
   assembles `thread/delta` itself from the raw messages a transport's
   `takeMessages` returns and takes the bridge's `providerId`. A conformance
   suite written against the pre-0.4.16 transport shape fails with that message
-  instead of a missing export. Goes in bb 0.42.
+  instead of a missing export. Goes in Beam 0.42.
 - Presentation-less `toolCall` rows pass through the legacy-data adapter
   (`upgradeLegacyToolItem` in `@bb/domain`, applied when a stored row is
   parsed): keyed on the absence of `presentation`, it reshapes
@@ -187,7 +187,7 @@ A declared icon passes the strict set above at build and at load.
 `bb.branding.icon` (and a marketplace catalog icon) passes the
 document-shape check it always had — UTF-8, no doctype or processing
 instruction, well-formed XML, an `<svg>` root — at build and at load. An SVG
-`bb.branding.logo.light`/`.dark` is checked at `bb plugin build` only, and
+`bb.branding.logo.light`/`.dark` is checked at `beam plugin build` only, and
 only for script vectors: a `script`, `handler` or `listener` element in any
 namespace, an `on*` attribute, or an `href`/`xlink:href` whose scheme is
 `javascript:`. Nothing else, so an Illustrator `<!DOCTYPE svg PUBLIC …>`,
@@ -197,7 +197,7 @@ href="data:…">`, an `<a>`-wrapped logo and Latin-1 bytes all build. Install
 and load never refuse a logo or a path-shaped provider icon: the manifest
 reader, the served snapshot and the `bb.providers.register` call take the
 bytes as declared, so no installed plugin's tool-export artwork fails its
-load (a provider icon is named only in code, so `bb plugin build` cannot
+load (a provider icon is named only in code, so `beam plugin build` cannot
 reach it either). What keeps every such document inert is the response: the
 branding route (`/plugins/:id/assets/{icon,logo,logo-dark}`), the
 declared-icon route and the provider logo route
@@ -222,7 +222,7 @@ rows are never rewritten and simply fall back.
 
 **Kept experimental (2026-08-22).** it still accepts two input shapes (ordered `contentBlocks` and the legacy aggregate `{ content, images }`) though every first-party caller now passes the ordered form, and no image MIME/size policy exists at the server boundary; drop the legacy input and settle the policy, then stabilize.
 
-**What it does.** Converts a decoded bb tool-call response into the ordered
+**What it does.** Converts a decoded Beam tool-call response into the ordered
 text and inline-image content blocks accepted by MCP and Pi tool result
 contracts. It preserves a legacy aggregate text/images input while first-party
 bridges migrate to ordered `contentBlocks`.
@@ -240,8 +240,8 @@ registry and ids, the raw line handler, the protocol constants, the launch
 profile and the model-catalog helpers) left the public surface in the
 stabilization audit — the kit grows with a consumer, not ahead of one.
 
-**What it does.** Publishes bb's generic Agent Client Protocol bridge so any
-plugin can add an ACP agent without bb-side code. `experimental_acpProviderBridge`
+**What it does.** Publishes Beam's generic Agent Client Protocol bridge so any
+plugin can add an ACP agent without Beam-side code. `experimental_acpProviderBridge`
 is the bridge a plugin re-exports from its `bb.host` artifact; the agent to
 launch arrives per command in `providerOptions.acpLaunchSpec`, so one
 implementation serves every agent. The bridge ships three dialects
@@ -279,7 +279,7 @@ plugin is owed when the spec grows a field.
 
 **What it does.** Names the directories a provider's own agent reads skills
 from, relative to the target host's home directory (`user`) or to the
-workspace (`project`). bb lists those skills beside its own and offers them in
+workspace (`project`). Beam lists those skills beside its own and offers them in
 the composer. It replaces the one thing the server used to dig out of an ACP
 agent's launch spec: before the ACP tier was deleted, `GET /projects/:id/
 commands` read `acpLaunchSpec.nativeSkillRoots` out of a config record. A
@@ -288,7 +288,7 @@ core never reaches into a plugin's opaque bridge options for it. Validated at
 registration: `user` and `project` are relative paths only, no dot segments,
 no duplicates, at most 32 roots per side. The declaration is global; a
 directory only one host can name is the resolver's answer
-(`experimental_resolvesNativeRoots`), and bb scans each absolute path once
+(`experimental_resolvesNativeRoots`), and Beam scans each absolute path once
 across the declared and resolved roots, the first in declaration order
 winning ([provider-plugin-api.md](provider-plugin-api.md) §1).
 
@@ -318,7 +318,7 @@ resolver's answer does.
 **What it does.** Names the directories a provider's agent reads its own
 slash commands from — flat directories of `*.md` prompt files, Claude Code's
 `.claude/commands` — in the same two-sided shape and with the same per-root
-options as `experimental_nativeSkillRoots`. bb offers the commands in the
+options as `experimental_nativeSkillRoots`. Beam offers the commands in the
 composer beside the agent's skills. Added by stabilization S5 when the
 daemon's per-provider scan table was deleted: the claude-code plugin is the
 only first-party declarer.
@@ -330,7 +330,7 @@ two declarations or become one list of typed roots; confirm that a flat
 ## `PluginProviderDeclaration.experimental_resolvesNativeRoots`
 
 **What it does.** Declares that the plugin's `bb.host` entry implements
-`experimental_nativeRootsHostContract`. When bb lists a provider's commands or
+`experimental_nativeRootsHostContract`. When Beam lists a provider's commands or
 skills it calls `resolveNativeRoots({ providerId, cwd })` on the workspace
 host (cached for ten seconds per plugin, provider, host and workspace;
 invalidated when the plugin's settings change or the provider re-registers)
@@ -449,7 +449,7 @@ textarea below the label and description at the row's full width (six rows
 minimum, growing with its content to twenty-four, then scrolling; spellcheck
 off), on mobile a monospace multi-line `TextInput`. The stored value is the
 same string as before — the flag changes the editor, not the contract, so the
-CLI (`bb plugin config <id> set <key> <value>`) and `settings.get()` are
+CLI (`beam plugin config <id> set <key> <value>`) and `settings.get()` are
 unaffected and a plugin still parses the text itself (the ACP plugin's
 `customAgents` JSON array, the first consumer, parses on read and warns). A
 descriptor that sets it beside `secret: true` is refused at define time:
@@ -481,16 +481,16 @@ the server, so no client older than this field is served.
 **What it does.** The server's data directory — the one holding `config.json`,
 `bb.db` and `plugins/<id>/`. Added because a plugin cannot compute it: a dev
 server derives its data dir from its repo root and instance id
-(`~/.bb-dev/<instance>`), so the ACP plugin's own `~/.bb` fallback made a dev
-server read the production `config.json` while the server read another one.
+(`~/.beam-dev/<instance>`), so the ACP plugin's old `~/.bb` fallback made a dev
+server read upstream BB's production `config.json` while the server read another one.
 Its only consumer is that plugin's read of the deprecated `customAcpAgents`
 array.
 
 **Audit before stabilizing.** Its one caller dies with the `customAcpAgents`
 deprecation window, so decide then whether anything else needs it. If it
 stays, decide whether a bare path is the right shape or whether a plugin
-should get named, read-only accessors for the bb-managed files it may read —
-a path invites writes into bb's directory, which `bb.storage` exists to
+should get named, read-only accessors for the Beam-managed files it may read —
+a path invites writes into Beam's directory, which `bb.storage` exists to
 prevent.
 
 ## Bridge record mode (`experimental_recordProviderChildIo` and `experimental_isProviderBridgeRecording`)
@@ -499,7 +499,7 @@ prevent.
 
 **What it does.** `experimental_recordProviderChildIo` tees a provider
 child's stdio into the bridge record mode (`BB_PROVIDER_BRIDGE_RECORD_DIR`),
-scoped to the bb thread the child serves. It is a no-op when record mode is
+scoped to the Beam thread the child serves. It is a no-op when record mode is
 off, so a bridge calls it unconditionally after `spawn()`.
 `experimental_isProviderBridgeRecording` reports whether record mode is on,
 for a bridge whose provider pipe is owned by an SDK and must take the spawn
@@ -610,7 +610,7 @@ tool is which kind, how a command headline is unwrapped, per-tool tables).
 **Audit before stabilizing.**
 
 1. **The wording is a product decision.** A third-party bridge that adopts
-   the constants inherits bb's English labels and glyph names; a bridge
+   the constants inherit Beam's English labels and glyph names; a bridge
    that wants its own wording builds the object itself. Decide whether the
    labels should come from the host (localized, themed) rather than be
    persisted from the bridge before the constants are a promise.
@@ -965,7 +965,7 @@ bridge as provider-scoped static options. Core does not interpret its keys.
    submit time, removed from the contract because nothing ever resolved one —
    returns as its own surface.
 5. **What a capability may be.** `supportsHostAiServices` was removed after
-   shipping: it declared that bb's voice-transcription and structured-inference
+   shipping: it declared that Beam's voice-transcription and structured-inference
    features could route through the provider, which is a fact about the daemon
    bundle rather than about the provider. `supportsWorkflows` went the same
    way in WS2a: whether a session may use the Workflow tool is the Claude
@@ -973,7 +973,7 @@ bridge as provider-scoped static options. Core does not interpret its keys.
    `providerOptions`), not a fact core needs. Apply the same test to every
    remaining capability before stabilizing: a declaration may assert what the
    provider itself implements and an external consumer needs pre-session,
-   never what bb or its daemon can do with it.
+   never what Beam or its daemon can do with it.
 6. **Static bridge options and visibility.** Confirm 64 KiB remains a suitable
    declaration-time limit, that opaque options should continue to be shared by
    every host rather than resolved per host, and whether deep-frozen plain JSON
@@ -1057,7 +1057,7 @@ build inlines the SDK's published, self-contained bundle.
 3. **Resolved (stabilization S2): the ACP launch spec is the ACP package's
    own.** `acpLaunchSpecSchema` moved out of `@bb/host-daemon-contract` into
    `@bb/provider-bridge-acp` and left this root entry; provider-scoped static
-   options are opaque to bb, and the shape is owned by the bridge that parses
+   options are opaque to Beam, and the shape is owned by the bridge that parses
    it and the plugin that stores it.
 4. **`experimental_apiVersion` 1.** The bootstrap accepts version 1 only and
    refuses anything else by name. Decide the deprecation window for a version
@@ -1087,7 +1087,7 @@ notifications through it (`experimental_createBridgeDeltaEventCollector`,
 normalizer (`experimental_normalizeCalibrationEvents`,
 `experimental_describeCalibrationEvents`); and the recorded-replay harness —
 the regression oracle the first-party bridges use, keyed by the caller's
-provider id and bridge module rather than a list of bb's providers:
+provider id and bridge module rather than a list of Beam's providers:
 `experimental_resolveProviderBridgeLaunch` (the bridge process as the
 runtime spawns it, through the bootstrap the kit ships beside its bundle),
 `experimental_replayRecording` (the recorded runtime lane in, the recorded
@@ -1173,13 +1173,13 @@ root (`outside-package`, unless an `allow` pattern names it), an `import()`
 or `require()` whose argument is not a string literal (`dynamic-specifier`),
 and the `@bb/*` names in the package.json dependency blocks. It returns data
 and imports no test runner; the suite asserts on it. The echo-provider
-example and the first-party ACP plugin run it over themselves: inside bb's
+example and the first-party ACP plugin run it over themselves: inside Beam's
 monorepo a `@bb/*` import still typechecks and runs, and a relative path can
 climb into a private package's source, which is exactly why it needs a test.
 
 **Audit before stabilizing.**
 
-1. **The allowlist is bb's.** The default admits every published SDK subpath
+1. **The allowlist is Beam's.** The default admits every published SDK subpath
    and `vitest`; a plugin on another runner or another schema library must
    name it in `allow`. Decide whether the defaults should read the plugin's
    own package.json dependencies instead of a fixed list.
@@ -1208,7 +1208,7 @@ provider-retry) stops vendoring provider names, icons, and copy.
    `hostId` argument), so installed-only providers of another machine are not
    listed. Decide whether plugins need host-scoped listing before freezing the
    signature.
-2. **Icons.** Every provider bb ships now declares an SVG asset, served as
+2. **Icons.** Every provider Beam ships now declares an SVG asset, served as
    `logoUrl` and drawn by the host as a `currentColor` mask (core vendors no
    brand marks), and a provider that declared a named glyph (`icon: "Zap"`)
    arrives as `icon: { glyph }` beside `logoUrl` (at most one of the two is
@@ -1222,21 +1222,21 @@ provider-retry) stops vendoring provider names, icons, and copy.
 ## `app.experimental_useCodeTheme` (`@get-bb/plugin-sdk/app`)
 
 **What it does.** Returns `{ mode, name, theme }`: the app's active light/dark
-mode, the registered name of the code theme bb renders that mode with, and the
+mode, the registered name of the code theme Beam renders that mode with, and the
 resolved VS Code theme document behind it (`type`, `fg`, `bg`, `colors`,
-`tokenColors`) — the same document bb's own highlighter paints from. It exists
+`tokenColors`) — the same document Beam's own highlighter paints from. It exists
 for plugins that render code with an engine of their own (the Monaco file
 editor is the first): without it, an embedded editor can only follow
-light/dark and strands its syntax colors on a palette bb is not using.
+light/dark and strands its syntax colors on a palette Beam is not using.
 `theme` is null only before the first resolve, and holds the previous document
 while a palette switch resolves, so a consumer never paints an unthemed frame.
 
 **Audit before stabilizing.**
 
 1. **Shape of the document.** `PluginCodeThemeData` mirrors Shiki's
-   `ThemeRegistrationResolved` minus the fields bb does not promise
+   `ThemeRegistrationResolved` minus the fields Beam does not promise
    (`semanticTokenColors`, `include`, `displayName`). Decide whether freezing a
-   Shiki-shaped payload is right, or whether the contract should be bb's own
+   Shiki-shaped payload is right, or whether the contract should be Beam's own
    normalized token model — a Shiki major that changes `settings` normalization
    changes what plugins receive.
 2. **Both modes at once.** The hook serves only the active mode. An editor that
@@ -1252,16 +1252,16 @@ while a palette switch resolves, so a consumer never paints an unthemed frame.
 
 ## `app.slots.experimental_providerIcon` (`@get-bb/plugin-sdk/app`)
 
-**Kept experimental (2026-08-22).** zero consumers — every provider bb ships declares an SVG asset and `ProviderInfo.icon.glyph` / `logoUrl` cover both declared forms without a frontend bundle; the open questions are id squatting and whether the slot should exist at all (deleting it is the owner's call).
+**Kept experimental (2026-08-22).** zero consumers — every provider Beam ships declares an SVG asset and `ProviderInfo.icon.glyph` / `logoUrl` cover both declared forms without a frontend bundle; the open questions are id squatting and whether the slot should exist at all (deleting it is the owner's call).
 
-**What it does.** Lets a plugin frontend supply the React component bb draws
+**What it does.** Lets a plugin frontend supply the React component Beam draws
 as one agent provider's icon: `{ providerId, icon }`, where `icon` receives
 only the host's `className` (sizing; the declared `strings.iconTint` colours
 it). The component wins over the provider's served `logoUrl`, which the host
 otherwise draws as a `currentColor` mask. Registrations are replaced
 wholesale with the rest of the plugin's slot set, so disable/uninstall/failed
 reload falls back to `logoUrl`, then the declared glyph, then the generic
-glyph. No provider bb ships uses it: each declares an SVG asset and the mask
+glyph. No provider Beam ships uses it: each declares an SVG asset and the mask
 rendering keeps it theme-aware with no frontend bundle (an icon-only bundle
 cost four JS+CSS fetches and four icon remounts at every boot).
 
@@ -1300,7 +1300,7 @@ cost four JS+CSS fetches and four icon remounts at every boot).
 
 ## `experimental_ProviderModelPicker` (`@get-bb/plugin-sdk/app`)
 
-**What it does.** Exposes bb's execution picker as a controlled
+**What it does.** Exposes Beam's execution picker as a controlled
 `{ providerId, model, reasoningLevel, serviceTier? }` component for plugin
 frontends. The host adapter reuses `useThreadCreationOptions` for catalog,
 fallback, reasoning reconciliation, service-tier capability, retired-model,
@@ -1351,7 +1351,7 @@ bound in `apps/app/src/lib/plugin-sdk-app-impl.tsx`.
 
 ## `experimental_PermissionModePicker` (`@get-bb/plugin-sdk/app`)
 
-**What it does.** Exposes BB's permission picker as a controlled
+**What it does.** Exposes Beam's permission picker as a controlled
 `{ providerId, value, onChange, routing?, align?, disabled?, className? }`
 component. `align` accepts `"start"`, `"center"`, or `"end"` and defaults to
 `"end"` for compatibility with the prompt-row placement.
@@ -1398,7 +1398,7 @@ the plugin's own extension item kinds (`"<pluginId>/<name>"`, as declared in
 `bb.providers.register({ extensionKinds })`) or `"tool"` for the
 generic tool items of the providers the plugin registered. Core kinds
 (messages, commands, file changes, reads, searches, delegations, plan steps)
-always use bb's renderers and are customized through the bridge's persisted
+always use Beam's renderers and are customized through the bridge's persisted
 `presentation` alone (docs/provider-plugin-api.md §5, Q17). The component
 receives `{ row, payload, presentation, thread, Original }`; `Original` is
 the host's declarative base for the body. The row header (the presentation's
@@ -1441,7 +1441,7 @@ bundle loads in the same deferred boot pass as every other plugin's.
 **Kept experimental (2026-08-22).** zero consumers; items 1 (a newly required create-thread field going missing silently) and 6 (projectless switching) need a consumer to validate.
 
 **What it does.** The host-owned new-thread compose surface, the create-side
-counterpart to `ThreadChat`. It renders bb's full control set — prompt editor
+counterpart to `ThreadChat`. It renders Beam's full control set — prompt editor
 with @-mentions and expand, `+` attachments, provider/model/reasoning picker,
 voice, submit, and the row beneath with project, environment, "Branch from:",
 and permission mode — and calls `onSubmit` with a `NewThreadRequest`
@@ -1563,13 +1563,13 @@ one list at a time fills the scroll area. Automatic activation is the default.
 If several are registered, the first in the slot snapshot wins (plugin ids are
 sorted, then each plugin's registration order is preserved); removing the
 automatic winner reveals the next. The user can override that behavior under
-Settings → Appearance by pinning BB's list or a specific provider; the choice
+Settings → Appearance by pinning Beam's list or a specific provider; the choice
 is stored per client. A plugin-owned enable/disable setting can also live in
 the component, which renders `Original` when disabled.
 
-Fallbacks keep the sidebar usable: no automatic provider renders BB's list; an
-unavailable pinned provider temporarily renders BB's list without erasing the
-choice; and a crashing component renders BB's list (not the usual "plugin
+Fallbacks keep the sidebar usable: no automatic provider renders Beam's list; an
+unavailable pinned provider temporarily renders Beam's list without erasing the
+choice; and a crashing component renders Beam's list (not the usual "plugin
 crashed" chip, which in place of a whole sidebar would strand the user) plus
 one toast.
 
@@ -1597,7 +1597,7 @@ one toast.
 
 **Kept experimental (2026-08-22).** one consumer (the codex plugin); the 5 MB plugin-served transcription cap (the old direct path allowed 25 MB) and the host-pull alternative are still open; the reserved-id model is now one static SDK list (`SERVER_DIRECT_AI_SERVICE_IDS`), pinned to pi-ai's provider registry by plugin-ai-services.test.ts.
 
-**What it does.** Lets a plugin serve bb's own AI services — server-side
+**What it does.** Lets a plugin serve Beam's own AI services — server-side
 helper inference (thread titles, commit messages: prompt + JSON Schema in,
 structured value out) and voice transcription — from its `bb.host` entry.
 `bb.experimental_aiServices.register({ id, displayName, kinds })` stages the
@@ -1613,7 +1613,7 @@ plugin cannot register them, so a plugin can never capture that traffic. A
 cross-plugin id collision fails the later plugin's load at the `register`
 call. The
 codex plugin is the first registrant (its ChatGPT client moved out of the
-daemon); `GET /system/config` and `bb settings ai-services` list the registered
+daemon); `GET /system/config` and `beam settings ai-services` list the registered
 options.
 
 **Audit before stabilizing.**
@@ -1663,7 +1663,7 @@ files, thread-storage files, and project files that use the primary host.
 
 **What it does.** Two host-owned renderers for supplied code content.
 `experimental_SourceCode` takes source text plus a path and owns syntax
-highlighting, gutters, wrapping, highlighted-line presentation, and the live BB
+highlighting, gutters, wrapping, highlighted-line presentation, and the live Beam
 code theme. `experimental_Diff` takes a single-file patch plus a path and
 optional `experimental_fullFileContents` for both text sides, and owns patch normalization
 (a patch without a `diff --git` header is completed from `path`, which is what
@@ -1673,7 +1673,7 @@ theme. Patch content that will not parse degrades to plain monospace text. The
 caller still owns loading file contents; omission means a patch-only render
 without context expansion.
 
-These are the same components BB's own file preview, timeline file diffs, and
+These are the same components Beam's own file preview, timeline file diffs, and
 environment diff panel render through, so an active
 `experimental_sourceCodeRenderer` / `experimental_diffRenderer` replacement
 covers first-party surfaces and plugin surfaces at once. Fetching files or git
@@ -1685,7 +1685,7 @@ behavior deliberately stay with the caller.
 1. **Prop surface.** Confirm content + path + presentation plus optional full
    diff sides is the right minimal contract, and decide whether `className`
    belongs in it at all — a
-   replacement never receives it today, so a `className` that only styles BB's
+   replacement never receives it today, so a `className` that only styles Beam's
    renderer is a quiet inconsistency.
 2. **Diff input shape.** Confirm single-file patch text is the right currency.
    Multi-file patches, `processFile`-style pre-parsed input, and per-hunk
@@ -1693,12 +1693,12 @@ behavior deliberately stay with the caller.
 3. **Language selection.** Highlighting is inferred from `path` only. Confirm
    an explicit language override is not needed before the names freeze, and
    that no implementation-library language union leaks in when it is added.
-4. **Worker pool.** Highlighting needs BB's Pierre worker pool from React
+4. **Worker pool.** Highlighting needs Beam's Pierre worker pool from React
    context. Thread panes and plugin nav panels provide one; homepage and
    settings sections do not, so a diff rendered there is unhighlighted rather
    than broken. Decide whether the host should provide the pool at the
    component instead of the surface.
-5. **Selection to chat.** BB's own surfaces pass a selection-to-composer
+5. **Selection to chat.** Beam's own surfaces pass a selection-to-composer
    handler that the public component withholds. Confirm plugins should reach
    that through `useComposer()` rather than a renderer prop.
 6. **Size and virtualization.** Neither component caps input size or
@@ -1706,24 +1706,24 @@ behavior deliberately stay with the caller.
 7. **Resolved (Aug 2026): context expansion takes resolved semantic data, not
    a loader callback.** `experimental_fullFileContents` carries required `old` and `new`
    `{ path, content }` objects. This keeps lazy loading, retries, and viewport
-   policy with the caller while letting BB's renderer and a replacement consume
+   policy with the caller while letting Beam's renderer and a replacement consume
    complete UTF-8 sides without exposing Pierre's `FileContents` type. A
    replacement always receives the caller-resolved field as an object or
    `null`, and owns patch-consistency validation if it uses those contents for
-   expansion. BB's original validates only when its lazy renderer mounts.
+   expansion. Beam's original validates only when its lazy renderer mounts.
 
 ## `app.slots.experimental_sourceCodeRenderer` / `app.slots.experimental_diffRenderer` (`@get-bb/plugin-sdk/app`)
 
 **Kept experimental (2026-08-22).** zero registrations; "two slots or one" changes the registration shape.
 
-**What it does.** Replaces BB's source or diff renderer everywhere it draws
+**What it does.** Replaces Beam's source or diff renderer everywhere it draws
 supplied content — the native file preview, timeline file diffs, the
 environment diff panel's file bodies, and every plugin calling the public
 components. Like `experimental_threadList` these slots are **exclusive**: one
 renderer each. Registering activates it while the plugin is enabled; if several
 are registered the first in slot snapshot order wins (plugin ids sorted, then
 each plugin's registration order). The user can override that under
-Settings → Appearance ("Source code" and "Diffs") by pinning BB's renderer or
+Settings → Appearance ("Source code" and "Diffs") by pinning Beam's renderer or
 a specific provider; the choice is per client, and it is the same
 automatic/built-in/named-provider model the sidebar thread list uses. There are
 deliberately no scope, extension, or enabled-by-setting filters on the
@@ -1731,10 +1731,10 @@ registration — conditional behavior belongs in the component, which decides pe
 call from its semantic props and renders `Original` when it does
 not want the render.
 
-Fallbacks: no registration renders BB's renderer; a disabled or uninstalled
-plugin reveals the next registration or BB's renderer; a component that throws
-renders BB's renderer through the slot's crash fallback. A pinned provider that
-is temporarily unavailable renders BB's renderer without erasing the pin.
+Fallbacks: no registration renders Beam's renderer; a disabled or uninstalled
+plugin reveals the next registration or Beam's renderer; a component that throws
+renders Beam's renderer through the slot's crash fallback. A pinned provider that
+is temporarily unavailable renders Beam's renderer without erasing the pin.
 
 **Audit before stabilizing.**
 
@@ -1745,7 +1745,7 @@ is temporarily unavailable renders BB's renderer without erasing the pin.
    now make an account-level pin cheap to add. Still open: the two renderers
    pin independently; confirm users do not instead expect one "code rendering"
    choice.
-2. **Resolved (Aug 2026): a crash swaps back to BB's renderer silently.**
+2. **Resolved (Aug 2026): a crash swaps back to Beam's renderer silently.**
    A diff card is not a whole sidebar — the reader still sees a correct diff,
    where a blank thread list strands them — so neither host passes `onCrash`.
    Authors are not left without a signal: `PluginSlotBoundary` still
@@ -1754,7 +1754,7 @@ is temporarily unavailable renders BB's renderer without erasing the pin.
    than letting cards crash one at a time.
 3. **Resolved (Aug 2026): the replacement is global, other plugins'
    surfaces included.** "Install this and every diff looks like X" is the
-   point; covering BB's surfaces but not the GitHub plugin's would be a
+   point; covering Beam's surfaces but not the GitHub plugin's would be a
    half-measure, and a plugin calling `experimental_Diff` would silently opt
    its users out. No first-party-only or own-surfaces-only scope. Audit this as
    precedent rather than as a fact about these two slots: no other slot lets a
@@ -1782,7 +1782,7 @@ optimistic updates, toasts, and cache invalidation are identical.
 
 `PluginSidebarThread` is a deliberate copy of the fields a sidebar needs, not a
 re-export of the internal `ThreadListEntry`. `indicator` is
-`resolveThreadListIndicator` already run by the host, so plugins inherit bb's
+`resolveThreadListIndicator` already run by the host, so plugins inherit Beam's
 precedence (attention before work; plan and goal before the spinner) instead of
 reimplementing it, and `indicatorLabel` carries the matching accessible string.
 
@@ -1795,7 +1795,7 @@ reimplementing it, and `indicatorLabel` carries the matching accessible string.
    cannot turn a host id into a machine name — confirm resolution belongs here
    rather than in a separate hosts hook, and that falling back to the id for an
    unknown host is the right failure.
-2. **Indicator coupling.** `indicator` freezes bb's precedence into the
+2. **Indicator coupling.** `indicator` freezes Beam's precedence into the
    contract. Confirm new kinds can ship without breaking plugins, and that the
    documented "treat unknown as none" rule is enough.
 3. **Unread semantics.** `isUnread` is plain read state, so it is true for
@@ -1818,7 +1818,7 @@ reimplementing it, and `indicatorLabel` carries the matching accessible string.
    close that gap (a per-thread draft hook) or keep it documented.
 6. **Action surface.** Destructive and dialog-bearing actions route through
    `useThreadActions()`, so `archive` closes panes and repairs the route, and
-   `requestDelete` opens bb's confirmation rather than deleting silently.
+   `requestDelete` opens Beam's confirmation rather than deleting silently.
    Confirm that split (silent `rename`, host-confirmed delete) is the right
    line, and decide whether bulk actions and undo belong here.
 7. **Permission.** Decide whether `archive` and `requestDelete` need any plugin

@@ -69,9 +69,9 @@ function useStreamingTick(
 const PROVISIONING_LINES: readonly string[] = [
   "Creating worktree (305ms)",
   "HEAD is now at 37eeec85 Refactor timeline row titles",
-  "Preparing worktree (new branch 'bb/investigate-thread-timeline-load')",
+  "Preparing worktree (new branch 'beam/investigate-thread-timeline-load')",
   "Created worktree (305ms)",
-  "Using workspace: /Users/michael/.bb-dev/worktrees/env_etyr7f84cg/bb",
+  "Using workspace: /Users/michael/.beam-dev/worktrees/env_etyr7f84cg/beam",
   "Running .bb-env-setup.sh",
   "[bb-env-setup] Running: pnpm install",
   "Scope: all 35 workspace projects",
@@ -101,7 +101,7 @@ const PROVISIONING_LINES: readonly string[] = [
   "Cached: 12 cached, 12 total",
   "Time: 612ms (FULL TURBO)",
   ".bb-env-setup.sh finished (8.2s)",
-  "Using branch: bb/investigate-thread-timeline-load (37eeec8)",
+  "Using branch: beam/investigate-thread-timeline-load (37eeec8)",
   "Provisioned thread (8.7s)",
 ];
 
@@ -142,9 +142,9 @@ const COMMAND_OUTPUT_CHUNKS: readonly string[] = [
   "• Running test in 6 packages\n",
   "• Remote caching disabled, using shared worktree cache\n",
   "@bb/server:test: cache miss, executing 38ec9ac79a329473\n",
-  "@bb/server:test: > @bb/server@0.0.1 test /Users/michael/.bb-dev/worktrees/env_33i22gvcqe/bb/apps/server\n",
+  "@bb/server:test: > @bb/server@0.0.1 test /Users/michael/.beam-dev/worktrees/env_33i22gvcqe/beam/apps/server\n",
   "@bb/server:test: > vitest run --config vitest.config.ts\n",
-  "@bb/server:test:  RUN  v4.1.1 /Users/michael/.bb-dev/worktrees/env_33i22gvcqe/bb/apps/server\n",
+  "@bb/server:test:  RUN  v4.1.1 /Users/michael/.beam-dev/worktrees/env_33i22gvcqe/beam/apps/server\n",
   "@bb/server:test:  ✓ test/public/public-thread-interactions.test.ts (11 tests) 347ms\n",
   "@bb/server:test:  ✓ test/public/public-thread-data.test.ts (27 tests) 328ms\n",
   "@bb/server:test:  ✓ test/public/public-thread-lifecycle-regressions.test.ts (12 tests) 373ms\n",

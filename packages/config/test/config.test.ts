@@ -106,7 +106,7 @@ describe("common config", () => {
         homeDir,
         repoRoot,
       }).BB_DATA_DIR,
-    ).toBe("/Users/tester/.bb-dev/src-bb-9039de53a76a");
+    ).toBe("/Users/tester/.beam-dev/src-bb-9039de53a76a");
   });
 
   it("expands home-directory overrides for BB_DATA_DIR", () => {
@@ -179,7 +179,7 @@ describe("data-dir helpers", () => {
         mode: "dev",
         repoRoot,
       }),
-    ).toBe("/Users/tester/.bb-dev/src-bb-9039de53a76a");
+    ).toBe("/Users/tester/.beam-dev/src-bb-9039de53a76a");
   });
 
   it("keeps the legacy fallback label for degenerate checkout labels", () => {
@@ -190,7 +190,7 @@ describe("data-dir helpers", () => {
         mode: "dev",
         repoRoot: "/Users/tester/---",
       }),
-    ).toBe("/Users/tester/.bb-dev/worktree-41987f975862");
+    ).toBe("/Users/tester/.beam-dev/worktree-41987f975862");
   });
 });
 
@@ -308,6 +308,9 @@ describe("consumer-specific config", () => {
     expect(serverConfig.BB_INFERENCE_FALLBACK).toBe("codex/gpt-5.4-mini");
     expect(serverConfig.BB_TRANSCRIPTION).toBe("codex/gpt-transcribe");
     expect(serverConfig.OPENAI_API_KEY).toBe("test-openai-key");
+    expect(serverConfig.BB_POSTHOG_API_KEY).toBe("");
+    expect(serverConfig.BB_TELEMETRY).toBe(false);
+    expect(serverConfig.BB_MARKETPLACE_URL).toBe("");
     expect(serverConfig.featureFlags).toEqual({
       placeholder: false,
       timelineWindowEventBudget: 1_500,

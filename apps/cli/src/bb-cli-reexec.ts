@@ -64,7 +64,7 @@ export function maybeReexecViaBbCli(
   });
   if (result.error) {
     process.stderr.write(
-      `bb: failed to re-exec BB_CLI=${target}: ${result.error.message}\n`,
+      `beam: failed to re-exec BB_CLI=${target}: ${result.error.message}\n`,
     );
     process.exitCode = 1;
     return;

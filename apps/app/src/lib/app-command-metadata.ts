@@ -78,14 +78,14 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       paletteHiddenCommand(
         "palette.open",
         "Open quick palette",
-        "Search and run bb commands from the keyboard.",
+        "Search and run Beam commands from the keyboard.",
       ),
-      command("window.new", "New window", "Open another bb desktop window."),
-      command("settings.open", "Open settings", "Open bb settings."),
+      command("window.new", "New window", "Open another Beam desktop window."),
+      command("settings.open", "Open settings", "Open beam settings."),
       command(
         "settings.openServers",
         "Open server settings",
-        "Open settings to add or manage bb servers.",
+        "Open settings to add or manage Beam servers.",
       ),
       command(
         "sidebar.toggle",
@@ -142,7 +142,7 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       command(
         "logs.openServerDaemon",
         "Open server and daemon logs",
-        "Open the desktop log viewer for the bb server and host daemon.",
+        "Open the desktop log viewer for the Beam server and host daemon.",
       ),
     ],
   },
@@ -242,7 +242,7 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       paletteHiddenCommand(
         id,
         `Choose answer ${index + 1}`,
-        `Choose visible answer ${index + 1} when bb asks a question.`,
+        `Choose visible answer ${index + 1} when Beam asks a question.`,
       ),
     ),
   },

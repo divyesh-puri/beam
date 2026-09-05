@@ -1891,7 +1891,7 @@ export function createPluginService(deps: PluginServiceDeps): PluginService {
         },
       );
       if (outcome.ok) return outcome.value;
-      return fail(`bb ${registration.name} failed: ${outcome.error}`);
+      return fail(`beam ${registration.name} failed: ${outcome.error}`);
     },
 
     listSkillRootContributions() {

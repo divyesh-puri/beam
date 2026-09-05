@@ -1240,7 +1240,7 @@ describe("createAgentRuntime process lifecycle", () => {
     }
   });
 
-  it("scrubs inherited bb runtime env vars before spawning provider processes", async () => {
+  it("scrubs inherited Beam runtime env vars before spawning provider processes", async () => {
     vi.stubEnv("BB_DATA_DIR", "/tmp/leaked-bb-data");
     vi.stubEnv("BB_SERVER_PORT", "38886");
     vi.stubEnv("NODE_ENV", "development");

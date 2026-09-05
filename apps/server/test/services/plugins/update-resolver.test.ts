@@ -511,7 +511,7 @@ describe("git semver tag resolution", () => {
     });
   });
 
-  it("walks down to the newest release this bb can run", async () => {
+  it("walks down to the newest release this Beam instance can run", async () => {
     const { repo, commitOf } = await tagRepo();
     const probed: string[] = [];
 
@@ -535,7 +535,7 @@ describe("git semver tag resolution", () => {
                   engine: "bb",
                   required: ">=99.0.0",
                   actual: "1.0.0",
-                  message: "requires bb >=99.0.0, running bb is 1.0.0",
+                  message: "requires Beam >=99.0.0, running Beam is 1.0.0",
                 },
               ],
             }
@@ -580,7 +580,7 @@ describe("git semver tag resolution", () => {
               engine: "bb",
               required: ">=99.0.0",
               actual: "1.0.0",
-              message: "requires bb >=99.0.0, running bb is 1.0.0",
+              message: "requires Beam >=99.0.0, running Beam is 1.0.0",
             },
           ],
         }),

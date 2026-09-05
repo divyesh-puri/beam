@@ -281,7 +281,7 @@ export class BbRealtimeClient implements BbRealtime {
       try {
         void this.connectSocket().catch((error) => {
           if (listener.active) {
-            console.error("bb realtime connection failed", error);
+            console.error("Beam realtime connection failed", error);
           }
         });
       } catch (error) {
@@ -350,7 +350,7 @@ export class BbRealtimeClient implements BbRealtime {
       this.transport.websocket ?? resolveDefaultWebsocketFactory();
     if (!websocketFactory) {
       throw new Error(
-        "BB SDK realtime requires a WebSocket implementation. Pass websocket when creating the transport.",
+        "Beam SDK realtime requires a WebSocket implementation. Pass websocket when creating the transport.",
       );
     }
     const socket = websocketFactory(
@@ -412,7 +412,7 @@ export class BbRealtimeClient implements BbRealtime {
       }
       this.socket = null;
       this.clearSocketReadyPromise(
-        new Error("bb realtime socket closed before it became ready."),
+        new Error("Beam realtime socket closed before it became ready."),
       );
       if (this.targetSubscriptions.size === 0) {
         if (this.lastConnectionEvent?.state !== "disconnected") {
@@ -442,10 +442,10 @@ export class BbRealtimeClient implements BbRealtime {
         );
         try {
           void this.connectSocket().catch((error) => {
-            console.error("bb realtime reconnect failed", error);
+            console.error("Beam realtime reconnect failed", error);
           });
         } catch (error) {
-          console.error("bb realtime reconnect failed", error);
+          console.error("Beam realtime reconnect failed", error);
         }
       }, reconnectDelayMs);
     };
@@ -471,7 +471,7 @@ export class BbRealtimeClient implements BbRealtime {
     this.reconnectDelayMs = INITIAL_RECONNECT_DELAY_MS;
     this.clearSocketReadyPromise(
       new Error(
-        "bb realtime socket closed because there are no active targets.",
+        "Beam realtime socket closed because there are no active targets.",
       ),
     );
     if (
@@ -506,7 +506,7 @@ export class BbRealtimeClient implements BbRealtime {
     try {
       parsedMessage = JSON.parse(event.data);
     } catch (error) {
-      console.error("bb realtime ignored malformed websocket message", error);
+      console.error("Beam realtime ignored malformed websocket message", error);
       return;
     }
 
@@ -523,7 +523,7 @@ export class BbRealtimeClient implements BbRealtime {
     const parseResult = serverMessageLenientSchema.safeParse(parsedMessage);
     if (!parseResult.success) {
       console.error(
-        "bb realtime ignored invalid websocket message",
+        "Beam realtime ignored invalid websocket message",
         parseResult.error,
       );
       return;
@@ -595,14 +595,16 @@ export class BbRealtimeClient implements BbRealtime {
       this.resetSocketReadyPromise();
     }
     if (!this.socketReadyPromise) {
-      throw new Error("BB SDK realtime socket readiness was not initialized.");
+      throw new Error(
+        "Beam SDK realtime socket readiness was not initialized.",
+      );
     }
     return this.socketReadyPromise;
   }
 
   private resetSocketReadyPromise(): void {
     this.clearSocketReadyPromise(
-      new Error("bb realtime socket closed before it became ready."),
+      new Error("Beam realtime socket closed before it became ready."),
     );
     this.socketReadyPromise = new Promise((resolve, reject) => {
       this.resolveSocketReady = resolve;
@@ -665,7 +667,7 @@ export class BbRealtimeClient implements BbRealtime {
     try {
       callback(event);
     } catch (error) {
-      console.error("bb realtime listener failed", error);
+      console.error("Beam realtime listener failed", error);
     }
   }
 }

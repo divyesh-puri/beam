@@ -27,7 +27,7 @@ const localViewTestCases: LocalViewTestCase[] = [
       details: "The local service failed to start.",
       kind: "error",
       logText: "Failed to bind port",
-      title: "Could not open bb",
+      title: "Could not open Beam",
     },
   },
   {
@@ -35,7 +35,7 @@ const localViewTestCases: LocalViewTestCase[] = [
     viewModel: {
       kind: "info",
       message:
-        "A bb server is already running on this Mac. Connect via Window ▸ Server.",
+        "A Beam server is already running on this Mac. Connect via Window ▸ Server.",
       title: "Local server available",
     },
   },
@@ -74,7 +74,7 @@ describe("local desktop views", () => {
         kind: "error",
         logText:
           "\x1b[2K  \x1b[2m○\x1b[0m  Starting server\r\x1b[2K  \x1b[32m✓\x1b[0m  Server listening\nError: listen EADDRINUSE",
-        title: "Could not open bb",
+        title: "Could not open Beam",
       },
     });
 

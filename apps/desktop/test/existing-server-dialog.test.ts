@@ -9,8 +9,8 @@ import {
 const NOW = new Date("2026-08-03T12:00:00.000Z");
 
 const DETAILS = {
-  dataDir: "/Users/example/.bb",
-  entryPath: "/opt/bb/bb-app.js",
+  dataDir: "/Users/example/.beam",
+  entryPath: "/opt/beam/beam.js",
   pid: 4_242,
   startedAt: "2026-08-03T11:30:00.000Z",
   surface: "web",
@@ -18,7 +18,7 @@ const DETAILS = {
 };
 
 describe("formatStartedAt", () => {
-  it("describes how long ago bb started", () => {
+  it("describes how long ago Beam started", () => {
     expect(formatStartedAt("2026-08-03T11:59:30.000Z", NOW)).toBe("just now");
     expect(formatStartedAt("2026-08-03T11:30:00.000Z", NOW)).toBe("30 min ago");
     expect(formatStartedAt("2026-08-03T04:00:00.000Z", NOW)).toBe("8 h ago");
@@ -42,35 +42,35 @@ describe("renderExistingServerDialogHtml", () => {
     const html = renderExistingServerDialogHtml({
       details: DETAILS,
       now: NOW,
-      serverUrl: "http://127.0.0.1:38886",
+      serverUrl: "http://127.0.0.1:48886",
     });
 
     for (const choice of EXISTING_SERVER_DIALOG_CHOICES) {
       expect(html).toContain(`data-choice="${choice}"`);
     }
-    expect(html).toContain(">Quit this bb<");
-    expect(html).toContain(">Quit other bb<");
+    expect(html).toContain(">Quit this Beam instance<");
+    expect(html).toContain(">Quit other Beam instance<");
     expect(html).toContain(">Connect<");
   });
 
-  it("describes the running bb", () => {
+  it("describes the running Beam", () => {
     const html = renderExistingServerDialogHtml({
       details: DETAILS,
       now: NOW,
-      serverUrl: "http://127.0.0.1:38886",
+      serverUrl: "http://127.0.0.1:48886",
     });
 
-    expect(html).toContain("http://127.0.0.1:38886");
-    expect(html).toContain("/Users/example/.bb");
+    expect(html).toContain("http://127.0.0.1:48886");
+    expect(html).toContain("/Users/example/.beam");
     expect(html).toContain("0.34.0");
     expect(html).toContain("30 min ago by a terminal (pid 4242)");
   });
 
-  it("hides the stop option for a bb that cannot be identified", () => {
+  it("hides the stop option for a Beam that cannot be identified", () => {
     const html = renderExistingServerDialogHtml({
       details: null,
       now: NOW,
-      serverUrl: "http://127.0.0.1:38886",
+      serverUrl: "http://127.0.0.1:48886",
     });
 
     expect(html).toContain('data-choice="connect"');
@@ -79,11 +79,11 @@ describe("renderExistingServerDialogHtml", () => {
     expect(html).not.toContain("agent threads stop too");
   });
 
-  it("escapes values that come from the running bb", () => {
+  it("escapes values that come from the running Beam", () => {
     const html = renderExistingServerDialogHtml({
       details: { ...DETAILS, dataDir: '/tmp/<img src=x onerror="boom">' },
       now: NOW,
-      serverUrl: "http://127.0.0.1:38886",
+      serverUrl: "http://127.0.0.1:48886",
     });
 
     expect(html).not.toContain("<img src=x");

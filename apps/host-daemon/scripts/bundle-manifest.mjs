@@ -49,12 +49,12 @@ export const bundleTargets = [
     banner: NODE_ESM_REQUIRE_BANNER,
     entryPoint: resolve(workspaceRoot, "apps", "cli", "src", "index.ts"),
     executable: true,
-    label: "bb cli",
+    label: "Beam CLI",
     outfile: resolve(packageRoot, "dist", "bb"),
     // The CLI `import()`s each command group on demand; chunks land in
     // dist/bb-chunks, which packages/bb-app ships next to this entry.
     splitting: true,
-    // The packaged CLI has no workspace on disk, so `bb plugin types` for a
+    // The packaged CLI has no workspace on disk, so `beam plugin types` for a
     // vendored-layout plugin gets the SDK declarations inlined (see
     // packages/templates/src/plugin-sdk-dts.ts). Dev bundles read them from
     // packages/plugin-sdk/bundled-types instead.

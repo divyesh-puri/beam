@@ -4622,7 +4622,7 @@ describe("migrate", () => {
           updated_at integer NOT NULL
         );
         INSERT INTO marketplaces VALUES
-          ('bb-official', 'git', 'https://github.com/ymichael/bb.git', 'main', '{"schemaVersion":1,"name":"bb-official","displayName":"BB Official","plugins":[]}', 10, 20, NULL, 1, 20),
+          ('bb-official', 'git', 'https://github.com/ymichael/bb.git', 'main', '{"schemaVersion":1,"name":"bb-official","displayName":"Beam Official","plugins":[]}', 10, 20, NULL, 1, 20),
           ('other', 'git', 'https://example.test/catalog.git', 'main', '{"schemaVersion":1}', 30, 40, NULL, 2, 40);
         INSERT INTO plugins VALUES
           ('official', 'marketplace', 'bb-official', 'notes', 'npm:notes@^1'),

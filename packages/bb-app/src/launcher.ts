@@ -666,14 +666,14 @@ function formatReadyOutputRow(label: string, value: string): string {
 function warnExistingDaemonLock(lockDir: string): void {
   log(yellow("!"), "Daemon lock exists - waiting or reclaiming if stale");
   log(" ", dim(`lock: ${lockDir}`));
-  log(" ", dim("If startup fails, stop the other bb process or remove it."));
+  log(" ", dim("If startup fails, stop the other Beam process or remove it."));
   process.stdout.write("\n");
 }
 
 function warnExistingRuntimeRecord(dataDir: string): void {
-  log(yellow("!"), "Another bb already runs on this data directory");
+  log(yellow("!"), "Another Beam instance already runs on this data directory");
   log(" ", dim(`record: ${formatBbAppRuntimeFilePath(dataDir)}`));
-  log(" ", dim("Run `bb-app stop` to stop it."));
+  log(" ", dim("Run `beam stop` to stop it."));
   process.stdout.write("\n");
 }
 
@@ -693,10 +693,6 @@ function isSecretShapedEnvName(value: string): boolean {
 
 function supportedConfigKeysText(): string {
   return ["BB_SERVER_URL", ...MANAGED_CONFIG_KEYS].join(", ");
-}
-
-function createDefaultLauncherOptions(): LauncherCliOptions {
-  return { help: false, json: false };
 }
 
 function readStringOption(
@@ -722,6 +718,57 @@ function chooseServerUrlOption(
     throw new Error("--server-url and --server must match when both are set");
   }
   return serverUrl ?? server;
+}
+
+const CLI_RUNTIME_STRING_OPTIONS = new Set([
+  "--data-dir",
+  "--host-daemon-port",
+  "--server",
+  "--server-port",
+  "--server-url",
+]);
+
+function splitCliRuntimeArgs(args: string[]): {
+  cliArgs: string[];
+  launcherArgs: string[];
+} {
+  const launcherArgs: string[] = [];
+  let index = 0;
+  while (index < args.length) {
+    const argument = args[index];
+    if (argument === undefined) break;
+    const equalsIndex = argument.indexOf("=");
+    const optionName =
+      equalsIndex === -1 ? argument : argument.slice(0, equalsIndex);
+    if (!CLI_RUNTIME_STRING_OPTIONS.has(optionName)) break;
+    launcherArgs.push(argument);
+    index += 1;
+    if (equalsIndex === -1) {
+      const value = args[index];
+      if (value !== undefined) {
+        launcherArgs.push(value);
+        index += 1;
+      }
+    }
+  }
+  return { cliArgs: args.slice(index), launcherArgs };
+}
+
+export function resolveBeamEntrypoint(args: string[]): "cli" | "launcher" {
+  if (args.length === 0) return "launcher";
+  const { cliArgs } = splitCliRuntimeArgs(args);
+  const command = cliArgs[0];
+  if (command === undefined) return "launcher";
+  if (command === "--help" || command === "-h") return "launcher";
+  return command === START_COMMAND ||
+    command === STOP_COMMAND ||
+    command === HOST_DAEMON_COMMAND ||
+    command === CLIENT_COMMAND ||
+    command === CONFIG_COMMAND ||
+    command === ENV_COMMAND ||
+    command === "help"
+    ? "launcher"
+    : "cli";
 }
 
 export function parseLauncherArgs(args: string[]): ParsedLauncherArgs {
@@ -967,12 +1014,12 @@ async function readManagedConfig(
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
-        `Invalid bb-app config JSON at ${formatBbAppConfigPath(args.dataDir)}`,
+        `Invalid Beam config JSON at ${formatBbAppConfigPath(args.dataDir)}`,
       );
     }
     if (error instanceof z.ZodError) {
       throw new Error(
-        `Invalid bb-app config at ${formatBbAppConfigPath(args.dataDir)}: ${error.message}`,
+        `Invalid Beam config at ${formatBbAppConfigPath(args.dataDir)}: ${error.message}`,
       );
     }
     if (error instanceof Error && "code" in error && error.code === "ENOENT") {
@@ -1018,12 +1065,12 @@ async function readManagedConfigForWrite(
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
-        `Invalid bb-app config JSON at ${formatBbAppConfigPath(args.dataDir)}`,
+        `Invalid Beam config JSON at ${formatBbAppConfigPath(args.dataDir)}`,
       );
     }
     if (error instanceof z.ZodError) {
       throw new Error(
-        `Invalid bb-app config at ${formatBbAppConfigPath(args.dataDir)}: ${error.message}`,
+        `Invalid Beam config at ${formatBbAppConfigPath(args.dataDir)}: ${error.message}`,
       );
     }
     if (error instanceof Error && "code" in error && error.code === "ENOENT") {
@@ -1042,12 +1089,12 @@ async function readManagedEnvFile(
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
-        `Invalid bb-app env JSON at ${formatBbAppEnvPath(args.dataDir)}`,
+        `Invalid Beam environment JSON at ${formatBbAppEnvPath(args.dataDir)}`,
       );
     }
     if (error instanceof z.ZodError) {
       throw new Error(
-        `Invalid bb-app env at ${formatBbAppEnvPath(args.dataDir)}: ${error.message}`,
+        `Invalid Beam environment at ${formatBbAppEnvPath(args.dataDir)}: ${error.message}`,
       );
     }
     if (error instanceof Error && "code" in error && error.code === "ENOENT") {
@@ -1507,21 +1554,21 @@ export function resolveBbAppCommand(args: string[]): BbAppCommand {
 }
 
 function printConfigHelp(dataDir: string): void {
-  process.stdout.write(`bb-app config
+  process.stdout.write(`beam config
 
 Usage:
-  bb-app config
-  bb-app config list
-  bb-app config refresh
-  bb-app config set <key> <value>
-  bb-app config unset <key>
+  beam config
+  beam config list
+  beam config refresh
+  beam config set <key> <value>
+  beam config unset <key>
 
 Supported keys:
   ${supportedConfigKeysText()}
 
 Startup-only:
-  BB_LOG_LEVEL changes require a full bb-app restart with
-  bb-app stop && bb-app start, or a desktop app restart.
+  BB_LOG_LEVEL changes require a full Beam restart with
+  beam stop && beam start, or a desktop app restart.
 
 Config file:
   ${formatBbAppConfigPath(dataDir)}
@@ -1529,13 +1576,13 @@ Config file:
 }
 
 function printEnvHelp(dataDir: string): void {
-  process.stdout.write(`bb-app env
+  process.stdout.write(`beam env
 
 Usage:
-  bb-app env
-  bb-app env list
-  bb-app env set <key> <value>
-  bb-app env unset <key>
+  beam env
+  beam env list
+  beam env set <key> <value>
+  beam env unset <key>
 
 Startup-only server and launcher keys:
   BB_APP_SURFACE, BB_APP_URL, BB_DATA_DIR, BB_DEV_APP_PORT,
@@ -1544,10 +1591,10 @@ Startup-only server and launcher keys:
   BB_MANAGED_DEV_BUILTIN_PLUGIN_HOT_RELOAD, BB_POSTHOG_API_KEY,
   BB_SERVER_BIND_HOST, BB_SERVER_PORT, BB_TELEMETRY, BB_TRANSCRIPTION,
   and BB_FF_* feature flags.
-  Changes require a full bb-app restart with bb-app stop && bb-app start,
+  Changes require a full Beam restart with beam stop && beam start,
   or a desktop app restart. BB_APP_URL, BB_INFERENCE,
   BB_INFERENCE_FALLBACK, and BB_TRANSCRIPTION can instead be changed live
-  with bb-app config.
+  with beam config.
 
 Env file:
   ${formatBbAppEnvPath(dataDir)}
@@ -1555,12 +1602,12 @@ Env file:
 }
 
 function printClientHelp(dataDir: string): void {
-  process.stdout.write(`bb-app client
+  process.stdout.write(`beam client
 
 Usage:
-  bb-app client ssh-target list [--json]
-  bb-app client ssh-target set <server-origin> <ssh-target> [--host-id <id>]
-  bb-app client ssh-target remove <server-origin> [--host-id <id>]
+  beam client ssh-target list [--json]
+  beam client ssh-target set <server-origin> <ssh-target> [--host-id <id>]
+  beam client ssh-target remove <server-origin> [--host-id <id>]
 
 Config file:
   ${formatClientConfigPath(dataDir)}
@@ -1577,11 +1624,11 @@ function resolveManagedConfigKey(rawKey: string): ManagedConfigKey {
   }
   if (isSecretShapedEnvName(key)) {
     throw new Error(
-      `bb-app config does not store secrets. Use "bb-app env set ${key} <value>" instead.`,
+      `beam config does not store secrets. Use "beam env set ${key} <value>" instead.`,
     );
   }
   throw new Error(
-    `Unsupported bb-app config key "${rawKey}". Supported keys: ${supportedConfigKeysText()}`,
+    `Unsupported beam config key "${rawKey}". Supported keys: ${supportedConfigKeysText()}`,
   );
 }
 
@@ -1668,17 +1715,17 @@ function formatManagedConfig(config: ManagedConfig): string {
       `customAcpAgents[${index}]=${formatCustomAcpAgentProviderId(customAgent.id)}:${customAgent.command}`,
     );
   }
-  return lines.length > 0 ? `${lines.join("\n")}\n` : "No bb-app config set.\n";
+  return lines.length > 0 ? `${lines.join("\n")}\n` : "No Beam config set.\n";
 }
 
 function formatManagedEnv(config: ManagedEnvFile): string {
   const env = config.env;
   if (env === undefined) {
-    return "No bb-app env set.\n";
+    return "No Beam environment set.\n";
   }
   const keys = Object.keys(env).sort();
   if (keys.length === 0) {
-    return "No bb-app env set.\n";
+    return "No Beam environment set.\n";
   }
   return `${keys.map((key) => `${key}=<set>`).join("\n")}\n`;
 }
@@ -1802,7 +1849,7 @@ async function refreshRunningServerConfig(
     response = await fetch(reloadUrl, { method: "POST" });
   } catch {
     if (args.required) {
-      throw new Error(`Could not reach bb server at ${args.serverUrl}`);
+      throw new Error(`Could not reach Beam server at ${args.serverUrl}`);
     }
     return false;
   }
@@ -1811,7 +1858,7 @@ async function refreshRunningServerConfig(
     return true;
   }
 
-  let message = `bb server rejected config reload with HTTP ${response.status}`;
+  let message = `Beam server rejected config reload with HTTP ${response.status}`;
   try {
     const parsed = apiErrorResponseSchema.safeParse(await response.json());
     if (parsed.success) {
@@ -1833,7 +1880,7 @@ function isStartupOnlyManagedKey(
 
 function printStartupOnlyChangeNotice(key: string): void {
   process.stdout.write(
-    `${key} is startup-only. The running process keeps its current value; a full bb-app restart is required to apply this change. Run \`bb-app stop && bb-app start\`, or restart the desktop app.\n`,
+    `${key} is startup-only. The running process keeps its current value; a full Beam restart is required to apply this change. Run \`beam stop && beam start\`, or restart the desktop app.\n`,
   );
   if (key === "BB_SERVER_BIND_HOST") {
     process.stdout.write(
@@ -1876,12 +1923,12 @@ async function refreshRunningServerConfigAfterWrite(
     if (isStartupOnlyManagedKey(source, key)) {
       printStartupOnlyChangeNotice(key);
     } else {
-      process.stdout.write("Reloaded running bb server config.\n");
+      process.stdout.write("Reloaded running Beam server config.\n");
     }
     return;
   }
   process.stdout.write(
-    `No running bb server found at ${serverUrl}; config will apply on next start.\n`,
+    `No running Beam server found at ${serverUrl}; config will apply on next start.\n`,
   );
 }
 
@@ -1910,20 +1957,20 @@ async function runConfigCommand(args: RunConfigCommandArgs): Promise<void> {
       required: true,
       serverUrl: args.serverUrl,
     });
-    process.stdout.write("Reloaded running bb server config.\n");
+    process.stdout.write("Reloaded running Beam server config.\n");
     const startupOnlyKeys = await readConfiguredStartupOnlyManagedKeys(
       args.dataDir,
     );
     if (startupOnlyKeys.length > 0) {
       process.stdout.write(
-        `Startup-only settings currently configured (${startupOnlyKeys.join(", ")}) apply on the next full bb-app restart.\n`,
+        `Startup-only settings currently configured (${startupOnlyKeys.join(", ")}) apply on the next full Beam restart.\n`,
       );
     }
     return;
   }
   if (commandArgs[0] === CONFIG_UNSET_COMMAND) {
     if (commandArgs.length !== 2) {
-      throw new Error("Usage: bb-app config unset <key>");
+      throw new Error("Usage: beam config unset <key>");
     }
     const key = resolveManagedConfigKey(commandArgs[1]);
     const currentConfig = await readManagedConfigForWrite({
@@ -1940,7 +1987,7 @@ async function runConfigCommand(args: RunConfigCommandArgs): Promise<void> {
     return;
   }
   if (commandArgs[0] !== SET_COMMAND || commandArgs.length !== 3) {
-    throw new Error("Usage: bb-app config set <key> <value>");
+    throw new Error("Usage: beam config set <key> <value>");
   }
 
   const value = commandArgs[2].trim();
@@ -1980,7 +2027,7 @@ async function runEnvCommand(args: RunEnvCommandArgs): Promise<void> {
   }
   if (commandArgs[0] === CONFIG_UNSET_COMMAND) {
     if (commandArgs.length !== 2) {
-      throw new Error("Usage: bb-app env unset <key>");
+      throw new Error("Usage: beam env unset <key>");
     }
     const key = resolveManagedEnvKey(commandArgs[1]);
     const currentConfig = await readManagedEnvFile({ dataDir: args.dataDir });
@@ -1995,7 +2042,7 @@ async function runEnvCommand(args: RunEnvCommandArgs): Promise<void> {
     return;
   }
   if (commandArgs[0] !== SET_COMMAND || commandArgs.length !== 3) {
-    throw new Error("Usage: bb-app env set <key> <value>");
+    throw new Error("Usage: beam env set <key> <value>");
   }
 
   const key = resolveManagedEnvKey(commandArgs[1]);
@@ -2029,14 +2076,14 @@ async function runClientCommand(args: RunClientCommandArgs): Promise<void> {
 
   if (commandArgs[0] !== CLIENT_SSH_TARGET_COMMAND) {
     throw new Error(
-      `Unsupported bb-app client command "${commandArgs[0]}". Use "ssh-target".`,
+      `Unsupported beam client command "${commandArgs[0]}". Use "ssh-target".`,
     );
   }
 
   const subcommand = commandArgs[1];
   if (subcommand === CONFIG_LIST_COMMAND || subcommand === undefined) {
     if (commandArgs.length > 2) {
-      throw new Error("Usage: bb-app client ssh-target list [--json]");
+      throw new Error("Usage: beam client ssh-target list [--json]");
     }
     process.stdout.write(
       formatClientSshTargets(
@@ -2050,7 +2097,7 @@ async function runClientCommand(args: RunClientCommandArgs): Promise<void> {
   if (subcommand === SET_COMMAND) {
     if (commandArgs.length !== 4) {
       throw new Error(
-        "Usage: bb-app client ssh-target set <server-origin> <ssh-target> [--host-id <id>]",
+        "Usage: beam client ssh-target set <server-origin> <ssh-target> [--host-id <id>]",
       );
     }
     const serverOrigin = commandArgs[2];
@@ -2081,7 +2128,7 @@ async function runClientCommand(args: RunClientCommandArgs): Promise<void> {
   if (subcommand === REMOVE_COMMAND) {
     if (commandArgs.length !== 3) {
       throw new Error(
-        "Usage: bb-app client ssh-target remove <server-origin> [--host-id <id>]",
+        "Usage: beam client ssh-target remove <server-origin> [--host-id <id>]",
       );
     }
     await writeClientConfigFile({
@@ -2099,7 +2146,7 @@ async function runClientCommand(args: RunClientCommandArgs): Promise<void> {
   }
 
   throw new Error(
-    `Unsupported bb-app client ssh-target command "${subcommand}". Use list, set, or remove.`,
+    `Unsupported beam client ssh-target command "${subcommand}". Use list, set, or remove.`,
   );
 }
 
@@ -2109,12 +2156,17 @@ function requiredArtifactPaths(context: BbAppStartContext): ArtifactPath[] {
     { kind: "file", label: "host daemon entry", path: context.daemonEntry },
     {
       kind: "file",
-      label: "bundled bb CLI",
+      label: "bundled Beam CLI",
+      path: join(context.daemonBundleDir, "beam"),
+    },
+    {
+      kind: "file",
+      label: "bundled bb compatibility CLI",
       path: join(context.daemonBundleDir, "bb"),
     },
     {
       kind: "chunk-dir",
-      label: "bundled bb CLI chunks",
+      label: "bundled Beam CLI chunks",
       path: join(context.daemonBundleDir, "bb-chunks"),
     },
     {
@@ -2583,7 +2635,7 @@ export function createServerEnv(args: CreateServerEnvArgs): NodeJS.ProcessEnv {
     ...args.env,
     BB_APP_VERSION: args.context.appVersion,
     [APP_SURFACE_ENV_NAME]: resolveServerAppSurface(args.env),
-    BB_CLI: join(args.context.daemonBundleDir, "bb"),
+    BB_CLI: join(args.context.daemonBundleDir, "beam"),
     BB_CLI_DIR: args.context.daemonBundleDir,
     BB_DATA_DIR: args.context.dataDir,
     BB_HOST_DAEMON_PORT: String(args.context.daemonPort),
@@ -2664,7 +2716,7 @@ function resolveHostDaemonCommand(
     return { kind: "join" };
   }
   throw new Error(
-    `bb-app host-daemon accepts no subcommand except ${HOST_DAEMON_JOIN_COMMAND}`,
+    `beam host-daemon accepts no subcommand except ${HOST_DAEMON_JOIN_COMMAND}`,
   );
 }
 
@@ -2731,7 +2783,7 @@ export async function runBundledCliCommand(
   args: RunBundledCliCommandArgs,
 ): Promise<number> {
   const bbCliOverride = toOptionalString(args.env.BB_CLI);
-  const cliPath = bbCliOverride ?? join(args.context.daemonBundleDir, "bb");
+  const cliPath = bbCliOverride ?? join(args.context.daemonBundleDir, "beam");
   const childProcess = spawn(cliPath, args.args, {
     cwd: process.cwd(),
     env: createCliEnv({ context: args.context, env: args.env }),
@@ -2742,13 +2794,15 @@ export async function runBundledCliCommand(
 }
 
 export async function runBbCli(
-  cliArgs: string[] = process.argv.slice(2),
+  args: string[] = process.argv.slice(2),
 ): Promise<void> {
+  const { cliArgs, launcherArgs } = splitCliRuntimeArgs(args);
+  const parsedArgs = parseLauncherArgs(launcherArgs);
   const runtime = await resolveBbAppRuntimeState({
     entrypointUrl: import.meta.url,
     env: process.env,
     homeDir: homedir(),
-    options: createDefaultLauncherOptions(),
+    options: parsedArgs.options,
     serverUrlMode: "managed",
   });
   assertBbAppArtifacts(runtime.context);
@@ -2757,6 +2811,16 @@ export async function runBbCli(
     context: runtime.context,
     env: runtime.env,
   });
+}
+
+export async function runBeam(
+  args: string[] = process.argv.slice(2),
+): Promise<void> {
+  if (resolveBeamEntrypoint(args) === "launcher") {
+    await runBbApp(args);
+    return;
+  }
+  await runBbCli(args);
 }
 
 export async function runBbServer(
@@ -2796,7 +2860,7 @@ Usage:
         error instanceof Error
       ) {
         throw new Error(
-          `Invalid bb-app env at ${runtime.context.envFile}: ${error.message}`,
+          `Invalid Beam environment at ${runtime.context.envFile}: ${error.message}`,
         );
       }
       throw error;
@@ -2840,7 +2904,7 @@ async function runHostDaemonOnly(args: RunHostDaemonOnlyArgs): Promise<void> {
     env: daemonEnv,
   });
 
-  process.stdout.write(`\n  ${bold("bb host-daemon")}\n\n`);
+  process.stdout.write(`\n  ${bold("Beam host daemon")}\n\n`);
 
   if (existsSync(args.context.daemonLockDir)) {
     warnExistingDaemonLock(args.context.daemonLockDir);
@@ -2853,7 +2917,7 @@ async function runHostDaemonOnly(args: RunHostDaemonOnlyArgs): Promise<void> {
     );
     process.stdout.write("\n");
     log(" ", dim("Run this command to request enrollment and start daemon:"));
-    log(" ", dim(`  bb-app host-daemon join --server-url ${serverUrl}`));
+    log(" ", dim(`  beam host-daemon join --server-url ${serverUrl}`));
     process.stdout.write("\n");
     process.exitCode = 1;
     return;
@@ -2920,7 +2984,7 @@ async function runHostDaemonOnly(args: RunHostDaemonOnlyArgs): Promise<void> {
     endStep(green("✓"), "Host daemon running");
 
     process.stdout.write("\n");
-    log(green("●"), bold("bb host-daemon is ready"));
+    log(green("●"), bold("Beam host daemon is ready"));
     process.stdout.write("\n");
     log(" ", formatReadyOutputRow("server", cyan(serverUrl)));
     log(" ", formatReadyOutputRow("daemon", String(args.context.daemonPort)));
@@ -2988,21 +3052,21 @@ function installTerminationSignalForwarding(
 }
 
 function printBbAppHelp(): void {
-  process.stdout.write(`bb-app
+  process.stdout.write(`Beam runtime launcher
 
-Usage:
-  bb-app [--data-dir <path>] [--server-bind-host <host>] [--server-port <port>] [--host-daemon-port <port>]
-  bb-app start
-  bb-app stop
-  bb-app config set <key> <value>
-  bb-app config refresh
-  bb-app env set <key> <value>
-  bb-app client ssh-target set <server-origin> <ssh-target> [--host-id <id>]
-  bb-app host-daemon [--server-url <url>] [--host-daemon-port <port>] [--host-id <id>] [--host-type <type>] [--enroll-key <key>] [--auto-update]
-  bb-app host-daemon join --server-url <url> [--host-daemon-port <port>] [--join-code <code> --host-id <id>] [--auto-update]
+Usage: beam [--data-dir <path>] [--server-bind-host <host>] [--server-port <port>] [--host-daemon-port <port>]
+  beam start
+  beam stop
+  beam config set <key> <value>
+  beam config refresh
+  beam env set <key> <value>
+  beam client ssh-target set <server-origin> <ssh-target> [--host-id <id>]
+  beam host-daemon [--server-url <url>] [--host-daemon-port <port>] [--host-id <id>] [--host-type <type>] [--enroll-key <key>] [--auto-update]
+  beam host-daemon join --server-url <url> [--host-daemon-port <port>] [--join-code <code> --host-id <id>] [--auto-update]
+  beam <command>
 
-CLI:
-  npx --package bb-app bb <command>
+Compatibility:
+  bb-app remains the runtime-launcher alias; bb remains the CLI-only alias.
 `);
 }
 
@@ -3222,7 +3286,7 @@ export async function completeFullStackSupervision(
 async function runStopCommand(args: { dataDir: string }): Promise<void> {
   const runtimeFile = await readBbAppRuntimeFile(args.dataDir);
   if (runtimeFile === null) {
-    log(dim("●"), `No running bb recorded in ${args.dataDir}`);
+    log(dim("●"), `No running Beam instance recorded in ${args.dataDir}`);
     return;
   }
 
@@ -3242,7 +3306,7 @@ async function runStopCommand(args: { dataDir: string }): Promise<void> {
     });
     log(
       dim("●"),
-      `bb was not running (removed a stale record of pid ${String(runtimeFile.pid)})`,
+      `Beam was not running (removed a stale record of pid ${String(runtimeFile.pid)})`,
     );
     return;
   }
@@ -3251,7 +3315,7 @@ async function runStopCommand(args: { dataDir: string }): Promise<void> {
     const detail =
       result.reason === "start-time"
         ? "started at a different time than the record"
-        : "does not look like bb";
+        : "does not look like Beam";
     process.stderr.write(
       `Process ${String(runtimeFile.pid)} ${detail}, so it was left alone.\n`,
     );
@@ -3261,7 +3325,7 @@ async function runStopCommand(args: { dataDir: string }): Promise<void> {
 
   if (result.kind === "still-running") {
     process.stderr.write(
-      `bb (pid ${String(runtimeFile.pid)}) did not stop, even after SIGKILL.\n`,
+      `beam (pid ${String(runtimeFile.pid)}) did not stop, even after SIGKILL.\n`,
     );
     process.exitCode = 1;
     return;
@@ -3273,7 +3337,7 @@ async function runStopCommand(args: { dataDir: string }): Promise<void> {
   });
   log(
     green("✓"),
-    `Stopped bb (pid ${String(runtimeFile.pid)})${result.usedKill ? " with SIGKILL" : ""}`,
+    `Stopped Beam (pid ${String(runtimeFile.pid)})${result.usedKill ? " with SIGKILL" : ""}`,
   );
 }
 
@@ -3294,7 +3358,7 @@ export async function runBbApp(
     return;
   }
   if (command.kind === "invalid") {
-    process.stderr.write(`Unknown bb-app command: ${command.command}\n\n`);
+    process.stderr.write(`Unknown Beam command: ${command.command}\n\n`);
     printBbAppHelp();
     process.exitCode = 1;
     return;
@@ -3331,7 +3395,7 @@ export async function runBbApp(
           error instanceof Error
         ) {
           throw new Error(
-            `Invalid bb-app env at ${runtime.context.envFile}: ${error.message}`,
+            `Invalid Beam environment at ${runtime.context.envFile}: ${error.message}`,
           );
         }
         throw error;
@@ -3400,7 +3464,7 @@ export async function runBbApp(
     env: stripThreadContextEnv(runtime.env),
   });
 
-  process.stdout.write(`\n  ${bold("bb")}\n\n`);
+  process.stdout.write(`\n  ${bold("Beam")}\n\n`);
 
   if (existsSync(runtime.context.daemonLockDir)) {
     warnExistingDaemonLock(runtime.context.daemonLockDir);
@@ -3507,7 +3571,7 @@ export async function runBbApp(
     endStep(green("✓"), "Host daemon running");
 
     process.stdout.write("\n");
-    log(green("●"), bold("bb is ready"));
+    log(green("●"), bold("Beam is ready"));
     process.stdout.write("\n");
     log(" ", formatReadyOutputRow("app", cyan(serverListenerUrl)));
     log(" ", formatReadyOutputRow("daemon", String(context.daemonPort)));

@@ -20,6 +20,7 @@ export interface Env {
   BETTER_AUTH_SECRET: string;
   ACCOUNT_APP_URL?: string;
   CLOUD_DEV?: string;
+  APPLE_APP_ID?: string;
   ASSETLINKS_SHA256_FINGERPRINTS?: string;
 }
 
@@ -65,7 +66,7 @@ export function parseClientProtocolVersion(raw: string | null): number {
 }
 
 const PORT_SHARE_TOO_OLD =
-  "this bb's connect plugin is too old for port sharing — update bb and reconnect";
+  "this Beam's connect plugin is too old for port sharing — update Beam and reconnect";
 
 interface PendingHttp {
   resolve: (response: Response) => void;
@@ -141,7 +142,7 @@ export class TunnelDO {
 
     const target = readTunnelTarget(request.headers);
     if (target !== undefined && this.clientProtocolVersion < 1) {
-      return new Response(`bb connect: ${PORT_SHARE_TOO_OLD}\n`, {
+      return new Response(`Beam Connect: ${PORT_SHARE_TOO_OLD}\n`, {
         status: 502,
         headers: { "content-type": "text/plain; charset=utf-8" },
       });
@@ -175,7 +176,7 @@ export class TunnelDO {
 
   private offlineResponse(): Response {
     return new Response(
-      "bb connect: this server is offline (no tunnel connected)\n",
+      "Beam Connect: this server is offline (no tunnel connected)\n",
       {
         status: 503,
         headers: {
@@ -411,7 +412,7 @@ export class TunnelDO {
         .catch(() => {});
     } else {
       entry.resolve(
-        new Response(`bb connect: ${message}\n`, {
+        new Response(`Beam Connect: ${message}\n`, {
           status,
           headers: { "content-type": "text/plain; charset=utf-8" },
         }),
@@ -493,7 +494,7 @@ export class TunnelDO {
           this.pendingHttp.delete(frame.streamId);
           entry.resolve(
             new Response(
-              `bb connect: unrelayable origin response (status ${frame.status})\n`,
+              `Beam Connect: unrelayable origin response (status ${frame.status})\n`,
               {
                 status: 502,
                 headers: { "content-type": "text/plain; charset=utf-8" },

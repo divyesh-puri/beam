@@ -78,6 +78,8 @@ import { BUNDLED_CURATED_MARKETPLACE } from "./curated-marketplace.js";
 import { marketplacePublisherLabel } from "./marketplace-publishers.js";
 
 const MARKETPLACE_REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1_000;
+const UNPROVISIONED_CURATED_MARKETPLACE_URL =
+  "https://marketplace.beam.invalid/beam-community.json";
 
 const BUNDLED_ICON_CONTENT_TYPE = "image/svg+xml";
 
@@ -162,6 +164,11 @@ export function createPluginCatalogService(deps: {
   );
   const now = deps.now ?? Date.now;
   const fetchMarketplace = deps.fetch ?? publicMarketplaceFetch;
+  const curatedMarketplaceUrl = deps.marketplaceUrl.trim();
+  const curatedRemoteRefreshEnabled = curatedMarketplaceUrl.length > 0;
+  const persistedCuratedMarketplaceUrl = curatedRemoteRefreshEnabled
+    ? curatedMarketplaceUrl
+    : UNPROVISIONED_CURATED_MARKETPLACE_URL;
   const schedule =
     deps.schedule ??
     ((callback: () => void, delayMs: number) => {
@@ -206,9 +213,10 @@ export function createPluginCatalogService(deps: {
   function seedOfficialMarketplace(): void {
     const existing = getPluginMarketplace(deps.db, CURATED_MARKETPLACE_NAME);
     if (
+      curatedRemoteRefreshEnabled &&
       existing !== undefined &&
       existing.sourceKind === "https" &&
-      existing.manifestUrl === deps.marketplaceUrl
+      existing.manifestUrl === persistedCuratedMarketplaceUrl
     ) {
       try {
         parseMarketplaceManifestJson(
@@ -222,19 +230,24 @@ export function createPluginCatalogService(deps: {
         );
       }
     }
-    upsertPluginMarketplace(deps.db, {
-      name: CURATED_MARKETPLACE_NAME,
-      sourceKind: "https",
-      manifestUrl: deps.marketplaceUrl,
-      sourceGitRef: null,
-      sourceGitCommit: null,
-      manifestJson: JSON.stringify(BUNDLED_CURATED_MARKETPLACE),
-      statsJson: existing?.statsJson ?? null,
-      etag: null,
-      lastModified: null,
-      lastSuccessfulRefreshAt: null,
-      lastAttemptedRefreshAt: existing?.lastAttemptedRefreshAt ?? null,
-      lastError: null,
+    deps.db.transaction((tx) => {
+      upsertPluginMarketplace(tx, {
+        name: CURATED_MARKETPLACE_NAME,
+        sourceKind: "https",
+        manifestUrl: persistedCuratedMarketplaceUrl,
+        sourceGitRef: null,
+        sourceGitCommit: null,
+        manifestJson: JSON.stringify(BUNDLED_CURATED_MARKETPLACE),
+        statsJson: curatedRemoteRefreshEnabled
+          ? (existing?.statsJson ?? null)
+          : null,
+        etag: null,
+        lastModified: null,
+        lastSuccessfulRefreshAt: null,
+        lastAttemptedRefreshAt: null,
+        lastError: null,
+      });
+      replacePluginMarketplaceIcons(tx, CURATED_MARKETPLACE_NAME, []);
     });
   }
 
@@ -273,7 +286,10 @@ export function createPluginCatalogService(deps: {
       description: catalog?.description ?? null,
       official: row.name === CURATED_MARKETPLACE_NAME,
       sourceKind: row.sourceKind,
-      source: marketplaceSourceDisplay(marketplaceSourceFromRow(row)),
+      source:
+        row.name === CURATED_MARKETPLACE_NAME && !curatedRemoteRefreshEnabled
+          ? "Bundled with Beam"
+          : marketplaceSourceDisplay(marketplaceSourceFromRow(row)),
       resolvedCommit: row.sourceGitCommit,
       entryCount: catalog?.plugins.length ?? 0,
       lastRefreshAt: row.lastSuccessfulRefreshAt,
@@ -359,7 +375,10 @@ export function createPluginCatalogService(deps: {
       publisherKey: BUILTIN_PUBLISHER_KEY,
       publisherLabel: BUILTIN_PUBLISHER_LABEL,
       official: true,
-      author: { name: "BB Team", url: "https://getbb.app" },
+      author: {
+        name: "Beam Team",
+        url: "https://github.com/divyesh-puri/beam",
+      },
       installed: getInstalledPlugin(deps.db, entry.pluginId) !== undefined,
       installs,
       compatible: problem === null,
@@ -547,6 +566,14 @@ export function createPluginCatalogService(deps: {
   ): Promise<PluginMarketplaceRefreshResult> {
     return withLock(name, async () => {
       const row = requireRow(name);
+      if (name === CURATED_MARKETPLACE_NAME && !curatedRemoteRefreshEnabled) {
+        return {
+          name,
+          ok: true,
+          error: null,
+          marketplace: marketplaceView(row),
+        };
+      }
       try {
         await performRefresh(row, attemptedAt);
         return {
@@ -595,8 +622,9 @@ export function createPluginCatalogService(deps: {
     const lastAttempt = requireRow(
       CURATED_MARKETPLACE_NAME,
     ).lastAttemptedRefreshAt;
-    const delay =
-      lastAttempt === null
+    const delay = !curatedRemoteRefreshEnabled
+      ? MARKETPLACE_REFRESH_INTERVAL_MS
+      : lastAttempt === null
         ? 0
         : Math.max(
             0,
@@ -932,7 +960,7 @@ export function createPluginCatalogService(deps: {
           const name = materialized.catalog.name;
           if (name === CURATED_MARKETPLACE_NAME) {
             throw new Error(
-              `marketplace name "${CURATED_MARKETPLACE_NAME}" is reserved for the marketplace BB curates`,
+              `marketplace name "${CURATED_MARKETPLACE_NAME}" is reserved for the marketplace Beam curates`,
             );
           }
           if (getPluginMarketplace(deps.db, name) !== undefined) {

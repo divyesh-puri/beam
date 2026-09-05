@@ -26,7 +26,7 @@ vi.mock("./BbSourceCode", async () => {
       return React.createElement(
         "div",
         { "data-testid": "bb-source-code" },
-        "bb source",
+        "beam source",
       );
     },
   };
@@ -66,7 +66,7 @@ afterEach(() => {
 });
 
 describe("SourceCodeHost", () => {
-  it("keeps BB's renderer chunk unloaded when a replacement never delegates", async () => {
+  it("keeps Beam's renderer chunk unloaded when a replacement never delegates", async () => {
     registerSourceCodeRenderer((props) => {
       received.push(props);
       return <div data-testid="plugin-source">plugin source</div>;
@@ -81,7 +81,7 @@ describe("SourceCodeHost", () => {
     expect(bbSourceCode.loaded).toBe(false);
   });
 
-  it("hands the replacement resolved semantic props, not BB's host-only inputs", async () => {
+  it("hands the replacement resolved semantic props, not Beam's host-only inputs", async () => {
     registerSourceCodeRenderer((props) => {
       received.push(props);
       return <div data-testid="plugin-source">plugin source</div>;
@@ -110,7 +110,7 @@ describe("SourceCodeHost", () => {
     expect(Object.keys(props ?? {})).not.toContain("scrollToHighlightedLines");
   });
 
-  it("loads BB's renderer only when the replacement delegates", async () => {
+  it("loads Beam's renderer only when the replacement delegates", async () => {
     registerSourceCodeRenderer(({ path, Original }) =>
       path.endsWith(".md") ? <div>plugin source</div> : <Original />,
     );
@@ -130,7 +130,7 @@ describe("SourceCodeHost", () => {
     expect(bbSourceCode.lastProps?.scrollToHighlightedLines).toBe(true);
   });
 
-  it("falls back to BB's renderer when the replacement crashes", async () => {
+  it("falls back to Beam's renderer when the replacement crashes", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
     registerSourceCodeRenderer(() => {
@@ -142,7 +142,7 @@ describe("SourceCodeHost", () => {
     expect(await screen.findByTestId("bb-source-code")).toBeDefined();
   });
 
-  it("resolves presentation defaults for BB's renderer", async () => {
+  it("resolves presentation defaults for Beam's renderer", async () => {
     render(<SourceCodeHost content={CONTENT} path="src/app.ts" />);
 
     await screen.findByTestId("bb-source-code");
@@ -152,7 +152,7 @@ describe("SourceCodeHost", () => {
 });
 
 describe("experimental_SourceCode", () => {
-  it("shares the replacement with BB's own surfaces", async () => {
+  it("shares the replacement with Beam's own surfaces", async () => {
     registerSourceCodeRenderer((props) => {
       received.push(props);
       return <div data-testid="plugin-source">plugin source</div>;
@@ -168,7 +168,7 @@ describe("experimental_SourceCode", () => {
 });
 
 describe("SourceCodeHost experimental_Original alias", () => {
-  it("delegates to BB's renderer through the alias and warns once across renders", async () => {
+  it("delegates to Beam's renderer through the alias and warns once across renders", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     let renders = 0;
     registerSourceCodeRenderer(({ experimental_Original: LegacyOriginal }) => {
@@ -196,7 +196,7 @@ describe("SourceCodeHost experimental_Original alias", () => {
     expect(renders).toBe(2);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn).toHaveBeenCalledWith(
-      "experimental_Original is deprecated; use Original. Removed in bb 0.42",
+      "experimental_Original is deprecated; use Original. Removed in Beam 0.42",
     );
   });
 

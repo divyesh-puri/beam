@@ -39,7 +39,7 @@ import {
   ProviderLogo,
   SkillProvenanceTooltip,
 } from "@/components/tools/SkillsCollection";
-import { BbLogo } from "@/components/ui/bb-logo";
+import { BeamLogo } from "@/components/ui/beam-logo";
 import { ProvenancePill } from "@/components/tools/ProvenancePill";
 import { SkillDetailView } from "@/components/tools/SkillDetailView";
 
@@ -160,11 +160,11 @@ function State({
   );
 }
 
-const SKILL_PATH = "/Users/you/.bb/skills/writing-voice/SKILL.md";
+const SKILL_PATH = "/Users/you/.beam/skills/writing-voice/SKILL.md";
 
 function SkillLeading({ provider }: { provider: SkillProvider | null }) {
   if (provider === null) {
-    return <BbLogo />;
+    return <BeamLogo />;
   }
   return <ProviderLogo providerId={provider} className="size-4" />;
 }
@@ -219,13 +219,13 @@ export function SkillDetailStates() {
         note="Files appears above Definition and never below it."
       >
         <Skill
-          files={[SKILL_PATH, "/Users/you/.bb/skills/writing-voice/tone.md"]}
+          files={[SKILL_PATH, "/Users/you/.beam/skills/writing-voice/tone.md"]}
         />
       </State>
 
       <State
         name="Provider-owned"
-        note="A skill discovered under Claude Code or Codex carries that provider's logo where a bb-owned skill carries the bb mark."
+        note="A skill discovered under Claude Code or Codex carries that provider's logo where a Beam-owned skill carries the Beam mark."
       >
         <Skill provider="claude-code" />
       </State>
@@ -251,13 +251,13 @@ export function SkillDetailStates() {
       </State>
 
       <State
-        name="BB Official"
-        note="A skill that ships with bb uses the same publisher badge as a BB Official plugin. Its read-only behavior remains a separate permission fact."
+        name="Beam Official"
+        note="A skill that ships with Beam uses the same publisher badge as a Beam Official plugin. Its read-only behavior remains a separate permission fact."
       >
         <Skill
           titleBadge={{
-            label: "BB Official",
-            tooltip: "Ships with bb",
+            label: "Beam Official",
+            tooltip: "Ships with Beam",
           }}
         />
       </State>
@@ -282,7 +282,7 @@ export function SkillDetailStates() {
 
       <State
         name="Imported"
-        note="Ownership is passive: a skill bb cannot write shows its origin as a status, with no edit or acquisition control."
+        note="Ownership is passive: a skill Beam cannot write shows its origin as a status, with no edit or acquisition control."
       >
         <Skill
           provider="claude-code"
@@ -306,7 +306,7 @@ export function SkillDetailStates() {
         <Skill
           headerActions={
             <ResourceInstallControl
-              accessibleLabel="Fork writing-voice into a new bb skill"
+              accessibleLabel="Fork writing-voice into a new Beam skill"
               label="Fork"
               icon="Fork"
               onAction={noop}
@@ -352,7 +352,7 @@ export function SkillDetailStates() {
 const PLUGIN: PluginListItem = {
   id: "github",
   source: "npm:@bb-plugins/github",
-  rootDir: "/Users/you/.bb/plugins/github",
+  rootDir: "/Users/you/.beam/plugins/github",
   version: "1.4.0",
   enabled: true,
   status: "running",
@@ -449,9 +449,9 @@ const AWKWARD_PLUGIN: PluginListItem = {
   id: "enterprise-issue-tracker-synchronization",
   name: "Enterprise Issue Tracker Synchronization",
   rootDir:
-    "/Users/you/.bb/plugins/enterprise-issue-tracker-synchronization/packages/runtime",
+    "/Users/you/.beam/plugins/enterprise-issue-tracker-synchronization/packages/runtime",
   description:
-    "Keeps issues, pull requests, review comments, and release checklists synchronized between bb threads and your issue tracker, including bidirectional status mapping, attachment mirroring, and per-project field translation.",
+    "Keeps issues, pull requests, review comments, and release checklists synchronized between Beam threads and your issue tracker, including bidirectional status mapping, attachment mirroring, and per-project field translation.",
   cliCommand: {
     name: "enterprise-issue-tracker-sync",
     summary:
@@ -505,7 +505,7 @@ const BUNDLED_PLUGIN: PluginListItem = {
   source: "builtin:github",
   rootDir: "/managed/plugins/github",
   provenance: "builtin",
-  sourceDisplay: "Ships with bb",
+  sourceDisplay: "Ships with Beam",
   capabilities: STATIC_CAPABILITIES,
 };
 
@@ -521,9 +521,9 @@ const UNINSTALLED_CATALOG_PLUGIN = {
   category: "Developer tools",
   source: "builtin:github",
   repositoryUrl: null,
-  marketplaceDisplayName: "BB Community",
+  marketplaceDisplayName: "Beam Community",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   official: true,
   author: null,
   installed: false,
@@ -538,7 +538,9 @@ const COMPATIBILITY_BLOCKED_PLUGIN: PluginListItem = {
   updateState: {
     ...EMPTY_PLUGIN_UPDATE_STATE,
     blockedVersion: "2.0.0",
-    blockedReasons: ["Requires bb 0.20 or newer, and this bb is 0.18."],
+    blockedReasons: [
+      "Requires Beam 0.20 or newer, and this Beam instance is 0.18.",
+    ],
   },
 };
 
@@ -642,7 +644,7 @@ function CatalogPlugin({
         initial={{
           entryId: entry.entryId,
           marketplace: "bb-community",
-          publisherLabel: "BB Community",
+          publisherLabel: "Beam Community",
           displayName: entry.displayName,
           icon: entry.icon,
           iconUrl: entry.iconUrl,
@@ -691,11 +693,11 @@ export function PluginDetailStates() {
     <PluginStoryQueryBoundary>
       <Story
         title="Plugin detail states"
-        description="An uninstalled BB Official plugin shows the catalog facts bb can verify and offers Install. Once installed, the page adds runtime capabilities, settings, services, and schedules when they apply."
+        description="An uninstalled Beam Official plugin shows the catalog facts Beam can verify and offers Install. Once installed, the page adds runtime capabilities, settings, services, and schedules when they apply."
       >
         <State
           name="Before ownership"
-          note="An uninstalled BB Official plugin opens as a real detail page. Install is the primary header action; the full-trust confirmation is the commit step."
+          note="An uninstalled Beam Official plugin opens as a real detail page. Install is the primary header action; the full-trust confirmation is the commit step."
         >
           <CatalogPlugin />
         </State>
@@ -708,7 +710,7 @@ export function PluginDetailStates() {
             entry={{
               ...UNINSTALLED_CATALOG_PLUGIN,
               compatible: false,
-              incompatibleReason: "Requires bb 0.20 or newer.",
+              incompatibleReason: "Requires Beam 0.20 or newer.",
             }}
           />
         </State>
@@ -775,15 +777,15 @@ export function PluginDetailStates() {
         </State>
 
         <State
-          name="BB Official · catalog"
-          note="Installed from bb's catalog. It shares the BB Official badge with built-in plugins, while its install date and ownership menu preserve the lifecycle difference."
+          name="Beam Official · catalog"
+          note="Installed from Beam's catalog. It shares the Beam Official badge with built-in plugins, while its install date and ownership menu preserve the lifecycle difference."
         >
           <Plugin plugin={CATALOG_PLUGIN} />
         </State>
 
         <State
-          name="BB Official · built-in"
-          note="Ships with bb. The badge matches catalog-installed official plugins; the missing install date and ownership menu show that it cannot be uninstalled separately."
+          name="Beam Official · built-in"
+          note="Ships with Beam. The badge matches catalog-installed official plugins; the missing install date and ownership menu show that it cannot be uninstalled separately."
         >
           <Plugin plugin={BUNDLED_PLUGIN} />
         </State>
@@ -804,7 +806,7 @@ export function PluginDetailStates() {
 
         <State
           name="Compatibility blocked"
-          note="A newer release requires a newer bb. A dedicated Update row explains the requirement and preserved version; there is no unavailable action or modal."
+          note="A newer release requires a newer Beam. A dedicated Update row explains the requirement and preserved version; there is no unavailable action or modal."
         >
           <Plugin plugin={COMPATIBILITY_BLOCKED_PLUGIN} />
         </State>
@@ -889,7 +891,7 @@ export function PluginBannerStates() {
             plugin={{
               ...PLUGIN,
               status: "incompatible",
-              statusDetail: "requires bb 0.20 or newer",
+              statusDetail: "requires Beam 0.20 or newer",
             }}
           />
         </State>
@@ -1048,7 +1050,7 @@ const CATALOG_PLUGIN = {
   id: "github-official",
   provenance: "catalog",
   catalogEntryId: "github",
-  publisherLabel: "BB Community",
+  publisherLabel: "Beam Community",
 } satisfies PluginListItem;
 
 const pluginUninstallItems = [
@@ -1073,7 +1075,7 @@ const pluginLocalItems = [
   { label: "Edit", icon: "Edit" as const, onSelect: noop },
   { label: "Open source", icon: "ExternalLink" as const, onSelect: noop },
   {
-    label: "Remove from bb",
+    label: "Remove from Beam",
     icon: "Trash2" as const,
     tone: "destructive" as const,
     onSelect: noop,
@@ -1130,7 +1132,7 @@ export function ResourceControlStates() {
                 onAction={noop}
               />
             }
-            meaning="Canonical BB Official plugin acquisition action on both Browse and the pre-ownership detail page."
+            meaning="Canonical Beam Official plugin acquisition action on both Browse and the pre-ownership detail page."
           />
           <ControlRow
             state="Plugin · installing"
@@ -1147,7 +1149,7 @@ export function ResourceControlStates() {
             state="Skill · Fork"
             control={
               <ResourceInstallControl
-                accessibleLabel="Fork example skill into a new bb skill"
+                accessibleLabel="Fork example skill into a new Beam skill"
                 label="Fork"
                 icon="Fork"
                 onAction={noop}
@@ -1159,7 +1161,7 @@ export function ResourceControlStates() {
             state="Skill · forking"
             control={
               <ResourceInstallControl
-                accessibleLabel="Fork example skill into a new bb skill"
+                accessibleLabel="Fork example skill into a new Beam skill"
                 label="Fork"
                 icon="Fork"
                 pending
@@ -1176,21 +1178,21 @@ export function ResourceControlStates() {
           description="Badges appear only when provenance changes how the resource should be understood. Ordinary owned resources stay unlabelled in their detail-page stories."
         >
           <ControlRow
-            state="Plugin · BB Official catalog"
+            state="Plugin · Beam Official catalog"
             control={<PluginProvenancePill plugin={CATALOG_PLUGIN} />}
-            meaning="Published by bb and installed from the catalog."
+            meaning="Published by Beam and installed from the catalog."
           />
           <ControlRow
-            state="Plugin · BB Official built-in"
+            state="Plugin · Beam Official built-in"
             control={<PluginProvenancePill plugin={BUNDLED_PLUGIN} />}
-            meaning="Ships with bb. The same badge communicates publisher; lifecycle differences remain in metadata and actions."
+            meaning="Ships with Beam. The same badge communicates publisher; lifecycle differences remain in metadata and actions."
           />
           <ControlRow
-            state="Skill · BB Official"
+            state="Skill · Beam Official"
             control={
-              <ProvenancePill label="BB Official" tooltip="Ships with bb" />
+              <ProvenancePill label="Beam Official" tooltip="Ships with Beam" />
             }
-            meaning="A skill that ships with bb."
+            meaning="A skill that ships with Beam."
           />
           <ControlRow
             state="Skill · Included"
@@ -1292,10 +1294,10 @@ export function ResourceControlStates() {
                 items={pluginLocalItems}
               />
             }
-            meaning="Local sources can be edited, opened, submitted to the marketplace, or removed from bb without deleting the source directory."
+            meaning="Local sources can be edited, opened, submitted to the marketplace, or removed from Beam without deleting the source directory."
           />
           <ControlRow
-            state="BB Official built-in actions"
+            state="Beam Official built-in actions"
             control={<NoControl>No ownership menu</NoControl>}
             meaning="Built-in plugins cannot be uninstalled or source-edited here."
           />
@@ -1329,7 +1331,7 @@ export function ResourceControlStates() {
             state="Fork · browse card"
             control={
               <ResourceInstallControl
-                accessibleLabel="Fork example skill into a new bb skill"
+                accessibleLabel="Fork example skill into a new Beam skill"
                 label="Fork"
                 icon="Fork"
                 presentation="icon"
@@ -1347,12 +1349,12 @@ export function ResourceControlStates() {
                 items={skillLocalItems}
               />
             }
-            meaning="A bb-owned skill can be edited, opened, or deleted."
+            meaning="A Beam-owned skill can be edited, opened, or deleted."
           />
           <ControlRow
             state="Read-only actions"
             control={<NoControl>No ownership menu</NoControl>}
-            meaning="BB Official, Included, and Imported skills expose provenance without pretending they are mutable."
+            meaning="Beam Official, Included, and Imported skills expose provenance without pretending they are mutable."
           />
         </ControlTable>
 

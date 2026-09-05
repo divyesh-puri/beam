@@ -401,7 +401,7 @@ function UserConversationMessage({
         resolveSegmentLinkHref={resolveSegmentLinkHref}
         onTitleAction={onTitleAction}
         sourceKind="system"
-        sourceName="BB"
+        sourceName="Beam"
         sourceProjectId={null}
         sourceThreadId={null}
         sourceIsPluginSideChat={false}

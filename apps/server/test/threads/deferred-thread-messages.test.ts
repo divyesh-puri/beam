@@ -310,7 +310,7 @@ describe("messages to a thread that awaits user interaction (#1650)", () => {
       });
 
       const accepted = await queueParentSystemMessage(harness.deps, {
-        input: textInput("[bb system] child completed"),
+        input: textInput("[Beam system] child completed"),
         parentThreadId: parent.id,
         systemMessageKind: "child-completed",
         systemMessageSubject: {

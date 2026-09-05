@@ -22,7 +22,7 @@ function shellQuote(value: string): string {
   return `'${value.replace(/'/gu, "'\\''")}'`;
 }
 
-describe("bb bin wrapper", () => {
+describe("beam bin wrapper", () => {
   let tempRoot: string;
 
   beforeEach(async () => {

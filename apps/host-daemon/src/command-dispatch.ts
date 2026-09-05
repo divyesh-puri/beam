@@ -559,7 +559,7 @@ const commandHandlers: CommandHandlerMap = {
 const onlineRpcHandlers: OnlineRpcHandlerMap = {
   "connect-tunnel.ensure-identity": async (_command, options) => {
     if (!options.ensureConnectTunnelIdentity) {
-      throw new Error("bb connect tunnel identity is unavailable");
+      throw new Error("Beam Connect tunnel identity is unavailable");
     }
     return options.ensureConnectTunnelIdentity();
   },

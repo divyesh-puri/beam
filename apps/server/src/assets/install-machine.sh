@@ -6,7 +6,7 @@ usage() {
   cat >&2 <<'EOF'
 Usage: install.sh --join-code <code> --host-id <host-id> --server <url> [--machine-code <code>] [--host-daemon-port <port>]
 
-The first three options are required. --machine-code is required through bb connect.
+The first three options are required. --machine-code is required through Beam Connect.
 By default, the installer assigns this enrolled daemon its own local API port.
 EOF
   exit 2
@@ -122,14 +122,14 @@ done
 [ -n "$host_id" ] || usage
 [ -n "$server_url" ] || usage
 
-printf '\n  %s\n\n' "$(bold "bb machine setup")"
+printf '\n  %s\n\n' "$(bold "beam machine setup")"
 active_step "Setting up this machine as $host_id for $server_url"
 
 case "$(uname -s)" in
   Darwin) platform=darwin ;;
   Linux) platform=linux ;;
   *)
-    fail_step "bb machine installation supports macOS and Linux only."
+    fail_step "beam machine installation supports macOS and Linux only."
     exit 1
     ;;
 esac
@@ -170,7 +170,7 @@ server_host=$(node -e '
 service_slug=$(printf '%s' "$server_host" | tr '.' '-')
 
 # Each server gets its own data dir and daemon instance, so one machine can
-# serve several bb servers and a full local bb install keeps ~/.bb to itself.
+# serve several Beam servers without sharing their host-daemon state.
 data_dir=${BB_DATA_DIR:-"$HOME/.beam/machines/$server_host"}
 mkdir -p "$data_dir"
 mkdir -p "$data_dir/logs"
@@ -332,7 +332,7 @@ if [ -n "$requested_host_daemon_port" ]; then
     exit 2
   fi
   if ! claim_port_for_data_dir "$requested_host_daemon_port" "$canonical_data_dir"; then
-    fail_step "Host daemon local API port $requested_host_daemon_port is reserved by another bb enrollment."
+    fail_step "Host daemon local API port $requested_host_daemon_port is reserved by another Beam enrollment."
     detail "Choose another value for --host-daemon-port and rerun this command." >&2
     exit 1
   fi
@@ -373,7 +373,7 @@ complete_step "Using local host-daemon port $host_daemon_port"
 # npm could silently enroll an upstream or unrelated bb-app under Beam's
 # service identity.
 package_url="${server_url%/}/install/bb-app.tgz"
-package_dir=$(mktemp -d "${TMPDIR:-/tmp}/bb-app.XXXXXX")
+package_dir=$(mktemp -d "${TMPDIR:-/tmp}/beam-runtime.XXXXXX")
 package_file="$package_dir/bb-app.tgz"
 # curl's numeric meter shows bytes, rate, percentage, and ETA without the
 # animated ASCII bar. Keep redirected installs quiet while preserving errors.
@@ -395,14 +395,14 @@ if [ "$package_status" -ge 200 ] && [ "$package_status" -lt 300 ]; then
   active_step "Installing the server's bb-app build"
   if ! npm install -g "$bb_app_allow_scripts" --prefix "$machine_npm_prefix" "$package_file"; then
     rm -rf "$package_dir"
-    fail_step "Could not install bb-app for this machine. Check the npm error above, then rerun this command."
+    fail_step "Could not install the Beam runtime for this machine. Check the npm error above, then rerun this command."
     exit 1
   fi
   complete_step "Installed the server's bb-app build"
 else
   rm -rf "$package_dir"
   fail_step "Could not download this Beam server's bb-app package from $package_url (HTTP $package_status)."
-  detail "The installer will not use bb-app from PATH or the npm registry." >&2
+  detail "The installer will not use the upstream bb-app package from PATH or the npm registry." >&2
   exit 1
 fi
 rm -rf "$package_dir"
@@ -438,10 +438,10 @@ if [ -n "$machine_code" ]; then
     url.hash = "";
     process.stdout.write(url.origin);
   ' "$server_url" 2>/dev/null) || {
-    fail_step "Could not derive the bb connect apex from $server_url."
+    fail_step "Could not derive the Beam Connect apex from $server_url."
     exit 1
   }
-  active_step "Authorizing this machine with bb connect"
+  active_step "Authorizing this machine with Beam Connect"
   redeem_response=$(curl -fsS \
     --connect-timeout "$CURL_CONNECT_TIMEOUT_SECONDS" \
     --max-time "$MACHINE_CODE_REDEEM_TIMEOUT_SECONDS" \
@@ -449,7 +449,7 @@ if [ -n "$machine_code" ]; then
     -H 'content-type: application/json' \
     --data "{\"code\":\"$machine_code\"}" \
     "$connect_apex/api/connect/redeem-machine") || {
-    fail_step "Could not redeem the bb connect machine code."
+    fail_step "Could not redeem the Beam Connect machine code."
     exit 1
   }
   printf '%s' "$redeem_response" | node -e '
@@ -479,10 +479,10 @@ if [ -n "$machine_code" ]; then
       fs.renameSync(temporary, configPath);
     });
   ' "$data_dir" "$server_url" || {
-    fail_step "The bb connect machine-code response was invalid."
+    fail_step "The Beam Connect machine-code response was invalid."
     exit 1
   }
-  complete_step "Authorized this machine with bb connect"
+  complete_step "Authorized this machine with Beam Connect"
 fi
 
 auth_matches_host() {
@@ -539,7 +539,7 @@ if [ "$already_joined" = no ]; then
     fi
     if ! kill -0 "$join_pid" 2>/dev/null; then
       wait "$join_pid" || true
-      fail_step "bb host daemon exited before it connected to $server_url."
+      fail_step "Beam host daemon exited before it connected to $server_url."
       detail "See $join_log" >&2
       exit 1
     fi
@@ -574,7 +574,7 @@ if [ -n "$join_pid" ]; then
 fi
 rm -f "$data_dir/install-daemon.pid"
 
-active_step "Installing the persistent bb host daemon service"
+active_step "Installing the persistent Beam host daemon service"
 
 xml_escape() {
   printf '%s' "$1" | sed \
@@ -630,24 +630,24 @@ if [ "$platform" = darwin ]; then
 EOF
   launchctl bootout "gui/$(id -u)" "$service_file" >/dev/null 2>&1 || true
   if ! launchctl_error=$(launchctl bootstrap "gui/$(id -u)" "$service_file" 2>&1); then
-    fail_step "Could not register the bb host-daemon launch agent $service_label."
+    fail_step "Could not register the Beam host daemon launch agent $service_label."
     [ -z "$launchctl_error" ] || detail "launchctl: $launchctl_error" >&2
     exit 1
   fi
   if ! launchctl_error=$(launchctl kickstart -k "gui/$(id -u)/$service_label" 2>&1); then
-    fail_step "The bb host-daemon launch agent was registered, but the daemon did not start."
+    fail_step "The Beam host daemon launch agent was registered, but the daemon did not start."
     [ -z "$launchctl_error" ] || detail "launchctl: $launchctl_error" >&2
     detail "See $data_dir/logs/launchd.log for the daemon error." >&2
     exit 1
   fi
   if ! wait_for_daemon_connection "the launch agent"; then
-    fail_step "The bb host-daemon launch agent started but did not connect to $server_url."
+    fail_step "The Beam host daemon launch agent started but did not connect to $server_url."
     detail "See $data_dir/logs/launchd.log for the daemon error." >&2
     exit 1
   fi
   complete_step "Installed and started the launch agent"
   printf '\n'
-  log "$(green "●")" "$(bold "bb machine is ready")"
+  log "$(green "●")" "$(bold "beam machine is ready")"
   printf '\n'
   ready_row "server" "$(cyan "$server_url")"
   ready_row "daemon" "http://127.0.0.1:$host_daemon_port"
@@ -667,7 +667,7 @@ else
   escaped_data_dir=$(systemd_escape "$data_dir")
   cat >"$service_file" <<EOF
 [Unit]
-Description=bb host daemon for $server_host
+Description=Beam host daemon for $server_host
 After=network-online.target
 Wants=network-online.target
 
@@ -683,25 +683,25 @@ WantedBy=default.target
 EOF
   systemctl --user daemon-reload
   if ! systemctl_error=$(systemctl --user enable "$service_name.service" 2>&1); then
-    fail_step "The bb host-daemon systemd service could not be enabled."
+    fail_step "The Beam host daemon systemd service could not be enabled."
     [ -z "$systemctl_error" ] || detail "systemctl: $systemctl_error" >&2
     detail "Inspect it with: journalctl --user -u $service_name.service" >&2
     exit 1
   fi
   if ! systemctl_error=$(systemctl --user restart "$service_name.service" 2>&1); then
-    fail_step "The bb host-daemon systemd service was enabled, but it could not be restarted."
+    fail_step "The Beam host daemon systemd service was enabled, but it could not be restarted."
     [ -z "$systemctl_error" ] || detail "systemctl: $systemctl_error" >&2
     detail "Inspect it with: journalctl --user -u $service_name.service" >&2
     exit 1
   fi
   if ! wait_for_daemon_connection "the systemd service"; then
-    fail_step "The bb host-daemon systemd service started but did not connect to $server_url."
+    fail_step "The Beam host daemon systemd service started but did not connect to $server_url."
     detail "Inspect it with: journalctl --user -u $service_name.service" >&2
     exit 1
   fi
   complete_step "Installed and started the systemd user service"
   printf '\n'
-  log "$(green "●")" "$(bold "bb machine is ready")"
+  log "$(green "●")" "$(bold "beam machine is ready")"
   printf '\n'
   ready_row "server" "$(cyan "$server_url")"
   ready_row "daemon" "http://127.0.0.1:$host_daemon_port"

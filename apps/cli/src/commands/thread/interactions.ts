@@ -337,7 +337,7 @@ function printPluginRequestInteraction(
   );
   console.log(`  Data: ${JSON.stringify(interaction.payload.data)}`);
   console.log(
-    "  Answer: bb thread interactions respond <interactionId> --value '<json>'",
+    "  Answer: beam thread interactions respond <interactionId> --value '<json>'",
   );
 }
 
@@ -638,7 +638,7 @@ function buildBinaryResolution(
     approvalInteraction.payload.subject.kind === "permission_grant"
   ) {
     throw new Error(
-      `Interaction ${interaction.id} is a permission grant; use bb thread interactions grant.`,
+      `Interaction ${interaction.id} is a permission grant; use beam thread interactions grant.`,
     );
   }
   const decision = pickApprovalDecision(approvalInteraction, action);

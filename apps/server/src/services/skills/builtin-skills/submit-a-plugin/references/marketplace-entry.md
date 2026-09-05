@@ -5,8 +5,10 @@ field against the current marketplace schema.
 
 ## Create the entry
 
-Create entries/<plugin-id>.json. The filename, entry ID, and plugin manifest ID
-must match. Do not add fields that the schema does not define.
+Add the plugin to the `plugins` array in
+`apps/server/src/services/plugin-catalog/beam-community-marketplace.json`. The
+entry ID and plugin manifest ID must match. Do not add fields that the schema
+does not define.
 
 The current required fields are id, displayName, description, icon, author, and
 source. Use tags and engines when they add useful search or compatibility data.
@@ -32,8 +34,8 @@ Use this shape only as a guide:
 {
   "id": "notes",
   "displayName": "Notes",
-  "description": "Keeps project notes beside each BB thread.",
-  "icon": { "url": "./icons/notes-1234abcd.svg" },
+  "description": "Keeps project notes beside each Beam thread.",
+  "icon": { "url": "./marketplace-icons/notes-1234abcd.svg" },
   "tags": ["notes", "interface"],
   "author": {
     "name": "Acme",
@@ -46,7 +48,7 @@ Use this shape only as a guide:
   },
   "source": {
     "git": {
-      "url": "https://github.com/acme/bb-plugin-notes.git",
+      "url": "https://github.com/acme/beam-plugin-notes.git",
       "range": "^1.2.3"
     }
   }
@@ -55,16 +57,17 @@ Use this shape only as a guide:
 
 ## Add the icon
 
-Vendor the icon in the marketplace icons/ directory. Do not use a remote URL,
-a CDN, raw.githubusercontent.com, or a path in the plugin repository.
+Vendor a file icon under
+`apps/server/src/services/plugin-catalog/marketplace-icons/`. Do not use a
+remote URL, a CDN, or a path in the plugin repository.
 
 Use an existing brand icon when it meets the current marketplace rules. The
-entry can also use a supported BB host icon name.
+entry can also use a supported Beam host icon name.
 
 Use SVG, PNG, or WebP for a file icon. Keep it at or below 256 KB. Prefer a
 simple square image with clear contrast at small sizes.
 
-BB masks SVG icons with the surrounding text color. Use a single-color SVG for
+Beam masks SVG icons with the surrounding text color. Use a single-color SVG for
 theme-aware artwork. Use PNG or WebP for multicolor artwork. Do not include
 scripts, remote resources, or private data in an SVG.
 
@@ -79,7 +82,7 @@ Use the first available command. Name the file
 <plugin-id>-<first-eight-sha256-characters>.<extension> and reference it as:
 
 ```json
-"icon": { "url": "./icons/notes-1234abcd.svg" }
+"icon": { "url": "./marketplace-icons/notes-1234abcd.svg" }
 ```
 
 If no suitable artwork exists, select a host icon from the current supported

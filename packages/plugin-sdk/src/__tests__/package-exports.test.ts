@@ -15,11 +15,11 @@ describe("packed plugin SDK exports", () => {
       await readFile(new URL("package.json", packageRoot), "utf8"),
     ) as {
       files: string[];
-      private?: boolean;
+      private: boolean;
       exports: Record<string, PackageExport>;
     };
 
-    expect(packageJson.private).not.toBe(true);
+    expect(packageJson.private).toBe(true);
     expect(packageJson.files).toEqual(["bundled-types", "dist", "README.md"]);
     expect(Object.keys(packageJson.exports)).toEqual([
       ".",

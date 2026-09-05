@@ -118,7 +118,7 @@ const PLUGIN: PluginListItem = {
   enabled: true,
   status: "running",
   statusDetail: null,
-  description: "Browse GitHub issues and pull requests in BB.",
+  description: "Browse GitHub issues and pull requests in Beam.",
   name: "GitHub",
   icon: "Github",
   compactIconUrl: null,
@@ -134,8 +134,8 @@ const PLUGIN: PluginListItem = {
   provenance: "catalog",
   isOrphanedBuiltin: false,
   catalogEntryId: "github",
-  publisherLabel: "BB Community",
-  sourceDisplay: "BB Official · GitHub",
+  publisherLabel: "Beam Community",
+  sourceDisplay: "Beam Official · GitHub",
   updateState: EMPTY_PLUGIN_UPDATE_STATE,
 };
 
@@ -267,7 +267,7 @@ describe("Plugin detail recipe", () => {
     ).toBeNull();
 
     for (const item of [
-      "bb gh",
+      "beam gh",
       "review",
       "gh_search",
       "Pull requests",

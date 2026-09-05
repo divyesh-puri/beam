@@ -63,7 +63,8 @@ function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-const APEX_URL = process.env.EXPO_PUBLIC_BB_CONNECT_APEX ?? "https://getbb.app";
+const APEX_URL =
+  process.env.EXPO_PUBLIC_BB_CONNECT_APEX ?? "https://connect.beam.invalid";
 
 export function WebViewSpikeScreen() {
   const insets = useSafeAreaInsets();

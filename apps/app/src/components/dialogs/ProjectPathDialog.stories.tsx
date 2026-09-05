@@ -29,7 +29,7 @@ const updateTarget: ProjectPathDialogTarget = {
   kind: "update",
   projectId: PROJECT_IDS.bb,
   projectName: PROJECT_NAMES.bb,
-  currentPath: "/Users/michael/Projects/bb",
+  currentPath: "/Users/michael/Projects/beam",
 };
 
 const addSourceTarget: ProjectPathDialogTarget = {

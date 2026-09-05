@@ -74,7 +74,7 @@ afterEach(async () => {
 });
 
 describe("readForeignRuntimeDetails", () => {
-  it("describes the running bb when the runtime file matches the probed server", async () => {
+  it("describes the running Beam when the runtime file matches the probed server", async () => {
     const dataDir = await createDataDir();
     await writeRuntimeFile({ dataDir });
 
@@ -98,7 +98,7 @@ describe("readForeignRuntimeDetails", () => {
     ).resolves.toBeNull();
   });
 
-  it("returns null for a bb that writes no runtime file", async () => {
+  it("returns null for a Beam that writes no runtime file", async () => {
     const dataDir = await createDataDir();
 
     await expect(

@@ -14,11 +14,11 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 const OFFICIAL = {
   name: "bb-community",
-  displayName: "BB Community",
+  displayName: "Beam Community",
   description: null,
   official: true,
   sourceKind: "https",
-  source: "https://getbb.app/marketplace/v1/marketplace.json",
+  source: "Bundled with Beam",
   resolvedCommit: null,
   entryCount: 3,
   lastRefreshAt: 1_700_000_000_000,
@@ -99,7 +99,7 @@ describe("MarketplacesSettingsSection", () => {
     render(<MarketplacesSettingsSection />, { wrapper });
 
     await screen.findByText("Acme Plugins");
-    expect(screen.queryByRole("button", { name: "Remove BB Official" })).toBe(
+    expect(screen.queryByRole("button", { name: "Remove Beam Official" })).toBe(
       null,
     );
     expect(

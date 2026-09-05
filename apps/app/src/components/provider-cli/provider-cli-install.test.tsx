@@ -141,7 +141,7 @@ afterEach(() => {
 });
 
 describe("buildProviderCliIssue", () => {
-  it("keeps an external update visible when bb cannot apply it", () => {
+  it("keeps an external update visible when Beam cannot apply it", () => {
     const actionable = issueForProvider("claude-code");
     const issue = buildProviderCliIssue({
       provider: "claude-code",

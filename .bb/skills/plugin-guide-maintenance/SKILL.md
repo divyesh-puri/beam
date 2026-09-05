@@ -5,7 +5,7 @@ description: Keep the Plugin Guide aligned with public Plugin SDK changes that a
 
 # Maintain the Plugin Guide for a public API change
 
-The Plugin Guide is bb's public Plugin SDK reference. Use this workflow only
+The Plugin Guide is Beam's public Plugin SDK reference. Use this workflow only
 when a public API change affects its documented contract.
 
 ## Confirm the trigger
@@ -82,8 +82,8 @@ pnpm exec turbo run test typecheck \
   --filter=@bb/plugin-api-map \
   --filter=@bb/app \
   --filter=bb-plugin-plugin-api-docs
-bb plugin build plugins/plugin-api-docs
+beam plugin build plugins/plugin-api-docs
 ```
 
-For a visible API change, start `scripts/bb-dev-app current`. Inspect the
+For a visible API change, start `scripts/beam-dev-app current`. Inspect the
 affected entry and each reachable action.

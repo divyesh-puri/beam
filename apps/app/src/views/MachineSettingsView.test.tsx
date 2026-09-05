@@ -358,7 +358,7 @@ describe("MachineSettingsView", () => {
     expect(screen.queryByText("This machine")).toBeNull();
     expect(screen.queryByText("Primary")).toBeNull();
     expect(
-      screen.getByText("bb's primary machine can't be removed."),
+      screen.getByText("Beam's primary machine can't be removed."),
     ).toBeDefined();
   });
 

@@ -50,7 +50,7 @@ export function BbProjectLinkPicker({
         onStateChange({ selection: value === NO_LINK ? null : value })
       }
     >
-      <SelectTrigger aria-label="Linked bb project" className="h-8">
+      <SelectTrigger aria-label="Linked Beam project" className="h-8">
         <SelectValue>
           {bbProjects.find((project) => project.id === state.selection)?.name ??
             unavailableSelection ??

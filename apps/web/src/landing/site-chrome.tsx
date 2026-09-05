@@ -16,7 +16,7 @@ import {
   readThemePreference,
   setThemePreference,
 } from "../lib/theme";
-import { DiscordLink, DownloadLink, GitHubLink, XLink } from "./cta";
+import { DownloadLink, GitHubLink } from "./cta";
 
 type SiteNavPage = "blog" | "changelog";
 
@@ -127,7 +127,7 @@ export function SiteNav({ current }: { current?: SiteNavPage }) {
   return (
     <nav className="nav">
       {}
-      <a className="logo" href="/" aria-label="bb">
+      <a className="logo" href="/" aria-label="Beam">
         <span className="bb-mark logo-mark" />
       </a>
       <div className="nav-links">
@@ -158,7 +158,7 @@ export function SiteNav({ current }: { current?: SiteNavPage }) {
 export function SiteFooter() {
   return (
     <footer className="footer">
-      <span>bb is free and open source (MIT)</span>
+      <span>Beam is free and open source (MIT)</span>
       <span>
         <a href="/blog">Blog</a>
         {" · "}
@@ -167,10 +167,6 @@ export function SiteFooter() {
         <a href="/privacy">Privacy</a>
         {" · "}
         <GitHubLink placement="footer">GitHub</GitHubLink>
-        {" · "}
-        <XLink placement="footer">X</XLink>
-        {" · "}
-        <DiscordLink placement="footer">Discord</DiscordLink>
         {" · "}
         <DownloadLink placement="footer">Download</DownloadLink>
       </span>

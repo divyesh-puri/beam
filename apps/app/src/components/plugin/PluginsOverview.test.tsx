@@ -65,7 +65,7 @@ const AUTOMATIONS_PLUGIN = {
   hasSettings: false,
   provenance: "builtin",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   isOrphanedBuiltin: false,
   sourceDisplay: "builtin · automations",
   updateState: {},
@@ -80,15 +80,15 @@ const GITHUB_CATALOG_ENTRY = {
   entryId: "github",
   pluginId: "github",
   displayName: "GitHub",
-  description: "Browse GitHub issues and pull requests in BB.",
+  description: "Browse GitHub issues and pull requests in Beam.",
   icon: "Github",
   iconUrl: null,
   category: "Developer tools",
   source: "github-release:ymichael/bb/bb-plugin-github-{version}.tgz@^0.1.0",
   marketplace: "bb-community",
-  marketplaceDisplayName: "BB Official",
+  marketplaceDisplayName: "Beam Official",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   official: true,
   author: null,
   installed: false,
@@ -168,9 +168,9 @@ function installFetch(plugins: readonly unknown[] = [AUTOMATIONS_PLUGIN]) {
             icon: GITHUB_CATALOG_ENTRY.icon,
             provenance: "catalog",
             publisherKey: "bb-community",
-            publisherLabel: "BB Community",
+            publisherLabel: "Beam Community",
             catalogEntryId: GITHUB_CATALOG_ENTRY.entryId,
-            sourceDisplay: "BB Official · GitHub",
+            sourceDisplay: "Beam Official · GitHub",
           },
         });
       }
@@ -288,7 +288,7 @@ describe("PluginsOverview", () => {
         icon: DOCS_CATALOG_ENTRY.icon,
         provenance: "catalog",
         publisherKey: "bb-community",
-        publisherLabel: "BB Community",
+        publisherLabel: "Beam Community",
         catalogEntryId: "docs",
       },
     ]);
@@ -589,7 +589,7 @@ describe("PluginsOverview", () => {
         status: "disabled",
         provenance: "catalog",
         publisherKey: "bb-community",
-        publisherLabel: "BB Community",
+        publisherLabel: "Beam Community",
         catalogEntryId: "inactive-official",
       },
       {
@@ -639,9 +639,9 @@ describe("PluginsOverview", () => {
       "plugin-row-inactive-local",
       "plugin-row-inactive-official",
     ]);
-    const officialPills = screen.getAllByText("BB Official");
+    const officialPills = screen.getAllByText("Beam Official");
     expect(officialPills).toHaveLength(2);
-    expect(screen.getAllByText("BB Community")).toHaveLength(1);
+    expect(screen.getAllByText("Beam Community")).toHaveLength(1);
 
     const sortTrigger = screen.getByRole("button", {
       name: "Sort: Plugin name, ascending",
@@ -692,7 +692,7 @@ describe("PluginsOverview", () => {
         name: "Catalog One",
         provenance: "catalog",
         publisherKey: "bb-community",
-        publisherLabel: "BB Community",
+        publisherLabel: "Beam Community",
         catalogEntryId: "catalog-one",
       },
       {
@@ -730,14 +730,14 @@ describe("PluginsOverview", () => {
     expect(screen.queryByRole("menuitemcheckbox", { name: "All" })).toBeNull();
 
     fireEvent.click(
-      screen.getByRole("menuitemcheckbox", { name: "BB Official" }),
+      screen.getByRole("menuitemcheckbox", { name: "Beam Official" }),
     );
     await waitFor(() => {
       expect(rowIds()).toEqual(["plugin-row-builtin-one"]);
     });
 
     fireEvent.click(
-      screen.getByRole("menuitemcheckbox", { name: "BB Community" }),
+      screen.getByRole("menuitemcheckbox", { name: "Beam Community" }),
     );
     await waitFor(() => {
       expect(rowIds()).toEqual([
@@ -748,10 +748,10 @@ describe("PluginsOverview", () => {
 
     fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "User" }));
     fireEvent.click(
-      screen.getByRole("menuitemcheckbox", { name: "BB Official" }),
+      screen.getByRole("menuitemcheckbox", { name: "Beam Official" }),
     );
     fireEvent.click(
-      screen.getByRole("menuitemcheckbox", { name: "BB Community" }),
+      screen.getByRole("menuitemcheckbox", { name: "Beam Community" }),
     );
     await waitFor(() => {
       expect(rowIds()).toEqual(["plugin-row-direct-one"]);
@@ -839,7 +839,7 @@ describe("PluginsOverview", () => {
         status: "disabled",
         provenance: "catalog",
         publisherKey: "bb-community",
-        publisherLabel: "BB Community",
+        publisherLabel: "Beam Community",
         catalogEntryId: "inactive-catalog",
       },
       {
@@ -877,7 +877,7 @@ describe("PluginsOverview", () => {
     expect(screen.getByText("Inactive Local Plugin")).toBeTruthy();
   });
 
-  it("badges a built-in plugin BB Official and a catalog install by its marketplace", async () => {
+  it("badges a built-in plugin Beam Official and a catalog install by its marketplace", async () => {
     installFetch([
       AUTOMATIONS_PLUGIN,
       {
@@ -887,9 +887,9 @@ describe("PluginsOverview", () => {
         source: GITHUB_CATALOG_ENTRY.source,
         provenance: "catalog",
         publisherKey: "bb-community",
-        publisherLabel: "BB Community",
+        publisherLabel: "Beam Community",
         catalogEntryId: GITHUB_CATALOG_ENTRY.entryId,
-        sourceDisplay: "BB Official · GitHub",
+        sourceDisplay: "Beam Official · GitHub",
       },
     ]);
     const { wrapper: QueryClientWrapper } = createQueryClientTestHarness();
@@ -903,9 +903,9 @@ describe("PluginsOverview", () => {
       </MemoryRouter>,
     );
 
-    const official = await screen.findAllByText("BB Official");
+    const official = await screen.findAllByText("Beam Official");
     expect(official).toHaveLength(1);
-    const community = screen.getAllByText("BB Community");
+    const community = screen.getAllByText("Beam Community");
     expect(community).toHaveLength(1);
     expect(official[0]?.parentElement?.className).toBe(
       community[0]?.parentElement?.className,

@@ -10,7 +10,7 @@
 
 Minimum runtime: Node.js 22.19. Pi no longer sets the floor: its bridge is a
 plugin and the `pi` CLI is user-installed like `codex` and `claude`, so the
-22.19 line is bb's own tested floor (`install-machine.sh` and the root
+22.19 line is Beam's own tested floor (`install-machine.sh` and the root
 `engines` gate on it). A lower floor needs its own test pass before it moves.
 
 Tested npm package runtimes:
@@ -26,7 +26,7 @@ tested lines, which npm surfaces as a warning rather than an install failure.
 
 Windows support means the Linux stack runs entirely inside WSL2:
 
-- all `bb` processes run inside the same Ubuntu WSL2 distro
+- all `beam` processes run inside the same Ubuntu WSL2 distro
 - Node.js, Git, provider CLIs, and pnpm for source-development flows are
   installed inside WSL2
 - local project paths use Linux-style absolute paths from inside WSL2
@@ -35,7 +35,7 @@ Windows support means the Linux stack runs entirely inside WSL2:
 
 ## Mobile app
 
-[`apps/mobile`](../apps/mobile) is a native phone client for a bb server
+[`apps/mobile`](../apps/mobile) is a native phone client for a Beam server
 (Expo / React Native). It runs no agents, host daemon, or plugins itself; it
 talks to a server over the same HTTP + WebSocket contract as the web app.
 
@@ -47,9 +47,9 @@ talks to a server over the same HTTP + WebSocket contract as the web app.
   `--server-bind-host 0.0.0.0`, a Tailscale Serve HTTPS URL). It is
   unauthenticated, the same trust model as the browser PWA on a LAN; iOS
   allows plain `http://` only for LAN IPs and `.local` names, so Tailscale
-  hosts need Serve HTTPS. **bb connect** mode pairs the phone as a connect
+  hosts need Serve HTTPS. **Beam Connect** mode pairs the phone as a connect
   machine (QR / code from Settings → Remote access or
-  `bb connect machine-code`, both behind the `mobileApp` experiment during
+  `beam connect machine-code`, both behind the `mobileApp` experiment during
   early access), keeps the credential in the device keychain, and mints
   short-lived sessions; see [multiple-devices.md](multiple-devices.md).
 - Distribution: developer builds from source (Xcode 26.2, iOS 26 simulator
@@ -81,8 +81,8 @@ Not available on the phone (use the web app or desktop for these):
 
 ### Supported product flows
 
-- `npx bb-app`
-- `npx --package bb-app bb ...`
+- the packaged `beam` launcher
+- the packaged `beam ...` CLI
 - source checkout package startup with `pnpm start` or `pnpm start:worktree`
 - source checkout validation with `pnpm install`, `pnpm build`,
   `pnpm exec turbo run typecheck`, and `pnpm exec turbo run test`
@@ -92,17 +92,15 @@ Not available on the phone (use the web app or desktop for these):
 - managed worktree environments
 - provider runtime startup where the provider itself supports the host
   environment
-- `npx bb-app` package startup on supported npm package runtimes
-- `npx --package bb-app bb ...` CLI execution through the published package
 
 ### Command ownership and mode selection
 
 - `@bb/config` is the only source of dev/prod defaults.
-- Repo-root source-development commands such as `pnpm start`, `pnpm bb`,
-  `pnpm bb:dev`, and `pnpm reset` are thin wrappers around local packages and
+- Repo-root source-development commands such as `pnpm start`, `pnpm beam`,
+  `pnpm beam:dev`, and `pnpm reset` are thin wrappers around local packages and
   scripts.
 - Those wrappers set `NODE_ENV` explicitly so ambient shell state does not
-  change which bb instance they target.
+  change which Beam instance they target.
 - Explicit `BB_*` values override the `NODE_ENV`-selected defaults.
 - Process-to-process handoff, such as daemon-injected CLI environment, must use
   explicit `BB_*` values for the exact target instance instead of relying on
@@ -110,9 +108,9 @@ Not available on the phone (use the web app or desktop for these):
 
 ### WSL2-specific expectations
 
-- Run `npx bb-app`, source checkout commands such as `pnpm install`,
-  `pnpm dev`, `pnpm bb:dev`, and host-daemon commands from a WSL2 shell, not
-  from native Windows terminals.
+- Run the packaged `beam` launcher, source checkout commands such as
+  `pnpm install`, `pnpm dev`, `pnpm beam:dev`, and host-daemon commands from a
+  WSL2 shell, not from native Windows terminals.
 - Repositories inside the WSL filesystem are recommended for best behavior.
 - `/mnt/c/...` mounted paths are deliberately supported so WSL2 users can keep
   working with existing Windows checkouts instead of relocating every repo into
@@ -153,7 +151,7 @@ We are explicitly not adopting:
 ### Native npm dependencies
 
 The npm package keeps native add-ons as runtime dependencies instead of bundling
-one platform-specific `.node` binary into bb's JavaScript artifacts. This lets
+one platform-specific `.node` binary into Beam's JavaScript artifacts. This lets
 npm install the correct native artifacts on the target machine for packages such
 as `better-sqlite3` and `@parcel/watcher`.
 

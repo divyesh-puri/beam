@@ -47,12 +47,7 @@ import simileLogo from "../assets/company-logos/simile.svg";
 import hermesAvatar from "../assets/hermes-avatar.jpg";
 import vscodeIcon from "../assets/vscode.png";
 import { RELEASE_META, parseChangelog } from "../landing/changelog";
-import {
-  DiscordLink,
-  DownloadLink,
-  EmailSignup,
-  GitHubLink,
-} from "../landing/cta";
+import { DownloadLink, EmailSignup, GitHubLink } from "../landing/cta";
 import { SiteFooter, SiteNav } from "../landing/site-chrome";
 import {
   ClaudeIcon,
@@ -125,7 +120,7 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: SITE_TITLE },
       { name: "description", content: SITE_DESCRIPTION },
-      ...unfurlMeta("bb", OG_DESCRIPTION, "/"),
+      ...unfurlMeta("Beam", OG_DESCRIPTION, "/"),
     ],
     links: [
       {
@@ -458,7 +453,7 @@ const SENTRY_SUBAGENT: MockThread = {
   id: "sentry-sub",
   title: "Reproduce the null cart",
   status: "running",
-  branch: "bb/triage-sentry-spike",
+  branch: "beam/triage-sentry-spike",
   change: { files: 1, add: 14, del: 0 },
   transcript: [
     { kind: "user", text: "Reproduce the null cart in applyPromo." },
@@ -567,7 +562,7 @@ const HERO_THREADS: MockThread[] = [
     id: "sentry",
     title: "Triage the Sentry spike",
     status: "running",
-    branch: "bb/triage-sentry-spike",
+    branch: "beam/triage-sentry-spike",
     change: { files: 6, add: 124, del: 18 },
     stream: SENTRY_STREAM,
     transcript: [
@@ -598,7 +593,7 @@ const HERO_THREADS: MockThread[] = [
     id: "changelog",
     title: "Nightly changelog",
     status: "done",
-    branch: "bb/nightly-changelog",
+    branch: "beam/nightly-changelog",
     pr: 418,
     change: { files: 1, add: 96, del: 4 },
     transcript: [
@@ -622,7 +617,7 @@ const HERO_THREADS: MockThread[] = [
     id: "timeline",
     title: "Refactor the timeline cache",
     status: "waiting",
-    branch: "bb/timeline-cache",
+    branch: "beam/timeline-cache",
     change: { files: 3, add: 41, del: 67 },
     transcript: [
       {
@@ -651,7 +646,7 @@ const HERO_THREADS: MockThread[] = [
     id: "lin482",
     title: "Start on LIN-482",
     status: "running",
-    branch: "bb/lin-482-debounce-search",
+    branch: "beam/lin-482-debounce-search",
     change: { files: 2, add: 33, del: 5 },
     stream: LIN482_STREAM,
     transcript: [
@@ -675,7 +670,7 @@ const CHIEF: MockThread = {
   id: "chief",
   title: "Chief",
   status: "running",
-  branch: "bb/chief",
+  branch: "beam/chief",
   change: { files: 1, add: 12, del: 0 },
   stream: CHIEF_STREAM,
   transcript: [
@@ -899,7 +894,7 @@ function Composer({ thread }: { thread?: MockThread }) {
       <div className="context-row">
         <span className="ctx">
           <FolderIcon className="ctx-ic" />
-          <span>{isNew ? "paper-ultra-slop" : "bb"}</span>
+          <span>{isNew ? "paper-ultra-slop" : "Beam"}</span>
           <ChevronDown className="ctx-chev" />
         </span>
         <span className="ctx">
@@ -1005,7 +1000,7 @@ function HeroAppMock() {
       <div
         className="mock"
         data-construct
-        aria-label="Interactive preview of the bb app"
+        aria-label="Interactive preview of the Beam app"
       >
         <div className="mock-bar">
           <div className="bar-left">
@@ -1215,7 +1210,7 @@ function AgentChat() {
   return (
     <div
       className="tg"
-      aria-label="Texting the Crunch bot, which spawns a bb thread"
+      aria-label="Texting the Crunch bot, which spawns a Beam thread"
     >
       <div className="tg-bar">
         <ChevronLeft className="tg-back" />
@@ -1238,7 +1233,9 @@ function AgentChat() {
           <div className="tg-msg tg-in" style={{ animationDelay: "1.4s" }}>
             <span className="tg-bubble">
               On it. Spawning a worker thread.
-              <span className="tg-cmd mono">bb spawn "fix CI on main"</span>
+              <span className="tg-cmd mono">
+                beam thread spawn "fix CI on main"
+              </span>
             </span>
           </div>
           <div className="tg-msg tg-in" style={{ animationDelay: "2.4s" }}>
@@ -1264,7 +1261,7 @@ function AgentChat() {
                 </span>
               </div>
               <div className="tg-thread-title">Fix CI on main</div>
-              <div className="tg-thread-branch mono">bb/fix-ci-on-main</div>
+              <div className="tg-thread-branch mono">beam/fix-ci-on-main</div>
             </div>
           </div>
         </div>
@@ -1308,58 +1305,58 @@ const CUSTOMIZE_SCENARIO: CustomizeScenario = {
   title: "Build a tasks plugin",
   prompt: "Add a task management system",
   promptWidth: "210px",
-  branch: "bb/tasks-plugin",
+  branch: "beam/tasks-plugin",
   messages: [
     { role: "user", text: "Add a task management system" },
     {
       role: "agent",
-      text: "I'll build it as a bb plugin and mount it in your sidebar.",
+      text: "I'll build it as a Beam plugin and mount it in your sidebar.",
     },
     { role: "tool", text: "wrote plugin: tasks" },
-    { role: "tool", text: "registered panel + bb tasks CLI" },
+    { role: "tool", text: "registered panel + beam tasks CLI" },
     { role: "agent", text: "Done. Tasks is live, and your agents can use it." },
   ],
   panel: {
     name: "Tasks",
     tasks: [
       {
-        key: "BB-1",
+        key: "BEAM-1",
         title: "Ship task delegation",
         status: "in_progress",
         priority: "high",
       },
       {
-        key: "BB-2",
+        key: "BEAM-2",
         title: "Wire up the tasks CLI",
         status: "todo",
         priority: "medium",
       },
       {
-        key: "BB-3",
+        key: "BEAM-3",
         title: "Add label filters",
         status: "todo",
         priority: "low",
       },
       {
-        key: "BB-4",
+        key: "BEAM-4",
         title: "Nightly changelog draft",
         status: "in_progress",
         priority: "medium",
       },
       {
-        key: "BB-5",
+        key: "BEAM-5",
         title: "Triage flaky integration tests",
         status: "backlog",
         priority: "high",
       },
       {
-        key: "BB-6",
+        key: "BEAM-6",
         title: "Port the settings panel",
         status: "backlog",
         priority: "low",
       },
       {
-        key: "BB-7",
+        key: "BEAM-7",
         title: "Document the plugin API",
         status: "backlog",
         priority: "medium",
@@ -1378,7 +1375,7 @@ function CustomizeBuild() {
     <div className="mockup-wrap mockup-wrap-customize">
       <div
         className="mock mock-customize-mobile"
-        aria-label="Mobile bb preview: a prompt asks for a task management system, and the agent builds it as a plugin"
+        aria-label="Mobile Beam preview: a prompt asks for a task management system, and the agent builds it as a plugin"
       >
         <div className="mock-bar">
           <div className="bar-left">
@@ -1553,7 +1550,7 @@ function SpawnSidebar() {
   return (
     <div
       className="spawnbar"
-      aria-label="bb spawns and manages a worker thread for each provider"
+      aria-label="Beam spawns and manages a worker thread for each provider"
     >
       <div className="sb-head">
         <span aria-hidden="true" className="bb-mark sb-mark" />
@@ -1660,8 +1657,8 @@ function LandingPage() {
         </a>
         <h1>The IDE that builds itself</h1>
         <p className="sub">
-          bb can control, customize, and automate itself, laying the groundwork
-          for your own software factory.
+          Beam can control, customize, and automate itself, laying the
+          groundwork for your own software factory.
         </p>
 
         <InstallOptions placement="hero" />
@@ -1714,13 +1711,13 @@ function LandingPage() {
 
       <Band title="Fully customizable." flip visual={<CustomizeBuild />}>
         <p>
-          Almost anything in bb can be changed in a single prompt. Ask for a
+          Almost anything in Beam can be changed in a single prompt. Ask for a
           task tracker and one appears: a panel in your sidebar, a{" "}
-          <code>bb tasks</code> command, and a skill that teaches every agent to
-          use it.
+          <code>beam tasks</code> command, and a skill that teaches every agent
+          to use it.
         </p>
         <p>
-          Many of bb&rsquo;s own features are built with the same tools you
+          Many of Beam&rsquo;s own features are built with the same tools you
           have. The GitHub integration, agent memory, scheduled jobs, and even
           remote access are all plugins.
         </p>
@@ -1743,12 +1740,12 @@ function LandingPage() {
       <Band title="The gang's all here" flip visual={<SpawnSidebar />}>
         <p>
           Claude Code, Codex, Cursor, Pi, OpenCode, Grok, omp, and Hermes all
-          live in bb. Give a task to whichever fits, and have one agent spawn
+          live in Beam. Give a task to whichever fits, and have one agent spawn
           and manage another, each in its own thread.
         </p>
         <p>
           Each runs on your own subscription: the provider plan you already pay
-          for, billed by them, not bb.
+          for, billed by them, not Beam.
         </p>
         <div className="providers">
           <ProviderChips />
@@ -1758,7 +1755,7 @@ function LandingPage() {
       <section className="statement" data-reveal>
         <h2 className="sec-title">Fork it. Make it your own.</h2>
         <p>
-          bb is MIT-licensed end to end. Fork the repo, customize the agents,
+          Beam is MIT-licensed end to end. Fork the repo, customize the agents,
           tools, and UI, and deploy your own build across your whole
           organization. It still runs local-first on your machines, on the
           provider subscriptions you already pay for.

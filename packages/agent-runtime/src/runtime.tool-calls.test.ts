@@ -296,7 +296,7 @@ describe("createAgentRuntime tool calls", () => {
     }
   });
 
-  it("rejects tool calls whose BB thread hint disagrees with the provider-thread mapping", async () => {
+  it("rejects tool calls whose Beam thread hint disagrees with the provider-thread mapping", async () => {
     const toolCalls: string[] = [];
     const events: ThreadEvent[] = [];
     const runtime = createScriptedEchoRuntime({

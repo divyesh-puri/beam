@@ -1,5 +1,5 @@
 // Renders scripts/og-card.html to public/og.png, the card platforms show when
-// a bb link is shared. Run it after editing the template:
+// a Beam link is shared. Run it after editing the template:
 //
 //   pnpm --filter @bb/web og:card
 //
@@ -33,7 +33,7 @@ const SCALE = 2;
 
 const here = (path) => fileURLToPath(new URL(path, import.meta.url));
 const TEMPLATE = here("./og-card.html");
-const LOGO = here("../../../assets/bb-logo.png");
+const LOGO = here("../../../assets/beam-logo.png");
 const OUTPUT = here("../public/og.png");
 
 const CHROME_CANDIDATES = [
@@ -64,7 +64,9 @@ async function readDevToolsPort(profileDir, chrome) {
   const portFile = join(profileDir, "DevToolsActivePort");
   for (let attempt = 0; attempt < 120; attempt += 1) {
     if (chrome.exitCode !== null) {
-      throw new Error(`Chrome exited (${chrome.exitCode}) before DevTools was ready`);
+      throw new Error(
+        `Chrome exited (${chrome.exitCode}) before DevTools was ready`,
+      );
     }
     try {
       const [port] = (await readFile(portFile, "utf8")).split("\n");
@@ -86,7 +88,9 @@ function connect(webSocketUrl) {
   socket.addEventListener("message", (event) => {
     const message = JSON.parse(event.data);
     if (message.method) {
-      eventWaiters.get(message.method)?.forEach((resolve) => resolve(message.params));
+      eventWaiters
+        .get(message.method)
+        ?.forEach((resolve) => resolve(message.params));
       eventWaiters.delete(message.method);
       return;
     }
@@ -98,9 +102,13 @@ function connect(webSocketUrl) {
   });
   const ready = new Promise((resolve, reject) => {
     socket.addEventListener("open", resolve, { once: true });
-    socket.addEventListener("error", () => reject(new Error("DevTools connection failed")), {
-      once: true,
-    });
+    socket.addEventListener(
+      "error",
+      () => reject(new Error("DevTools connection failed")),
+      {
+        once: true,
+      },
+    );
   });
   return {
     ready,
@@ -124,25 +132,24 @@ function connect(webSocketUrl) {
 
 async function main() {
   const require = createRequire(import.meta.url);
-  const font = require.resolve(
-    "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
-  );
+  const font =
+    require.resolve("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2");
 
   // The font and logo are copied in beside the page rather than linked where
   // they live: a file:// document may only read its own directory, so absolute
   // file URLs elsewhere on disk load as broken images.
-  const workDir = await mkdtemp(join(tmpdir(), "bb-og-card-"));
+  const workDir = await mkdtemp(join(tmpdir(), "beam-og-card-"));
   const profileDir = join(workDir, "profile");
   const pageFile = join(workDir, "card.html");
   await copyFile(font, join(workDir, "inter.woff2"));
-  await copyFile(LOGO, join(workDir, "bb-logo.png"));
+  await copyFile(LOGO, join(workDir, "beam-logo.png"));
 
   // replaceAll, not replace: the template's own comment names the placeholders,
   // so a first-occurrence swap rewrites the comment and leaves the real
   // attributes pointing at the literal token.
   const html = (await readFile(TEMPLATE, "utf8"))
     .replaceAll("__FONT_URL__", "inter.woff2")
-    .replaceAll("__LOGO_URL__", "bb-logo.png");
+    .replaceAll("__LOGO_URL__", "beam-logo.png");
   await writeFile(pageFile, html);
 
   const chromeBinary = await findChrome();
@@ -168,7 +175,9 @@ async function main() {
 
   try {
     const port = await readDevToolsPort(profileDir, chrome);
-    const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+    const targets = await (
+      await fetch(`http://127.0.0.1:${port}/json/list`)
+    ).json();
     const page = targets.find((target) => target.type === "page");
     if (!page) throw new Error("Chrome exposed no page target");
 
@@ -227,7 +236,12 @@ async function main() {
       chrome.kill();
       await exited;
     }
-    await rm(workDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    await rm(workDir, {
+      recursive: true,
+      force: true,
+      maxRetries: 5,
+      retryDelay: 200,
+    });
   }
 }
 

@@ -1,6 +1,6 @@
 ---
 name: automations
-description: Create and manage bb automations from the first-party automations plugin. Use when scheduling recurring or one-shot agent/script work with bb automation commands.
+description: Create and manage Beam automations from the first-party automations plugin. Use when scheduling recurring or one-shot agent/script work with Beam automation commands.
 ---
 
 # Automations
@@ -10,13 +10,13 @@ An automation is a scheduled task. When due it runs in one of two modes:
 agent Spawn a thread or re-prompt a target thread with a configured prompt.
 script Run a stored server-side script and capture stdout/stderr/exit.
 
-Use the top-level `bb automation` command. The CLI routes it to this plugin.
+Use the top-level `beam automation` command. The CLI routes it to this plugin.
 
 Pass `--project` explicitly for every automation command. Inside a thread, automations are stamped origin `agent` and record the creating thread automatically. Automation-spawned threads cannot create automations.
 
 Choosing a mode:
 
-Use `script` when the output is fully determined by code: watchdogs, threshold alerts, health checks, heartbeats, and API pollers with a fixed output shape. Scripts run on the bb server, with cwd inside the plugin data directory's `scripts/` area. Script automations do not have an environment field and do not accept environment flags.
+Use `script` when the output is fully determined by code: watchdogs, threshold alerts, health checks, heartbeats, and API pollers with a fixed output shape. Scripts run on the Beam server, with cwd inside the plugin data directory's `scripts/` area. Script automations do not have an environment field and do not accept environment flags.
 
 Design the script to print nothing when there is nothing to report: an exit-0 run with empty stdout/stderr, or a last non-empty line of `{"wakeAgent": false}`, is recorded as a skipped silent tick. Any other output is captured; non-zero exit or timeout is recorded as a failed run.
 
@@ -25,7 +25,7 @@ Use `agent` when the run needs reasoning: summarize a feed, pick interesting ite
 Creating:
 
 ```bash
-bb automation create --project <id> --name "..." [schedule flags] [mode flags]
+beam automation create --project <id> --name "..." [schedule flags] [mode flags]
 ```
 
 Schedule flags:
@@ -73,14 +73,14 @@ injected variables, or diagnose retries, timeouts, restarts, and silent runs.
 Managing:
 
 ```bash
-bb automation list --project <id>
-bb automation show <automationId> --project <id>
-bb automation update <automationId> --project <id> [--name <name>] [schedule flags] [complete execution flags | partial agent update flags]
-bb automation pause <automationId> --project <id>
-bb automation resume <automationId> --project <id>
-bb automation run <automationId> --project <id> [--idempotency-key <key>]
-bb automation runs <automationId> --project <id> [--limit <count>] [--output <runId>]
-bb automation delete <automationId> --project <id> --yes
+beam automation list --project <id>
+beam automation show <automationId> --project <id>
+beam automation update <automationId> --project <id> [--name <name>] [schedule flags] [complete execution flags | partial agent update flags]
+beam automation pause <automationId> --project <id>
+beam automation resume <automationId> --project <id>
+beam automation run <automationId> --project <id> [--idempotency-key <key>]
+beam automation runs <automationId> --project <id> [--limit <count>] [--output <runId>]
+beam automation delete <automationId> --project <id> --yes
 ```
 
 `list` and `show` are diagnostic reads: a damaged record remains visible as
@@ -90,7 +90,7 @@ where the user can add its prompt while reviewing the other settings. It can
 also be repaired directly:
 
 ```bash
-bb automation update <automationId> --project <id> --prompt "<prompt>"
+beam automation update <automationId> --project <id> --prompt "<prompt>"
 ```
 
 Writes remain strict. Run, pause, and resume reject damaged records; update
@@ -112,11 +112,11 @@ Choose one of two execution update forms:
   reasoning, tier, and permission selection together:
 
 ```bash
-bb automation update <automationId> --project <id> \
+beam automation update <automationId> --project <id> \
   --environment <environment-id-or-path>
-bb automation update <automationId> --project <id> \
+beam automation update <automationId> --project <id> \
   --target-thread <thread-id>
-bb automation update <automationId> --project <id> \
+beam automation update <automationId> --project <id> \
   --new-environment worktree [--base-branch <branch>]
 ```
 

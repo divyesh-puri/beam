@@ -1,20 +1,20 @@
 ---
 kind: instruction
-title: bb Guide Automations
+title: Beam Guide Automations
 summary: Command reference for scheduled agent and script work.
 intent: Help agents create, edit, inspect, and run automations through the CLI.
 ---
 Automations schedule recurring or one-shot work. Agent automations run a prompt
 in a thread; script automations run stored code without model usage.
 
-  bb automation list --project <id>
-  bb automation show <automationId> --project <id>
-  bb automation create --project <id> --name <name> <schedule> <execution>
-  bb automation update <automationId> --project <id> [changes]
-  bb automation pause|resume <automationId> --project <id>
-  bb automation run <automationId> --project <id>
-  bb automation runs <automationId> --project <id> [--limit <count>]
-  bb automation delete <automationId> --project <id> --yes
+  beam automation list --project <id>
+  beam automation show <automationId> --project <id>
+  beam automation create --project <id> --name <name> <schedule> <execution>
+  beam automation update <automationId> --project <id> [changes]
+  beam automation pause|resume <automationId> --project <id>
+  beam automation run <automationId> --project <id>
+  beam automation runs <automationId> --project <id> [--limit <count>]
+  beam automation delete <automationId> --project <id> --yes
 
 Schedules:
 
@@ -67,7 +67,7 @@ record in the Automations panel takes you through the standard editor, where
 you can add the prompt while reviewing its other settings. The same repair is
 available through the CLI:
 
-  bb automation update <automationId> --project <id> --prompt "<prompt>"
+  beam automation update <automationId> --project <id> --prompt "<prompt>"
 
 Writes remain strict. Run, pause, and resume reject damaged records; update
 succeeds only when the resulting complete record is canonical.
@@ -75,16 +75,16 @@ succeeds only when the resulting complete record is canonical.
 Visible Browser QA uses the experiment-gated core Browser commands, not an
 automation script or arbitrary page evaluation:
 
-  bb browser open <http-or-https-url> --json
-  bb browser wait <target> --text <text> --json
-  bb browser snapshot <target> --json
-  bb browser click <target> --ref <current-ref> --json
-  bb browser type <target> --ref <current-ref> --text <text> --json
-  bb browser press <target> --key <key> --json
-  bb browser select <target> --ref <current-ref> --value <value> --json
-  bb browser navigate <target> <http-or-https-url> --json
-  bb browser screenshot <target> --json
-  bb browser close <target> --json
+  beam browser open <http-or-https-url> --json
+  beam browser wait <target> --text <text> --json
+  beam browser snapshot <target> --json
+  beam browser click <target> --ref <current-ref> --json
+  beam browser type <target> --ref <current-ref> --text <text> --json
+  beam browser press <target> --key <key> --json
+  beam browser select <target> --ref <current-ref> --value <value> --json
+  beam browser navigate <target> <http-or-https-url> --json
+  beam browser screenshot <target> --json
+  beam browser close <target> --json
 
 Targets are always visible and owned by `BB_THREAD_ID` unless `--thread` is
 passed. Snapshot again after page changes, use screenshots only for visual

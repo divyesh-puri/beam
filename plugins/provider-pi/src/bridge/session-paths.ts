@@ -19,7 +19,12 @@ export function resolvePiBridgeSessionDir(
     return resolve(configuredSessionDir);
   }
 
-  return join(homedir(), ".bb", "pi-bridge-sessions");
+  const configuredDataDir = args.env.BB_DATA_DIR?.trim();
+  if (configuredDataDir) {
+    return join(resolve(configuredDataDir), "pi-bridge-sessions");
+  }
+
+  return join(homedir(), ".beam", "pi-bridge-sessions");
 }
 
 export function resolvePiSessionFilePath(

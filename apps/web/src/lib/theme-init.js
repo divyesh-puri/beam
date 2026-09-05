@@ -1,4 +1,4 @@
-/* The pre-paint half of the bb.theme model. This file is imported with Vite's
+/* The pre-paint half of the Beam theme model. This file is imported with Vite's
    `?raw` so its exact bytes become the inline <head> script in __root.tsx —
    never transformed, so the server and the client build the same string and
    hydration has nothing to disagree about. (Deriving the script from a

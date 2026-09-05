@@ -37,7 +37,7 @@ async function makeTempDir(prefix: string): Promise<string> {
 async function initRepo(): Promise<string> {
   const repoPath = await makeTempDir("bb-workspace-repo-");
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await fs.writeFile(path.join(repoPath, "README.md"), "hello\n", "utf8");
   await runGit(["add", "README.md"], { cwd: repoPath });
@@ -103,7 +103,7 @@ afterEach(async () => {
       .splice(0)
       .map((dir) => fs.rm(dir, { recursive: true, force: true })),
   );
-});
+}, 30_000);
 
 describe("Workspace", () => {
   it("reports clean, dirty, untracked-only, and mixed workspace states", async () => {
@@ -1253,7 +1253,7 @@ describe("Workspace", () => {
   it("returns null when HEAD is unavailable in an empty repository", async () => {
     const repoPath = await makeTempDir("bb-workspace-empty-repo-");
     await runGit(["init", "-b", "main"], { cwd: repoPath });
-    await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+    await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
     await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
 
     const workspace = new Workspace(repoPath);

@@ -111,7 +111,7 @@ function formatAttachments(
     .map(
       (attachment) =>
         `- ${attachment.id} · ${attachment.fileName}\n` +
-        `  Fetch with: bb tasks attachment get ${attachment.id} --out <path>`,
+        `  Fetch with: beam tasks attachment get ${attachment.id} --out <path>`,
     )
     .join("\n");
 }
@@ -190,7 +190,7 @@ ${formatThreads(store.tasks.listTaskThreads(task.id))}
 
 ## Action contract
 
-You can act on this task with the bb tasks CLI. If you begin working on it, first run: bb tasks attach ${task.key} (attaches THIS thread so the task shows you as working). Comment substantive updates via bb tasks comment ${task.key} --body ... and set status via bb tasks update ${task.key} --status ...
+You can act on this task with the beam tasks CLI. If you begin working on it, first run: beam tasks attach ${task.key} (attaches THIS thread so the task shows you as working). Comment substantive updates via beam tasks comment ${task.key} --body ... and set status via beam tasks update ${task.key} --status ...
 `;
 }
 

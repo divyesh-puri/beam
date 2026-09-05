@@ -23,10 +23,7 @@
     // The docs' UI-anatomy manifest is the contract this test checks the real
     // app components against, so a manifest edit must re-run it.
     "@bb/app#test": {
-      "dependsOn": [
-        "//#ensure-native-modules",
-        "topo"
-      ],
+      "dependsOn": ["//#ensure-native-modules", "topo"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/packages/plugin-api-map/src/anatomy-manifest.json",
@@ -206,9 +203,7 @@
     "@bb/desktop#smoke:appimage-lifecycle": {
       "cache": false,
       "outputs": [],
-      "passThroughEnv": [
-        "*"
-      ]
+      "passThroughEnv": ["*"]
     },
     "@bb/desktop#dev": {
       "dependsOn": ["bb-app#build"],
@@ -354,7 +349,7 @@
       ],
       "outputs": ["src/generated/templates.generated.ts"]
     },
-    // The `bb plugin new` starter files from the (committed) component
+    // The `beam plugin new` starter files from the (committed) component
     // registry.
     "@bb/templates#generate:plugin-scaffold": {
       "dependsOn": [],
@@ -387,7 +382,7 @@
       "dependsOn": ["topo"]
     },
     // The packaged CLI (host-daemon/dist/bb) inlines the SDK declaration
-    // bundles for `bb plugin types` on vendored-layout plugins; see
+    // bundles for `beam plugin types` on vendored-layout plugins; see
     // scripts/bundle-manifest.mjs and packages/templates/src/plugin-sdk-dts.ts.
     "@bb/host-daemon#build": {
       "dependsOn": ["@get-bb/plugin-sdk#build:types", "topo"],
@@ -405,7 +400,7 @@
       ],
       "outputs": ["dist/**"]
     },
-    // `bb plugin types|build|dev` on a vendored-layout plugin reads
+    // `beam plugin types|build|dev` on a vendored-layout plugin reads
     // packages/plugin-sdk/bundled-types at runtime (no workspace embed).
     "@bb/cli#test": {
       "dependsOn": [
@@ -415,7 +410,7 @@
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/apps/server/src/services/skills/builtin-skills/bb-cli/**",
+        "$TURBO_ROOT$/apps/server/src/services/skills/builtin-skills/beam-cli/**",
         "$TURBO_ROOT$/vitest.shared.ts"
       ]
     },
@@ -677,7 +672,7 @@
       ]
     },
     // bundled-types/*.d.ts: the package's published `types` surface, the
-    // in-repo plugins' typecheck surface, and what `bb plugin types` writes
+    // in-repo plugins' typecheck surface, and what `beam plugin types` writes
     // into vendored-layout plugins. ~20s (rollup-plugin-dts), so only real
     // consumers depend on it. Generated modules are excluded from the hash:
     // they are derived from sources already hashed here.
@@ -779,10 +774,7 @@
       "dependsOn": ["@get-bb/plugin-sdk#build:types", "topo"]
     },
     "bb-plugin-monaco-editor#typecheck": {
-      "dependsOn": [
-        "@get-bb/plugin-sdk#build:types",
-        "topo"
-      ]
+      "dependsOn": ["@get-bb/plugin-sdk#build:types", "topo"]
     },
     "bb-plugin-pdf-preview#typecheck": {
       "dependsOn": ["@get-bb/plugin-sdk#build:types", "topo"]

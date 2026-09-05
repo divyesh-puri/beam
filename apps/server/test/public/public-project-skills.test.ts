@@ -915,7 +915,7 @@ describe("public project skills route", () => {
     });
   });
 
-  it("imports a registry package into server-owned bb user storage", async () => {
+  it("imports a registry package into server-owned Beam user storage", async () => {
     await withTestHarness(async (harness) => {
       const filePath = "/data/skills/find-skills/SKILL.md";
       installServerRegistrySkillMock.mockResolvedValueOnce({ filePath });
@@ -1060,7 +1060,7 @@ describe("public project skills route", () => {
     });
   });
 
-  it("maps scope, de-dupes shared bb skills, and sorts the listing", async () => {
+  it("maps scope, de-dupes shared Beam skills, and sorts the listing", async () => {
     await withTestHarness(async (harness) => {
       const { host, session } = seedHostSession(harness.deps, {
         id: "host-skills",
@@ -1296,7 +1296,7 @@ describe("public project skills route", () => {
     });
   });
 
-  it("lists and reads a bb plugin skill from the authoritative runtime catalog", async () => {
+  it("lists and reads a Beam plugin skill from the authoritative runtime catalog", async () => {
     const workDir = await mkdtemp(join(tmpdir(), "bb-plugin-skill-route-"));
     try {
       await withTestHarness(async (harness) => {
@@ -1365,7 +1365,7 @@ describe("public project skills route", () => {
     }
   });
 
-  it("deletes a bb skill via the confined daemon primitive", async () => {
+  it("deletes a Beam skill via the confined daemon primitive", async () => {
     await withTestHarness(async (harness) => {
       const { host, session } = seedHostSession(harness.deps, {
         id: "host-skill-delete",
@@ -1704,7 +1704,7 @@ describe("public project skills route", () => {
     });
   });
 
-  it("rejects a bb-project delete when no workspace resolves", async () => {
+  it("rejects a Beam project delete when no workspace resolves", async () => {
     await withTestHarness(async (harness) => {
       const { host: hostA, session } = seedHostSession(harness.deps, {
         id: "host-primary",

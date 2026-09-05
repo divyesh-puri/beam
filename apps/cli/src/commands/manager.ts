@@ -3,9 +3,9 @@ import { action, CliExitError } from "../action.js";
 
 const REMOVED_MANAGER_COMMAND_MESSAGE = [
   "Manager threads were replaced by parent threads.",
-  "Use `bb thread spawn --parent-thread <id>` to delegate work,",
-  "`bb thread list --parent-thread <id>` to list child threads,",
-  "and `bb thread show <id>` to inspect a thread.",
+  "Use `beam thread spawn --parent-thread <id>` to delegate work,",
+  "`beam thread list --parent-thread <id>` to list child threads,",
+  "and `beam thread show <id>` to inspect a thread.",
 ].join(" ");
 
 interface RemovedManagerCommandOptions {

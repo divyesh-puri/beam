@@ -92,7 +92,7 @@ afterEach(async () => {
   }
 });
 
-describe("bb app process", () => {
+describe("Beam app process", () => {
   it("uses the dev Node executable without Electron node mode", () => {
     const env = createBbAppProcessEnv({
       env: {

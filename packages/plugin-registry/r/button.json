@@ -3,7 +3,7 @@
   "name": "button",
   "type": "registry:ui",
   "title": "button",
-  "description": "BB ui \"button\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"button\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "@radix-ui/react-slot",
     "class-variance-authority"

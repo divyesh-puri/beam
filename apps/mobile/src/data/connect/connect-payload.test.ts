@@ -10,15 +10,15 @@ describe("parseConnectPairingPayload", () => {
       parseConnectPairingPayload(
         JSON.stringify({
           code: " abcd-efgh ",
-          serverUrl: "https://bee.getbb.app/",
-          apex: "https://getbb.app",
+          serverUrl: "https://bee.connect.beam.invalid/",
+          apex: "https://connect.beam.invalid",
           expiresAt: "2026-08-19T10:00:00Z",
         }),
       ),
     ).toEqual({
       code: "ABCD-EFGH",
-      serverUrl: "https://bee.getbb.app",
-      apexUrl: "https://getbb.app",
+      serverUrl: "https://bee.connect.beam.invalid",
+      apexUrl: "https://connect.beam.invalid",
       expiresAt: Date.UTC(2026, 7, 19, 10),
     });
     expect(
@@ -40,11 +40,11 @@ describe("parseConnectPairingPayload", () => {
   it("reads a pairing URL and a bare code; rejects arbitrary QR contents", () => {
     expect(
       parseConnectPairingPayload(
-        "bb://connect?code=abcd-efgh&serverUrl=https%3A%2F%2Fbee.getbb.app",
+        "beam://connect?code=abcd-efgh&serverUrl=https%3A%2F%2Fbee.connect.beam.invalid",
       ),
     ).toEqual({
       code: "ABCD-EFGH",
-      serverUrl: "https://bee.getbb.app",
+      serverUrl: "https://bee.connect.beam.invalid",
       apexUrl: null,
       expiresAt: null,
     });
@@ -61,19 +61,7 @@ describe("parseConnectPairingPayload", () => {
 });
 
 describe("resolveEnrollmentTarget", () => {
-  it("derives the apex from a handle, a server URL, or an explicit override", () => {
-    expect(
-      resolveEnrollmentTarget({
-        code: "abcd-efgh",
-        server: "bee",
-        apexUrl: "",
-      }),
-    ).toEqual({
-      ok: true,
-      code: "ABCD-EFGH",
-      apexUrl: "https://getbb.app",
-      serverUrl: "https://bee.getbb.app",
-    });
+  it("derives the apex from a server URL or uses an explicit override", () => {
     expect(
       resolveEnrollmentTarget({
         code: "ABCD-EFGH",
@@ -101,10 +89,23 @@ describe("resolveEnrollmentTarget", () => {
     expect(
       resolveEnrollmentTarget({ code: "ABCD-EFGH", server: "", apexUrl: "" }),
     ).toEqual({
-      ok: true,
-      code: "ABCD-EFGH",
-      apexUrl: "https://getbb.app",
-      serverUrl: null,
+      ok: false,
+      field: "apexUrl",
+      message: "Enter your Beam Connect service URL.",
+    });
+  });
+
+  it("fails closed for a handle without a Connect apex", () => {
+    expect(
+      resolveEnrollmentTarget({
+        code: "ABCD-EFGH",
+        server: "bee",
+        apexUrl: "",
+      }),
+    ).toEqual({
+      ok: false,
+      field: "apexUrl",
+      message: "Enter your Beam Connect service URL.",
     });
   });
 
@@ -133,7 +134,7 @@ describe("resolveEnrollmentTarget", () => {
       resolveEnrollmentTarget({
         code: "ABCD-EFGH",
         server: "bee",
-        apexUrl: "getbb.app",
+        apexUrl: "connect.beam.invalid",
       }),
     ).toMatchObject({ ok: false, field: "apexUrl" });
   });

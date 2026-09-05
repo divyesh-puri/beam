@@ -241,7 +241,7 @@ export async function waitForCompatibleServer(
 
   return {
     kind: "unavailable",
-    reason: `Timed out after ${args.timeoutMs}ms waiting for bb server. Last probe: ${lastResult.reason}`,
+    reason: `Timed out after ${args.timeoutMs}ms waiting for Beam server. Last probe: ${lastResult.reason}`,
     serverUrl: args.serverUrl,
   };
 }

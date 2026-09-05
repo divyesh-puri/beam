@@ -21,6 +21,7 @@ const VALUELESS_FLAGS = new Set([
   "notify",
   "remove-references",
   "unlink-bb-project",
+  "unlink-beam-project",
   "yes",
 ]);
 

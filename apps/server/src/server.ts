@@ -716,7 +716,7 @@ export function createApp(
   );
 
   if (!options?.staticDir) {
-    app.get("/", (context) => context.text("bb server"));
+    app.get("/", (context) => context.text("Beam server"));
   }
 
   if (options?.staticDir) {

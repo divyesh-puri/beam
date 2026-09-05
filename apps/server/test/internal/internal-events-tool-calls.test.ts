@@ -1414,7 +1414,7 @@ describe("internal event and tool-call routes", () => {
           {
             type: "inputText",
             text: expect.stringContaining(
-              "bb-managed workspace owned by another project",
+              "Beam-managed workspace owned by another project",
             ),
           },
         ],

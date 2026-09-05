@@ -41,10 +41,10 @@ describe("QA runbook contracts", () => {
 
     expect(runbook).toContain("Provisioning failure and next-message retry");
     expect(runbook).toContain(
-      'bb thread wait "$PROVISION_RETRY_THREAD_ID" --status error',
+      'beam thread wait "$PROVISION_RETRY_THREAD_ID" --status error',
     );
     expect(runbook).toContain(
-      'bb thread tell "$PROVISION_RETRY_THREAD_ID" "Say exactly: provisioning retry ok" --mode auto',
+      'beam thread tell "$PROVISION_RETRY_THREAD_ID" "Say exactly: provisioning retry ok" --mode auto',
     );
     expect(runbook).not.toContain(
       "Server restart during environment provisioning",
@@ -56,10 +56,10 @@ describe("QA runbook contracts", () => {
     const runbook = await readRunbook("manual-runbook.md");
 
     expect(runbook).toContain(
-      'bb thread wait "$SMOKE_THREAD_ID" --status idle --timeout 180 || true',
+      'beam thread wait "$SMOKE_THREAD_ID" --status idle --timeout 180 || true',
     );
     expect(runbook).toContain(
-      'if [ "$THREAD_STATE" != "idle" ]; then\n  bb thread tell "$SMOKE_THREAD_ID" "Say exactly: recovery ok" --mode auto',
+      'if [ "$THREAD_STATE" != "idle" ]; then\n  beam thread tell "$SMOKE_THREAD_ID" "Say exactly: recovery ok" --mode auto',
     );
   });
 });

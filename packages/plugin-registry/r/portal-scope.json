@@ -3,7 +3,7 @@
   "name": "portal-scope",
   "type": "registry:lib",
   "title": "portal-scope",
-  "description": "BB lib \"portal-scope\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam lib \"portal-scope\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "files": [
     {
       "path": "registry/lib/portal-scope.ts",

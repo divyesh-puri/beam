@@ -20,20 +20,20 @@ describe("redeemEnrollment", () => {
         credential: "bbcm_secret",
         machineId: "m1",
         handle: "account",
-        serverUrl: "https://bee.getbb.app",
+        serverUrl: "https://bee.connect.beam.invalid",
       }),
     );
     const result = await redeemEnrollment(
-      { apexUrl: "https://getbb.app", code: "ABCD-EFGH" },
+      { apexUrl: "https://connect.beam.invalid", code: "ABCD-EFGH" },
       fetchImpl,
     );
     expect(fetchImpl).toHaveBeenCalledWith(
-      "https://getbb.app/api/connect/redeem-machine",
+      "https://connect.beam.invalid/api/connect/redeem-machine",
       expect.objectContaining({ method: "POST" }),
     );
     expect(result.profile).toEqual({
       mode: "connect",
-      serverUrl: "https://bee.getbb.app",
+      serverUrl: "https://bee.connect.beam.invalid",
       handle: "bee",
       credential: "bbcm_secret",
       label: "bee",
@@ -48,10 +48,13 @@ describe("redeemEnrollment", () => {
         jsonResponse(409, { error: "machine-limit" }),
       );
     await expect(
-      redeemEnrollment({ apexUrl: "https://getbb.app", code: "X-1" }, limit),
+      redeemEnrollment(
+        { apexUrl: "https://connect.beam.invalid", code: "X-1" },
+        limit,
+      ),
     ).rejects.toBeInstanceOf(ConnectMachineRedeemError);
     const failure = await redeemEnrollment(
-      { apexUrl: "https://getbb.app", code: "X-1" },
+      { apexUrl: "https://connect.beam.invalid", code: "X-1" },
       limit,
     ).catch((error: unknown) => describeEnrollmentError(error));
     expect(failure).toMatchObject({ code: "machine_limit" });
@@ -63,7 +66,7 @@ describe("redeemEnrollment", () => {
       [409, "already-used", "already_used"],
     ] as const) {
       const failed = await redeemEnrollment(
-        { apexUrl: "https://getbb.app", code: "X-1" },
+        { apexUrl: "https://connect.beam.invalid", code: "X-1" },
         vi
           .fn<typeof fetch>()
           .mockResolvedValue(jsonResponse(status, { error: wire })),
@@ -81,15 +84,15 @@ describe("accountServerProfile", () => {
     expect(
       accountServerProfile(
         {
-          serverUrl: "https://bee.getbb.app",
+          serverUrl: "https://bee.connect.beam.invalid",
           handle: "bee",
           credential: "bbcm_1",
         },
-        { handle: "lab", name: "  ", url: "https://lab.getbb.app" },
+        { handle: "lab", name: "  ", url: "https://lab.connect.beam.invalid" },
       ),
     ).toEqual({
       mode: "connect",
-      serverUrl: "https://lab.getbb.app",
+      serverUrl: "https://lab.connect.beam.invalid",
       handle: "lab",
       credential: "bbcm_1",
       label: "lab",

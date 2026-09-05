@@ -85,8 +85,8 @@ function createConnectFakeHost(options?: {
 
 describe("deriveConnectBaseUrl", () => {
   it("drops the handle label to reach the apex", () => {
-    expect(deriveConnectBaseUrl("https://sawyer.getbb.app")).toBe(
-      "https://getbb.app",
+    expect(deriveConnectBaseUrl("https://sawyer.connect.beam.invalid")).toBe(
+      "https://connect.beam.invalid",
     );
     expect(deriveConnectBaseUrl("https://my-box.vibecodethis.site/")).toBe(
       "https://vibecodethis.site",
@@ -99,13 +99,13 @@ describe("resolveDefaultConnectBaseUrl", () => {
     expect(
       resolveDefaultConnectBaseUrl({
         NODE_ENV: "development",
-        BB_DEV_CONNECT_BASE_URL: "http://bb.localhost:42745/",
+        BB_DEV_CONNECT_BASE_URL: "http://beam.localhost:42745/",
       }),
-    ).toBe("http://bb.localhost:42745");
+    ).toBe("http://beam.localhost:42745");
     expect(
       resolveDefaultConnectBaseUrl({
         NODE_ENV: "production",
-        BB_DEV_CONNECT_BASE_URL: "http://bb.localhost:42745",
+        BB_DEV_CONNECT_BASE_URL: "http://beam.localhost:42745",
       }),
     ).toBe(DEFAULT_CONNECT_BASE_URL);
     expect(resolveDefaultConnectBaseUrl({ NODE_ENV: "development" })).toBe(
@@ -115,9 +115,9 @@ describe("resolveDefaultConnectBaseUrl", () => {
 
   it("rejects non-local or non-origin development values", () => {
     for (const value of [
-      "https://bb.localhost:42745",
-      "http://getbb.app:42745",
-      "http://bb.localhost:42745/dashboard",
+      "https://beam.localhost:42745",
+      "http://connect.beam.invalid:42745",
+      "http://beam.localhost:42745/dashboard",
       "not a url",
     ]) {
       expect(() =>
@@ -126,7 +126,7 @@ describe("resolveDefaultConnectBaseUrl", () => {
           BB_DEV_CONNECT_BASE_URL: value,
         }),
       ).toThrow(
-        "BB_DEV_CONNECT_BASE_URL must be an http://bb.localhost:<port> origin",
+        "BB_DEV_CONNECT_BASE_URL must be an http://beam.localhost:<port> origin",
       );
     }
   });
@@ -134,8 +134,8 @@ describe("resolveDefaultConnectBaseUrl", () => {
 
 describe("serverUrlForHandle", () => {
   it("prepends the handle label to the apex", () => {
-    expect(serverUrlForHandle("https://getbb.app", "sawyer")).toBe(
-      "https://sawyer.getbb.app",
+    expect(serverUrlForHandle("https://connect.beam.invalid", "sawyer")).toBe(
+      "https://sawyer.connect.beam.invalid",
     );
   });
 });
@@ -145,12 +145,12 @@ describe("headersForLoopbackRequest", () => {
     expect(
       headersForLoopbackRequest(
         [
-          ["Origin", "https://sawyer.getbb.app"],
+          ["Origin", "https://sawyer.connect.beam.invalid"],
           ["Content-Type", "application/json"],
-          ["Host", "sawyer.getbb.app"],
+          ["Host", "sawyer.connect.beam.invalid"],
         ],
         {
-          publicOrigin: "https://sawyer.getbb.app",
+          publicOrigin: "https://sawyer.connect.beam.invalid",
           loopbackOrigin: "http://127.0.0.1:38886",
         },
       ),
@@ -161,7 +161,7 @@ describe("headersForLoopbackRequest", () => {
 
     expect(
       headersForLoopbackRequest([["Origin", "https://evil.example"]], {
-        publicOrigin: "https://sawyer.getbb.app",
+        publicOrigin: "https://sawyer.connect.beam.invalid",
         loopbackOrigin: "http://127.0.0.1:38886",
       }),
     ).toEqual({ Origin: "https://evil.example" });
@@ -171,12 +171,12 @@ describe("headersForLoopbackRequest", () => {
     expect(
       headersForLoopbackRequest(
         [
-          ["Origin", "https://sawyer--8000.getbb.app"],
+          ["Origin", "https://sawyer--8000.connect.beam.invalid"],
           ["Content-Type", "text/plain"],
-          ["Host", "sawyer--8000.getbb.app"],
+          ["Host", "sawyer--8000.connect.beam.invalid"],
         ],
         {
-          publicOrigin: "https://sawyer--8000.getbb.app",
+          publicOrigin: "https://sawyer--8000.connect.beam.invalid",
           loopbackOrigin: "http://127.0.0.1:8000",
           host: "127.0.0.1:8000",
         },
@@ -193,31 +193,31 @@ describe("sharePublicUrl", () => {
   it("builds https://handle--port.base from the credential serverUrl", () => {
     expect(
       sharePublicUrl(
-        { serverUrl: "https://sawyer.getbb.app", handle: "sawyer" },
+        { serverUrl: "https://sawyer.connect.beam.invalid", handle: "sawyer" },
         8000,
       ),
-    ).toBe("https://sawyer--8000.getbb.app");
+    ).toBe("https://sawyer--8000.connect.beam.invalid");
   });
 
   it("uses a non-primary routing label when multi-server pairing stored one", () => {
     expect(
       sharePublicUrl(
         {
-          serverUrl: "https://sawyer-desktop.getbb.app",
+          serverUrl: "https://sawyer-desktop.connect.beam.invalid",
           handle: "sawyer-desktop",
         },
         8000,
       ),
-    ).toBe("https://sawyer-desktop--8000.getbb.app");
+    ).toBe("https://sawyer-desktop--8000.connect.beam.invalid");
   });
 
   it("uses HTTP and the local port for machine shares in local Cloud", () => {
     expect(
       machineSharePublicUrl(
-        { label: "sawyer-air", baseDomain: "bb.localhost:42745" },
+        { label: "sawyer-air", baseDomain: "beam.localhost:42745" },
         8000,
       ),
-    ).toBe("http://sawyer-air--8000.bb.localhost:42745");
+    ).toBe("http://sawyer-air--8000.beam.localhost:42745");
   });
 });
 
@@ -231,7 +231,7 @@ describe("parseSharePort / serverOwnPort", () => {
     expect(() => parseSharePort("nope")).toThrow(SharePortError);
   });
 
-  it("reads the bb server port from the loopback base URL", () => {
+  it("reads the Beam server port from the loopback base URL", () => {
     expect(serverOwnPort("http://127.0.0.1:38886")).toBe(38886);
     expect(serverOwnPort("http://127.0.0.1")).toBe(80);
   });
@@ -252,7 +252,7 @@ describe("ShareRegistry", () => {
       },
     };
     const credential = {
-      serverUrl: "https://sawyer.getbb.app",
+      serverUrl: "https://sawyer.connect.beam.invalid",
       handle: "sawyer",
       credential: "bbcred_x",
     };
@@ -286,7 +286,7 @@ describe("ShareRegistry", () => {
     await expect(registry.add(38886, serverHost)).rejects.toThrow(/own port/);
 
     const added = await registry.add(8000, serverHost);
-    expect(added.url).toBe("https://sawyer--8000.getbb.app");
+    expect(added.url).toBe("https://sawyer--8000.connect.beam.invalid");
     expect(registry.hasServerPort(8000)).toBe(true);
     expect(kv.get(SHARES_KV_KEY)).toMatchObject({
       "host-server:8000": { hostId: "host-server", port: 8000 },
@@ -306,7 +306,7 @@ describe("ShareRegistry", () => {
         hostId: "host-server",
         hostName: "Server",
         port: 8000,
-        url: "https://sawyer--8000.getbb.app",
+        url: "https://sawyer--8000.connect.beam.invalid",
         createdAt: expect.any(Number),
       },
     ]);
@@ -345,7 +345,7 @@ describe("ShareRegistry", () => {
       hostResolver: new ShareHostResolver(() => pluginBb.sdk),
       getLoopbackBaseUrl: () => "http://127.0.0.1:38886",
       getCredential: () => ({
-        serverUrl: "https://sawyer.getbb.app",
+        serverUrl: "https://sawyer.connect.beam.invalid",
         handle: "sawyer",
         credential: "bbcred_x",
       }),
@@ -359,7 +359,7 @@ describe("ShareRegistry", () => {
         hostName: SERVER_HOST_NAME,
         port: 3000,
         createdAt: 123,
-        url: "https://sawyer--3000.getbb.app",
+        url: "https://sawyer--3000.connect.beam.invalid",
       },
     ]);
     expect(kv.get(SHARES_KV_KEY)).toEqual({
@@ -447,7 +447,7 @@ describe("ShareRegistry", () => {
       hostResolver: new ShareHostResolver(() => pluginBb.sdk),
       getLoopbackBaseUrl: () => "http://127.0.0.1:38886",
       getCredential: () => ({
-        serverUrl: "https://sawyer.getbb.app",
+        serverUrl: "https://sawyer.connect.beam.invalid",
         handle: "sawyer",
         credential: "bbcred_x",
       }),
@@ -469,7 +469,7 @@ describe("ShareRegistry", () => {
         hostName: SERVER_HOST_NAME,
         port: 3000,
         createdAt: 123,
-        url: "https://sawyer--3000.getbb.app",
+        url: "https://sawyer--3000.connect.beam.invalid",
       },
     ]);
     await fakeHost.harness.dispose();
@@ -497,7 +497,7 @@ describe("ShareRegistry", () => {
       hostResolver: new ShareHostResolver(() => pluginBb.sdk),
       getLoopbackBaseUrl: () => "http://127.0.0.1:38886",
       getCredential: () => ({
-        serverUrl: "https://sawyer.getbb.app",
+        serverUrl: "https://sawyer.connect.beam.invalid",
         handle: "sawyer",
         credential: "bbcred_x",
       }),
@@ -554,7 +554,7 @@ describe("ShareRegistry", () => {
       hostResolver: new ShareHostResolver(() => pluginBb.sdk),
       getLoopbackBaseUrl: () => "http://127.0.0.1:38886",
       getCredential: () => ({
-        serverUrl: "https://sawyer.getbb.app",
+        serverUrl: "https://sawyer.connect.beam.invalid",
         handle: "sawyer",
         credential: "bbcred_x",
       }),
@@ -571,7 +571,7 @@ describe("ShareRegistry", () => {
         hostName: SERVER_HOST_NAME,
         port: 8000,
         createdAt: 1,
-        url: "https://sawyer--8000.getbb.app",
+        url: "https://sawyer--8000.connect.beam.invalid",
       },
     ]);
     expect(fakeHost.harness.logEntries).toEqual(
@@ -631,7 +631,7 @@ describe("ShareRegistry", () => {
       hostResolver: new ShareHostResolver(() => pluginBb.sdk),
       getLoopbackBaseUrl: () => "http://127.0.0.1:38886",
       getCredential: () => ({
-        serverUrl: "https://sawyer.getbb.app",
+        serverUrl: "https://sawyer.connect.beam.invalid",
         handle: "sawyer",
         credential: "bbcred_x",
       }),
@@ -658,7 +658,7 @@ describe("ShareRegistry", () => {
         hostName: SERVER_HOST_NAME,
         port: 8000,
         createdAt: 1,
-        url: "https://sawyer--8000.getbb.app",
+        url: "https://sawyer--8000.connect.beam.invalid",
       },
     ]);
     expect(ensureIdentity).toHaveBeenCalledTimes(1);
@@ -939,7 +939,7 @@ describe("TunnelSession routing", () => {
             kind: "ok",
             resolved: {
               origin: primary.origin,
-              publicOrigin: "https://sawyer.getbb.app",
+              publicOrigin: "https://sawyer.connect.beam.invalid",
             },
           };
         }
@@ -949,7 +949,7 @@ describe("TunnelSession routing", () => {
           kind: "ok",
           resolved: {
             origin: `http://127.0.0.1:${port}`,
-            publicOrigin: `https://sawyer--${port}.getbb.app`,
+            publicOrigin: `https://sawyer--${port}.connect.beam.invalid`,
             host: `127.0.0.1:${port}`,
           },
         };
@@ -967,7 +967,7 @@ describe("TunnelSession routing", () => {
       streamId: 1,
       method: "GET",
       path: "/hello",
-      headers: [["Origin", "https://sawyer.getbb.app"]],
+      headers: [["Origin", "https://sawyer.connect.beam.invalid"]],
       hasBody: false,
     });
     await waitFor(() =>
@@ -983,8 +983,8 @@ describe("TunnelSession routing", () => {
       method: "GET",
       path: "/app",
       headers: [
-        ["Origin", `https://sawyer--${share.port}.getbb.app`],
-        ["Host", `sawyer--${share.port}.getbb.app`],
+        ["Origin", `https://sawyer--${share.port}.connect.beam.invalid`],
+        ["Host", `sawyer--${share.port}.connect.beam.invalid`],
       ],
       hasBody: false,
       target: String(share.port),
@@ -1075,7 +1075,7 @@ describe("TunnelSession routing", () => {
         kind: "ok",
         resolved: {
           origin: origin.origin,
-          publicOrigin: "https://sawyer.getbb.app",
+          publicOrigin: "https://sawyer.connect.beam.invalid",
         },
       }),
     });
@@ -1166,7 +1166,7 @@ describe("TunnelSession routing", () => {
         kind: "ok",
         resolved: {
           origin: origin.origin,
-          publicOrigin: "https://sawyer.getbb.app",
+          publicOrigin: "https://sawyer.connect.beam.invalid",
         },
       }),
     });
@@ -1199,7 +1199,7 @@ describe("TunnelSession routing", () => {
     expect(headerNames).toContain("etag");
     expect(head.headers).toContainEqual([
       "server-timing",
-      expect.stringMatching(/^bb_connect_origin;dur=\d+(?:\.\d+)?$/),
+      expect.stringMatching(/^beam_connect_origin;dur=\d+(?:\.\d+)?$/),
     ]);
     const relayedBody = Buffer.concat(
       frames
@@ -1283,7 +1283,7 @@ describe("TunnelSession routing", () => {
         kind: "ok",
         resolved: {
           origin: origin.origin,
-          publicOrigin: "https://sawyer.getbb.app",
+          publicOrigin: "https://sawyer.connect.beam.invalid",
         },
       }),
       onRemoteClientsChange: (n) => {
@@ -1361,14 +1361,14 @@ describe("connect plugin", () => {
       lastRemoteActivityAt: null,
       shares: [],
     });
-    expect(status.dashboardUrl).toBe("https://getbb.app/dashboard");
+    expect(status.dashboardUrl).toBe("https://connect.beam.invalid/dashboard");
     expect(status.nextRetryAt).toBeNull();
     expect(harness.needsConfigurationMessages).toEqual([]);
   });
 
   it("uses the worktree-local Cloud for unpaired development", async () => {
     vi.stubEnv("NODE_ENV", "development");
-    vi.stubEnv("BB_DEV_CONNECT_BASE_URL", "http://bb.localhost:59329");
+    vi.stubEnv("BB_DEV_CONNECT_BASE_URL", "http://beam.localhost:59329");
     const fetchMock = vi.fn(
       async () =>
         new Response(
@@ -1380,21 +1380,21 @@ describe("connect plugin", () => {
     const { harness } = await loadPlugin();
 
     const before = (await harness.callRpc("status")) as ConnectStatus;
-    expect(before.dashboardUrl).toBe("http://bb.localhost:59329/dashboard");
+    expect(before.dashboardUrl).toBe("http://beam.localhost:59329/dashboard");
 
     const after = (await harness.callRpc("pair", {
       code: "ABCD",
     })) as ConnectStatus;
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://bb.localhost:59329/api/connect/redeem",
+      "http://beam.localhost:59329/api/connect/redeem",
       expect.objectContaining({ method: "POST" }),
     );
-    expect(after.url).toBe("http://sawyer.bb.localhost:59329");
+    expect(after.url).toBe("http://sawyer.beam.localhost:59329");
   });
 
   it("lets an explicit production server override the development default", async () => {
     vi.stubEnv("NODE_ENV", "development");
-    vi.stubEnv("BB_DEV_CONNECT_BASE_URL", "http://bb.localhost:59329");
+    vi.stubEnv("BB_DEV_CONNECT_BASE_URL", "http://beam.localhost:59329");
     const fetchMock = vi.fn(
       async () =>
         new Response(JSON.stringify({ error: "invalid-code" }), {
@@ -1407,11 +1407,11 @@ describe("connect plugin", () => {
     await expect(
       harness.callRpc("pair", {
         code: "ABCD",
-        server: "https://sawyer.getbb.app",
+        server: "https://sawyer.connect.beam.invalid",
       }),
     ).rejects.toThrow("invalid_code");
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://getbb.app/api/connect/redeem",
+      "https://connect.beam.invalid/api/connect/redeem",
       expect.objectContaining({ method: "POST" }),
     );
   });
@@ -1441,11 +1441,11 @@ describe("connect plugin", () => {
     const status = (await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://127.0.0.1:59321",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     })) as ConnectStatus;
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://getbb.app/api/connect/redeem",
+      "https://connect.beam.invalid/api/connect/redeem",
       expect.objectContaining({ method: "POST" }),
     );
     expect(status.paired).toBe(true);
@@ -1541,7 +1541,7 @@ describe("connect plugin", () => {
     await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://127.0.0.1:59322",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     const after = (await harness.callRpc("disconnect")) as ConnectStatus;
@@ -1572,7 +1572,7 @@ describe("connect plugin", () => {
     await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://127.0.0.1:59323",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     const after = (await harness.callRpc("disconnect")) as ConnectStatus;
@@ -1597,7 +1597,7 @@ describe("connect plugin", () => {
     await expect(
       harness.callRpc("pair", {
         code: "OLD",
-        server: "https://sawyer.getbb.app",
+        server: "https://sawyer.connect.beam.invalid",
       }),
     ).rejects.toThrow("expired_code");
     expect(await bb.storage.kv.get(CREDENTIAL_KV_KEY)).toBeUndefined();
@@ -1625,7 +1625,7 @@ describe("connect plugin", () => {
       await expect(
         harness.callRpc("pair", {
           code: "X",
-          server: "https://sawyer.getbb.app",
+          server: "https://sawyer.connect.beam.invalid",
         }),
       ).rejects.toThrow(testCase.code);
       await stopTunnel(host!);
@@ -1668,7 +1668,7 @@ describe("connect plugin", () => {
     await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59330",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     const shareUrl = "http://sawyer--8000.localhost:59330";
@@ -1861,7 +1861,10 @@ describe("connect plugin", () => {
 
   it("uses machine tunnel identity and declares per-host port sets", async () => {
     host = createConnectFakeHost({
-      remoteIdentity: { label: "sawyer-air", baseDomain: "getbb.app" },
+      remoteIdentity: {
+        label: "sawyer-air",
+        baseDomain: "connect.beam.invalid",
+      },
     });
     await plugin(host.bb as unknown as Parameters<typeof plugin>[0]);
     vi.stubGlobal(
@@ -1877,7 +1880,7 @@ describe("connect plugin", () => {
     await host.harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59333",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     await expect(
@@ -1886,7 +1889,7 @@ describe("connect plugin", () => {
       hostId: REMOTE_HOST_ID,
       hostName: REMOTE_HOST_NAME,
       port: 3000,
-      url: "https://sawyer-air--3000.getbb.app",
+      url: "https://sawyer-air--3000.connect.beam.invalid",
       createdAt: expect.any(Number),
     });
     expect(host.harness.sharedPortDeclarations).toEqual([
@@ -1953,7 +1956,7 @@ describe("connect plugin", () => {
     await host.harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59334",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     await expect(
@@ -1991,7 +1994,7 @@ describe("connect plugin", () => {
     await host.harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59335",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     let message = "";
@@ -2011,7 +2014,10 @@ describe("connect plugin", () => {
 
   it("empties machine declarations when the pairing is disconnected", async () => {
     host = createConnectFakeHost({
-      remoteIdentity: { label: "sawyer-air", baseDomain: "getbb.app" },
+      remoteIdentity: {
+        label: "sawyer-air",
+        baseDomain: "connect.beam.invalid",
+      },
     });
     await plugin(host.bb as unknown as Parameters<typeof plugin>[0]);
     vi.stubGlobal(
@@ -2027,7 +2033,7 @@ describe("connect plugin", () => {
     await host.harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59335",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
     await host.harness.callRpc("expose", {
       hostId: REMOTE_HOST_ID,
@@ -2075,7 +2081,7 @@ describe("connect plugin", () => {
     await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59340",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
 
     const result = (await harness.callRpc("listAccountServers")) as {
@@ -2133,7 +2139,7 @@ describe("connect plugin", () => {
         return new Response(
           JSON.stringify({
             cookie: {
-              domain: ".getbb.app",
+              domain: ".connect.beam.invalid",
               expiresAt: 2_000_000,
               name: "__Secure-bb-connect.desktop_session",
               value: "short-lived-signed-cookie",
@@ -2147,18 +2153,18 @@ describe("connect plugin", () => {
     const { harness } = await loadPlugin();
     await harness.callRpc("pair", {
       code: "ABCD",
-      server: "https://sawyer.getbb.app",
+      server: "https://sawyer.connect.beam.invalid",
     });
     await expect(harness.callRpc("createDesktopSession")).resolves.toEqual({
       cookie: {
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         expiresAt: 2_000_000,
         name: "__Secure-bb-connect.desktop_session",
         value: "short-lived-signed-cookie",
       },
     });
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://sawyer.getbb.app/api/connect/desktop-session",
+      "https://sawyer.connect.beam.invalid/api/connect/desktop-session",
       expect.objectContaining({
         method: "POST",
         headers: { "x-bb-connect-machine": "bbcred_durable" },
@@ -2176,12 +2182,12 @@ describe("connect plugin", () => {
             { status: 200 },
           );
         }
-        if (url === "https://getbb.app/api/connect/machine-code") {
+        if (url === "https://connect.beam.invalid/api/connect/machine-code") {
           return new Response(
             JSON.stringify({
               code: "ABCD-EFGH",
               expiresInMs: 600_000,
-              serverUrl: "https://sawyer.getbb.app",
+              serverUrl: "https://sawyer.connect.beam.invalid",
             }),
           );
         }
@@ -2192,17 +2198,18 @@ describe("connect plugin", () => {
     const { harness } = await loadPlugin();
     await harness.callRpc("pair", {
       code: "ABCD",
-      server: "https://sawyer.getbb.app",
+      server: "https://sawyer.connect.beam.invalid",
     });
     const before = Date.now();
     await expect(harness.callRpc("createMachineCode")).resolves.toMatchObject({
       code: "ABCD-EFGH",
-      serverUrl: "https://sawyer.getbb.app",
+      serverUrl: "https://sawyer.connect.beam.invalid",
       expiresAt: expect.any(Number),
     });
     const call = fetchMock.mock.calls.find(
       ([input]) =>
-        String(input) === "https://getbb.app/api/connect/machine-code",
+        String(input) ===
+        "https://connect.beam.invalid/api/connect/machine-code",
     );
     expect(call?.[1]).toEqual({
       method: "POST",
@@ -2233,7 +2240,7 @@ describe("connect plugin", () => {
           handle: "sawyer",
         });
       }
-      if (url === "https://getbb.app/api/connect/revoke-machine") {
+      if (url === "https://connect.beam.invalid/api/connect/revoke-machine") {
         return Response.json({ ok: true });
       }
       return new Response("not found", { status: 404 });
@@ -2242,14 +2249,14 @@ describe("connect plugin", () => {
     const { harness } = await loadPlugin();
     await harness.callRpc("pair", {
       code: "ABCD",
-      server: "https://sawyer.getbb.app",
+      server: "https://sawyer.connect.beam.invalid",
     });
 
     await expect(
       harness.callRpc("revokeMachine", { machineId: "machine-1" }),
     ).resolves.toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://getbb.app/api/connect/revoke-machine",
+      "https://connect.beam.invalid/api/connect/revoke-machine",
       expect.objectContaining({
         body: JSON.stringify({ machineId: "machine-1" }),
         headers: {
@@ -2271,14 +2278,14 @@ describe("connect plugin", () => {
           handle: "sawyer",
         });
       }
-      if (url === "http://bb.localhost:59330/api/connect/machine-code") {
+      if (url === "http://beam.localhost:59330/api/connect/machine-code") {
         return Response.json({
           code: "ABCD-EFGH",
           expiresInMs: 600_000,
-          serverUrl: "http://sawyer.bb.localhost:59330",
+          serverUrl: "http://sawyer.beam.localhost:59330",
         });
       }
-      if (url === "http://bb.localhost:59330/api/connect/revoke-machine") {
+      if (url === "http://beam.localhost:59330/api/connect/revoke-machine") {
         return Response.json({ ok: true });
       }
       return new Response("not found", { status: 404 });
@@ -2287,22 +2294,22 @@ describe("connect plugin", () => {
     const { harness } = await loadPlugin();
     await harness.callRpc("pair", {
       code: "ABCD",
-      server: "http://sawyer.bb.localhost:59330",
+      server: "http://sawyer.beam.localhost:59330",
     });
 
     await expect(harness.callRpc("createMachineCode")).resolves.toMatchObject({
       code: "ABCD-EFGH",
-      serverUrl: "http://sawyer.bb.localhost:59330",
+      serverUrl: "http://sawyer.beam.localhost:59330",
     });
     await expect(
       harness.callRpc("revokeMachine", { machineId: "machine-local" }),
     ).resolves.toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://bb.localhost:59330/api/connect/machine-code",
+      "http://beam.localhost:59330/api/connect/machine-code",
       expect.objectContaining({ method: "POST" }),
     );
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://bb.localhost:59330/api/connect/revoke-machine",
+      "http://beam.localhost:59330/api/connect/revoke-machine",
       expect.objectContaining({ method: "POST" }),
     );
   });
@@ -2325,7 +2332,7 @@ describe("connect plugin", () => {
     await harness.callRpc("pair", {
       code: "ABCD",
       server: "http://sawyer.localhost:59341",
-      baseUrl: "https://getbb.app",
+      baseUrl: "https://connect.beam.invalid",
     });
     await expect(harness.callRpc("listAccountServers")).rejects.toThrow(
       "unauthorized",
@@ -2355,16 +2362,28 @@ describe("connect CLI", () => {
     return host;
   }
 
-  it("bare `bb connect` prints a how-to, not an argument error", async () => {
+  it("bare `beam connect` prints a how-to, not an argument error", async () => {
     const { harness } = await loadCli();
     const result = await harness.runCli([]);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("getbb.app");
-    expect(result.stdout).toContain("bb connect status");
-    expect(result.stdout).toContain("bb connect expose");
+    expect(result.stdout).toContain("provisioned Beam Connect service");
+    expect(result.stdout).toContain("beam connect status");
+    expect(result.stdout).toContain("beam connect expose");
   });
 
-  it("`bb connect --code --server` pairs verbatim (the dashboard command)", async () => {
+  it("fails closed when code-only pairing has no provisioned Connect service", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const { harness } = await loadCli();
+
+    const result = await harness.runCli(["--code", "ABCD"]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Beam Connect is not provisioned");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("`beam connect --code --server` pairs verbatim (the dashboard command)", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(
@@ -2388,7 +2407,7 @@ describe("connect CLI", () => {
     );
   });
 
-  it("`bb connect status` and `bb connect off` round-trip", async () => {
+  it("`beam connect status` and `beam connect off` round-trip", async () => {
     const { harness } = await loadCli();
     const before = await harness.runCli(["status"]);
     expect(before.exitCode).toBe(0);
@@ -2419,7 +2438,7 @@ describe("connect CLI", () => {
       "--code",
       "OLD",
       "--server",
-      "https://sawyer.getbb.app",
+      "https://sawyer.connect.beam.invalid",
     ]);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Redeem failed (410): expired");
@@ -2429,14 +2448,14 @@ describe("connect CLI", () => {
     const { harness } = await loadCli();
     const result = await harness.runCli(["expose", "8000"]);
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("not connected to getbb.app");
+    expect(result.stderr).toContain("not connected to Beam Connect");
   });
 
   it("servers when unpaired errors clearly", async () => {
     const { harness } = await loadCli();
     const result = await harness.runCli(["servers"]);
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("not connected to getbb.app");
+    expect(result.stderr).toContain("not connected to Beam Connect");
   });
 
   it("servers lists account servers as a table or json", async () => {
@@ -2501,7 +2520,7 @@ describe("connect CLI", () => {
     const result = await harness.runCli(["machine-code"]);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('"Mobile app" experiment');
-    expect(result.stderr).toContain("bb settings experiment mobileApp true");
+    expect(result.stderr).toContain("beam settings experiment mobileApp true");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -2511,7 +2530,7 @@ describe("connect CLI", () => {
     const { harness } = await loadCli();
     const result = await harness.runCli(["machine-code"]);
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("not connected to getbb.app");
+    expect(result.stderr).toContain("not connected to Beam Connect");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -2525,12 +2544,12 @@ describe("connect CLI", () => {
             { status: 200 },
           );
         }
-        if (url === "https://getbb.app/api/connect/machine-code") {
+        if (url === "https://connect.beam.invalid/api/connect/machine-code") {
           return new Response(
             JSON.stringify({
               code: "K7QP-2M4X",
               expiresInMs: 600_000,
-              serverUrl: "https://sawyer.getbb.app",
+              serverUrl: "https://sawyer.connect.beam.invalid",
             }),
           );
         }
@@ -2543,15 +2562,17 @@ describe("connect CLI", () => {
       "--code",
       "ABCD",
       "--server",
-      "https://sawyer.getbb.app",
+      "https://sawyer.connect.beam.invalid",
     ]);
 
     const before = Date.now();
     const text = await harness.runCli(["machine-code"]);
     expect(text.exitCode).toBe(0);
     expect(text.stdout).toContain("Code:       K7QP-2M4X");
-    expect(text.stdout).toContain("Server:     https://sawyer.getbb.app");
-    expect(text.stdout).toContain("Apex:       https://getbb.app");
+    expect(text.stdout).toContain(
+      "Server:     https://sawyer.connect.beam.invalid",
+    );
+    expect(text.stdout).toContain("Apex:       https://connect.beam.invalid");
     expect(text.stdout).toContain("in about 10 min");
     expect(text.stdout).toContain("Add mobile device");
 
@@ -2560,14 +2581,15 @@ describe("connect CLI", () => {
     const parsed = JSON.parse(json.stdout ?? "") as Record<string, unknown>;
     expect(parsed).toEqual({
       code: "K7QP-2M4X",
-      serverUrl: "https://sawyer.getbb.app",
-      apex: "https://getbb.app",
+      serverUrl: "https://sawyer.connect.beam.invalid",
+      apex: "https://connect.beam.invalid",
       expiresAt: expect.any(Number),
     });
     expect(parsed.expiresAt as number).toBeGreaterThanOrEqual(before + 600_000);
     const call = fetchMock.mock.calls.find(
       ([input]) =>
-        String(input) === "https://getbb.app/api/connect/machine-code",
+        String(input) ===
+        "https://connect.beam.invalid/api/connect/machine-code",
     );
     expect(call?.[1]).toEqual({
       method: "POST",
@@ -2599,12 +2621,12 @@ describe("connect CLI", () => {
       "--code",
       "ABCD",
       "--server",
-      "https://sawyer.getbb.app",
+      "https://sawyer.connect.beam.invalid",
     ]);
     const result = await harness.runCli(["machine-code"]);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("machine limit");
-    expect(result.stderr).toContain("https://getbb.app/dashboard");
+    expect(result.stderr).toContain("https://connect.beam.invalid/dashboard");
     expect(result.stderr).not.toContain("machine_limit");
   });
 
@@ -2655,7 +2677,10 @@ describe("connect CLI", () => {
 
   it("resolves the thread host, honors --host, and defaults no-context calls to the server host", async () => {
     host = createConnectFakeHost({
-      remoteIdentity: { label: "sawyer-air", baseDomain: "getbb.app" },
+      remoteIdentity: {
+        label: "sawyer-air",
+        baseDomain: "connect.beam.invalid",
+      },
     });
     await plugin(host.bb as unknown as Parameters<typeof plugin>[0]);
     host.harness.sdk.stub(
@@ -2684,7 +2709,7 @@ describe("connect CLI", () => {
     });
     expect(fromThread).toMatchObject({
       exitCode: 0,
-      stdout: "https://sawyer-air--3000.getbb.app\n",
+      stdout: "https://sawyer-air--3000.connect.beam.invalid\n",
     });
 
     const overridden = await host.harness.runCli(
@@ -2716,7 +2741,7 @@ describe("connect CLI", () => {
           hostId: REMOTE_HOST_ID,
           hostName: REMOTE_HOST_NAME,
           port: 3000,
-          url: "https://sawyer-air--3000.getbb.app",
+          url: "https://sawyer-air--3000.connect.beam.invalid",
           createdAt: expect.any(Number),
         },
       ],
@@ -2730,7 +2755,7 @@ describe("connect CLI", () => {
     );
     const status = await host.harness.runCli(["status"]);
     expect(status.stdout).toContain(
-      `${REMOTE_HOST_NAME} (${REMOTE_HOST_ID})  3000  https://sawyer-air--3000.getbb.app`,
+      `${REMOTE_HOST_NAME} (${REMOTE_HOST_ID})  3000  https://sawyer-air--3000.connect.beam.invalid`,
     );
 
     const removed = await host.harness.runCli(["unexpose", "3000"], {

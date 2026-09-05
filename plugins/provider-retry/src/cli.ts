@@ -30,17 +30,17 @@ export function registerProviderRetryCli(
       {
         name: "status",
         summary: "Show pending automatic provider retries",
-        usage: "bb provider-retry status [thread-id] [--json]",
+        usage: "beam provider-retry status [thread-id] [--json]",
       },
       {
         name: "cancel",
         summary: "Cancel a pending automatic provider retry",
-        usage: "bb provider-retry cancel <thread-id> [--json]",
+        usage: "beam provider-retry cancel <thread-id> [--json]",
       },
       {
         name: "retry",
         summary: "Manually continue a provider-limited turn",
-        usage: "bb provider-retry retry <thread-id> [--json]",
+        usage: "beam provider-retry retry <thread-id> [--json]",
       },
     ],
     async run(argv, context) {
@@ -49,7 +49,7 @@ export function registerProviderRetryCli(
         return {
           exitCode: 2,
           stderr:
-            "Usage: bb provider-retry <status|cancel|retry> [thread-id] [--json]\n",
+            "Usage: beam provider-retry <status|cancel|retry> [thread-id] [--json]\n",
         };
       }
 
@@ -59,7 +59,7 @@ export function registerProviderRetryCli(
           return {
             exitCode: 2,
             stderr:
-              "A thread id is required: bb provider-retry retry <thread-id>\n",
+              "A thread id is required: beam provider-retry retry <thread-id>\n",
           };
         }
         const result = await service.retry(threadId);
@@ -79,7 +79,7 @@ export function registerProviderRetryCli(
           return {
             exitCode: 2,
             stderr:
-              "A thread id is required: bb provider-retry cancel <thread-id>\n",
+              "A thread id is required: beam provider-retry cancel <thread-id>\n",
           };
         }
         const cancelled = await service.cancel(threadId);

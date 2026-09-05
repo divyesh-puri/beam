@@ -5,8 +5,8 @@ const SIGNATURE_VERSION = "v0";
 const SIGNATURE_MAX_AGE_SECONDS = 5 * 60;
 
 const CONFIGURE_HINT =
-  "Set botToken, signingSecret, and project with `bb plugin config slack-bot`, " +
-  "then `bb plugin reload slack-bot`.";
+  "Set botToken, signingSecret, and project with `beam plugin config slack-bot`, " +
+  "then `beam plugin reload slack-bot`.";
 
 function verifySlackSignature(args: {
   signingSecret: string;
@@ -63,8 +63,8 @@ export default async function plugin(bb: BbPluginApi) {
     },
     project: {
       type: "project",
-      label: "BB project for mention threads",
-      description: "Mentions spawn BB threads in this project.",
+      label: "Beam project for mention threads",
+      description: "Mentions spawn Beam threads in this project.",
     },
   });
 

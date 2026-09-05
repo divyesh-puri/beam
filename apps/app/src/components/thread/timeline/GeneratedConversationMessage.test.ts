@@ -21,7 +21,7 @@ function systemTitle({
   return generatedConversationTitle({
     originKind: null,
     sourceKind: "system",
-    sourceName: "BB",
+    sourceName: "Beam",
     sourceThreadId: null,
     sourceIsPluginSideChat: false,
     systemMessageKind,

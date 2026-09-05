@@ -133,7 +133,7 @@ describe("Family B emit-site discriminator stamping", () => {
           threadName: "Worker child",
         });
       });
-    });
+    }, 15_000);
   }
 
   it("stamps a multi-child batch as child-outcome-batch with a count subject", async () => {

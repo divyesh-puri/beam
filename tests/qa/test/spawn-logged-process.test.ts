@@ -247,7 +247,7 @@ describe("spawnLoggedProcess", () => {
     expect(spawnMockState.invocations[0]?.options.detached).toBe(true);
   });
 
-  it("keeps standalone server runtime env isolated from inherited bb and ambient OpenAI env", async () => {
+  it("keeps standalone server runtime env isolated from inherited Beam and ambient OpenAI env", async () => {
     vi.stubEnv("BB_APP_URL", "https://inherited-app.example.test");
     vi.stubEnv("BB_DATA_DIR", "/Users/example/.bb-dev");
     vi.stubEnv("BB_SERVER_PORT", "3334");

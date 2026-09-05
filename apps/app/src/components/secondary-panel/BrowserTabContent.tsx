@@ -219,7 +219,9 @@ export function BrowserAutomationIndicator({
   return (
     <div className="flex shrink-0 items-center gap-2 rounded-md border border-border bg-background/70 px-2 py-1 text-xs text-muted-foreground">
       <span>
-        <span className="font-medium text-foreground">Agent using this tab</span>
+        <span className="font-medium text-foreground">
+          Agent using this tab
+        </span>
         {` · Thread ${threadId}`}
       </span>
       <button
@@ -384,7 +386,7 @@ function BrowserUnavailable() {
           COARSE_POINTER_TEXT_SM_CLASS,
         )}
       >
-        The in-app web browser runs in the bb desktop app. Open this thread
+        The in-app web browser runs in the Beam desktop app. Open this thread
         there to browse the web.
       </p>
     </div>

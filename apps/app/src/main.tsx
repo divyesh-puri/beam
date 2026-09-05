@@ -37,7 +37,7 @@ disableGlobalCursorStyles();
 createRoot(document.getElementById("root")!, {
   onUncaughtError: (error, errorInfo) => {
     console.error(
-      "[bb] uncaught render error — the app root was torn down",
+      "[beam] uncaught render error — the app root was torn down",
       error,
       errorInfo.componentStack,
     );

@@ -297,7 +297,7 @@ export function createPluginRegistration(context: PluginRegistrationContext) {
       identity.sourceIntent.kind === "git"
     ) {
       throw new Error(
-        `plugin "${pluginId}" is already installed; use \`bb plugin update ${pluginId}\` or remove it before reinstalling`,
+        `plugin "${pluginId}" is already installed; use \`beam plugin update ${pluginId}\` or remove it before reinstalling`,
       );
     }
   }
@@ -416,7 +416,7 @@ export function createPluginRegistration(context: PluginRegistrationContext) {
           );
     if (isBbManagedWorkspacePath({ dataDir: deps.dataDir, path: rootDir })) {
       logger.warn(
-        `plugin "${rootDir}" is installed from inside a bb-managed workspace; ` +
+        `plugin "${rootDir}" is installed from inside a Beam-managed workspace; ` +
           "its source will be deleted when that environment is destroyed (e.g. when the owning thread is archived). " +
           "Reinstall from a stable path outside the managed workspace to avoid losing it.",
       );

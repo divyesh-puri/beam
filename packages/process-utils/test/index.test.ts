@@ -278,7 +278,7 @@ describe("process utils", () => {
     ).toBeNull();
   });
 
-  it("scrubs inherited bb runtime env vars and node mode", () => {
+  it("scrubs inherited Beam runtime env vars and node mode", () => {
     const env: NodeJS.ProcessEnv = {
       BB_DATA_DIR: "/tmp/bb-data",
       BB_HOST_DAEMON_PORT: "38887",

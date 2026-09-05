@@ -276,8 +276,8 @@ export function NewProjectDialog({
             ) : null}
           </Field>
           <Field
-            label="Linked bb project"
-            hint="Optional. Linking a bb project enables dispatching to agents."
+            label="Linked Beam project"
+            hint="Optional. Linking a Beam project enables dispatching to agents."
           >
             <BbProjectLinkPicker
               state={linkState}

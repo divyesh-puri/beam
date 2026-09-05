@@ -1,16 +1,16 @@
 # Provider plugin API
 
-This document is the reference for BB's provider plugin surface — what "a
+This document is the reference for Beam's provider plugin surface — what "a
 provider is a plugin" means. It has no phases: every change that touches this
 surface keeps it true, and a test (`packages/plugin-sdk/src/__tests__/
 provider-plugin-doc.test.ts`) checks its code blocks against the real types.
 Members that still carry the `experimental_` prefix are named with it here;
 each has an entry in [api_to_audit.md](api_to_audit.md) saying why.
 
-A "provider" is a coding agent BB can run a thread on (Claude Code, Codex, Pi,
+A "provider" is a coding agent Beam can run a thread on (Claude Code, Codex, Pi,
 ACP agents such as Cursor or Amp). The design goal is that **everything a
 provider touches is owned by its plugin** — translating the agent's native
-output into BB's data model, projecting that data onto the timeline, and how
+output into Beam's data model, projecting that data onto the timeline, and how
 its tools are represented — with the smallest possible provider-agnostic core.
 
 ## Principles
@@ -44,22 +44,23 @@ own settings that produce registrations at runtime.
 
 ```ts
 bb.providers.register({
-  id: "claude-code",             // flat; first registration wins; no reservation
+  id: "claude-code", // flat; first registration wins; no reservation
   displayName: "Claude Code",
-  family: undefined,             // optional grouping key (the ACP agents share one)
-  icon: "./icons/claude.svg",    // a plugin SVG, served as logoUrl; a glyph name; or "<pluginId>/<name>"
+  family: undefined, // optional grouping key (the ACP agents share one)
+  icon: "./icons/claude.svg", // a plugin SVG, served as logoUrl; a glyph name; or "<pluginId>/<name>"
   strings: {
     signInHint: "Run `claude` on the machine to sign in.",
     expiredHint: "Your Claude session expired. Run `claude`, then reload.",
     installUrl: "https://docs.anthropic.com/claude-code",
-    brandPrefix: "Claude ",      // optional; stripped from model display names
-    planModeCopy: undefined,     // optional; plan-mode banner copy
-    iconTint: undefined,         // optional { light, dark }
+    brandPrefix: "Claude ", // optional; stripped from model display names
+    planModeCopy: undefined, // optional; plan-mode banner copy
+    iconTint: undefined, // optional { light, dark }
   },
   maintenance: { health: true, usage: true, installation: true }, // each defaults to false
-  capabilities: {                // pre-session facts, one client shape: ProviderInfo
+  capabilities: {
+    // pre-session facts, one client shape: ProviderInfo
     permissionModes: ["accept-edits", "auto", "full"], // closed core enum
-    fork: "checkpoint",          // "none" | "tip" | "checkpoint"
+    fork: "checkpoint", // "none" | "tip" | "checkpoint"
     supportsNativeUserQuestion: true,
     supportsManualCompaction: true,
     supportsThreadArchive: true,
@@ -67,22 +68,24 @@ bb.providers.register({
     supportsServiceTier: false,
     reasoningLevels: ["low", "high"], // the coarse ladder; `reasoningLevels` below is precise
   },
-  reasoningLevels: [             // picker options; model/list is precise
+  reasoningLevels: [
+    // picker options; model/list is precise
     { id: "low", label: "Low" },
     { id: "high", label: "High" },
   ],
-  serviceTiers: undefined,       // optional; open list, model/list is precise
-  composerActions: ["plan"],     // "plan" | "goal"
-  extensionKinds: {},            // "<name>": { item?: Schema, state?: Schema }
+  serviceTiers: undefined, // optional; open list, model/list is precise
+  composerActions: ["plan"], // "plan" | "goal"
+  extensionKinds: {}, // "<name>": { item?: Schema, state?: Schema }
   models: { fallback: [], scope: "host" }, // cold-cache placeholder; scope is
-                                 // "host" | "workspace" (default): how far one
-                                 // model/list answer travels
+  // "host" | "workspace" (default): how far one
+  // model/list answer travels
   env: { passthrough: ["BB_CLAUDE_CODE_EXECUTABLE"] },
-  deriveProviderOptions(ctx) {   // called on every command
+  deriveProviderOptions(ctx) {
+    // called on every command
     // ctx: { threadId, projectId, model, permissionMode, promptMode?, settings }
-    return {};                   // opaque JSON handed to this plugin's bridge
+    return {}; // opaque JSON handed to this plugin's bridge
   },
-})
+});
 // => { dispose(): void }
 ```
 
@@ -96,7 +99,7 @@ namePrefix?, skipIfManifest? }`, where `recursive` scans nested skill
 directories, `ancestors` (project roots only) also scans the same relative
 directory in every ancestor of the workspace up to the repository root,
 `namePrefix` is prepended to every name under the root, and `skipIfManifest`
-names the marker file whose presence makes bb skip a directory as a vendor
+names the marker file whose presence makes Beam skip a directory as a vendor
 plugin rather than a skill; a symlink out of a project root is followed
 within the workspace for a plain root and within the repository root for a
 root that walks ancestors or that the plugin resolved) and
@@ -107,7 +110,7 @@ plugins, config-file entries; an answer lists each path once per side, and
 the `@get-bb/plugin-sdk/host` vendor-plugin readers keep the first root per
 path in answer order). Declared roots are relative to the host home
 (`user`) or the workspace (`project`) only; a host-absolute directory is
-always the resolver's answer. bb scans each absolute path once per provider
+always the resolver's answer. Beam scans each absolute path once per provider
 across the declared and resolved roots: the first root in declaration order
 wins — declared skills (project, then user), declared commands, then the
 resolved skills and commands, each in the order given — and a later root with
@@ -130,8 +133,10 @@ Rules:
 
 ```ts
 export const experimental_providerBridge = experimental_defineProviderBridge({
-  handleLine, start, onClose,
-})
+  handleLine,
+  start,
+  onClose,
+});
 ```
 
 The export name and `experimental_defineProviderBridge` / `experimental_apiVersion`
@@ -261,7 +266,6 @@ colours. The web also paints `oklch()`, `lab()`, `lch()`, `color()` and a
 percentage alpha through CSS; React Native's colour parser does not, so on
 mobile such a tint falls back to the neutral row colour (never to black).
 
-
 Genericity rule: model fallback, context cleared, compaction skipped, and
 background work stay core. Codex goals and the Codex `macos` permission
 profile are codex extension kinds, with read-time conversion of persisted
@@ -331,7 +335,7 @@ the id of the plugin's `pendingInteraction` slot registration and `data` is
 whatever that form reads (the kind grammar is lowercase `[a-z0-9-]`, so a
 form a bridge can address must register a lowercase id). No permission mode
 answers a request: it reaches the user through the plugin's form on the web
-app (`bb thread interactions respond <id> --value '<json>'` from the CLI;
+app (`beam thread interactions respond <id> --value '<json>'` from the CLI;
 the phone shows a card that points at the desktop app), and the answer comes
 back as `{ kind: "request_answer", value }` — the form's submitted value,
 capped at 64 KiB (`PLUGIN_INTERACTION_MAX_PAYLOAD_BYTES`, the same cap on the
@@ -360,7 +364,7 @@ plugin renders its own extension kinds and the generic `tool` items its
 provider emitted:
 
 ```ts
-app.slots.experimental_timelineRenderer({ kind, component })
+app.slots.experimental_timelineRenderer({ kind, component });
 // component props: { row, payload, presentation, thread, Original }
 ```
 
@@ -394,7 +398,7 @@ trust, identical to every other plugin.
 
 ## 7. AI services
 
-bb's helper inference (thread titles, commit messages) and voice transcription
+Beam's helper inference (thread titles, commit messages) and voice transcription
 are plugin-served too. A plugin registers
 `bb.experimental_aiServices.register({ id, displayName, kinds })` and
 implements `experimental_aiServicesHostContract`

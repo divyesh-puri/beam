@@ -248,7 +248,7 @@ export function createProtocolSelfUpdater(
 
         const tarballPath = join(
           options.dataDir,
-          `bb-app-update-${process.pid}.tgz`,
+          `beam-runtime-update-${process.pid}.tgz`,
         );
         try {
           const tarballUrl = new URL("/install/bb-app.tgz", options.serverUrl);

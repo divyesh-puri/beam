@@ -228,7 +228,7 @@ export function createPluginUpdates(
           detail:
             `security check failed: ${url} now publishes "${ref}" as a branch, but this install ` +
             `${evidence === "tag" ? "recorded it as a tag" : "has no local record of its ref kind"}. ` +
-            `bb keeps the plugin pinned to ${row.gitResolvedCommit ?? "its recorded commit"} rather than ` +
+            `Beam keeps the plugin pinned to ${row.gitResolvedCommit ?? "its recorded commit"} rather than ` +
             "tracking that branch. Remove the plugin and install it again to accept the new ref",
         };
       }
@@ -565,7 +565,7 @@ export function createPluginUpdates(
             ok: false,
             error:
               row.sourceKind === "path"
-                ? `plugin "${id}" is a local path source with no update channel; edit it in place and run \`bb plugin reload ${id}\`, or move it with \`bb plugin install path:<new directory>\` (settings, secrets, and schedules are kept)`
+                ? `plugin "${id}" is a local path source with no update channel; edit it in place and run \`beam plugin reload ${id}\`, or move it with \`beam plugin install path:<new directory>\` (settings, secrets, and schedules are kept)`
                 : `plugin "${id}" is pinned by its source intent; remove and reinstall it with an npm range, a git branch, or a git semver range to track updates`,
           };
         }

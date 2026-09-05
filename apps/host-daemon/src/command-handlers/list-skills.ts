@@ -145,7 +145,7 @@ function resolveDeletableSkillRoot(
     if (cwd === null) {
       throw new CommandDispatchError(
         "invalid_path",
-        "cwd is required for a bb-project skill",
+        "cwd is required for a Beam project skill",
       );
     }
     if (!path.isAbsolute(cwd)) {
@@ -251,7 +251,7 @@ export async function writeHostSkill(
   if (realTarget !== path.join(realRoot, command.name)) {
     throw new CommandDispatchError(
       "skill_outside_root",
-      "Refusing to edit a skill that resolves outside its bb root",
+      "Refusing to edit a skill that resolves outside its Beam root",
     );
   }
   const skillFilePath = path.join(realTarget, SKILL_FILE_NAME);

@@ -115,7 +115,7 @@ describe("syncPluginTypes", () => {
     await syncPluginTypes({ rootDir, app: true });
 
     const entries = await readdir(join(rootDir, "types"));
-    expect(entries.filter((name) => name.includes("bb-tmp"))).toEqual([]);
+    expect(entries.filter((name) => name.includes("beam-tmp"))).toEqual([]);
   });
 
   it("check mode reports stale files and writes nothing", async () => {

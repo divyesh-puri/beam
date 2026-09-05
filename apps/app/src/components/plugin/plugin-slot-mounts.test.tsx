@@ -2317,7 +2317,7 @@ describe("file opener experimental_Original alias", () => {
     expect(renders).toBe(2);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn).toHaveBeenCalledWith(
-      "experimental_Original is deprecated; use Original. Removed in bb 0.42",
+      "experimental_Original is deprecated; use Original. Removed in Beam 0.42",
     );
   });
 

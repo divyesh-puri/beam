@@ -49,7 +49,7 @@ function CodeRendererSetting({
   if (automaticProvider === undefined) return null;
   const builtInOption = {
     key: BUILT_IN_REPLACEMENT_PROVIDER,
-    title: "bb (built-in)",
+    title: "Beam (built-in)",
     description: builtInDescription,
   };
   const options = [
@@ -120,15 +120,15 @@ export function CodeRendererSettings() {
     <>
       <CodeRendererSetting
         label="Source code"
-        description="Choose automatic activation, BB's viewer, or a specific plugin on this device."
-        builtInDescription="Syntax highlighting and gutters from the bb code theme."
+        description="Choose automatic activation, Beam's viewer, or a specific plugin on this device."
+        builtInDescription="Syntax highlighting and gutters from the Beam code theme."
         preferenceAtom={sourceCodeRendererProviderAtom}
         slots={sourceCodeRenderers}
       />
       <CodeRendererSetting
         label="Diffs"
         description="Applies to file diffs in threads, the diff panel, and plugin views."
-        builtInDescription="Unified and split diffs from the bb code theme."
+        builtInDescription="Unified and split diffs from the Beam code theme."
         preferenceAtom={diffRendererProviderAtom}
         slots={diffRenderers}
       />

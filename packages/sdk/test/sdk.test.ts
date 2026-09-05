@@ -1364,7 +1364,7 @@ describe("@bb/sdk", () => {
       provenance: "catalog" as const,
       isOrphanedBuiltin: false,
       catalogEntryId: "notes",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       sourceDisplay: "npm · @bb/notes · tracks compatible",
       updateState: {},
       enabled: true,

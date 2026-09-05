@@ -633,7 +633,7 @@ describe("completed turn summary rendering", () => {
       initiator: "system",
       senderThreadId: null,
       target: { kind: "auto", expectedTurnId: "turn-1" },
-      text: "[bb system] Continue after reconnect.",
+      text: "[Beam system] Continue after reconnect.",
     });
     events.push(
       steerRequest,

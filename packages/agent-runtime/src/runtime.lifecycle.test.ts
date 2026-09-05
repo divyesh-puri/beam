@@ -311,9 +311,9 @@ describe("createAgentRuntime lifecycle", () => {
           env: record.env,
           skillRoots: [
             {
-              id: "bb-cli",
+              id: "beam-cli",
               path: skillRootPath,
-              skills: [{ name: "bb-cli", description: "Use the bb CLI." }],
+              skills: [{ name: "beam-cli", description: "Use the Beam CLI." }],
             },
           ],
           onEvent: () => undefined,
@@ -331,9 +331,9 @@ describe("createAgentRuntime lifecycle", () => {
       expect(record.last("skills/configure")?.params).toEqual({
         roots: [
           {
-            id: "bb-cli",
+            id: "beam-cli",
             path: skillRootPath,
-            skills: [{ name: "bb-cli", description: "Use the bb CLI." }],
+            skills: [{ name: "beam-cli", description: "Use the Beam CLI." }],
           },
         ],
       });
@@ -354,7 +354,7 @@ describe("createAgentRuntime lifecycle", () => {
         runtime: {
           workspacePath: tmpDir,
           env: record.env,
-          skillRoots: [{ id: "bb-cli", path: skillRootPath, skills: [] }],
+          skillRoots: [{ id: "beam-cli", path: skillRootPath, skills: [] }],
           onEvent: () => undefined,
         },
       });
@@ -368,7 +368,7 @@ describe("createAgentRuntime lifecycle", () => {
       });
 
       expect(record.last("skills/configure")?.params).toEqual({
-        roots: [{ id: "bb-cli", path: skillRootPath, skills: [] }],
+        roots: [{ id: "beam-cli", path: skillRootPath, skills: [] }],
       });
 
       await runtime.shutdown();

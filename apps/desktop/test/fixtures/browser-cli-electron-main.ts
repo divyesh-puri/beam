@@ -7,21 +7,26 @@ import { createDesktopWindowIdentityRegistry } from "../../src/desktop-window-id
 
 const rendererUrl = process.env.BB_BROWSER_CLI_RENDERER_URL;
 const preloadPath = process.env.BB_BROWSER_CLI_PRELOAD_PATH;
-if (rendererUrl === undefined || preloadPath === undefined) throw new Error("Browser CLI Electron fixture environment is incomplete");
+if (rendererUrl === undefined || preloadPath === undefined)
+  throw new Error("Browser CLI Electron fixture environment is incomplete");
 
 const manager = createDesktopBrowserViewManager({
   activateHostWindow: (hostWebContentsId) => {
     app.focus({ steal: true });
-    BrowserWindow.getAllWindows().find((candidate) => candidate.webContents.id === hostWebContentsId)?.focus();
+    BrowserWindow.getAllWindows()
+      .find((candidate) => candidate.webContents.id === hostWebContentsId)
+      ?.focus();
   },
   dispatchAppCommand: () => {},
   focusHostWebContents: () => {},
-  partition: `persist:bb-browser-cli-${process.pid}`,
+  partition: `persist:beam-browser-cli-${process.pid}`,
   resolveAppCommand: () => null,
 });
 const identities = createDesktopWindowIdentityRegistry();
 registerDesktopBrowserIpc(manager);
-ipcMain.handle(BB_DESKTOP_GET_WINDOW_IDENTITY_CHANNEL, (event) => identities.identityFor(event.sender.id));
+ipcMain.handle(BB_DESKTOP_GET_WINDOW_IDENTITY_CHANNEL, (event) =>
+  identities.identityFor(event.sender.id),
+);
 
 app.whenReady().then(async () => {
   const hostWindow = new BrowserWindow({
@@ -45,10 +50,15 @@ app.whenReady().then(async () => {
     const deadline = Date.now() + 5_000;
     while (Date.now() < deadline) {
       if (
-        manager.getAutomationPageState({ hostWindow, targetId: message.targetId }) === null &&
+        manager.getAutomationPageState({
+          hostWindow,
+          targetId: message.targetId,
+        }) === null &&
         hostWindow.contentView.children.length === 0
       ) {
-        process.stdout.write(`${JSON.stringify({ fixture: "cleanup", noDebuggerOrView: true })}\n`);
+        process.stdout.write(
+          `${JSON.stringify({ fixture: "cleanup", noDebuggerOrView: true })}\n`,
+        );
         manager.destroyAll();
         hostWindow.destroy();
         app.exit(0);

@@ -1,7 +1,7 @@
 import changelogSource from "../../../../../CHANGELOG.md?raw";
 
 const LATEST_CHANGELOG_SOURCE_URL =
-  "https://raw.githubusercontent.com/get-bb/bb/main/CHANGELOG.md";
+  "https://raw.githubusercontent.com/divyesh-puri/beam/main/CHANGELOG.md";
 
 export type ChangelogBlock =
   | { kind: "paragraph"; text: string }
@@ -52,7 +52,7 @@ export const CHANGELOG_RELEASE_META: Record<string, ChangelogReleaseMeta> = {
   "0.0.31": { date: "July 17, 2026", headline: "Splits for everyone" },
   "0.0.30": {
     date: "July 14, 2026",
-    headline: "Multi-machine workflows and bb Connect",
+    headline: "Multi-machine workflows and Beam Connect",
   },
   "0.0.29": {
     date: "July 9, 2026",

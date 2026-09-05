@@ -52,7 +52,7 @@ describe("validateDirectServerUrl", () => {
       ok: false,
       code: "unsupported-scheme",
     });
-    expect(validateDirectServerUrl("bb://host")).toMatchObject({
+    expect(validateDirectServerUrl("beam://host")).toMatchObject({
       ok: false,
       code: "unsupported-scheme",
     });

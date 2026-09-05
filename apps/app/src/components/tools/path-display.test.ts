@@ -4,9 +4,9 @@ import { formatHomePathForDisplay } from "@bb/shared-ui/lib/utils";
 describe("formatHomePathForDisplay", () => {
   it.each([
     ["/Users/you", "~"],
-    ["/Users/you/.bb/plugins/github", "~/.bb/plugins/github"],
-    ["/home/u/.bb/skills/review", "~/.bb/skills/review"],
-    ["/root/.bb/automations/run.sh", "~/.bb/automations/run.sh"],
+    ["/Users/you/.beam/plugins/github", "~/.beam/plugins/github"],
+    ["/home/u/.beam/skills/review", "~/.beam/skills/review"],
+    ["/root/.beam/automations/run.sh", "~/.beam/automations/run.sh"],
     ["C:\\Users\\you\\.bb\\plugins", "~\\.bb\\plugins"],
   ])("compacts a conventional home path %s", (path, expected) => {
     expect(formatHomePathForDisplay(path)).toBe(expected);

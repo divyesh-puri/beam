@@ -19,7 +19,7 @@ describe("GitHub app navigation", () => {
           listItems: () => ({
             items: [
               {
-                repo: "get-bb/bb",
+                repo: "divyesh-puri/beam",
                 number: 42,
                 kind: "issue",
                 title: "Route-backed issue",
@@ -27,7 +27,7 @@ describe("GitHub app navigation", () => {
                 author: "octocat",
                 labels: [],
                 assignees: [],
-                url: "https://github.com/get-bb/bb/issues/42",
+                url: "https://github.com/divyesh-puri/beam/issues/42",
                 body: "",
                 updatedAt: "2026-08-20T00:00:00.000Z",
               },
@@ -38,7 +38,7 @@ describe("GitHub app navigation", () => {
             ghOk: true,
             ghState: "ready",
             ghError: null,
-            repos: [{ repo: "get-bb/bb", projectId: null }],
+            repos: [{ repo: "divyesh-puri/beam", projectId: null }],
             lastSyncedAt: null,
           }),
           viewer: () => ({ login: "octocat" }),
@@ -50,7 +50,7 @@ describe("GitHub app navigation", () => {
     expect(slot.navigateCalls).toContainEqual({
       method: "toPluginPanel",
       path: "github",
-      options: { subPath: "issues/get-bb/bb/42" },
+      options: { subPath: "issues/divyesh-puri/beam/42" },
     });
     slot.lifecycle.unmount();
   });
@@ -87,20 +87,20 @@ describe("GitHub app navigation", () => {
         rpc: {
           pullForThread: () => ({
             pull: {
-              repo: "get-bb/bb",
+              repo: "divyesh-puri/beam",
               number: 42,
               environmentId: "env-1",
             },
           }),
           getPull: () => ({
             pull: {
-              repo: "get-bb/bb",
+              repo: "divyesh-puri/beam",
               number: 42,
               title: "Navigation fix",
               state: "OPEN",
               author: "octocat",
               body: "",
-              url: "https://github.com/get-bb/bb/pull/42",
+              url: "https://github.com/divyesh-puri/beam/pull/42",
               createdAt: "2026-08-20T00:00:00.000Z",
               updatedAt: "2026-08-20T00:00:00.000Z",
               baseRefName: "main",

@@ -38,7 +38,8 @@ export interface ClaudeInjectedTool {
   presentation?: DeltaPresentation;
 }
 
-export const BB_BRIDGE_MCP_SERVER_NAME = "bb-bridge";
+export const BEAM_BRIDGE_MCP_SERVER_NAME = "beam-bridge";
+const LEGACY_BB_BRIDGE_MCP_SERVER_NAME = "bb-bridge";
 
 const BB_TOOL_SERVER = "bb";
 
@@ -442,7 +443,10 @@ export function classifyClaudeToolUse(args: {
       if (mcp === null) {
         return genericTool(toolName, input);
       }
-      if (mcp.server === BB_BRIDGE_MCP_SERVER_NAME) {
+      if (
+        mcp.server === BEAM_BRIDGE_MCP_SERVER_NAME ||
+        mcp.server === LEGACY_BB_BRIDGE_MCP_SERVER_NAME
+      ) {
         return bbTool(mcp.tool, input, args.injectedTools.get(mcp.tool));
       }
       return mcpTool(toolName, mcp.server, mcp.tool, input);

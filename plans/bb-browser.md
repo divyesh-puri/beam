@@ -371,7 +371,7 @@ Add `apps/cli/src/commands/browser.ts` and register it in the CLI. Human output
 stays concise and machine output stable. Screenshots are stored as bounded
 thread artifacts/files rather than emitted as data URLs in stdout.
 
-Add `apps/server/src/services/skills/builtin-skills/bb-browser/SKILL.md`. Teach
+Add `apps/server/src/services/skills/builtin-skills/beam-browser/SKILL.md`. Teach
 agents to open an owned target, wait, snapshot, act by reference, re-snapshot
 after meaningful changes, capture screenshots only when visual evidence matters,
 and close targets when finished.

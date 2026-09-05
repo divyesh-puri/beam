@@ -12,7 +12,7 @@ function tokenTypes(html: string): string[] {
 }
 
 describe("highlightMarkdownCode", () => {
-  const shell = "# install the plugin\nbb plugin install ./plugins/monokai";
+  const shell = "# install the plugin\nBeam plugin install ./plugins/monokai";
 
   it.each(["sh", "bash", "shell", "zsh", "console", "shellscript"])(
     "lexes a `#` comment in a %s fence as a comment, not a JS sign",

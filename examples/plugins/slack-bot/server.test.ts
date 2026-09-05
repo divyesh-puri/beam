@@ -84,7 +84,7 @@ describe("slack-bot webhook", () => {
     expect(response.status).toBe(401);
   });
 
-  it("spawns an attributed BB thread on first mention and stores the kv mapping", async () => {
+  it("spawns an attributed Beam thread on first mention and stores the kv mapping", async () => {
     const { bb, harness } = await loadConfigured();
     const rawBody = mentionEvent({
       text: "<@U1> run the tests please",

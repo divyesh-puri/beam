@@ -464,7 +464,7 @@ describe("decodeCodexInteractiveRequest", () => {
 });
 
 describe("buildCodexInteractiveResponse", () => {
-  it("maps bb command approvals back to Codex responses", () => {
+  it("maps Beam command approvals back to Codex responses", () => {
     expect(
       buildCodexInteractiveResponse({
         payload: {

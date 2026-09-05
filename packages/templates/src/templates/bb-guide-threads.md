@@ -1,6 +1,6 @@
 ---
 kind: instruction
-title: bb Guide — Threads
+title: Beam Guide — Threads
 summary: Command reference for thread spawning, inspecting, messaging, and lifecycle.
 intent: Provide complete thread command documentation for agents.
 editingNotes: Keep flags accurate against the CLI implementation. Run the json-flag-enforcement and command-output tests after changes.
@@ -11,7 +11,7 @@ Every command supports --json for machine-readable output.
 
 Spawning:
 
-  bb thread spawn --project <id> --prompt "..." [options]
+  beam thread spawn --project <id> --prompt "..." [options]
 
     --prompt <prompt>              Initial prompt (required)
     --title <title>                Thread title
@@ -37,7 +37,7 @@ Spawning:
     --source-seq-end <seq>         Fork after the source turn containing this event sequence
 
   Execution defaults resolve from explicit flags, live parent execution, and
-  remembered project defaults. With no remembered model, bb uses the explicitly
+  remembered project defaults. With no remembered model, Beam uses the explicitly
   requested provider or Codex and resolves its provider-reported default model
   on the target machine. The product reasoning and permission defaults are
   medium and auto.
@@ -62,7 +62,7 @@ Spawning:
 
 Forking:
 
-  bb thread fork <source-thread-id> [options]
+  beam thread fork <source-thread-id> [options]
 
     --prompt <prompt>              Optional first prompt; omit for an idle fork
     --source-seq-end <seq>         Fork after the source turn containing this event sequence (tip by default)
@@ -86,7 +86,7 @@ Forking:
 
 Editing a sent message (requires the default-on `editMessages` experiment):
 
-  bb thread edit-message <id> --message "Replacement text"
+  beam thread edit-message <id> --message "Replacement text"
     --self                              Target the current thread (BB_THREAD_ID)
     --expected-request-sequence <seq>   Select the message and reject a stale target
 
@@ -101,7 +101,7 @@ Editing a sent message (requires the default-on `editMessages` experiment):
 
 Listing:
 
-  bb thread list                           List threads
+  beam thread list                           List threads
     --project <id>                         Filter by project
     --parent-thread <id>                   Filter by parent thread
     --archived                             Show only archived threads
@@ -114,20 +114,20 @@ Listing:
   titles are cut at 60 characters. Project shows the project name; the
   personal project shows "-". Use --json for the full thread records.
 
-  bb thread search <query> [--limit <1-50>]
+  beam thread search <query> [--limit <1-50>]
                                              Search threads and messages
-  bb thread history <id>                   List prompt history
+  beam thread history <id>                   List prompt history
 
 Sections:
 
-  bb thread section list
-  bb thread section create <name>
-  bb thread section rename <id> <name>
-  bb thread section delete <id> [--yes]
+  beam thread section list
+  beam thread section create <name>
+  beam thread section rename <id> <name>
+  beam thread section delete <id> [--yes]
 
 Inspecting:
 
-  bb thread show [id]                      Show thread details and pull request status
+  beam thread show [id]                      Show thread details and pull request status
     --self                                 Target current thread
     --work-status                          Include git working-tree status
     --git-diff                             Include git diff
@@ -138,7 +138,7 @@ Inspecting:
 
   Shows pull request status for the attached environment branch when available.
 
-  bb thread log [id]                       Show thread event log
+  beam thread log [id]                       Show thread event log
     --self                                 Target current thread
     --format <format>                      Output format: json, minimal, verbose
     --limit <count>                        Max entries: events for json (oldest first, default 100);
@@ -149,10 +149,10 @@ Inspecting:
   Human formats end with a notice when older history was omitted; --json warns
   on stderr when more events exist beyond the printed page.
 
-  bb thread output [id]                    Get the final output of a thread
+  beam thread output [id]                    Get the final output of a thread
     --self                                 Target current thread
 
-  bb thread wait <id>                      Wait for a thread status or event (defaults to --status idle)
+  beam thread wait <id>                      Wait for a thread status or event (defaults to --status idle)
     --status <status>                      Wait for this status
     --event <type>                         Wait for this event type
     --timeout <seconds>                    Timeout in seconds (default: 1200 / 20 min)
@@ -160,29 +160,29 @@ Inspecting:
 
 Opening threads and files in the app:
 
-  bb thread open <path>                    Open a file in the current BB thread panel
-  bb thread open <thread-id> [path]        Open a thread, optionally with a panel file
+  beam thread open <path>                    Open a file in the current Beam thread panel
+  beam thread open <thread-id> [path]        Open a thread, optionally with a panel file
     --line <number>                        Line number to focus
     --split <placement>                    right, down, left, top, or replace
-  bb thread pane <action> [thread-id]      Maximize, restore, toggle, spotlight, or clear spotlight
+  beam thread pane <action> [thread-id]      Maximize, restore, toggle, spotlight, or clear spotlight
 
-  Inside a BB thread, BB_THREAD_ID selects the current thread automatically and
+  Inside a Beam thread, BB_THREAD_ID selects the current thread automatically and
   the thread ID argument is omitted for file-only opens. Pass an explicit thread
-  ID with --split to open another thread. Outside a BB thread, pass the thread ID
+  ID with --split to open another thread. Outside a Beam thread, pass the thread ID
   as the first argument. A thread already open in a pane is focused instead of
   duplicated. Edge placement creates panes through the eighth pane; at eight
   panes, it replaces the focused pane.
-  Pane actions broadcast to connected BB app windows and affect the matching
+  Pane actions broadcast to connected Beam app windows and affect the matching
   already-open pane without changing its split tree. Spotlight focuses that
   pane and dims the others; clear-spotlight focuses it and removes split dimming.
   Paths can be thread-relative workspace paths, or absolute paths inside the
   target thread workspace. Absolute paths under BB_THREAD_STORAGE open as
   thread-storage files for the current thread. Use this for Markdown or HTML
-  artifacts you create for the user so they open in the BB IDE.
+  artifacts you create for the user so they open in the Beam IDE.
 
 Messaging:
 
-  bb thread tell <id> <message>            Send a follow-up message
+  beam thread tell <id> <message>            Send a follow-up message
     --mode <mode>                          Message mode: steer (default), queue, or auto
     --model <model>                        Model override for this turn
     --reasoning-level <level>              Reasoning level override
@@ -203,15 +203,15 @@ Messaging:
   sends, so the agent proposes a plan for approval before executing (Claude
   Code and Codex threads). Plain "/plan ..." text is not recognized; it reaches
   the provider as literal text. Approve or deny the proposed plan with
-  `bb thread interactions`; `bb thread cancel-plan` leaves Plan mode early.
+  `beam thread interactions`; `beam thread cancel-plan` leaves Plan mode early.
   SDK callers build the same input with
   `createBuiltinPlanCommandTextInput(text)` from `@bb/sdk` and pass it as
   `input` to `threads.spawn` or `threads.send`.
 
-  bb thread stop [id]                      Stop work and release the agent runtime
-  bb thread compact [id]                   Request compaction of an idle or errored thread's context
-  bb thread cancel-plan [id]               Exit the provider's active Plan mode
-  bb thread clear-goal [id]                Clear the provider's active Goal
+  beam thread stop [id]                      Stop work and release the agent runtime
+  beam thread compact [id]                   Request compaction of an idle or errored thread's context
+  beam thread cancel-plan [id]               Exit the provider's active Plan mode
+  beam thread clear-goal [id]                Clear the provider's active Goal
     --self                                 Target current thread
 
   `thread compact` enqueues the same structured /compact turn used by the
@@ -219,7 +219,7 @@ Messaging:
 
 Ownership:
 
-  bb thread update [id]                    Update thread metadata
+  beam thread update [id]                    Update thread metadata
     --self                                 Target current thread
     --title <title>                        Set title
     --parent-thread <id>                   Assign to a parent thread
@@ -230,28 +230,28 @@ Ownership:
     --reasoning-level <level>              Set the sticky reasoning level (provider-dependent)
     --visibility <visibility>              Set visible or hidden
 
-  Model and reasoning updates stay within the thread's current provider. BB
+  Model and reasoning updates stay within the thread's current provider. Beam
   validates them against that provider's current model catalog, applies them on
   the next turn, and keeps using them on later turns until changed.
 
-  bb thread read [id]                      Mark read
-  bb thread unread [id]                    Mark unread
-  bb thread reorder-pinned <id> [--after <id>] [--before <id>]
+  beam thread read [id]                      Mark read
+  beam thread unread [id]                    Mark unread
+  beam thread reorder-pinned <id> [--after <id>] [--before <id>]
 
 Interactions:
 
-  bb thread interactions list [id]         List a thread's pending and past interactions
-  bb thread interactions show <interaction-id> [id]
+  beam thread interactions list [id]         List a thread's pending and past interactions
+  beam thread interactions show <interaction-id> [id]
                                            Show one interaction (approval details, questions, or a plugin form's data)
-  bb thread interactions approve <interaction-id> [id]
+  beam thread interactions approve <interaction-id> [id]
                                            Allow a command, file-change, plan, or tool-use approval
-  bb thread interactions deny <interaction-id> [id]
+  beam thread interactions deny <interaction-id> [id]
                                            Deny an approval
-  bb thread interactions grant <interaction-id> [id] --scope turn|session
+  beam thread interactions grant <interaction-id> [id] --scope turn|session
                                            Grant a permission interaction
-  bb thread interactions answer <interaction-id> [id] --choice <questionId=value> --text <questionId=text>
+  beam thread interactions answer <interaction-id> [id] --choice <questionId=value> --text <questionId=text>
                                            Answer a provider's user question
-  bb thread interactions respond <interaction-id> [id] --value '<json>'
+  beam thread interactions respond <interaction-id> [id] --value '<json>'
                                            Answer a plugin form: a plugin's own request, or a request the agent raised through a provider (kind `<pluginId>/<name>`)
     --self                                 Target current thread (every subcommand)
     --json                                 Machine-readable output (every subcommand)
@@ -262,22 +262,22 @@ Interactions:
 
 Queued messages:
 
-  bb thread queue list <thread-id>
-  bb thread queue create <thread-id> <message>
-  bb thread queue update <thread-id> <message-id> <message> [--file <path>] [--image <path>]
-  bb thread queue send <thread-id> <message-id> [--mode auto|steer]
-  bb thread queue reorder <thread-id> <message-id> [--after <id>] [--before <id>]
-  bb thread queue group <thread-id> <boundary-id> --prefix <comma-separated-ids>
-  bb thread queue delete <thread-id> <message-id>
+  beam thread queue list <thread-id>
+  beam thread queue create <thread-id> <message>
+  beam thread queue update <thread-id> <message-id> <message> [--file <path>] [--image <path>]
+  beam thread queue send <thread-id> <message-id> [--mode auto|steer]
+  beam thread queue reorder <thread-id> <message-id> [--after <id>] [--before <id>]
+  beam thread queue group <thread-id> <boundary-id> --prefix <comma-separated-ids>
+  beam thread queue delete <thread-id> <message-id>
 
 Persisted panel tabs:
 
-  bb thread tabs show <thread-id>
-  bb thread tabs set <thread-id> --expected-revision <n> --tabs-json '<json>'
+  beam thread tabs show <thread-id>
+  beam thread tabs set <thread-id> --expected-revision <n> --tabs-json '<json>'
 
 Lifecycle:
 
-  bb thread archive [id]                   Archive a thread (and children/hidden forks)
+  beam thread archive [id]                   Archive a thread (and children/hidden forks)
     --self                                 Archive current thread
 
   `thread stop` preserves the thread history, metadata, environment, and future
@@ -287,10 +287,10 @@ Lifecycle:
   releases an idle runtime adds no interruption: it leaves the timeline and any
   pending interaction of that thread untouched.
 
-  bb thread unarchive [id]                 Unarchive a thread
+  beam thread unarchive [id]                 Unarchive a thread
     --self                                 Unarchive current thread
 
-  bb thread delete <id>                    Delete permanently
+  beam thread delete <id>                    Delete permanently
     --yes                                  Skip confirmation
 
 Read-only commands require a thread ID or --self where supported.

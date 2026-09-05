@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import type {
   Environment,
   PermissionMode,
@@ -79,7 +73,7 @@ export default {
 };
 
 const noop = () => {};
-const STORY_BRANCH_NAME = "bb/design-system-polish";
+const STORY_BRANCH_NAME = "beam/design-system-polish";
 
 const baseExecution = makeExecutionControlsProps({
   provider: {
@@ -257,7 +251,7 @@ const longHostEnvironmentSummary: ReactNode = makeEnvironmentSummary({
     status: "ready",
   }),
   host: localEnvironmentDisplayHost,
-  projectName: "bb UI QA",
+  projectName: "Beam UI QA",
   machineName: "Bersabel's MacBook Pro",
   branchName: STORY_BRANCH_NAME,
 });

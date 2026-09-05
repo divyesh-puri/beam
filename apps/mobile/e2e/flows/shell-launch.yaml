@@ -7,7 +7,7 @@
 # Needs the harness backend started with BB_MOBILE_E2E_SERVE_APP=1 and a built
 # apps/app (`pnpm exec turbo run build --filter=@bb/app`); without them the
 # server answers API routes only and the WebView shows the native error state.
-appId: app.getbb.mobile
+appId: com.divyeshpuri.beam.mobile
 env:
   METRO_URL: "http://127.0.0.1:8082"
   SERVER_URL: "http://127.0.0.1:41999"
@@ -15,7 +15,7 @@ env:
 - runFlow: ../subflows/launch-app.yaml
 # No profiles yet, so the entry route redirects to add-server.
 - extendedWaitUntil:
-    visible: "Connect to a bb server"
+    visible: "Connect to a Beam server"
     timeout: 30000
 - tapOn:
     id: "server-url-input"

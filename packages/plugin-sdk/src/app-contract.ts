@@ -19,7 +19,7 @@ import type {
 
 /**
  * The `@get-bb/plugin-sdk/app` contract (plugin design §5.2) — pure types with no
- * side effects. The BB app imports these to keep its real implementation in
+ * side effects. The Beam app imports these to keep its real implementation in
  * sync (`satisfies PluginSdkApp`). Plugin authors import the same shapes through
  * `@get-bb/plugin-sdk/app`.
  *
@@ -121,20 +121,20 @@ export interface PluginThreadListProps {
    */
   onNavigate: () => void;
   /**
-   * Compatibility value for the former sidebar search field. BB now searches
+   * Compatibility value for the former sidebar search field. Beam now searches
    * threads in the quick palette, so the host always supplies "".
    *
    * @deprecated The quick palette owns thread search. Ignore this value.
    */
   searchQuery: string;
   /**
-   * BB's thread list, bound to this sidebar instance. Render it to delegate
+   * Beam's thread list, bound to this sidebar instance. Render it to delegate
    * conditionally without re-entering plugin replacement resolution.
    *
    * @experimental Audit before relying on this as a stable contract.
    */
   Original: ComponentType;
-  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in bb 0.42. */
+  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in Beam 0.42. */
   experimental_Original?: ComponentType;
 }
 
@@ -184,13 +184,13 @@ export interface PluginFileOpenerProps {
   path: string;
   source: PluginFileOpenerSource;
   /**
-   * BB's file preview, bound to this file. Render it to delegate conditionally
+   * Beam's file preview, bound to this file. Render it to delegate conditionally
    * without re-entering plugin replacement resolution.
    *
    * @experimental Audit before relying on this as a stable contract.
    */
   Original: ComponentType;
-  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in bb 0.42. */
+  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in Beam 0.42. */
   experimental_Original?: ComponentType;
 }
 
@@ -226,9 +226,9 @@ export interface ExperimentalDiffFullFileContents {
 }
 
 /**
- * Props of the host-owned `experimental_SourceCode` component — BB's source
+ * Props of the host-owned `experimental_SourceCode` component — Beam's source
  * viewer. The host owns syntax highlighting, gutters, wrapping, line-selection
- * presentation, and the live BB code theme; the caller owns loading the text
+ * presentation, and the live Beam code theme; the caller owns loading the text
  * and any surrounding chrome.
  */
 export interface SourceCodeProps {
@@ -248,11 +248,11 @@ export interface SourceCodeProps {
 }
 
 /**
- * Props of the host-owned `experimental_Diff` component — BB's diff viewer.
+ * Props of the host-owned `experimental_Diff` component — Beam's diff viewer.
  * The host owns patch normalization (a patch without a `diff --git` header is
  * completed from `path`), syntax highlighting, unified/split presentation,
  * gutters, line-selection presentation, optional full-file context expansion,
- * and the live BB code theme. Content that cannot be parsed as a patch
+ * and the live Beam code theme. Content that cannot be parsed as a patch
  * degrades to plain monospace text.
  */
 export interface DiffProps {
@@ -272,7 +272,7 @@ export interface DiffProps {
   showLineNumbers?: boolean;
   /**
    * Complete text for both file sides. When present and consistent with the
-   * patch, BB enables expand-context controls between hunks. The caller owns
+   * patch, Beam enables expand-context controls between hunks. The caller owns
    * loading these contents; omit the field to render from the patch alone.
    */
   experimental_fullFileContents?: ExperimentalDiffFullFileContents;
@@ -290,13 +290,13 @@ export interface PluginSourceCodeRendererProps {
   overflow: CodeOverflowMode;
   highlightedLines: SourceCodeLineRange | null;
   /**
-   * BB's source renderer, bound to this request. Render it to delegate
+   * Beam's source renderer, bound to this request. Render it to delegate
    * conditionally without re-entering plugin replacement resolution.
    *
    * @experimental Audit before relying on this as a stable contract.
    */
   Original: ComponentType;
-  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in bb 0.42. */
+  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in Beam 0.42. */
   experimental_Original?: ComponentType;
 }
 
@@ -315,18 +315,18 @@ export interface PluginDiffRendererProps {
    * Caller-resolved text for both sides, or `null` when the caller supplied
    * only the patch. A replacement can use this to implement context expansion,
    * but must verify that the paths and hunk lines agree with `patch` before
-   * treating the contents as complete. BB's original renderer performs that
+   * treating the contents as complete. Beam's original renderer performs that
    * verification when it mounts.
    */
   experimental_fullFileContents: ExperimentalDiffFullFileContents | null;
   /**
-   * BB's diff renderer, bound to this request. Render it to delegate
+   * Beam's diff renderer, bound to this request. Render it to delegate
    * conditionally without re-entering plugin replacement resolution.
    *
    * @experimental Audit before relying on this as a stable contract.
    */
   Original: ComponentType;
-  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in bb 0.42. */
+  /** @deprecated Renamed to `Original` in SDK 0.4.16; removed in Beam 0.42. */
   experimental_Original?: ComponentType;
 }
 
@@ -420,7 +420,7 @@ export type ExperimentalPluginFixedTabReference<
 export type PluginFixedTabRegistration<Target extends JsonValue = never> =
   ExperimentalPluginFixedTabReference<Target> & {
     title: string;
-    /** Icon hint (BB icon name); unknown names fall back to a generic icon. */
+    /** Icon hint (Beam icon name); unknown names fall back to a generic icon. */
     icon: string;
     component: ComponentType<PluginNavPanelProps>;
     /** `flush` lets the component own padding and scrolling. */
@@ -436,14 +436,14 @@ export interface PluginNavPanelRegistration {
   /** Unique within the plugin; letters, digits, `-`, `_`. */
   id: string;
   title: string;
-  /** Icon hint (BB icon name); unknown names fall back to a generic icon. */
+  /** Icon hint (Beam icon name); unknown names fall back to a generic icon. */
   icon: string;
   /** URL segment under `/plugins/<pluginId>/`; letters, digits, `-`, `_`. */
   path: string;
   component: ComponentType<PluginNavPanelProps>;
   /**
    * Ordered, non-closable tabs shown in this page's host-owned right panel.
-   * BB owns selection and persistence and always includes its native Browser
+   * Beam owns selection and persistence and always includes its native Browser
    * and Terminal tools beside them. One tab is active in each visible split
    * pane, so multiple fixed-tab components can be mounted concurrently. A
    * component mounts only while its tab is active in a visible pane and the
@@ -523,7 +523,7 @@ export interface PluginThreadPanelActionRegistration {
   /** Label of the action row in the panel's new-tab launcher. */
   title: string;
   /**
-   * Icon hint (BB icon name) used when the plugin ships no logo; the
+   * Icon hint (Beam icon name) used when the plugin ships no logo; the
    * launcher row and opened tabs prefer the plugin's logo.
    */
   icon?: string;
@@ -565,7 +565,7 @@ export interface PluginNewThreadPanelActionRegistration {
   id: string;
   /** Label of the action row in the panel's new-tab launcher. */
   title: string;
-  /** Icon hint (BB icon name) used when the plugin ships no logo. */
+  /** Icon hint (Beam icon name) used when the plugin ships no logo. */
   icon?: string;
   /** Rendered inside every panel tab this action opens. */
   component: ComponentType<PluginNewThreadPanelProps>;
@@ -613,7 +613,7 @@ export interface PluginSidebarFooterActionRegistration {
   id: string;
   /** Tooltip and accessible label for the icon button. */
   title: string;
-  /** Icon hint (BB icon name); unknown names fall back to a generic icon. */
+  /** Icon hint (Beam icon name); unknown names fall back to a generic icon. */
   icon: string;
   /**
    * Runs when the user activates the action (e.g. call `openSettings()`,
@@ -628,11 +628,11 @@ export interface PluginSidebarFooterActionRegistration {
 // ---------------------------------------------------------------------------
 
 /**
- * The one status bb would paint for a thread, already resolved through the
+ * The one status Beam would paint for a thread, already resolved through the
  * host's precedence (attention before work; plan and goal before the generic
  * spinner). Draw your own glyph for it — the SDK ships no status component.
  *
- * Treat an unrecognized value as "none": bb adds kinds over time, and an
+ * Treat an unrecognized value as "none": Beam adds kinds over time, and an
  * older plugin must degrade to drawing nothing rather than throwing.
  *
  * "draft" and "working-draft" are never reported here: an unsubmitted composer
@@ -655,7 +655,7 @@ export type PluginSidebarThreadIndicator =
   | "none";
 
 /**
- * How a thread's environment presents its workspace: a worktree bb manages,
+ * How a thread's environment presents its workspace: a worktree Beam manages,
  * a worktree the user manages, or anything else (a plain checkout).
  */
 export type PluginSidebarWorkspaceKind =
@@ -733,7 +733,7 @@ export interface PluginSidebarThread {
 
 /**
  * The pull request for a thread's branch, narrowed to what a sidebar row
- * needs. `attention` is bb's rolled-up "does this need you" signal, so a row
+ * needs. `attention` is Beam's rolled-up "does this need you" signal, so a row
  * can colour a badge without reading checks, review, and mergeability itself.
  */
 export interface PluginSidebarPullRequest {
@@ -809,13 +809,13 @@ export interface PluginCodeThemeTokenRule {
 }
 
 /**
- * The active code theme as a VS Code theme file: the same document BB's own
+ * The active code theme as a VS Code theme file: the same document Beam's own
  * highlighter renders from, so a plugin that embeds a third-party editor can
  * translate it into that editor's theme format rather than guessing colors
  * from CSS variables.
  */
 export interface PluginCodeThemeData {
-  /** Registered theme name — a bundled Shiki name or a BB-registered id. */
+  /** Registered theme name — a bundled Shiki name or a Beam-registered id. */
   name: string;
   type: "light" | "dark";
   /** Default editor foreground, as `#rrggbb[aa]`. */
@@ -828,7 +828,7 @@ export interface PluginCodeThemeData {
 }
 
 /**
- * The code theme BB is currently rendering with (see
+ * The code theme Beam is currently rendering with (see
  * {@link PluginSdkApp.experimental_useCodeTheme}). `mode` and `name` change
  * the moment the user switches palette or light/dark; `theme` follows once
  * the theme file resolves, and keeps the previous document until then so a
@@ -850,7 +850,7 @@ export interface PluginCodeThemeState {
  */
 export interface PluginSidebarThreadActions {
   /**
-   * Navigate to a thread. `split: true` applies bb's split placement rules —
+   * Navigate to a thread. `split: true` applies Beam's split placement rules —
    * a right split by default, focus when the thread is already open, replace
    * at the pane cap — and falls back to plain navigation where splits are off.
    */
@@ -867,7 +867,7 @@ export interface PluginSidebarThreadActions {
   /** Archives the thread AND its children, closing any panes showing them. */
   archive(threadId: string): void;
   /**
-   * Opens bb's delete confirmation, which counts child threads first. Deletion
+   * Opens Beam's delete confirmation, which counts child threads first. Deletion
    * is destructive and recursive, so the host owns the confirmation: there is
    * deliberately no silent `delete`.
    */
@@ -945,9 +945,9 @@ export interface PluginSidebarThreadSplit {
  * scroll area. Registering activates the replacement while the plugin is
  * enabled. If multiple plugins register one, the first in deterministic slot
  * order is active by default; removing it reveals the next. The user can pin
- * BB's list or a specific provider under Settings → Appearance. A plugin can
+ * Beam's list or a specific provider under Settings → Appearance. A plugin can
  * also use its own setting and render `Original` conditionally.
- * An absent or crashing replacement falls back to BB's list rather than
+ * An absent or crashing replacement falls back to Beam's list rather than
  * leaving the user with no sidebar.
  *
  * The plugin gets the scrolling list and nothing else. The New-thread button,
@@ -968,12 +968,12 @@ export interface PluginThreadListRegistration {
 /**
  * Register this plugin as a viewer/editor for file extensions. By default,
  * matching files render the first applicable opener in deterministic slot
- * order. The user can pin BB's preview or a specific opener per extension
+ * order. The user can pin Beam's preview or a specific opener per extension
  * under Settings → Files. The file tab's "Open with" menu can override that
  * choice for one open. A plugin can also use its own setting and render
  * `Original` conditionally. Applies to working-tree, host, and
  * thread-storage files — never to git-ref snapshots (diff views always use
- * BB's preview).
+ * Beam's preview).
  */
 export interface PluginFileOpenerRegistration {
   /** Unique within the plugin; letters, digits, `-`, `_`. */
@@ -986,12 +986,12 @@ export interface PluginFileOpenerRegistration {
 }
 
 /**
- * Replace BB's source-code renderer everywhere it renders supplied source
+ * Replace Beam's source-code renderer everywhere it renders supplied source
  * text — the native file preview and every plugin that calls
  * `experimental_SourceCode`. Like `experimental_threadList` this slot is
  * **exclusive**: one renderer at a time. Registering activates it while the
  * plugin is enabled; if several are registered the first in deterministic slot
- * order wins. A missing, disabled, or crashing replacement falls back to BB's
+ * order wins. A missing, disabled, or crashing replacement falls back to Beam's
  * renderer, and a replacement can render `Original` to delegate
  * per call (behind its own setting, by language, by size — whatever it needs).
  */
@@ -1006,7 +1006,7 @@ export interface PluginSourceCodeRendererRegistration {
 }
 
 /**
- * Replace BB's diff renderer everywhere it renders supplied diff content — the
+ * Replace Beam's diff renderer everywhere it renders supplied diff content — the
  * timeline file diffs, the environment diff panel's text bodies, and every
  * plugin that calls `experimental_Diff`. Exclusive, with the same activation,
  * fallback, and `Original` delegation rules as
@@ -1095,7 +1095,7 @@ export interface PluginMessageActionRegistration {
   id: string;
   /** Tooltip / menu label for the action. */
   title: string;
-  /** Icon hint (BB icon name); unknown names fall back to a generic icon. */
+  /** Icon hint (Beam icon name); unknown names fall back to a generic icon. */
   icon?: string;
   /**
    * Runs when the user activates the action. Errors (sync or async) are
@@ -1123,8 +1123,8 @@ export interface PluginCommandPaletteActionContext {
 }
 
 /**
- * A row in bb's quick palette (Mod+Shift+P), listed under the plugin's name
- * beside bb's own commands. Host-rendered: the plugin supplies a title and
+ * A row in Beam's quick palette (Mod+Shift+P), listed under the plugin's name
+ * beside Beam's own commands. Host-rendered: the plugin supplies a title and
  * `run`, and the host owns matching, ordering, and recency.
  */
 export interface PluginCommandPaletteActionRegistration {
@@ -1146,7 +1146,7 @@ export interface PluginCommandPaletteActionRegistration {
 }
 
 /**
- * Supply the inline React mark bb draws for one agent provider.
+ * Supply the inline React mark Beam draws for one agent provider.
  *
  * A manifest `branding.icon` (or a provider's `logoUrl`) is fetched and drawn
  * through `<img>`, a separate document where `currentColor` resolves to black
@@ -1161,7 +1161,7 @@ export interface PluginCommandPaletteActionRegistration {
  */
 export interface PluginProviderIconRegistration {
   /**
-   * The provider this mark is for — the id bb knows the provider by (the
+   * The provider this mark is for — the id Beam knows the provider by (the
    * provider declaration's id, e.g. `codex` or `acp-cursor`), not the plugin
    * id. Letters, digits, `-`, `_`.
    */
@@ -1297,7 +1297,7 @@ export interface PluginAppSlots {
   ): void;
   fileOpener(registration: PluginFileOpenerRegistration): void;
   /**
-   * Replace BB's source-code renderer (see
+   * Replace Beam's source-code renderer (see
    * {@link PluginSourceCodeRendererRegistration}). Experimental: see
    * docs/api_to_audit.md.
    */
@@ -1305,7 +1305,7 @@ export interface PluginAppSlots {
     registration: PluginSourceCodeRendererRegistration,
   ): void;
   /**
-   * Replace BB's diff renderer (see
+   * Replace Beam's diff renderer (see
    * {@link PluginDiffRendererRegistration}). Experimental: see
    * docs/api_to_audit.md.
    */
@@ -1341,7 +1341,7 @@ export interface PluginAppComposer {
   customize(registration: ComposerCustomization): void;
 }
 
-/** Stable lifecycle values for one content-script instance in one bb client. */
+/** Stable lifecycle values for one content-script instance in one Beam client. */
 export interface PluginContentScriptContext {
   /** The id of the plugin that owns this script. */
   readonly pluginId: string;
@@ -1371,13 +1371,13 @@ export type PluginContentScriptDisposer = () => void | Promise<void>;
 
 /**
  * Trusted same-origin JavaScript/TypeScript mounted once per active frontend
- * generation in each bb app window or browser tab.
+ * generation in each Beam app window or browser tab.
  */
 export interface PluginContentScriptRegistration {
   /** Unique within the plugin; letters, digits, `-`, `_`. */
   id: string;
   /**
-   * Install behavior into the bb app shell. The host awaits a returned
+   * Install behavior into the Beam app shell. The host awaits a returned
    * promise, retains the plugin's imported frontend stylesheet for this
    * generation, contains failures, and calls the returned disposer exactly
    * once. Styling or decorating existing app-shell DOM belongs here rather
@@ -1443,7 +1443,7 @@ export interface PluginSettingsState {
   isLoading: boolean;
 }
 
-/** State of the app's shared realtime connection to the bb server. */
+/** State of the app's shared realtime connection to the Beam server. */
 export type PluginRealtimeConnectionState =
   | "connecting"
   | "connected"
@@ -1491,7 +1491,7 @@ export interface ComposerCustomization {
 export interface ComposerPlusMenuItem {
   id: string;
   label: string;
-  /** BB icon name; unknown names fall back to the generic plugin icon. */
+  /** Beam icon name; unknown names fall back to the generic plugin icon. */
   icon?: string;
   /** Accessible description for the host-rendered row. */
   description?: string;
@@ -1540,7 +1540,7 @@ export interface PluginComposerTextEffect {
 
 /** Host-rendered status that temporarily replaces a thread's draft glyph. */
 export interface PluginComposerThreadRowStatus {
-  /** BB icon-name hint; unknown names fall back to the generic plugin icon. */
+  /** Beam icon-name hint; unknown names fall back to the generic plugin icon. */
   icon: string;
   /** Accessible label for the status glyph. */
   label: string;
@@ -1631,7 +1631,7 @@ export interface ThreadChatMessageAction {
   id: string;
   /** Tooltip / menu label for the action. */
   title: string;
-  /** Icon hint (BB icon name); unknown names fall back to a generic icon. */
+  /** Icon hint (Beam icon name); unknown names fall back to a generic icon. */
   icon?: string;
   /**
    * Message roles the action applies to. Omitted = both user and assistant
@@ -1648,7 +1648,7 @@ export interface ThreadChatMessageAction {
 /**
  * Props of the host-owned `ThreadChat` component — one thread's chat
  * (timeline, and for the composer variants the full send/queue/draft
- * engine), rendered by the BB app inside a plugin slot. This is the
+ * engine), rendered by the Beam app inside a plugin slot. This is the
  * deliberate exception to the no-host-components rule (§5.5): a stable
  * product capability, not a UI kit. Versioned additive like slot props;
  * internal timeline rows, query hooks, and prompt-box configuration are
@@ -1710,7 +1710,7 @@ export type ExperimentalProviderModelPickerRouting =
  * Props of the host-owned `experimental_ProviderModelPicker` component.
  * Provider switches emit one coherent value after the live catalog resolves
  * its default model, reasoning level, and service-tier capability. Failed or
- * empty catalogs leave `value` unchanged. Omit `routing` to use bb's
+ * empty catalogs leave `value` unchanged. Omit `routing` to use Beam's
  * primary-machine routing. Environment routing is required when a provider's
  * model catalog depends on the selected workspace.
  */
@@ -1728,7 +1728,7 @@ export interface ExperimentalProviderModelPickerProps {
   className?: string;
 }
 
-/** Props of BB's controlled, host-resolved permission-mode picker. */
+/** Props of Beam's controlled, host-resolved permission-mode picker. */
 export interface ExperimentalPermissionModePickerProps {
   /** Provider whose supported modes determine the available choices. */
   providerId: string;
@@ -1762,7 +1762,7 @@ export interface ExperimentalPermissionModePickerProps {
  */
 export interface NewThreadRequest {
   /**
-   * The selected project id. Choosing "Don't work in a project" submits BB's
+   * The selected project id. Choosing "Don't work in a project" submits Beam's
    * personal-project id (not `null`) together with a `personal` workspace
    * environment. Forward those fields unchanged to `threads.spawn`; if the
    * plugin needs project metadata, request it from the plugin backend with
@@ -1786,11 +1786,11 @@ export interface NewThreadRequest {
 }
 
 /**
- * Props of the host-owned `experimental_NewThreadComposer` component — bb's
+ * Props of the host-owned `experimental_NewThreadComposer` component — Beam's
  * full new-thread compose surface (prompt editor with @-mentions and expand,
  * attachments, provider/model/reasoning picker, voice, submit, and the row
  * beneath with project, environment, branch-from, and permission mode),
- * rendered by the BB app inside a plugin slot.
+ * rendered by the Beam app inside a plugin slot.
  *
  * It is the create-side counterpart to `ThreadChat`: same deliberate
  * exception to the no-host-components rule (§5.5), same additive versioning.
@@ -1891,7 +1891,7 @@ export interface NewThreadComposerProps {
 }
 
 /**
- * Props of the host-owned `Markdown` component — bb's chat message renderer
+ * Props of the host-owned `Markdown` component — Beam's chat message renderer
  * (the same typography, spacing, and code styling as timeline messages).
  * Use it wherever plugin UI quotes or previews message content so it reads
  * like the rest of the chat. Like `ThreadChat`, this is a stable product
@@ -1904,7 +1904,7 @@ export interface MarkdownProps {
 }
 
 /**
- * Props for BB's semantic URL link. The host owns ordinary activation while
+ * Props for Beam's semantic URL link. The host owns ordinary activation while
  * retaining browser-owned anchor behavior for app routes, modifiers, explicit
  * targets, copying, and unsupported schemes. New top-level targets preserve
  * supplied `rel` tokens and receive safe defaults unless `opener` is explicit.
@@ -1928,14 +1928,14 @@ export type ExperimentalFileLocation =
   | { kind: "line"; line: number; column: number | null }
   | { kind: "range"; startLine: number; endLine: number };
 
-/** Options shared by BB's preview and preferred-external file intents. */
+/** Options shared by Beam's preview and preferred-external file intents. */
 export interface ExperimentalFileOpenOptions {
   target: ExperimentalLiveFileTarget;
   location: ExperimentalFileLocation | null;
 }
 
 /**
- * Props for BB's host-rendered semantic file link. Valid targets receive a
+ * Props for Beam's host-rendered semantic file link. Valid targets receive a
  * scheme-safe anchor href; traversal paths, ill-formed Unicode, and other
  * malformed runtime targets remain inert.
  */
@@ -2008,12 +2008,12 @@ export interface BbNavigate {
    */
   openThreadPanel(options: PluginTargetedPanelActionOpenOptions): boolean;
   /**
-   * Open an HTTP(S) URL using this client's BB browser preference. Returns
+   * Open an HTTP(S) URL using this client's Beam browser preference. Returns
    * false for schemes the host does not own. Experimental: see
    * docs/api_to_audit.md.
    */
   openUrl(url: string): boolean;
-  /** Open a live file in this surface's shared BB preview panel. */
+  /** Open a live file in this surface's shared Beam preview panel. */
   experimental_openFilePreview(options: ExperimentalFileOpenOptions): boolean;
   /** Open a live file in this client's preferred external file target. */
   experimental_openFileExternally(
@@ -2027,7 +2027,7 @@ export interface BbNavigate {
 //
 // Components are deliberately NOT part of this surface (removed 2026-07-03,
 // plugin design §5.5): plugins vendor shadcn-style component source from the
-// BB registry (`npx shadcn add @bb/<name>`) and own it. `bb plugin build`
+// Beam registry (`npx shadcn add @bb/<name>`) and own it. `beam plugin build`
 // shims react, the shared-singleton packages (portal radix families,
 // sonner, vaul, @pierre/diffs) and the host-resident libraries every plugin
 // would otherwise duplicate (clsx, tailwind-merge, class-variance-authority,
@@ -2037,8 +2037,8 @@ export interface BbNavigate {
 // ---------------------------------------------------------------------------
 
 /**
- * Everything `@get-bb/plugin-sdk/app` resolves to at runtime. The BB app builds
- * the real implementation and `satisfies` this interface; `bb plugin build`
+ * Everything `@get-bb/plugin-sdk/app` resolves to at runtime. The Beam app builds
+ * the real implementation and `satisfies` this interface; `beam plugin build`
  * shims the specifier to that object on `globalThis.__bbPluginRuntime`.
  */
 export interface PluginSdkApp {
@@ -2116,7 +2116,7 @@ export interface PluginSdkApp {
   /**
    * The active code theme as a VS Code theme file (see
    * {@link PluginCodeThemeState}), for a plugin that renders code with an
-   * engine of its own and needs BB's palette to reach it. Experimental: see
+   * engine of its own and needs Beam's palette to reach it. Experimental: see
    * docs/api_to_audit.md.
    */
   experimental_useCodeTheme(): PluginCodeThemeState;
@@ -2132,7 +2132,7 @@ export interface PluginSdkApp {
    */
   Markdown: ComponentType<MarkdownProps>;
   /**
-   * A real anchor whose ordinary HTTP(S) activation uses BB's URL preference.
+   * A real anchor whose ordinary HTTP(S) activation uses Beam's URL preference.
    * Experimental: see docs/api_to_audit.md.
    */
   UrlLink: ComponentType<UrlLinkProps>;
@@ -2145,28 +2145,28 @@ export interface PluginSdkApp {
    */
   experimental_NewThreadComposer: ComponentType<NewThreadComposerProps>;
   /**
-   * BB's controlled provider/model/reasoning picker. Provider changes emit
+   * Beam's controlled provider/model/reasoning picker. Provider changes emit
    * only after the new provider's verified defaults and capabilities resolve,
    * so `onChange` always receives one coherent value. Experimental: see
    * docs/api_to_audit.md.
    */
   experimental_ProviderModelPicker: ComponentType<ExperimentalProviderModelPickerProps>;
   /**
-   * BB's controlled permission-mode picker. The host resolves provider
+   * Beam's controlled permission-mode picker. The host resolves provider
    * capabilities and the routed machine's permission ceiling. Experimental:
    * see docs/api_to_audit.md.
    */
   experimental_PermissionModePicker: ComponentType<ExperimentalPermissionModePickerProps>;
   /**
    * The host-owned source viewer (see {@link SourceCodeProps}). Renders
-   * supplied source text with BB's syntax highlighting, gutters, and live code
+   * supplied source text with Beam's syntax highlighting, gutters, and live code
    * theme, and honours an active `experimental_sourceCodeRenderer`
    * replacement. Experimental: see docs/api_to_audit.md.
    */
   experimental_SourceCode: ComponentType<SourceCodeProps>;
   /**
    * The host-owned diff viewer (see {@link DiffProps}). Renders supplied patch
-   * content with BB's normalization, optional full-file context expansion,
+   * content with Beam's normalization, optional full-file context expansion,
    * syntax highlighting, unified/split presentation, and live code theme, and
    * honours an active
    * `experimental_diffRenderer` replacement. Experimental: see

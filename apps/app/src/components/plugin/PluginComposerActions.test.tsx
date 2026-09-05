@@ -176,12 +176,12 @@ describe("ComposerActionsSlot overflow", () => {
     expect(inlinePluginIds()).toEqual(["alpha", "beta", "delta"]);
   });
 
-  it("preserves BB-owned actions after plugin contributions", () => {
+  it("preserves Beam-owned actions after plugin contributions", () => {
     registerPlugin("alpha", ["Plugin action"]);
 
     const view = render(
       <ComposerActionsSlot view={VIEW}>
-        <button type="button">BB action</button>
+        <button type="button">Beam action</button>
       </ComposerActionsSlot>,
     );
 
@@ -189,6 +189,6 @@ describe("ComposerActionsSlot overflow", () => {
       Array.from(view.container.querySelectorAll("button"), (element) =>
         element.textContent?.trim(),
       ),
-    ).toEqual(["Plugin action", "BB action"]);
+    ).toEqual(["Plugin action", "Beam action"]);
   });
 });

@@ -86,7 +86,7 @@ describe("plugin bb.sdk bind gate", () => {
   };
   const ensureSharedPortTunnel = vi.fn().mockResolvedValue({
     label: "sawyer-air",
-    baseDomain: "getbb.app",
+    baseDomain: "connect.beam.invalid",
   });
   const callPluginHost = vi.fn(
     async (
@@ -175,7 +175,7 @@ describe("plugin bb.sdk bind gate", () => {
 
     await expect(api.hosts.ensureSharedPortTunnel("host-1")).resolves.toEqual({
       label: "sawyer-air",
-      baseDomain: "getbb.app",
+      baseDomain: "connect.beam.invalid",
     });
     api.hosts.declareSharedPorts("host-1", [8080, 3000]);
 

@@ -249,7 +249,7 @@ describe("task pager", () => {
 });
 
 describe("tasks app shell", () => {
-  it("registers navigation as a BB-owned fixed panel tab", () => {
+  it("registers navigation as a Beam-owned fixed panel tab", () => {
     expect(tasksRegistration.fixedTabs).toMatchObject([
       {
         id: "navigation",

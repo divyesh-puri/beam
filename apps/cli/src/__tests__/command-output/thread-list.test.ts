@@ -10,13 +10,13 @@ import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import * as fixtures from "../helpers/command-output-fixtures.js";
 import { registerThreadCommands } from "../../commands/thread/index.js";
 
-describe("bb thread list command output", () => {
+describe("beam thread list command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
     registerThreadCommands(program, () => "http://server");
 
-  it("bb thread list supports parent-thread filtering", async () => {
+  it("beam thread list supports parent-thread filtering", async () => {
     const list = vi.fn(async () => []);
     stubServerApi({ "v1.threads.$get": list });
 
@@ -40,7 +40,7 @@ describe("bb thread list command output", () => {
     });
   });
 
-  it("bb thread list opts into hidden threads explicitly", async () => {
+  it("beam thread list opts into hidden threads explicitly", async () => {
     const list = vi.fn(async () => []);
     stubServerApi({ "v1.threads.$get": list });
 
@@ -51,7 +51,7 @@ describe("bb thread list command output", () => {
     });
   });
 
-  it("bb thread list rejects invalid parent-thread values", async () => {
+  it("beam thread list rejects invalid parent-thread values", async () => {
     const list = vi.fn(async () => []);
     stubServerApi({ "v1.threads.$get": list });
 
@@ -75,7 +75,7 @@ describe("bb thread list command output", () => {
     expect(list).not.toHaveBeenCalled();
   });
 
-  it("bb thread list renders archived status in the shared borderless table", async () => {
+  it("beam thread list renders archived status in the shared borderless table", async () => {
     const list = vi.fn(async () => [
       fixtures.makeThread({
         id: "thread-archived-1",
@@ -104,7 +104,7 @@ describe("bb thread list command output", () => {
     ]);
   });
 
-  it("bb thread list renders pinned status in the shared borderless table", async () => {
+  it("beam thread list renders pinned status in the shared borderless table", async () => {
     const list = vi.fn(async () => [
       fixtures.makeThread({
         id: "thread-pinned-1",
@@ -128,7 +128,7 @@ describe("bb thread list command output", () => {
     );
   });
 
-  it("bb thread list hides the personal project label", async () => {
+  it("beam thread list hides the personal project label", async () => {
     const list = vi.fn(async () => [
       fixtures.makeThread({
         id: "thread-personal-1",
@@ -157,7 +157,7 @@ describe("bb thread list command output", () => {
     ]);
   });
 
-  it("bb thread list prints the thread title, fallback, and project name (#1648)", async () => {
+  it("beam thread list prints the thread title, fallback, and project name (#1648)", async () => {
     const list = vi.fn(async () => [
       fixtures.makeThread({
         id: "thr_a9niqhjj9c",
@@ -213,7 +213,7 @@ describe("bb thread list command output", () => {
     expect(output).toMatch(/thr_unknownproj\s+x+…\s+proj_missing\s+idle/);
   });
 
-  it("bb thread list --json does not fetch projects", async () => {
+  it("beam thread list --json does not fetch projects", async () => {
     const list = vi.fn(async () => []);
     const projects = vi.fn(async () => []);
     stubServerApi({ "v1.threads.$get": list, "v1.projects.$get": projects });
@@ -223,7 +223,7 @@ describe("bb thread list command output", () => {
     expect(projects).not.toHaveBeenCalled();
   });
 
-  it("bb thread list ignores BB_PROJECT_ID when --project is omitted", async () => {
+  it("beam thread list ignores BB_PROJECT_ID when --project is omitted", async () => {
     const list = vi.fn(async () => []);
     stubServerApi({ "v1.threads.$get": list });
 
@@ -235,7 +235,7 @@ describe("bb thread list command output", () => {
     });
   });
 
-  it("bb thread list does not infer parent-thread from BB_THREAD_ID", async () => {
+  it("beam thread list does not infer parent-thread from BB_THREAD_ID", async () => {
     const list = vi.fn(async () => []);
 
     stubServerApi({ "v1.threads.$get": list });

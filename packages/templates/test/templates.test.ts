@@ -10,7 +10,7 @@ describe("@bb/templates", () => {
   it("documents project creation machine routing", () => {
     const guide = renderTemplate("bbGuideProjects", {});
 
-    expect(guide).toContain("bb project create --name");
+    expect(guide).toContain("beam project create --name");
     expect(guide).toContain("--machine <id-or-name>");
     expect(guide).toContain("--host <id-or-name>");
     expect(guide).toContain("local CLI machine fallback");
@@ -19,7 +19,7 @@ describe("@bb/templates", () => {
   it("documents complete and partial automation execution updates", () => {
     const guide = renderTemplate("bbGuideAutomations", {});
 
-    expect(guide).toContain("bb automation update <automationId>");
+    expect(guide).toContain("beam automation update <automationId>");
     expect(guide).toContain("Partial updates to an existing");
     expect(guide).toContain("--env-json");
     expect(guide).toContain("--reasoning <none|low|medium|high");
@@ -36,7 +36,7 @@ describe("@bb/templates", () => {
 
     expect(rendered).toBe(
       [
-        "[bb message from thread:thr_sender]",
+        "[Beam message from thread:thr_sender]",
         "",
         "Please check the failing test.",
       ].join("\n"),
@@ -46,7 +46,7 @@ describe("@bb/templates", () => {
   it("renders standardAgentAppendInstructions without user-question guidance", () => {
     const rendered = renderTemplate("standardAgentAppendInstructions", {});
 
-    expect(rendered).toContain("You are working inside bb");
+    expect(rendered).toContain("You are working inside Beam");
     expect(rendered).toContain("agentic IDE");
     expect(rendered).not.toContain(
       "Ask the user a blocking question only when",
@@ -64,7 +64,7 @@ describe("@bb/templates", () => {
 
     expect(rendered).toBe(
       [
-        "[bb system]",
+        "[Beam system]",
         "",
         "@thread:thr_child needs help.",
         "Blocked on command approval:",
@@ -82,7 +82,7 @@ describe("@bb/templates", () => {
       }),
     ).toBe(
       [
-        "[bb system]",
+        "[Beam system]",
         "",
         "@thread:thr_child is now a child of this thread.",
       ].join("\n"),
@@ -93,7 +93,7 @@ describe("@bb/templates", () => {
       }),
     ).toBe(
       [
-        "[bb system]",
+        "[Beam system]",
         "",
         "@thread:thr_child is no longer a child of this thread.",
       ].join("\n"),

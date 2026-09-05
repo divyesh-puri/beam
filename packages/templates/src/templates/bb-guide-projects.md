@@ -1,6 +1,6 @@
 ---
 kind: instruction
-title: bb Guide — Projects
+title: Beam Guide — Projects
 summary: Command reference for project CRUD, attachments, and sources.
 intent: Provide complete project command documentation for agents.
 editingNotes: Keep flags accurate against the CLI implementation.
@@ -9,13 +9,13 @@ Project commands
 
 A project maps to a code repository. All threads belong to a project.
 
-  bb project list                         List ordinary projects
+  beam project list                         List ordinary projects
     --include-personal                    Also include the personal project
-  bb project history <id>                 List prompt history
-  bb project reorder <id>                 Reorder in the sidebar
+  beam project history <id>                 List prompt history
+  beam project reorder <id>                 Reorder in the sidebar
     --after <id>                          Previous project, or omit for start
     --before <id>                         Next project, or omit for end
-  bb project create --name "..." [options]
+  beam project create --name "..." [options]
     --root <path>                         Project source path
     --machine <id-or-name>                Bind the path to a connected machine
     --host <id-or-name>                   Alias for --machine
@@ -24,21 +24,21 @@ A project maps to a code repository. All threads belong to a project.
   binds --root to that machine. Omitting the selector preserves the existing
   local CLI machine fallback (normally the primary machine).
 
-  bb project show <id>                    Show project details
-  bb project update <id>                  Update a project
+  beam project show <id>                    Show project details
+  beam project update <id>                  Update a project
     --name <name>                         New name
 
-  bb project delete <id>                  Delete project and all threads
+  beam project delete <id>                  Delete project and all threads
     --yes                                 Skip confirmation
 
 Discovery:
 
-  bb project branches <id> --host <id>   List branches for a machine source
+  beam project branches <id> --host <id>   List branches for a machine source
     --refresh                            Wait for remote refs before listing
-  bb project paths <id>                   Search workspace paths
-  bb project files <id>                   List workspace files
-  bb project content <id> <path>          Read file content (binary is base64)
-  bb project commands <id> --provider <id>
+  beam project paths <id>                   Search workspace paths
+  beam project files <id>                   List workspace files
+  beam project content <id> <path>          Read file content (binary is base64)
+  beam project commands <id> --provider <id>
                                           List commands and skills
     --machine <id-or-name>                Target project source machine
     --host <id-or-name>                   Alias for --machine
@@ -51,11 +51,11 @@ Discovery:
 
 Attachments:
 
-  bb project attachment upload <id>       Upload bytes from the CLI machine
+  beam project attachment upload <id>       Upload bytes from the CLI machine
     --client-file <path>                  Path read on this CLI machine
     --filename <name>                     Attachment filename override
     --mime-type <type>                    MIME override (otherwise inferred)
-  bb project attachment download <id> <attachment-path>
+  beam project attachment download <id> <attachment-path>
     --client-file <path>                  Destination on this CLI machine
 
   Uploads use multipart bytes and return a server-managed attachment DTO. Pass
@@ -69,7 +69,7 @@ Sources:
 
   Projects can have multiple machine-local path sources.
 
-  bb project source add <projectId>       Add a source
+  beam project source add <projectId>       Add a source
     --path <path>                         Local path
     --clone                               Clone the project's Git remote
     --remote-url <url>                    Git remote override for --clone
@@ -80,8 +80,8 @@ Sources:
   Explicit project source selectors must name a connected machine. Omitting
   the selector preserves the same local CLI machine fallback as project create.
 
-  bb project source update <projectId> <sourceId>
+  beam project source update <projectId> <sourceId>
     --path <path>
     --default
 
-  bb project source delete <projectId> <sourceId>
+  beam project source delete <projectId> <sourceId>

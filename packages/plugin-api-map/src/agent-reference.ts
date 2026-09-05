@@ -70,7 +70,7 @@ export function createPluginSurfaceAgentReference(
   const context = [
     `Plugin Guide surface: ${surface.title} (${surface.id}).`,
     `Relevant @get-bb/plugin-sdk symbols: ${surface.apiSymbols.join(", ")}.`,
-    "Use the bb-plugin-authoring skill and the authoritative @get-bb/plugin-sdk declarations to build a similar plugin capability.",
+    "Use the beam-plugin-authoring skill and the authoritative @get-bb/plugin-sdk declarations to build a similar plugin capability.",
   ].join("\n");
   return { identity, resource, clipboard, context };
 }

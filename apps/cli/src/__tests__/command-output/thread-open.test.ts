@@ -46,7 +46,7 @@ function stubThreadOpenApi(args: {
   return { getEnvironment, getThread, openThread };
 }
 
-describe("bb thread open command output", () => {
+describe("beam thread open command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
@@ -202,7 +202,7 @@ describe("bb thread open command output", () => {
     ]);
   });
 
-  it("requires an explicit thread id outside a BB thread", async () => {
+  it("requires an explicit thread id outside a Beam thread", async () => {
     stubThreadOpenApi({});
 
     await expect(runCommand(["thread", "open"], register)).rejects.toThrow(
@@ -256,7 +256,7 @@ describe("bb thread open command output", () => {
     expect(help).toContain("Usage:");
     expect(help).toContain("[id] [path]");
     expect(help).toContain(
-      "Open a BB thread, optionally with a file in its panel",
+      "Open a Beam thread, optionally with a file in its panel",
     );
     expect(help).toContain("--line");
     expect(help).toContain("--split <placement>");
@@ -289,7 +289,7 @@ describe("bb thread open command output", () => {
     ]);
   });
 
-  it("treats an explicit --split target as a thread id inside a BB thread", async () => {
+  it("treats an explicit --split target as a thread id inside a Beam thread", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-current");
     const { openThread } = stubThreadOpenApi({});
 
@@ -304,7 +304,7 @@ describe("bb thread open command output", () => {
     });
   });
 
-  it("opens a file for an explicit split target inside a BB thread", async () => {
+  it("opens a file for an explicit split target inside a Beam thread", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-current");
     const { openThread } = stubThreadOpenApi({});
 

@@ -498,20 +498,20 @@ async function mountWithTimeout(
             if (controller.signal.aborted) return;
             if (typeof threadId !== "string") {
               deps.warn(
-                `bb plugin "${pluginId}": contentScript.experimental_setThreadRowStatus: "threadId" must be a non-empty string`,
+                `beam plugin "${pluginId}": contentScript.experimental_setThreadRowStatus: "threadId" must be a non-empty string`,
               );
               return;
             }
             const normalizedThreadId = threadId.trim();
             if (normalizedThreadId.length === 0) {
               deps.warn(
-                `bb plugin "${pluginId}": contentScript.experimental_setThreadRowStatus: "threadId" must be a non-empty string`,
+                `beam plugin "${pluginId}": contentScript.experimental_setThreadRowStatus: "threadId" must be a non-empty string`,
               );
               return;
             }
             const normalizedStatus = normalizePluginThreadRowStatus(
               status,
-              (reason) => deps.warn(`bb plugin "${pluginId}": ${reason}`),
+              (reason) => deps.warn(`beam plugin "${pluginId}": ${reason}`),
             );
             if (normalizedStatus === undefined) return;
             setPluginThreadRowStatus(

@@ -24,7 +24,7 @@ function theme(
 const MONACO_THEME_NAME = /^[a-zA-Z0-9-]+$/;
 
 describe("monacoThemeName", () => {
-  it("maps BB's namespaced, fingerprinted names into what Monaco accepts", () => {
+  it("maps Beam's namespaced, fingerprinted names into what Monaco accepts", () => {
     expect(monacoThemeName("bb:nord:light:1f4c9a2b")).toMatch(
       MONACO_THEME_NAME,
     );

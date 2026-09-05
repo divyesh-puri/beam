@@ -92,21 +92,21 @@ export function renderExistingServerDialogHtml(
     .join("\n      ");
   const canReplace = args.details !== null;
   const replaceButtonHtml = canReplace
-    ? `<button type="button" data-choice="replace">Quit other bb</button>`
+    ? `<button type="button" data-choice="replace">Quit other Beam instance</button>`
     : "";
   const replaceWarningHtml = canReplace
     ? `<p class="warning">If you stop the running copy, its agent threads stop too.</p>`
     : "";
   const introText = canReplace
     ? "This app can use the copy that is already running, or you can stop it and start a new one."
-    : "This app can use the copy that is already running. bb cannot identify that copy, so it cannot stop it for you.";
+    : "This app can use the Beam instance that is already running. Beam cannot identify that process, so it cannot stop it for you.";
 
   return `<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
-  <title>bb is already running</title>
+  <title>Beam is already running</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -185,14 +185,14 @@ export function renderExistingServerDialogHtml(
   </style>
 </head>
 <body>
-  <h1>bb is already running on this Mac</h1>
+  <h1>Beam is already running on this Mac</h1>
   <p>${introText}</p>
   <div class="details">
       ${detailHtml}
   </div>
   ${replaceWarningHtml}
   <div class="actions">
-    <button type="button" data-choice="quit">Quit this bb</button>
+    <button type="button" data-choice="quit">Quit this Beam instance</button>
     ${replaceButtonHtml}
     <button type="button" data-choice="connect">Connect</button>
   </div>
@@ -212,7 +212,7 @@ export function openExistingServerDialog(
     parent: args.parentWindow ?? undefined,
     resizable: false,
     show: false,
-    title: "bb is already running",
+    title: "Beam is already running",
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,

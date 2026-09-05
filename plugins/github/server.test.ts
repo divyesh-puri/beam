@@ -16,7 +16,7 @@ function assertGithubFrontendInference(
   client: PluginRpcClient<typeof githubRpcContract>,
 ) {
   expectTypeOf(
-    client.call("getPull", { repo: "get-bb/bb", number: 694 }),
+    client.call("getPull", { repo: "divyesh-puri/beam", number: 694 }),
   ).toEqualTypeOf<
     Promise<{
       pull: {
@@ -73,7 +73,7 @@ function assertGithubFrontendInference(
   >();
 
   // @ts-expect-error issue numbers must be numeric.
-  void client.call("getIssue", { repo: "get-bb/bb", number: "694" });
+  void client.call("getIssue", { repo: "divyesh-puri/beam", number: "694" });
   // @ts-expect-error unknown filter values are rejected by the contract.
   void client.call("listItems", { kind: "discussion" });
 }
@@ -130,8 +130,8 @@ describe("GitHub RPC contract", () => {
   });
 
   it("separates usable extraRepos entries from ones it cannot honor", () => {
-    expect(parseExtraRepos("get-bb/bb, nonsense")).toEqual({
-      repos: ["get-bb/bb"],
+    expect(parseExtraRepos("divyesh-puri/beam, nonsense")).toEqual({
+      repos: ["divyesh-puri/beam"],
       ignored: ["nonsense"],
     });
     expect(parseExtraRepos("SOME-ORG/*")).toEqual({
@@ -151,13 +151,13 @@ describe("GitHub RPC contract", () => {
   });
 
   it("rejects CLI arguments that would otherwise broaden a repository query", () => {
-    expect(validateGithubCliArgs(["issues", "get-bb/bb"])).toBeNull();
+    expect(validateGithubCliArgs(["issues", "divyesh-puri/beam"])).toBeNull();
     expect(validateGithubCliArgs(["issues", "bad/repo/shape"])).toContain(
       "expected owner/repo",
     );
-    expect(validateGithubCliArgs(["prs", "get-bb/bb", "extra"])).toContain(
-      "Unexpected argument",
-    );
+    expect(
+      validateGithubCliArgs(["prs", "divyesh-puri/beam", "extra"]),
+    ).toContain("Unexpected argument");
     expect(validateGithubCliArgs(["repos", "--json"])).toContain(
       "does not accept arguments",
     );
@@ -194,7 +194,7 @@ describe("GitHub RPC contract", () => {
       }),
     ).rejects.toMatchObject({ code: "invalid_input" });
     await expect(
-      harness.callRpc("startWork", { repo: "get-bb/bb", number: 694 }),
+      harness.callRpc("startWork", { repo: "divyesh-puri/beam", number: 694 }),
     ).rejects.toMatchObject({ code: "invalid_output" });
   });
 });

@@ -458,7 +458,7 @@ function storedGlyph(row: { data: unknown }): string | undefined {
 }
 
 describe("presentation icon ingest validation for bb-injected tool rows", () => {
-  it("keeps the tool plugin's declared icon on a thread of another provider plugin, and refuses any other glyph on a bb tool row", async () => {
+  it("keeps the tool plugin's declared icon on a thread of another provider plugin, and refuses any other glyph on a Beam tool row", async () => {
     const { harness, session, thread } = await setup();
     try {
       const rootDir = join(

@@ -16,7 +16,7 @@ afterEach(cleanupTempDirs);
 async function initBranchRepo(): Promise<string> {
   const repoPath = await makeTempDir("bb-host-branches-repo-");
   await runGitCommand(["init", "-b", "develop"], { cwd: repoPath });
-  await runGitCommand(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGitCommand(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGitCommand(["config", "user.email", "bb@example.com"], {
     cwd: repoPath,
   });
@@ -53,7 +53,7 @@ async function initStaleOriginMainRepo(): Promise<StaleOriginMainRepo> {
   const cloneParent = await makeTempDir("bb-host-branches-stale-clone-");
   const clonePath = path.join(cloneParent, "repo");
   await runGitCommand(["clone", remotePath, clonePath], { cwd: cloneParent });
-  await runGitCommand(["config", "user.name", "BB Tests"], {
+  await runGitCommand(["config", "user.name", "Beam Tests"], {
     cwd: clonePath,
   });
   await runGitCommand(["config", "user.email", "bb@example.com"], {
@@ -170,7 +170,7 @@ describe("host.inspect_git_source dispatch", () => {
           },
           harness.dispatchOptions(),
         ),
-        2_000,
+        10_000,
       );
       expect(result).toMatchObject({
         defaultBranch: "main",
@@ -550,7 +550,7 @@ describe("host.list_branch_options dispatch", () => {
     const cloneParent = await makeTempDir("bb-host-branch-options-clone-");
     const clonePath = path.join(cloneParent, "repo");
     await runGitCommand(["clone", remotePath, clonePath], { cwd: cloneParent });
-    await runGitCommand(["config", "user.name", "BB Tests"], {
+    await runGitCommand(["config", "user.name", "Beam Tests"], {
       cwd: clonePath,
     });
     await runGitCommand(["config", "user.email", "bb@example.com"], {

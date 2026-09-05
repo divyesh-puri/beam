@@ -1,12 +1,12 @@
 # @bb/mobile
 
-Native iOS/Android client for bb (Expo SDK 57, React Native 0.86, Expo
+Native iOS/Android client for Beam (Expo SDK 57, React Native 0.86, Expo
 Router, NativeWind v5). Plan and decisions: `plans/bb-mobile-expo.md`.
 
 Status: Phase 7 (settings, machines, updates, plugins, skills, share,
-haptics, CI) — M4, the last build milestone, over Direct mode and bb connect;
+haptics, CI) — M4, the last build milestone, over Direct mode and Beam Connect;
 M5 (SPA-in-WebView plugin surfaces, tablet layout, store releases) is
-deferred. Direct-mode and bb connect server profiles (QR / code pairing, desktop-session
+deferred. Direct-mode and Beam Connect server profiles (QR / code pairing, desktop-session
 cookie, re-pair), the app shell (root stack, connection banner, settings),
 theme/design system, the per-profile SDK/realtime/query layer, the grouped
 thread list (home, long-press menus, organize/sort, drag-to-reorder
@@ -48,11 +48,11 @@ app/                     Expo Router routes (thin: each file re-exports a screen
                          threads/[id]/files (the Files tab full screen, or a file
                          preview for ?kind=&path=&line=[&source=&status=])
   settings/              index (the settings buckets), servers/ (list),
-                         servers/add (bb connect entry + Direct mode form),
+                         servers/add (Beam Connect entry + Direct mode form),
                          archived (archived threads), server (server status
                          card), general, appearance, experiments,
                          providers/[providerId] (codex | claude-code), usage
-                         (usage limits), updates (bb + provider CLIs + CLI
+                         (usage limits), updates (Beam + provider CLIs + CLI
                          skills), machines/ (index: the paired machines + the
                          add-machine sheet, [hostId]: one machine), plugins/
                          (index: installed plugins, browse: the catalog,
@@ -61,8 +61,8 @@ app/                     Expo Router routes (thin: each file re-exports a screen
                          [skillId]: one skill read-only, registry/index:
                          skills.sh browse, registry/[registrySkillId]: one
                          registry skill + install)
-  connect/index.tsx      bb connect enrollment (QR / code) — also the re-pair
-                         target (`?profileId=`) and the `bb://connect?code=…` link
+  connect/index.tsx      Beam Connect enrollment (QR / code) — also the re-pair
+                         target (`?profileId=`) and the `beam://connect?code=…` link
                          (the new-thread composer is the home screen's bottom
                          dock: `/?projectId=&sectionId=&initialPrompt=&reuseEnvironmentId=`
                          + the fork / handoff seed params open it)
@@ -75,9 +75,9 @@ app/                     Expo Router routes (thin: each file re-exports a screen
                          "Live thread" section for any thread id), spike,
                          connect-spike (Phase 0 diagnostics). Dev /
                          EXPO_PUBLIC_BB_E2E=1 only: release bundles redirect
-                         them (and bb://dev/* links) home
-  e2e/reset.tsx          bb://e2e/reset — wipes local state (dev / EXPO_PUBLIC_BB_E2E=1)
-  +native-intent.tsx     redirectSystemPath: every incoming URL (bb:// scheme,
+                         them (and beam://dev/* links) home
+  e2e/reset.tsx          beam://e2e/reset — wipes local state (dev / EXPO_PUBLIC_BB_E2E=1)
+  +native-intent.tsx     redirectSystemPath: every incoming URL (beam:// scheme,
                          universal links, dev-client URLs) → src/lib/links
                          resolution → profile switch + route / add-server prompt
 src/
@@ -94,7 +94,7 @@ src/
                          registration sync, taps → thread, badge, Settings rows)
   screens/               screen components (home/ — thread list + the
                          new-thread ComposeDock; compose/ — ComposeDock,
-                         useComposeController; settings/, shell/, connect/ — bb connect enrollment: ConnectEnrollScreen,
+                         useComposeController; settings/, shell/, connect/ — Beam Connect enrollment: ConnectEnrollScreen,
                          ConnectScanner (expo-camera QR), AccountServersList;
                          projects/, pickers/ — reusable picker sheets: project,
                          provider, model+reasoning, permission mode, environment,
@@ -236,11 +236,11 @@ src/
     query/               query keys, per-profile QueryClient, AppState focus,
                          realtime → query invalidation (+ the observer-less
                          diff-patch cache it evicts on workspace events)
-    session/             bb connect desktop-session cookie scheduler (Phase 5)
+    session/             Beam Connect desktop-session cookie scheduler (Phase 5)
     connection/          active-profile connector (socket + session lifecycle),
                          connection banner derivation
     e2e/                 launch/deep-link reset logic
-    links/               incoming-link resolution: bb:// scheme + web/universal
+    links/               incoming-link resolution: beam:// scheme + web/universal
                          links → mobile route, profile match, add-server prompt
     native/              RN adapters for the lib contracts (SecureStore,
                          cookies, AppState) — never imported by tested modules
@@ -322,8 +322,8 @@ EXPO_PUBLIC_BB_SERVER_URL=http://127.0.0.1:<port> pnpm dev   # Metro (dev-client
 ```
 
 The iOS Simulator shares the Mac loopback, so `pnpm dev` (repo root) or
-`scripts/bb-dev-app current` gives a server URL that works as-is. Physical
-phones need a Tailscale Serve URL, bb connect, or a temporary
+`scripts/beam-dev-app current` gives a server URL that works as-is. Physical
+phones need a Tailscale Serve URL, Beam Connect, or a temporary
 `BB_SERVER_BIND_HOST=0.0.0.0`.
 
 ## E2E (Maestro)
@@ -341,7 +341,7 @@ cd apps/mobile && pnpm e2e:ios
 workspace menu → Settings → Server status shows realtime connected); `smoke.yaml`
 opens the Phase 0 diagnostics screen; `phase3-threads.yaml` exercises the
 thread list (rename, pin, archive, Settings → Archived → unarchive, search);
-`phase3-compose.yaml` creates a thread from the home dock (`bb://compose`
+`phase3-compose.yaml` creates a thread from the home dock (`beam://compose`
 → home; pickers, model, environment) and exercises the New-project machine/folder
 pickers (pass `-e REPO_PARENT_DIR=<dir>` to also browse into the harness repo);
 `phase4a-timeline.yaml` opens the seeded "Rich thread" (the seed leaves it
@@ -385,9 +385,9 @@ into the composer). `phase4b-composer.yaml` drives the composer showcase's
 typeahead, pills, "+" menu and attachment chip. `phase5-links.yaml` takes
 `-e THREAD_ID=<threads.completed> -e PROJECT_ID=<projectId>` from the
 backend's startup JSON and drives the deep links while the app is warm:
-`bb://threads/<id>` and the web alias `bb://projects/<p>/threads/<t>` open the
-seeded "Completed thread", `bb://settings/servers` shows the added server, and
-`bb://settings` opens Settings (the per-server push row is asserted once the
+`beam://threads/<id>` and the web alias `beam://projects/<p>/threads/<t>` open the
+seeded "Completed thread", `beam://settings/servers` shows the added server, and
+`beam://settings` opens Settings (the per-server push row is asserted once the
 push-notifications PR lands).
 `phase6-panel.yaml` opens a thread named "P6 panel thread" (create it first:
 a managed-worktree thread through the API with a file written into its
@@ -429,12 +429,12 @@ workspace panel → Files launcher (storage browser lists notes › report.csv)
 (markdown preview) → Source → Jump to line 60 → back to Files (the launcher
 stayed mounted, so the query is still there: clear it) → notes ›
 plan.md (storage preview) → close the panel → the full-screen preview by
-deep link (`bb://threads/<id>/files?kind=workspace&path=src%2Fapp.ts&line=12`,
+deep link (`beam://threads/<id>/files?kind=workspace&path=src%2Fapp.ts&line=12`,
 pass `-e THREAD_ID=`) lands on the highlighted line → long-press a line →
 Copy line toasts.
-`phase5-connect.yaml` drives bb connect end to end against the stub apex +
+`phase5-connect.yaml` drives Beam Connect end to end against the stub apex +
 gate (`pnpm --filter @bb/integration-tests e2e:mobile-connect-stub`, see
-"bb connect" below): Add server → "Connect with bb connect" → an expired code
+"Beam Connect" below): Add server → "Connect with Beam Connect" → an expired code
 shows the inline error → the real code with the handle and the self-hosted
 apex → enrolled screen (session signed in, account servers listed, one tap
 adds the second server) → Done → home through the gate (cookie on fetch and
@@ -465,7 +465,7 @@ Flows cold-start the dev client (`stopApp`) because a warm reload keeps the
 last deep link as the initial URL. Flows that share seed threads are
 order-sensitive: `phase3-threads.yaml` renames "Idle thread", which
 `phase4a-conversation-rows.yaml` looks up, so run the Phase 4a flows first (or
-restart the backend between them). Without `EXPO_PUBLIC_BB_E2E=1`, open `bb://e2e/reset`
+restart the backend between them). Without `EXPO_PUBLIC_BB_E2E=1`, open `beam://e2e/reset`
 (dev builds) to return the simulator to first run.
 
 ### Flows against a Release build (no Metro)
@@ -556,7 +556,7 @@ argument drives a dev client through Metro instead.
 - **Transport**: React Native owns the socket. `@bb/client-core`
   `TerminalWebSocketTransport` over RN's `WebSocket`
   (`ws(s)://<server>/ws/terminals/:id?sinceSeq=N`, cookies from the native
-  jar so bb connect works), heartbeat + reconnect from the transport, and
+  jar so Beam Connect works), heartbeat + reconnect from the transport, and
   `suspend()` / `resume()` bound to `AppState`: backgrounding closes the
   socket, foregrounding reattaches from the last chunk seen and the server
   replays what was missed. A replay gap the socket cannot cover
@@ -603,21 +603,21 @@ argument drives a dev client through Metro instead.
   are up to 64 KiB, so the batcher mostly coalesces small interactive
   output.
 
-## bb connect (Phase 5)
+## Beam Connect (Phase 5)
 
-- The pairing surfaces on the bb side (Settings → Remote access → Add mobile
-  device, `bb connect machine-code`) sit behind the `mobileApp` experiment
+- The pairing surfaces on the Beam side (Settings → Remote access → Add mobile
+  device, `beam connect machine-code`) sit behind the `mobileApp` experiment
   while the app is in early access: turn it on in Settings → Experiments or
-  with `bb settings experiment mobileApp true` before you mint a code.
+  with `beam settings experiment mobileApp true` before you mint a code.
 - Enrollment (`src/screens/connect`, `src/data/connect`, route `/connect`):
-  "Add server" offers "Connect with bb connect" above the Direct URL form.
+  "Add server" offers "Connect with Beam Connect" above the Direct URL form.
   The screen scans the pairing QR (`expo-camera`; payload = the connect
   plugin's `MobilePairingPayload` JSON `{code, serverUrl, apex, expiresAt}`, a
-  `bb://connect?code=…&serverUrl=…` link, or a bare code —
+  `beam://connect?code=…&serverUrl=…` link, or a bare code —
   `parseConnectPairingPayload`) or takes the code by hand with an optional
-  server (handle like `bee` or `https://bee.getbb.app`) and an optional
-  self-hosted apex; the apex defaults to `deriveConnectBaseUrl(serverUrl)`
-  or `https://getbb.app` (`resolveEnrollmentTarget`). `redeemEnrollment`
+  server (handle like `bee` or `https://bee.connect.example`) and a required
+  Beam Connect apex when the server URL cannot provide one. The apex derives
+  from a full server URL (`resolveEnrollmentTarget`). `redeemEnrollment`
   calls `redeemMachineCredential` (`POST <apex>/api/connect/redeem-machine`)
   and saves `{mode:"connect", serverUrl, handle, credential(bbcm_…), label}`
   in SecureStore, then activates it: the connector mints the desktop-session
@@ -628,8 +628,8 @@ argument drives a dev client through Metro instead.
 - Account servers: the machine credential is account-scoped (the apex stores
   it against the user, `apps/web/src/server/api.ts` `redeemMachineCode`; the
   gate checks it against the label's owner), and the desktop-session cookie
-  is a `.getbb.app` cookie carrying only the user id, so one enrollment
-  covers every server the account owns — the same as the desktop app's
+  is scoped to the configured Connect base domain and carries only the user id,
+  so one enrollment covers every server the account owns — the same as the desktop app's
   Server menu. After pairing, "Servers on this account"
   (`GET <serverUrl>/api/connect/servers` with the credential,
   `listAccountServers`) adds any other server as a profile in one tap with
@@ -652,9 +652,9 @@ argument drives a dev client through Metro instead.
   is a button that opens `/connect?profileId=<id>`, which re-pairs the same
   profile (new credential, same label and place in the list); Settings →
   Servers offers "Sign in again" from the long-press menu for connect
-  profiles and shows a mode pill (`bb connect` / `direct`) plus `@handle`.
+  profiles and shows a mode pill (`Beam Connect` / `Direct`) plus `@handle`.
   "Remove" only forgets the profile locally: the phone stays listed under
-  Machines in the getbb.app dashboard until revoked there (the copy says so).
+  Machines in the Beam Connect dashboard until revoked there (the copy says so).
 - Stub for e2e (`tests/integration/mobile-e2e/connect-stub.ts`,
   `pnpm --filter @bb/integration-tests e2e:mobile-connect-stub`): plays the
   apex and the gate on one TLS port (`https://localhost:42998` /
@@ -666,10 +666,10 @@ argument drives a dev client through Metro instead.
   proxies everything else (HTTP + WebSocket upgrade) to the harness backend
   — only with a valid session cookie, otherwise the gate's HTML 401 —
   rewriting `Origin: https://<gate host>` to the loopback origin like the
-  tunnel client does so the bb server's origin guard accepts RN's
+  tunnel client does so the Beam server's origin guard accepts RN's
   WebSocket. Control: `POST /__stub/{expire-session,revoke-machine,reset}`,
   `GET /__stub/state`, also on plain `http://127.0.0.1:42997`. It generates a
-  local CA under `~/.bb-mobile-e2e/connect-stub-certs` and installs it in
+  local CA under `~/.beam-mobile-e2e/connect-stub-certs` and installs it in
   the simulator named by `BB_MOBILE_E2E_SIMULATOR` (`xcrun simctl keychain …
 add-root-cert`). Env: `BB_MOBILE_E2E_GATE_PORT` (42998),
   `BB_MOBILE_E2E_STUB_CONTROL_PORT` (42997), `BB_MOBILE_E2E_UPSTREAM_URL`
@@ -683,23 +683,16 @@ add-root-cert`). Env: `BB_MOBILE_E2E_GATE_PORT` (42998),
 - Push notifications (Expo push registration, tap routing, foreground toast,
   app-icon badge, Settings → Notifications rows, and the server side) arrive
   in a later PR; `expo-notifications` is already part of the native build.
-- Deep links: `bb://<mobile path>` (`bb://threads/<id>`, `bb://settings/servers`,
-  `bb://projects/<p>/threads/<t>`, …) and universal / app links
-  `https://<handle>.getbb.app/{threads,projects,settings}/*` (iOS
-  `associatedDomains: applinks:getbb.app, applinks:*.getbb.app`; Android
-  `intentFilters` with `autoVerify`). `app/+native-intent.tsx` resolves every
-  URL with `src/lib/links`: a web link whose origin matches a saved profile
-  switches to that profile (waiting for its connection) and maps the web
-  path onto the mobile route (`mapWebPathToMobilePath`; web-only surfaces
-  land on home / settings); an unknown server opens Add server prefilled
-  with the origin and the follow-up path. Universal links only resolve once
-  `https://<handle>.getbb.app/.well-known/apple-app-site-association` /
-  `assetlinks.json` are served (the connect gate and the apex do, before the
-  session gate — `packages/connect-db/src/app-links.ts`) and the app is
-  signed with the team id in that file; until then only the `bb://` scheme
-  works, and wildcard associated-domain behavior still needs a physical
-  device check. The realtime `thread-open` signal (`POST /threads/:id/open`,
-  `bb thread open`) navigates to the thread while the app is foregrounded.
+- Deep links: `beam://<mobile path>` (`beam://threads/<id>`, `beam://settings/servers`,
+  `beam://projects/<p>/threads/<t>`, …). `app/+native-intent.tsx` also understands
+  web paths from saved server profiles: it switches to the matching profile,
+  waits for its connection, and maps the web path onto the mobile route
+  (`mapWebPathToMobilePath`; web-only surfaces land on home / settings); an
+  unknown server opens Add server prefilled with the origin and follow-up path.
+  Native universal links and Android App Links are not declared until a
+  Beam-owned domain and distribution identity are provisioned. The realtime
+  `thread-open` signal (`POST /threads/:id/open`,
+  `beam thread open`) navigates to the thread while the app is foregrounded.
 
 ## Plugins, marketplaces, skills (Phase 7)
 
@@ -725,7 +718,7 @@ add-root-cert`). Env: `BB_MOBILE_E2E_GATE_PORT` (42998),
   library grouped by scope, SkillDetailScreen rendering SKILL.md with
   `@/markdown`, RegistrySkillsScreen with Load more, RegistrySkillDetailScreen
   with "Install to my skills").
-- Plugin compact icons and provider logos are `currentColor` SVGs served by bb:
+- Plugin compact icons and provider logos are `currentColor` SVGs served by Beam:
   `ServerSvgIcon` reads them as text through the profile fetch and renders
   `SvgXml` with the theme foreground (an image view would paint them black);
   the provider picker uses it for `GET /system/providers/:id/logo`.
@@ -736,7 +729,7 @@ add-root-cert`). Env: `BB_MOBILE_E2E_GATE_PORT` (42998),
   installed list is empty (the flow asserts the empty state) while the
   catalog / marketplaces / skills routes work. `e2e/manual/phase7-plugins-
 devserver.yaml` drives the same screens against the checkout's dev server
-  (`scripts/bb-dev-app current`; real builtin plugins, read-mostly) and is not
+  (`scripts/beam-dev-app current`; real builtin plugins, read-mostly) and is not
   part of `pnpm e2e:ios`.
 
 ## Share sheet and haptics (Phase 7)
@@ -744,7 +737,7 @@ devserver.yaml` drives the same screens against the checkout's dev server
 - Outbound: the thread "…" menu's "Share link" hands the thread's web URL to
   the OS share sheet (`src/lib/share/share-thread.ts`, RN `Share.share`; iOS
   gets a `url` item, Android a `message`).
-- Inbound "Send to bb" is wired for `expo-share-intent` but the native module
+- Inbound "Send to Beam" is wired for `expo-share-intent` but the native module
   is **not** in the current dev client: `src/lib/share/share-intent.ts` loads
   it optionally (Metro's `allowOptionalDependencies` keeps the bundle building
   without it) and `src/app-shell/ShareIntentHandler.tsx` renders nothing when
@@ -764,116 +757,27 @@ devserver.yaml` drives the same screens against the checkout's dev server
 
 ## Release (EAS)
 
-The app lives in the EAS project `@bb-team/bb-app` (id in
-`app.json` → `extra.eas.projectId`; the Expo slug `bb-app` also names the
-dev-client scheme `exp+bb-app://`). Apple team `9QCU24SXK5`, bundle id
-`app.getbb.mobile`, App Store Connect app `6803559210`. EAS holds the iOS
-credentials (distribution certificate, App Store provisioning profile, APNs
-push key); nobody needs a local Xcode signing setup to ship.
+Beam uses its own Expo slug, iOS bundle identifier, Android package, and custom
+URL scheme:
 
-- **Log in once**: `pnpm exec eas login` (or `EXPO_TOKEN`). `eas-cli` is a
-  pinned devDependency, so use `pnpm exec eas …` from `apps/mobile`.
-- **Build profiles** (`eas.json`): `development` (simulator dev client),
-  `development-device` (dev client for a physical iPhone; needed for push
-  acceptance), `preview` (internal ad-hoc), `production` (App Store /
-  TestFlight; `autoIncrement` + `appVersionSource: remote` keep the build
-  number on EAS, `version` in `app.json` is the marketing version).
-- **TestFlight by hand**: `pnpm exec eas build -p ios --profile production`,
-  then `pnpm exec eas submit -p ios --latest`. The submit profile reads the
-  App Store Connect API key from the gitignored `apps/mobile/asc-api-key.p8`
-  (key id and issuer id are in `eas.json`); get the `.p8` from a teammate or
-  App Store Connect → Users and Access → Integrations → App Store Connect API
-  (role App Manager, one-time download). Both commands also work with
-  `--non-interactive`.
-- **CI**: `.github/workflows/mobile-ios-eas.yml` writes the `.p8` from the
-  `ASC_API_KEY_P8` secret, optionally sets `app.json` `version`, and runs
-  `eas build -p ios --profile <profile> [--auto-submit]` with
-  `EXPO_TOKEN`. EAS builds, then uploads to TestFlight; the job waits for
-  both and fails when either fails. Logs are on expo.dev under the project's
-  Builds and Submissions (the run summary links them). After a submit, the
-  job runs `scripts/testflight-distribute.mjs`, which waits for App Store
-  Connect to process the build, submits it for Beta App Review when it has
-  none, and adds it to the external group named by the `external_group`
-  input (default `External testers`; empty skips the step). Run the script
-  by hand with `node scripts/testflight-distribute.mjs --version X.Y.Z
---build N` from `apps/mobile` with the `.p8` in place.
-  Run it alone from the Actions tab ("Mobile iOS (EAS)") or
-  `gh workflow run mobile-ios-eas.yml -f profile=production -f submit=true`.
-  The nightly `publish-bb-app.yml` calls the same workflow after the npm
-  nightly publish with an empty `version`, so every nightly keeps the
-  marketing version committed in `app.json` and only the EAS build number
-  moves. This is deliberate: TestFlight needs a Beta App Review for the
-  first build of each new marketing version, and later builds of the same
-  version skip it. Bump `app.json` `version` only when you want a new
-  review, for example for a store release. Repo
-  secrets: `EXPO_TOKEN` (a robot token from the `bb-team` Expo org) and
-  `ASC_API_KEY_P8` (the `.p8` contents).
-- The `expo-modules-jsi` pnpm patch and the `lightningcss` override ship
-  with the repo and apply on EAS; the default build image provides
-  Xcode 26.x.
-- Universal links need the signed app's team id in the AASA the connect gate
-  serves (`packages/connect-db/src/app-links.ts`) and a physical-device
-  check against `https://<handle>.getbb.app/threads/…`. Android signing
-  (`eas credentials -p android`, FCM V1, `ASSETLINKS_SHA256_FINGERPRINTS`)
-  is still open.
-- `eas update` (JS-only fixes over the air) is deferred: `expo-updates` is
-  not installed, so the profiles define no update channels.
+- Expo slug: `beam-app`
+- iOS: `com.divyeshpuri.beam.mobile`
+- Android: `com.divyeshpuri.beam.mobile`
+- Deep links: `beam://`
 
-## TestFlight testers
+The upstream EAS owner, project ID, App Store Connect application, Apple team,
+and submission credentials are deliberately not inherited. Before the first
+Beam mobile release, the release operator must create a new EAS project, run
+`pnpm exec eas init` from `apps/mobile`, provision Beam-owned signing and store
+credentials, and configure a new submission profile.
 
-**Internal testers** need no Apple review. A build reaches the group as soon as
-App Store Connect finishes processing it, usually within 30 minutes. The group
-`bb team` exists and the nightly feeds it.
+Universal links are also disabled until a Beam-owned domain publishes AASA and
+Android Asset Links records for the new identifiers. Custom-scheme deep links
+and direct server URLs remain available without that cloud setup.
 
-**External testers** need a Beta App Review on the first build of each
-marketing version, and Apple usually auto-approves later builds of that
-version. The nightly keeps one marketing version for this reason (see "CI"
-above). Apple offers "Automatically distribute builds" only for internal
-groups, so the CI distribute step adds each submitted build to the external
-group through the App Store Connect API. Before a build can go to an external
-group, App Store Connect needs all of this:
-
-- **Test Information** (`betaAppLocalizations`): a feedback email, a beta
-  description, and the privacy policy URL <https://getbb.app/privacy>. Per
-  build, a "What to test" note.
-- **Beta App Review Details** (`betaAppReviewDetail`): contact first name, last
-  name, phone, and email. Apple uses these, testers never see them.
-- **A way for the reviewer to use the app.** This is the part that fails. bb
-  opens on "Add server", and a reviewer has no bb server, so without help they
-  cannot get past the first screen and will reject the build. Neither real
-  path works for a reviewer: a bb server's API is unauthenticated and runs
-  commands, so it cannot be on the internet, and connect pairing codes are
-  single-use and expire in ten minutes. Give them the **demo server** instead:
-  `apps/demo-server` is a Cloudflare Worker that answers the launch-path API
-  from fixed data, runs nothing, and isolates each client address. Deploy it
-  with `pnpm --filter @bb/demo-server deploy`, and rehearse the notes with
-  `e2e/manual/demo-server.yaml` before every submission. Disclose it in the
-  notes: a disclosed demo mode is sanctioned by guideline 2.1.
-
-Review notes template — keep it literal, and assume the reviewer knows nothing
-about coding agents:
-
-```text
-bb is a client for a bb server that a developer runs on their own computer.
-The app has no accounts of its own, so we have prepared a demo server for
-you. It serves sample conversations and scripted replies; it does not run a
-real coding agent.
-
-1. Open the app. It shows "Connect to a bb server".
-2. Under "Direct URL", in "Server URL", enter: https://<DEMO-HOST>
-3. Tap "Connect".
-4. The app shows a list of conversations. Open any of them to read it.
-5. Type a message and send it. The agent replies after a moment.
-
-Write to <EMAIL> if the server does not respond.
-```
-
-Rehearse it before submitting: hand a colleague a phone that has never run bb,
-give them only these notes, and check that they reach a thread.
-
-The nightly keeps the marketing version in `app.json` and lets the EAS build
-number tell nightlies apart, because a new version string triggers a fresh
-Beta App Review and another build of the same version usually does not.
+The `development`, `development-device`, `preview`, and `production` build
+profiles remain available. `production` auto-increments its build number after
+the new EAS project is configured.
 
 ## Local state
 

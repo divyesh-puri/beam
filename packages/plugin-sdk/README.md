@@ -1,13 +1,17 @@
 # @get-bb/plugin-sdk
 
-The typed facade BB plugin authors compile against. The root preserves the
+The typed facade Beam plugin authors compile against. The root preserves the
 complete `BbPluginApi` and `BbSdk` contract; `./app` is the frontend runtime
-that `bb plugin build` replaces with BB's shared implementation.
+that `beam plugin build` replaces with Beam's shared implementation.
+
+This fork keeps the `@get-bb/plugin-sdk` coordinate for source compatibility
+but marks its workspace package private. Beam does not publish into the
+upstream npm namespace; repository builds bundle this workspace version.
 
 The authoritative contracts are the exported declarations in
 [`src/backend-contract.ts`](src/backend-contract.ts) and
 [`src/app-contract.ts`](src/app-contract.ts). Keep author-facing guidance in
-the built-in `bb-plugin-authoring` skill synchronized with those declarations.
+the built-in `beam-plugin-authoring` skill synchronized with those declarations.
 
 ## Composer customization
 
@@ -21,17 +25,17 @@ Any mounted plugin component can use
 same plugin's registered thread-panel actions; it returns false when the
 current surface has no thread side panel.
 
-Use `UrlLink` for a real anchor that applies BB's current
+Use `UrlLink` for a real anchor that applies Beam's current
 in-app/external-browser preference on ordinary HTTP(S) activation, or
 `useBbNavigate().openUrl(url)` for a button or menu. Internal app
 routes, modifier clicks, explicit anchor targets, and unsupported schemes stay
 browser-owned. A `_blank` or named target preserves supplied `rel` tokens but
 adds `noopener noreferrer` unless `rel` explicitly contains `opener`, so a
-newly opened page cannot control BB by accident. The frontend harness records
+newly opened page cannot control Beam by accident. The frontend harness records
 both forms in `navigateCalls` and accepts an `openUrl` behavior option.
 
 Use `experimental_FileLink` for an explicit live workspace, host, or
-thread-storage file. Ordinary activation opens the shared BB preview and its
+thread-storage file. Ordinary activation opens the shared Beam preview and its
 context menu exposes built-in/plugin viewers, preferred external opening, and
 copy actions. Valid targets expose an encoded, scheme-safe anchor href so
 modifier clicks, downloads, and copied links cannot reinterpret a file name as
@@ -74,7 +78,7 @@ controls to actions or the plus menu and larger content to banners.
 ## Trusted frontend content scripts
 
 Use `app.contentScripts.register({ id, mount })` for ordinary
-bundled TypeScript/JavaScript that enhances the bb app shell without rendering
+bundled TypeScript/JavaScript that enhances the Beam app shell without rendering
 a React slot. The host supplies `{ pluginId, generation, signal }`, awaits
 mount setup, and owns abort plus exact-once reverse-order disposal across hash
 reload, disable, removal, failed replacement, and app-window teardown. The old
@@ -95,7 +99,7 @@ for a cleanup-safe editor enhancement.
 
 The packed package includes executable JavaScript and portable declarations
 for `@get-bb/plugin-sdk/testing` and `@get-bb/plugin-sdk/testing/app`; neither subpath
-imports BB workspace packages or source TypeScript at runtime. Install the SDK
+imports Beam workspace packages or source TypeScript at runtime. Install the SDK
 with the test stack used by your plugin (the peer dependencies are optional so
 headless plugins do not install a browser harness):
 
@@ -165,7 +169,7 @@ import is unavoidable.
 The backend fake matches observable schema-RPC validation/errors and strict
 JSON results, additive events, keyed-registration failures, atomic reload,
 settings, KV/database storage, conditional agent configuration, request input,
-and disposal order. HTTP runs through Hono but does not enforce BB's local or
+and disposal order. HTTP runs through Hono but does not enforce Beam's local or
 token authentication. Background services and schedules run only when driven;
 there are no restart timers or cron sweeps. Storage is process-local in a
 temporary directory, secrets are kept in memory, `bb.sdk` is always bound and
@@ -175,20 +179,20 @@ fake host.
 The frontend harness matches registration validation, content-script mount and
 cleanup ordering, RPC/realtime JSON
 boundaries, panel and slot props, navigation recording, and composer text,
-scope, quote, mention, focus, and clear behavior. It does not reproduce BB
+scope, quote, mention, focus, and clear behavior. It does not reproduce Beam
 layout, CSS, persistence, routing, host authentication, crash boundaries, or
-multi-plugin arbitration; use a live BB test for those boundaries.
+multi-plugin arbitration; use a live Beam test for those boundaries.
 
 ## Declaration surface
 
-The complete root declaration flattens the unpublished BB workspace contracts.
+The complete root declaration flattens the unpublished Beam workspace contracts.
 The testing declarations reuse that public `@get-bb/plugin-sdk` root instead of
 embedding a second copy, and no declaration depends on unpublished `@bb/*`
 packages. Genuine npm types (`hono`, `better-sqlite3`, `zod`, React, and Testing
 Library) remain peer imports. Scaffolded plugins depend on this package —
-`bb plugin new` pins it exactly in `devDependencies` — and read the root/app
+`beam plugin new` pins it exactly in `devDependencies` — and read the root/app
 declarations straight from `node_modules/@get-bb/plugin-sdk/bundled-types/`,
 the same files the testing subpaths reuse. Plugins scaffolded before that
 switch still vendor a copy of the root/app declarations in `types/` and map
-`@get-bb/plugin-sdk` onto them through their `tsconfig.json`; `bb plugin
+`@get-bb/plugin-sdk` onto them through their `tsconfig.json`; `beam plugin
 types` keeps those refreshed until they migrate.

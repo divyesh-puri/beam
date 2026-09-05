@@ -105,7 +105,7 @@ function missingInstallIssue(
     },
     action: null,
     title: `${displayName} CLI not installed`,
-    description: `Install ${displayName} so bb can start ${displayName} sessions.`,
+    description: `Install ${displayName} so Beam can start ${displayName} sessions.`,
     fingerprint: `${provider}:missing:1.1.0`,
   };
 }
@@ -172,21 +172,21 @@ describe("SidebarUpdatesBadge", () => {
     expect(result.container.innerHTML).toBe("");
   });
 
-  it("shows only the bb chip for a bb-only update", () => {
+  it("shows only the Beam chip for a Beam-only update", () => {
     renderBadge({ appUpdateAvailable: true });
 
     expect(screen.getByTestId("sidebar-updates-badge-bb")).toBeTruthy();
     expect(screen.queryByTestId("sidebar-updates-badge-providers")).toBeNull();
   });
 
-  it("counts a daemon stuck on an old protocol as a bb update, not a provider one", () => {
+  it("counts a daemon stuck on an old protocol as a Beam update, not a provider one", () => {
     renderBadge({ machines: [machine({ canRetryDaemonUpdate: true })] });
 
     expect(screen.getByTestId("sidebar-updates-badge-bb")).toBeTruthy();
     expect(screen.queryByTestId("sidebar-updates-badge-providers")).toBeNull();
   });
 
-  it("shows only the provider chip when bb itself is current", () => {
+  it("shows only the provider chip when Beam itself is current", () => {
     renderBadge({
       machines: [
         machine({ issues: [providerIssue("claude-code", "Claude Code")] }),

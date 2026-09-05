@@ -38,7 +38,7 @@ vi.mock("./BbDiff", async () => {
       return React.createElement(
         "div",
         { "data-testid": "bb-diff" },
-        `bb diff ${String(props.view)}/${String(props.overflow)}`,
+        `beam diff ${String(props.view)}/${String(props.overflow)}`,
       );
     },
   };
@@ -119,7 +119,7 @@ afterEach(() => {
 });
 
 describe("DiffHost", () => {
-  it("skips BB's renderer and full-file enrichment when a replacement never delegates", async () => {
+  it("skips Beam's renderer and full-file enrichment when a replacement never delegates", async () => {
     registerDiffRenderer((props) => {
       receivedProps.push(props);
       return <div data-testid="plugin-diff">plugin diff</div>;
@@ -144,7 +144,7 @@ describe("DiffHost", () => {
     );
   });
 
-  it("hands the replacement resolved semantic props, not BB's host-only inputs", async () => {
+  it("hands the replacement resolved semantic props, not Beam's host-only inputs", async () => {
     registerDiffRenderer((props) => {
       receivedProps.push(props);
       return <div data-testid="plugin-diff">plugin diff</div>;
@@ -194,7 +194,7 @@ describe("DiffHost", () => {
     expect(reparsed?.hunks).toHaveLength(1);
   });
 
-  it("loads BB's renderer only when the replacement delegates", async () => {
+  it("loads Beam's renderer only when the replacement delegates", async () => {
     registerDiffRenderer(({ path, Original }) =>
       path.endsWith(".ts") ? <Original /> : <div>plugin diff</div>,
     );
@@ -212,7 +212,7 @@ describe("DiffHost", () => {
     expect(bbDiff.lastProps?.file).toBeDefined();
   });
 
-  it("honours a pin to BB's renderer without disabling the plugin", async () => {
+  it("honours a pin to Beam's renderer without disabling the plugin", async () => {
     registerDiffRenderer((props) => {
       receivedProps.push(props);
       return <div data-testid="plugin-diff">plugin diff</div>;
@@ -275,7 +275,7 @@ describe("DiffHost", () => {
     expect(screen.queryByTestId("aardvark-diff")).toBeNull();
   });
 
-  it("falls back to BB's renderer when the replacement crashes", async () => {
+  it("falls back to Beam's renderer when the replacement crashes", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
     registerDiffRenderer(() => {
@@ -293,7 +293,7 @@ describe("DiffHost", () => {
     expect(await screen.findByTestId("bb-diff")).toBeDefined();
   });
 
-  it("uses BB's renderer with resolved presentation defaults when nothing is registered", async () => {
+  it("uses Beam's renderer with resolved presentation defaults when nothing is registered", async () => {
     render(<DiffHost file={parseFixture()} fullFileContents={null} />);
 
     await screen.findByTestId("bb-diff");
@@ -304,7 +304,7 @@ describe("DiffHost", () => {
 });
 
 describe("experimental_Diff", () => {
-  it("shares the replacement with BB's own surfaces", async () => {
+  it("shares the replacement with Beam's own surfaces", async () => {
     registerDiffRenderer((props) => {
       receivedProps.push(props);
       return <div data-testid="plugin-diff">plugin diff</div>;
@@ -339,7 +339,7 @@ describe("experimental_Diff", () => {
     expect(patch).not.toContain("\r");
   });
 
-  it("defers complete-file enrichment to BB's lazy renderer", async () => {
+  it("defers complete-file enrichment to Beam's lazy renderer", async () => {
     render(
       <PluginDiff
         patch={PATCH}
@@ -368,7 +368,7 @@ describe("experimental_Diff", () => {
 });
 
 describe("DiffHost experimental_Original alias", () => {
-  it("delegates to BB's renderer through the alias and warns once across renders", async () => {
+  it("delegates to Beam's renderer through the alias and warns once across renders", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     let renders = 0;
     registerDiffRenderer(({ experimental_Original: LegacyOriginal }) => {
@@ -398,11 +398,11 @@ describe("DiffHost experimental_Original alias", () => {
         view="split"
       />,
     );
-    expect(await screen.findByText("bb diff split/scroll")).toBeDefined();
+    expect(await screen.findByText("beam diff split/scroll")).toBeDefined();
     expect(renders).toBe(2);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn).toHaveBeenCalledWith(
-      "experimental_Original is deprecated; use Original. Removed in bb 0.42",
+      "experimental_Original is deprecated; use Original. Removed in Beam 0.42",
     );
   });
 

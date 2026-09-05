@@ -9,7 +9,7 @@ import {
 } from "../helpers/command-output-harness.js";
 import { registerSkillCommands } from "../../commands/skill.js";
 
-describe("bb skill commands", () => {
+describe("beam skill commands", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
@@ -32,6 +32,16 @@ describe("bb skill commands", () => {
           manageable: true,
           registrySkillId: null,
         },
+        {
+          id: `skill_${"b".repeat(64)}`,
+          name: "beam-cli",
+          description: "Control Beam from the CLI",
+          provider: null,
+          scope: "bb-builtin",
+          filePath: "/opt/beam/skills/beam-cli/SKILL.md",
+          manageable: false,
+          registrySkillId: null,
+        },
       ],
     }));
     stubServerApi({ "v1.projects.:id.skills.$get": get });
@@ -42,9 +52,9 @@ describe("bb skill commands", () => {
       param: { id: "project-context" },
       query: { environmentId: "" },
     });
-    expect(collectLogLines(vi.mocked(console.log)).join("\n")).toContain(
-      "review",
-    );
+    const output = collectLogLines(vi.mocked(console.log)).join("\n");
+    expect(output).toContain("review");
+    expect(output).toContain("Beam");
   });
 
   it("installs only by canonical registry identity", async () => {

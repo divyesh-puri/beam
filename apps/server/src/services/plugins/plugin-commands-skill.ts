@@ -25,13 +25,13 @@ function renderPluginCommandsSkill(
   contributions: readonly PluginCliContribution[],
 ): string {
   const sections = contributions.map((contribution) => {
-    const direct = `bb ${contribution.name}`;
+    const direct = `beam ${contribution.name}`;
     const invocation = pluginCliCall(contribution.pluginId, contribution.name);
     const lines = [
       `## ${invocation} — ${contribution.summary}`,
       "",
       `Contributed by plugin \`${contribution.pluginId}\`. Run \`${invocation} --help\` for details.`,
-      `\`bb plugin run ${contribution.pluginId} <args...>\` is always available.`,
+      `\`beam plugin run ${contribution.pluginId} <args...>\` is always available.`,
     ];
     if (contribution.commands.length > 0) {
       lines.push("");
@@ -48,12 +48,12 @@ function renderPluginCommandsSkill(
   return [
     "---",
     `name: ${SKILL_NAME}`,
-    "description: CLI commands contributed by installed BB plugins. Use when a task involves one of the plugin commands listed here; run them with bash like any other bb command.",
+    "description: CLI commands contributed by installed Beam plugins. Use when a task involves one of the plugin commands listed here; run them with bash like any other Beam command.",
     "---",
     "",
     "# Plugin Commands",
     "",
-    "Installed BB plugins contribute commands; core-name collisions use the explicit plugin-id form while others use a top-level `bb` subcommand.",
+    "Installed Beam plugins contribute commands; core-name collisions use the explicit plugin-id form while others use a top-level `beam` subcommand.",
     `Combined stdout and stderr is capped at ${PLUGIN_CLI_OUTPUT_MAX_BYTES} UTF-8 bytes. Above-limit`,
     "results fail atomically as `plugin_cli_output_too_large` and are never clipped;",
     "use pagination or file/streaming commands for large results.",

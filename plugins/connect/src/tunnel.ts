@@ -22,7 +22,12 @@ import {
 } from "@bb/connect-client";
 import type { CredentialStore } from "./credential.js";
 import { fetchMachineCode, MachineCodeError } from "./machine-code.js";
-import { asConnectPairError, redeemConnectCode } from "./redeem.js";
+import {
+  asConnectPairError,
+  ConnectPairError,
+  DEFAULT_CONNECT_BASE_URL,
+  redeemConnectCode,
+} from "./redeem.js";
 import { revokeMachine } from "./revoke-machine.js";
 import {
   ShareRegistry,
@@ -112,6 +117,16 @@ export class ConnectTunnel {
       (args.serverUrl !== undefined
         ? deriveConnectBaseUrl(args.serverUrl)
         : this.options.defaultBaseUrl);
+    if (
+      baseUrl === DEFAULT_CONNECT_BASE_URL &&
+      args.baseUrl === undefined &&
+      args.serverUrl === undefined
+    ) {
+      throw new ConnectPairError(
+        "network",
+        "Beam Connect is not provisioned; pass --server with an explicitly configured service URL",
+      );
+    }
     this.pairing = true;
     this.publish();
     try {
@@ -191,7 +206,7 @@ export class ConnectTunnel {
     if (credential === null) {
       throw new ConnectListError(
         "not_paired",
-        "this bb is not connected to getbb.app — run `bb connect` for how to pair",
+        "this Beam instance is not connected to Beam Connect — run `beam connect` for how to pair",
       );
     }
     return listAccountServers(credential);
@@ -199,7 +214,10 @@ export class ConnectTunnel {
 
   async createDesktopSession(): Promise<DesktopSession> {
     if (this.credential === null) {
-      throw new ConnectListError("not_paired", "this bb is not connected");
+      throw new ConnectListError(
+        "not_paired",
+        "this Beam instance is not connected",
+      );
     }
     return fetchDesktopSession(this.credential);
   }
@@ -338,8 +356,8 @@ export class ConnectTunnel {
 
   private credentialRejected(statusCode: number): void {
     this.lastError =
-      `the gate rejected this bb's credential (HTTP ${statusCode}) — ` +
-      "pairing was revoked; get a new code from the getbb.app dashboard and re-pair";
+      `the gate rejected this Beam's credential (HTTP ${statusCode}) — ` +
+      "pairing was revoked; get a new code from your Beam Connect dashboard and re-pair";
     this.options.log.warn(this.lastError);
     this.credential = null;
     this.teardown();
@@ -503,7 +521,7 @@ function connectApexHost(serverUrl: string): string {
   try {
     return new URL(deriveConnectBaseUrl(serverUrl)).host;
   } catch {
-    return "getbb.app";
+    return "Beam Connect";
   }
 }
 

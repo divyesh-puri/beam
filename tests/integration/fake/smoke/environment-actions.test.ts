@@ -178,7 +178,7 @@ describe.sequential("fake provider smoke environment integration", () => {
         args: ["log", "-1", "--format=%s"],
         cwd: workspacePath,
       });
-      expect(subject.trim()).toBe("bb: automated commit");
+      expect(subject.trim()).toBe("beam: automated commit");
     }));
 
   it("archives and unarchives a thread, blocking work while archived", () =>

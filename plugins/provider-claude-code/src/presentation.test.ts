@@ -280,7 +280,7 @@ describe("claude item presentation", () => {
     ]);
   });
 
-  it("emits a bb-injected tool call as server:bb with the definition's presentation", () => {
+  it("emits a Beam-injected tool call as server:bb with the definition's presentation", () => {
     const translator = createClaudeDeltaTranslator();
     translator.configureInjectedTools([
       {
@@ -305,13 +305,13 @@ describe("claude item presentation", () => {
             {
               type: "tool_use",
               id: "bb-1",
-              name: "mcp__bb-bridge__bb_workflow_result",
+              name: "mcp__beam-bridge__bb_workflow_result",
               input: { runId: "wfr_1" },
             },
             {
               type: "tool_use",
               id: "bb-2",
-              name: "mcp__bb-bridge__bb_thread_list",
+              name: "mcp__beam-bridge__bb_thread_list",
               input: {},
             },
             {

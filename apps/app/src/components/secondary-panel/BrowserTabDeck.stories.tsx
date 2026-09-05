@@ -66,7 +66,7 @@ const RECENT_VISITS: readonly BrowserHistoryEntry[] = [
     visitedAt: Date.now() - 6 * 60 * 60 * 1000,
   },
   {
-    url: "https://localhost:38886/",
+    url: "https://localhost:48886/",
     title: null,
     visitedAt: Date.now() - 26 * 60 * 60 * 1000,
   },

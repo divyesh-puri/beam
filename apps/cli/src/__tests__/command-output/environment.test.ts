@@ -11,7 +11,7 @@ import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import * as fixtures from "../helpers/command-output-fixtures.js";
 import { registerEnvironmentCommands } from "../../commands/environment.js";
 
-describe("bb environment command output", () => {
+describe("beam environment command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
@@ -96,7 +96,7 @@ describe("bb environment command output", () => {
     expect(help).toContain("pull-request");
   });
 
-  it("bb environment status inspects an arbitrary environment id", async () => {
+  it("beam environment status inspects an arbitrary environment id", async () => {
     const get = vi.fn(async () => ({
       outcome: "available",
       workspace: workspaceStatus,
@@ -129,7 +129,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment status --json preserves the canonical response", async () => {
+  it("beam environment status --json preserves the canonical response", async () => {
     const response = {
       outcome: "available",
       workspace: workspaceStatus,
@@ -170,7 +170,7 @@ describe("bb environment command output", () => {
     expect(lines.some((line) => line.startsWith("Deletions:"))).toBe(false);
   });
 
-  it("bb environment status explains non-git environments", async () => {
+  it("beam environment status explains non-git environments", async () => {
     stubServerApi({
       "v1.environments.:id.status.$get": vi.fn(async () => ({
         outcome: "not_applicable",
@@ -186,7 +186,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment pull-request show reports absence and presence", async () => {
+  it("beam environment pull-request show reports absence and presence", async () => {
     const get = vi
       .fn()
       .mockResolvedValueOnce({ outcome: "absent" })
@@ -222,7 +222,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment pull-request show --json preserves the outcome", async () => {
+  it("beam environment pull-request show --json preserves the outcome", async () => {
     stubServerApi({
       "v1.environments.:id.pull-request.$get": vi.fn(async () => ({
         outcome: "absent",
@@ -239,7 +239,7 @@ describe("bb environment command output", () => {
     ).toEqual({ outcome: "absent" });
   });
 
-  it("bb environment pull-request show reports a failed lookup", async () => {
+  it("beam environment pull-request show reports a failed lookup", async () => {
     stubServerApi({
       "v1.environments.:id.pull-request.$get": vi.fn(async () => ({
         outcome: "unavailable",
@@ -257,7 +257,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment branches returns local and remote results", async () => {
+  it("beam environment branches returns local and remote results", async () => {
     const get = vi.fn(async () => ({
       branches: ["main", "release"],
       branchesTruncated: false,
@@ -294,7 +294,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment paths targets the environment and path kinds", async () => {
+  it("beam environment paths targets the environment and path kinds", async () => {
     const response = {
       paths: [
         {
@@ -339,7 +339,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment diff prints summary, full diff, and truncation", async () => {
+  it("beam environment diff prints summary, full diff, and truncation", async () => {
     const get = vi.fn(async () => ({
       outcome: "available",
       diff: {
@@ -377,7 +377,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment diff-files --json preserves binary and initial patch metadata", async () => {
+  it("beam environment diff-files --json preserves binary and initial patch metadata", async () => {
     const response = {
       outcome: "available",
       files: [
@@ -427,7 +427,7 @@ describe("bb environment command output", () => {
     ).toEqual(response);
   });
 
-  it("bb environment diff-files reports a truncated file list", async () => {
+  it("beam environment diff-files reports a truncated file list", async () => {
     stubServerApi({
       "v1.environments.:id.diff.files.$get": vi.fn(async () => ({
         outcome: "available",
@@ -468,7 +468,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment diff-file distinguishes text and binary content", async () => {
+  it("beam environment diff-file distinguishes text and binary content", async () => {
     const get = vi
       .fn()
       .mockResolvedValueOnce({
@@ -543,7 +543,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment diff-patch preserves patch paths and truncation", async () => {
+  it("beam environment diff-patch preserves patch paths and truncation", async () => {
     const post = vi.fn(async () => ({
       outcome: "available",
       patches: [
@@ -594,7 +594,7 @@ describe("bb environment command output", () => {
     ]);
   });
 
-  it("bb environment diff explains non-git results", async () => {
+  it("beam environment diff explains non-git results", async () => {
     stubServerApi({
       "v1.environments.:id.diff.$get": vi.fn(async () => ({
         outcome: "not_applicable",
@@ -667,7 +667,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment commit prefixes failures with environment context", async () => {
+  it("beam environment commit prefixes failures with environment context", async () => {
     const post = vi.fn(async () => {
       throw new Error("HTTP 500: boom");
     });
@@ -682,13 +682,13 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment commit posts the action without a thread id", async () => {
+  it("beam environment commit posts the action without a thread id", async () => {
     const post = vi.fn(async () => ({
       ok: true,
       action: "commit",
       message: "Created commit abc123",
       commitSha: "abc123",
-      commitSubject: "bb: automated commit",
+      commitSubject: "beam: automated commit",
     }));
     stubServerApi({ "v1.environments.:id.actions.$post": post });
 
@@ -700,7 +700,7 @@ describe("bb environment command output", () => {
     });
   });
 
-  it("bb environment update sets the merge base branch", async () => {
+  it("beam environment update sets the merge base branch", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-update-1",
       projectId: "proj-1",
@@ -735,7 +735,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment update clears the merge base branch", async () => {
+  it("beam environment update clears the merge base branch", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-update-2",
       projectId: "proj-1",
@@ -761,7 +761,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment update renames the environment", async () => {
+  it("beam environment update renames the environment", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-update-name",
       projectId: "proj-1",
@@ -796,7 +796,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment update clears the environment name", async () => {
+  it("beam environment update clears the environment name", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-clear-name",
       projectId: "proj-1",
@@ -820,7 +820,7 @@ describe("bb environment command output", () => {
     expect(collectLogLines(vi.mocked(console.log))).toContain("Name cleared");
   });
 
-  it("bb environment update sets name and merge base together", async () => {
+  it("beam environment update sets name and merge base together", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-update-combined",
       projectId: "proj-1",
@@ -858,7 +858,7 @@ describe("bb environment command output", () => {
     );
   });
 
-  it("bb environment update rejects name and clear-name together", async () => {
+  it("beam environment update rejects name and clear-name together", async () => {
     const patch = vi.fn();
     stubServerApi({ "v1.environments.:id.$patch": patch });
 
@@ -882,7 +882,7 @@ describe("bb environment command output", () => {
     expect(patch).not.toHaveBeenCalled();
   });
 
-  it("bb environment update rejects an empty name", async () => {
+  it("beam environment update rejects an empty name", async () => {
     const patch = vi.fn();
     stubServerApi({ "v1.environments.:id.$patch": patch });
 
@@ -899,7 +899,7 @@ describe("bb environment command output", () => {
     expect(patch).not.toHaveBeenCalled();
   });
 
-  it("bb environment update --json prints the updated environment", async () => {
+  it("beam environment update --json prints the updated environment", async () => {
     const environment = fixtures.makeEnvironment({
       id: "env-json-update",
       projectId: "proj-1",

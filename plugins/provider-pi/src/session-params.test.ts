@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildPiSessionParams } from "./session-params.js";
 
 describe("buildPiSessionParams", () => {
-  it("injects the bb thread id into the shell env and drops invalid keys", () => {
+  it("injects the Beam thread id into the shell env and drops invalid keys", () => {
     expect(
       buildPiSessionParams({
         threadId: "bb-thread-1",
@@ -21,7 +21,7 @@ describe("buildPiSessionParams", () => {
     });
   });
 
-  it("maps the bb reasoning ladder onto Pi thinking levels", () => {
+  it("maps the Beam reasoning ladder onto Pi thinking levels", () => {
     const params = (reasoningLevel: "none" | "high" | "ultracode") =>
       buildPiSessionParams({
         threadId: "bb-thread-1",

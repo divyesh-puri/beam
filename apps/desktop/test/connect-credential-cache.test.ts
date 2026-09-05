@@ -8,7 +8,7 @@ import {
 const CREDENTIAL = {
   credential: "bbcm_desktop",
   handle: "laptop",
-  serverUrl: "https://laptop.getbb.app",
+  serverUrl: "https://laptop.connect.beam.invalid",
 };
 
 function createEncryption(

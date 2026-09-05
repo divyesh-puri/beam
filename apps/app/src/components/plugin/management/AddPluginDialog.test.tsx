@@ -27,8 +27,8 @@ function installPlanFor(url: string): unknown {
     pluginId: entryId,
     displayName: entryId,
     marketplace,
-    marketplaceDisplayName: official ? "BB Official" : "Acme Plugins",
-    publisherLabel: official ? "BB Official" : "Acme Plugins",
+    marketplaceDisplayName: official ? "Beam Official" : "Acme Plugins",
+    publisherLabel: official ? "Beam Official" : "Acme Plugins",
     official,
     author: { name: "Acme", url: "https://github.com/acme" },
     source: "git:https://github.com/acme/plugins.git@semver:^1.0.0",
@@ -137,7 +137,7 @@ describe("AddPluginDialog", () => {
     const source = "https://github.com/acme/bb-plugin-usage";
     const input = screen.getByLabelText("Plugin source") as HTMLInputElement;
 
-    expect(input.placeholder).toBe("https://github.com/owner/bb-plugin-name");
+    expect(input.placeholder).toBe("https://github.com/owner/beam-plugin-name");
     expect(screen.getByText(/GitHub repository URL/)).toBeTruthy();
     fireEvent.change(input, { target: { value: source } });
     fireEvent.click(screen.getByRole("button", { name: /install plugin/i }));
@@ -213,7 +213,7 @@ describe("AddPluginDialog", () => {
     const { unmount } = renderDialog({
       entryId: "linear",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Linear",
       icon: "Github",
       iconUrl: null,
@@ -221,14 +221,14 @@ describe("AddPluginDialog", () => {
       source: "builtin:linear",
     });
     expect(
-      screen.getByText("Install this plugin, bundled with BB."),
+      screen.getByText("Install this plugin, bundled with Beam."),
     ).not.toBeNull();
     unmount();
 
     const git = renderDialog({
       entryId: "thread-hover-cards",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Thread Hover Cards",
       icon: "Github",
       iconUrl: null,
@@ -237,16 +237,16 @@ describe("AddPluginDialog", () => {
     });
     expect(
       screen.getByText(
-        "Install this BB Community plugin from its listed source repository.",
+        "Install this Beam Community plugin from its listed source repository.",
       ),
     ).not.toBeNull();
-    expect(screen.queryByText(/bundled with BB/)).toBeNull();
+    expect(screen.queryByText(/bundled with Beam/)).toBeNull();
     git.unmount();
 
     renderDialog({
       entryId: "widgets",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Widgets",
       icon: "Zap",
       iconUrl: null,
@@ -255,7 +255,7 @@ describe("AddPluginDialog", () => {
     });
     expect(
       screen.getByText(
-        "Install this BB Community plugin from its listed npm package.",
+        "Install this Beam Community plugin from its listed npm package.",
       ),
     ).not.toBeNull();
   });
@@ -269,7 +269,7 @@ describe("AddPluginDialog", () => {
       iconUrl: null,
       iconTinted: false,
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       source: "npm:bb-plugin-widgets@^1.0.0 (registry https://npm.acme.test)",
     });
 
@@ -285,7 +285,7 @@ describe("AddPluginDialog", () => {
     renderDialog({
       entryId: "linear",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Linear",
       icon: "Github",
       iconUrl: null,
@@ -317,7 +317,7 @@ describe("AddPluginDialog", () => {
     renderDialog({
       entryId: "widgets",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Widgets",
       icon: null,
       iconUrl,
@@ -342,7 +342,7 @@ describe("AddPluginDialog", () => {
         initial={{
           entryId: "linear",
           marketplace: "bb-community",
-          publisherLabel: "BB Community",
+          publisherLabel: "Beam Community",
           displayName: "Linear",
           icon: "Github",
           iconUrl: null,
@@ -373,7 +373,7 @@ describe("AddPluginDialog", () => {
   it("surfaces the server's install error (e.g. incompatible source) as a toast", async () => {
     const errorToast = vi.spyOn(appToast, "error").mockReturnValue("toast");
     stubFetch(
-      { ok: false, error: "requires bb >= 0.15 — you have 0.14.1" },
+      { ok: false, error: "requires Beam >= 0.15 — you have 0.14.1" },
       422,
     );
     renderDialog();
@@ -387,7 +387,7 @@ describe("AddPluginDialog", () => {
       expect(errorToast).toHaveBeenCalledWith(
         "Installing the plugin failed",
         expect.objectContaining({
-          description: "requires bb >= 0.15 — you have 0.14.1",
+          description: "requires Beam >= 0.15 — you have 0.14.1",
         }),
       );
     });
@@ -450,7 +450,7 @@ describe("AddPluginDialog", () => {
     renderDialog({
       entryId: "linear",
       marketplace: "bb-community",
-      publisherLabel: "BB Community",
+      publisherLabel: "Beam Community",
       displayName: "Linear",
       icon: "Github",
       iconUrl: null,

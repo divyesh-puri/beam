@@ -164,7 +164,7 @@ describe("resolveLabel — label → server row (multi-server)", () => {
     });
   });
 
-  it("resolves a second bb on the same account by its own claimed subdomain", async () => {
+  it("resolves a second Beam on the same account by its own claimed subdomain", async () => {
     seedUser("acct-a");
     db.insert(profile)
       .values({ userId: "acct-a", handle: "sawyer", createdAt: now })
@@ -454,8 +454,8 @@ describe("account session refresh", () => {
 
     const setCookies = await refreshAccountSessionCookies(
       `__Secure-better-auth.session_token=${cookie}`,
-      "https://getbb.app",
-      createAuthFetch("https://getbb.app", "getbb.app"),
+      "https://connect.beam.invalid",
+      createAuthFetch("https://connect.beam.invalid", "connect.beam.invalid"),
     );
     const afterRefresh = Date.now();
     const refreshed = db
@@ -472,7 +472,7 @@ describe("account session refresh", () => {
     expect(setCookies).toHaveLength(1);
     expect(setCookies?.[0]).toContain("__Secure-better-auth.session_token=");
     expect(setCookies?.[0]).toContain("Max-Age=604800");
-    expect(setCookies?.[0]).toContain("Domain=.getbb.app");
+    expect(setCookies?.[0]).toContain("Domain=.connect.beam.invalid");
     expect(setCookies?.[0]).toContain("Secure");
   });
 
@@ -486,8 +486,8 @@ describe("account session refresh", () => {
     await expect(
       refreshAccountSessionCookies(
         `__Secure-better-auth.session_token=${cookie}`,
-        "https://getbb.app",
-        createAuthFetch("https://getbb.app", "getbb.app"),
+        "https://connect.beam.invalid",
+        createAuthFetch("https://connect.beam.invalid", "connect.beam.invalid"),
       ),
     ).resolves.toBeNull();
     expect(
@@ -508,12 +508,12 @@ describe("account session refresh", () => {
 
     const setCookies = await refreshAccountSessionCookies(
       `better-auth.session_token=${cookie}`,
-      "http://bb.localhost:42745",
-      createAuthFetch("http://bb.localhost:42745", "bb.localhost"),
+      "http://beam.localhost:42745",
+      createAuthFetch("http://beam.localhost:42745", "beam.localhost"),
     );
     expect(setCookies).toHaveLength(1);
     expect(setCookies?.[0]).toContain("better-auth.session_token=");
-    expect(setCookies?.[0]).toContain("Domain=.bb.localhost");
+    expect(setCookies?.[0]).toContain("Domain=.beam.localhost");
     expect(setCookies?.[0]).not.toContain("Secure");
   });
 
@@ -525,7 +525,7 @@ describe("account session refresh", () => {
     await expect(
       refreshAccountSessionCookies(
         "session=old",
-        "https://getbb.app",
+        "https://connect.beam.invalid",
         async () =>
           Response.json(
             { session: { id: "session" }, user: { id: "user" } },

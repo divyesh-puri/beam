@@ -305,7 +305,7 @@ function validateDueDate(dueDate: string | null): string | null {
 
 function validateLinkedBbProjectId(id: string | null): string | null {
   if (id !== null && !id.startsWith("proj_")) {
-    throw new Error("linkedBbProjectId must be a bb proj_* id");
+    throw new Error("linkedBbProjectId must be a Beam proj_* id");
   }
   return id;
 }
@@ -315,7 +315,7 @@ function validateThreadId(id: null): null;
 function validateThreadId(id: string | null): string | null;
 function validateThreadId(id: string | null): string | null {
   if (id !== null && !id.startsWith("thr_")) {
-    throw new Error("threadId must be a bb thr_* id");
+    throw new Error("threadId must be a Beam thr_* id");
   }
   return id;
 }

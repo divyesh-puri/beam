@@ -1,4 +1,4 @@
-# Phase 5 bb connect: first run → Add server → "Connect with bb connect" →
+# Phase 5 Beam Connect: first run → Add server → "Connect with Beam Connect" →
 # manual code entry against the stub apex (code, handle, self-hosted apex) →
 # enrolled screen (session signed in, account servers listed) → Done → home
 # connected through the stub gate (session cookie on fetch + /ws) → the stub
@@ -14,7 +14,7 @@
 # (APEX_URL), the pairing code STUB-PAIR (CODE).
 #
 # Run: JAVA_HOME=/opt/homebrew/opt/openjdk@17 maestro test e2e/flows/phase5-connect.yaml
-appId: app.getbb.mobile
+appId: com.divyeshpuri.beam.mobile
 env:
   METRO_URL: "http://127.0.0.1:8082"
   APEX_URL: "https://localhost:42998"
@@ -22,9 +22,9 @@ env:
   CODE: "STUB-PAIR"
 ---
 - runFlow: ../subflows/launch-app.yaml
-# First run: Add server offers bb connect above the direct URL form.
+# First run: Add server offers Beam Connect above the direct URL form.
 - extendedWaitUntil:
-    visible: "Connect to a bb server"
+    visible: "Connect to a Beam server"
     timeout: 30000
 - assertVisible:
     id: "add-server-connect"
@@ -32,7 +32,7 @@ env:
 - tapOn:
     id: "add-server-connect"
 - extendedWaitUntil:
-    visible: "Connect to getbb.app"
+    visible: "Connect with Beam Connect"
     timeout: 15000
 - takeScreenshot: p5-connect-enroll-form
 # A wrong code shows the apex's error inline and keeps the form.
@@ -51,7 +51,7 @@ env:
 - tapOn:
     id: "connect-apex-input"
 - inputText: "${APEX_URL}"
-- tapOn: "bb connect address"
+- tapOn: "Beam Connect address"
 - scrollUntilVisible:
     element:
       id: "connect-submit"
@@ -85,7 +85,7 @@ env:
 # The first successful connection may raise the one-time push-notification
 # prompt over the enrolled screen; decline it.
 - extendedWaitUntil:
-    visible: ".*(Paired with bb connect|Not now).*"
+    visible: ".*(Paired with Beam Connect|Not now).*"
     timeout: 30000
 - runFlow:
     when:
@@ -148,7 +148,7 @@ env:
     visible: ".*@stub.*"
     timeout: 10000
 - assertVisible: ".*@other.*"
-- assertVisible: ".*bb connect.*"
+- assertVisible: ".*Beam Connect.*"
 - takeScreenshot: p5-connect-servers
 - tapOn:
     id: "BackButton"

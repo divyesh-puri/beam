@@ -494,7 +494,7 @@ async function smokeBridgeModelList({
 async function smokeProviderBridgeBundles(packageDir) {
   await smokeBridgeModelList({
     // Claude Code ships its bridge as a plugin artifact (graduation wave 5),
-    // so the packed bundle to smoke is the one `bb plugin build` produced for
+    // so the packed bundle to smoke is the one `beam plugin build` produced for
     // the builtin plugin, not a daemon-side file. The bridge intentionally
     // relies on the host's Claude CLI for account-scoped discovery; CI does
     // not install that binary, so its explicit unavailable-provider response
@@ -551,7 +551,7 @@ async function smokeProviderBridgeBundles(packageDir) {
   });
   await smokeBridgeModelList({
     // Codex ships its bridge as a plugin artifact (graduation wave 5), so the
-    // packed bundle to smoke is the one `bb plugin build` produced for the
+    // packed bundle to smoke is the one `beam plugin build` produced for the
     // builtin plugin, not a daemon-side file. The bridge spawns the host's
     // `codex app-server` for model discovery; CI does not install the Codex
     // CLI, so its explicit missing-CLI response is a valid smoke outcome.
@@ -733,7 +733,7 @@ const SMOKE_EXECUTION_OPTIONS = {
 async function smokeHelpCommands(binDir) {
   await runCommand({
     ...createInstalledBinInvocation(binDir, "bb-app", ["--help"]),
-    label: "bb-app help",
+    label: "bb-app compatibility help",
   });
   await runCommand({
     ...createInstalledBinInvocation(binDir, "beam", ["--help"]),
@@ -760,7 +760,7 @@ async function smokeHelpCommands(binDir) {
 async function smokeConfigCommand(binDir) {
   const dataDir = join(tempRoot, "config-command-data");
   await runCommand({
-    ...createInstalledBinInvocation(binDir, "bb-app", [
+    ...createInstalledBinInvocation(binDir, "beam", [
       "--data-dir",
       dataDir,
       "env",
@@ -768,10 +768,10 @@ async function smokeConfigCommand(binDir) {
       "OPENAI_API_KEY",
       "test-openai-key",
     ]),
-    label: "bb-app env OPENAI_API_KEY",
+    label: "beam env OPENAI_API_KEY",
   });
   await runCommand({
-    ...createInstalledBinInvocation(binDir, "bb-app", [
+    ...createInstalledBinInvocation(binDir, "beam", [
       "--data-dir",
       dataDir,
       "config",
@@ -779,7 +779,7 @@ async function smokeConfigCommand(binDir) {
       "BB_APP_URL",
       "https://bb.example.test",
     ]),
-    label: "bb-app config BB_APP_URL",
+    label: "beam config BB_APP_URL",
   });
 
   const configJson = JSON.parse(
@@ -787,10 +787,10 @@ async function smokeConfigCommand(binDir) {
   );
   const envJson = JSON.parse(await readFile(join(dataDir, "env.json"), "utf8"));
   if (envJson.env?.OPENAI_API_KEY !== "test-openai-key") {
-    throw new Error("Expected bb-app env to persist OPENAI_API_KEY");
+    throw new Error("Expected Beam environment to persist OPENAI_API_KEY");
   }
   if (configJson.config?.BB_APP_URL !== "https://bb.example.test") {
-    throw new Error("Expected bb-app config to persist BB_APP_URL");
+    throw new Error("Expected Beam config to persist BB_APP_URL");
   }
 }
 
@@ -828,9 +828,10 @@ async function smokeSdkPackage(tarballPath) {
     [
       'import { BBSdk, BbHttpError } from "bb-app";',
       "",
-      'const bb = new BBSdk({ baseUrl: "http://127.0.0.1:48886" });',
+      'const beam = new BBSdk({ baseUrl: "http://127.0.0.1:48886" });',
       "const error: typeof BbHttpError = BbHttpError;",
-      "void bb.status.get();",
+      'void beam.browser.list({ callerHostId: "host_smoke", threadId: "thr_smoke" });',
+      "void beam.status.get();",
       "void error;",
       "",
     ].join("\n"),
@@ -891,13 +892,13 @@ async function smokeBuiltinPluginsRunning({ binDir, cliEnv }) {
   // expected builtin settles into "running".
   while (Date.now() <= deadline) {
     const stdout = await runCommand({
-      ...createInstalledBinInvocation(binDir, "bb", [
+      ...createInstalledBinInvocation(binDir, "beam", [
         "plugin",
         "list",
         "--json",
       ]),
       env: cliEnv,
-      label: "bb plugin list",
+      label: "beam plugin list",
     });
     const plugins = JSON.parse(stdout).plugins ?? [];
     const byId = new Map(plugins.map((plugin) => [plugin.id, plugin]));
@@ -939,7 +940,7 @@ async function smokeFullStack(binDir, sdkDir) {
   const [serverPort, daemonPort] = await getFreePorts(2);
   const serverUrl = `http://127.0.0.1:${serverPort}`;
   const stack = spawnManagedProcess({
-    ...createInstalledBinInvocation(binDir, "bb-app", [
+    ...createInstalledBinInvocation(binDir, "beam", [
       "--data-dir",
       dataDir,
       "--server-port",
@@ -950,7 +951,7 @@ async function smokeFullStack(binDir, sdkDir) {
     env: {
       BB_LOG_LEVEL: "info",
     },
-    label: "bb-app full stack",
+    label: "Beam full stack",
   });
 
   try {
@@ -970,9 +971,9 @@ async function smokeFullStack(binDir, sdkDir) {
       BB_SERVER_URL: serverUrl,
     };
     await runCommand({
-      ...createInstalledBinInvocation(binDir, "bb", ["status"]),
+      ...createInstalledBinInvocation(binDir, "beam", ["status"]),
       env: cliEnv,
-      label: "bb cli status",
+      label: "beam CLI status",
     });
     await smokeBuiltinPluginsRunning({ binDir, cliEnv });
     // Keep Awake reconciles even its default disabled state, so reaching this
@@ -988,8 +989,8 @@ async function smokeFullStack(binDir, sdkDir) {
         "-e",
         [
           'import { BBSdk } from "bb-app";',
-          "const bb = new BBSdk({ baseUrl: process.env.BB_SERVER_URL });",
-          "await bb.status.get();",
+          "const beam = new BBSdk({ baseUrl: process.env.BB_SERVER_URL });",
+          "await beam.status.get();",
         ].join("\n"),
       ],
       command: "node",
@@ -1013,12 +1014,12 @@ async function smokeDaemonJoin(binDir) {
   const daemonSpecs = [
     {
       dataDir: join(tempRoot, "join-daemon-data-1"),
-      label: "bb-app host-daemon join 1",
+      label: "beam host-daemon join 1",
       port: firstDaemonPort,
     },
     {
       dataDir: join(tempRoot, "join-daemon-data-2"),
-      label: "bb-app host-daemon join 2",
+      label: "beam host-daemon join 2",
       port: secondDaemonPort,
     },
   ];
@@ -1046,7 +1047,7 @@ async function smokeDaemonJoin(binDir) {
     });
     for (const spec of daemonSpecs) {
       const daemon = spawnManagedProcess({
-        ...createInstalledBinInvocation(binDir, "bb-app", [
+        ...createInstalledBinInvocation(binDir, "beam", [
           "host-daemon",
           "join",
           "--data-dir",

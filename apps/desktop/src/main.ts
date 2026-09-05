@@ -1070,7 +1070,7 @@ async function authenticateConnectTarget(
     }
     if (cachedResult.code === "unauthorized") {
       createDesktopLogger().info(
-        "[desktop] bb Connect refused the cached machine credential — dropping it",
+        "[desktop] Beam Connect refused the cached machine credential — dropping it",
       );
       await clearCachedConnectCredential();
     } else if (cachedResult.code === "network") {
@@ -1094,7 +1094,7 @@ async function authenticateConnectTarget(
       cachedFailure ?? {
         code: "network",
         detail:
-          "the local bb server is unavailable, and this app has no stored bb Connect credential",
+          "the local Beam server is unavailable, and this app has no stored Beam Connect credential",
         ok: false,
       }
     );
@@ -1130,7 +1130,7 @@ function ensureDesktopMachineEnrolled(): void {
   }
   if (!cache.canPersist()) {
     createDesktopLogger().info(
-      "[desktop] no OS keychain available — keeping the local bb server for bb Connect sessions",
+      "[desktop] no OS keychain available — keeping the local Beam server for Beam Connect sessions",
     );
     return;
   }
@@ -1139,13 +1139,13 @@ function ensureDesktopMachineEnrolled(): void {
     const result = await enrollDesktopMachine({ localServerUrl });
     if (!result.ok) {
       logger.info(
-        `[desktop] could not enroll this app with bb Connect (${result.code}): ${result.detail}`,
+        `[desktop] could not enroll this app with Beam Connect (${result.code}): ${result.detail}`,
       );
       return;
     }
     cachedConnectCredential = result.credential;
     await cache.write(result.credential);
-    logger.info("[desktop] enrolled this app as a bb Connect machine");
+    logger.info("[desktop] enrolled this app as a Beam Connect machine");
   })().finally(() => {
     enrollingDesktopMachine = null;
   });
@@ -1169,7 +1169,7 @@ async function applyServerTarget(): Promise<void> {
     if (!attached) {
       await loadStartupError({
         details:
-          "Could not connect to the local bb server on this Mac. Check that the port is free or that a compatible bb server is running.",
+          "Could not connect to the local Beam server on this Mac. Check that the port is free or that a compatible Beam server is running.",
         logs: "",
         title: "Could not connect",
       });
@@ -1201,7 +1201,7 @@ async function applyServerTarget(): Promise<void> {
           "The desktop app could not establish a session for this Connect server. " +
           `Try switching servers again. (${result.code}: ${result.detail})`,
         logs: "",
-        title: "Could not authenticate with bb Connect",
+        title: "Could not authenticate with Beam Connect",
       });
       refreshApplicationMenu();
       return;
@@ -1374,7 +1374,7 @@ async function loadLogViewerWindow(
     minHeight: 520,
     minWidth: 840,
     show: false,
-    title: "bb - Server & Daemon Logs",
+    title: "Beam — Server & Daemon Logs",
     titleBarStyle: "default",
     webPreferences: {
       contextIsolation: true,
@@ -1465,8 +1465,8 @@ async function loadLoadingView(): Promise<void> {
     url: createLocalViewUrl({
       viewModel: {
         kind: "loading",
-        message: "Starting local services and opening the bb workspace.",
-        title: "Opening bb",
+        message: "Starting local services and opening the Beam workspace.",
+        title: "Opening Beam",
       },
     }),
   });
@@ -1728,11 +1728,11 @@ async function startOwnedRuntime(
     }
     setCurrentRuntime(null);
     void loadStartupError({
-      details: `The Electron-owned bb-app process stopped with ${formatExitResult(
+      details: `The Electron-owned Beam process stopped with ${formatExitResult(
         exit,
       )}.`,
       logs: bbProcess.logs.text(),
-      title: "bb stopped",
+      title: "Beam stopped",
     });
   });
 
@@ -1753,11 +1753,11 @@ async function startOwnedRuntime(
 
   if (raceResult.kind === "process-exited") {
     await loadStartupError({
-      details: `bb-app exited before the server was ready with ${formatExitResult(
+      details: `Beam exited before the server was ready with ${formatExitResult(
         raceResult.exit,
       )}.`,
       logs: bbProcess.logs.text(),
-      title: "Could not start bb",
+      title: "Could not start Beam",
     });
     setCurrentRuntime(null);
     return null;
@@ -1770,10 +1770,10 @@ async function startOwnedRuntime(
   await loadStartupError({
     details:
       raceResult.result.kind === "incompatible"
-        ? `Port ${args.serverUrl} is responding, but it does not look like bb: ${raceResult.result.reason}.`
-        : `Timed out waiting for bb at ${args.serverUrl}: ${raceResult.result.reason}.`,
+        ? `Port ${args.serverUrl} is responding, but it does not look like Beam: ${raceResult.result.reason}.`
+        : `Timed out waiting for Beam at ${args.serverUrl}: ${raceResult.result.reason}.`,
     logs: bbProcess.logs.text(),
-    title: "Could not start bb",
+    title: "Could not start Beam",
   });
   await stopOwnedRuntime();
   return null;
@@ -1852,36 +1852,36 @@ async function decideOnExistingServer(
   if (stopResult.kind === "unverified") {
     await loadStartupError({
       details:
-        `The bb at ${probe.serverUrl} records process ${String(stopResult.pid)}, but that ` +
-        "process no longer matches the record. bb did not stop it. Stop it yourself, then open bb again.",
+        `The Beam at ${probe.serverUrl} records process ${String(stopResult.pid)}, but that ` +
+        "process no longer matches the record. Beam did not stop it. Stop it yourself, then open Beam again.",
       logs: "",
-      title: "Could not stop the running bb",
+      title: "Could not stop the running Beam instance",
     });
     return "quit";
   }
   if (stopResult.kind === "still-running") {
     await loadStartupError({
-      details: `bb could not stop process ${String(stopResult.pid)}, even after SIGKILL.`,
+      details: `Beam could not stop process ${String(stopResult.pid)}, even after SIGKILL.`,
       logs: "",
-      title: "Could not stop the running bb",
+      title: "Could not stop the running Beam instance",
     });
     return "quit";
   }
   if (stopResult.kind === "replaced") {
     await loadStartupError({
       details:
-        `Another bb started at ${probe.serverUrl} while the question was open, so bb stopped nothing. ` +
-        "Open bb again to see the copy that runs now.",
+        `Another Beam instance started at ${probe.serverUrl} while the question was open, so Beam stopped nothing. ` +
+        "Open Beam again to see the copy that runs now.",
       logs: "",
-      title: "Could not stop the running bb",
+      title: "Could not stop the running Beam instance",
     });
     return "quit";
   }
   if (!(await waitForServerToStop(probe.serverUrl))) {
     await loadStartupError({
-      details: `The bb at ${probe.serverUrl} stopped, but the address is still in use.`,
+      details: `The Beam at ${probe.serverUrl} stopped, but the address is still in use.`,
       logs: "",
-      title: "Could not stop the running bb",
+      title: "Could not stop the running Beam instance",
     });
     return "quit";
   }
@@ -1934,7 +1934,7 @@ async function initializeRuntime(args: InitializeRuntimeArgs): Promise<void> {
 
   if (existingProbe.kind === "incompatible") {
     await loadStartupError({
-      details: `Port ${args.serverUrl} is already in use, but it is not a compatible bb server: ${existingProbe.reason}.`,
+      details: `Port ${args.serverUrl} is already in use, but it is not a compatible Beam server: ${existingProbe.reason}.`,
       logs: "",
       title: "Port conflict",
     });
@@ -1963,7 +1963,7 @@ async function runDesktopApp(): Promise<void> {
 
   const applicationName = app.isPackaged
     ? DESKTOP_RELEASE_INFO.applicationName
-    : "bb-dev";
+    : "Beam Dev";
   app.setName(applicationName);
   if (app.isPackaged) {
     app.setPath(
@@ -2200,7 +2200,9 @@ async function runDesktopApp(): Promise<void> {
   desktopBrowserViewManager = createDesktopBrowserViewManager({
     activateHostWindow(hostWebContentsId) {
       app.focus({ steal: true });
-      BrowserWindow.getAllWindows().find((candidate) => candidate.webContents.id === hostWebContentsId)?.focus();
+      BrowserWindow.getAllWindows()
+        .find((candidate) => candidate.webContents.id === hostWebContentsId)
+        ?.focus();
     },
     dispatchAppCommand({ command, hostWebContentsId }) {
       const browserWindow = BrowserWindow.getAllWindows().find(
@@ -2301,6 +2303,6 @@ void runDesktopApp().catch((error) => {
   void loadStartupError({
     details: message,
     logs: "",
-    title: "Could not open bb",
+    title: "Could not open Beam",
   });
 });

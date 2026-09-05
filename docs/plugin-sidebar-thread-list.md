@@ -3,7 +3,7 @@
 Status: **implemented**. The members below ship in `@get-bb/plugin-sdk/app`.
 
 This document specifies one exclusive slot and the data surface it needs.
-A plugin uses them to replace bb's thread list with its own.
+A plugin uses them to replace Beam's thread list with its own.
 
 Every member below ships with the `experimental_` prefix and an entry in
 [api_to_audit.md](api_to_audit.md), per [AGENTS.md](../AGENTS.md).
@@ -23,7 +23,7 @@ Every member below ships with the `experimental_` prefix and an entry in
 | Footer (Settings, plugin actions, updates) | host                       | host, always      |
 
 The plugin replaces the scroll area only. The host keeps the chrome, so
-every sidebar looks like bb, resizes like bb, and collapses like bb.
+every sidebar looks, resizes, and collapses like Beam.
 
 Two reasons the host keeps the rest. The nav rows and footer are other
 plugins' surfaces — Docs, Tasks, and every `sidebarFooterAction` live there —
@@ -70,14 +70,14 @@ interface PluginThreadListProps {
    */
   onNavigate: () => void;
   /**
-   * Compatibility value for the former sidebar search field. BB now searches
+   * Compatibility value for the former sidebar search field. Beam now searches
    * threads in the quick palette, so the host always supplies "".
    *
    * @deprecated The quick palette owns thread search. Ignore this value.
    */
   searchQuery: string;
   /**
-   * BB's thread list bound to this sidebar instance. Render it to delegate
+   * Beam's thread list bound to this sidebar instance. Render it to delegate
    * conditionally without re-entering plugin replacement resolution.
    */
   Original: ComponentType;
@@ -154,7 +154,7 @@ interface PluginSidebarThread {
   };
   /**
    * The one status the host would paint for this thread, already resolved
-   * through bb's precedence. The plugin draws it however it likes.
+   * through Beam's precedence. The plugin draws it however it likes.
    */
   indicator: PluginSidebarThreadIndicator;
   /**
@@ -204,7 +204,7 @@ a re-export of the internal `ThreadListEntry`. `ThreadListEntry` changes
 whenever the app needs a field; a plugin contract must not.
 
 `indicator` is the important one. It is `resolveThreadListIndicator` run by
-the host. A plugin gets bb's precedence for free — attention before work,
+the host. A plugin gets Beam's precedence for free — attention before work,
 plan and goal before the spinner — and cannot drift from it.
 
 ---
@@ -242,7 +242,7 @@ The SDK deliberately ships almost no components (plugin design §5.5), and this
 API adds none.
 
 Status icons are data: `indicator`, `indicatorLabel`, and `activity`. The
-context menu is the plugin's too — every item bb's own menu offers (open, open
+context menu is the plugin's too — every item Beam's own menu offers (open, open
 in split, pin, mark read, rename, archive, request delete) is on
 `experimental_useSidebarThreadActions`, so a replaced sidebar can rebuild it,
 reorder it, or replace it with something else entirely.
@@ -251,7 +251,7 @@ That is the point of replacing the list: a sidebar that cannot choose its own
 glyphs and its own menu is not really replaced.
 
 The trade is real and worth stating. A plugin menu will not automatically pick
-up a thread action bb adds later, and it can drift from bb's labels and
+up a thread action Beam adds later, and it can drift from Beam's labels and
 ordering. `docs/api_to_audit.md` tracks that as an open question.
 
 ---
@@ -320,13 +320,13 @@ actions.open(thread.id, { split: event.metaKey || event.ctrlKey });
 That runs the same placement rules as a drag: right split by default, focus
 if already open, replace at the cap, plain navigation when splits are off.
 
-`layout` is data on purpose. bb draws a small pane mini-map in its own rows;
+`layout` is data on purpose. Beam draws a small pane mini-map in its own rows;
 your plugin can draw that, a border tint, or nothing at all.
 
 ### What the host does not give you
 
 Drag to **reorder**, and drag a thread **into a section or project**, stay
-host-internal. They are bound to bb's own section model, which a replaced list
+host-internal. They are bound to Beam's own section model, which a replaced list
 may not even have. A plugin that wants ordering brings its own drag library
 and stores its own order. The split drag will not interfere, because it only
 engages once the pointer leaves the sidebar.
@@ -338,7 +338,7 @@ engages once the pointer leaves the sidebar.
 A replaced sidebar often hides something the old sidebar showed. A flat
 inbox-style list hides child threads, because it has no place to nest them. Those children still need a home, and the thread header is it.
 
-bb already has a backend version of this. `bb.ui.registerThreadAction` puts a
+Beam already has a backend version of this. `bb.ui.registerThreadAction` puts a
 host-rendered button in the thread header and runs `run` on the server. That
 is right for "do a thing". It cannot draw a live cluster of child threads.
 
@@ -392,7 +392,7 @@ interface PluginThreadHeaderActionProps {
 ### Popovers
 
 The header clips nothing, but it is a short row. Anything taller than 28px
-must be a portalled popover, not an inline panel. `bb plugin build` shims the
+must be a portalled popover, not an inline panel. `beam plugin build` shims the
 portal-owning packages to the host's singletons, so a vendored Radix or
 `vaul` popover portals correctly and stacks above the thread content.
 
@@ -472,7 +472,7 @@ host change beyond the slot. `parentThreadId` and `indicator` are already on
 tool count, and no progress figure. A row can show the title, the origin, the
 status, and the time. Anything richer needs the plugin's own backend.
 
-Also note the vocabulary. bb's in-turn subagents are activity on the parent
+Also note the vocabulary. Beam's in-turn subagents are activity on the parent
 thread, counted in `activity.backgroundAgents`. They are not child threads.
 This slot lists child threads: forks (side chats among them) and other
 plugin-spawned threads.
@@ -482,12 +482,12 @@ The two sets overlap but are not the same, so label the chip carefully.
 
 ## 8. Keyboard support is a DOM contract
 
-bb's thread shortcuts already work by DOM query, not by React state.
+Beam's thread shortcuts already work by DOM query, not by React state.
 `getSidebarThreadShortcutTargets` collects
 `[data-sidebar-thread-shortcut-target]` elements and reads
 `dataset.sidebarThreadId`.
 
-So a plugin gets bb's surface-specific numbered thread shortcuts,
+So a plugin gets Beam's surface-specific numbered thread shortcuts,
 `thread.next`, and `thread.previous` by putting two attributes on each row's
 anchor:
 
@@ -528,7 +528,7 @@ function Row({
   onNavigate: () => void;
 }) {
   const actions = useSidebarThreadActions();
-  // Per row, exactly as bb's own ThreadRow does it.
+  // Per row, exactly as Beam's own ThreadRow does it.
   const { splitProps, layout } = useSidebarThreadSplit(thread.id);
 
   return (
@@ -601,7 +601,7 @@ export default definePluginApp((app) => {
 
 That is a working sidebar in about eighty lines. It stays live, it draws its
 own status icons, its rows drag out to split panes, they answer the numbered
-thread shortcuts, and right-click still opens bb's full menu.
+thread shortcuts, and right-click still opens Beam's full menu.
 
 ---
 
@@ -615,7 +615,7 @@ thread shortcuts, and right-click still opens bb's full menu.
 - **No new persisted thread fields.** A plugin that needs per-thread state —
   settled, snoozed, starred — stores it in its own database through
   `bb.storage.database()` and serves it over `bb.rpc`. This keeps plugin
-  concepts out of bb's schema and out of the host-daemon protocol.
+  concepts out of Beam's schema and out of the host-daemon protocol.
 - **No components at all.** `indicator`, `indicatorLabel`, and `activity` are
   data, and so is the action list: plugins draw their own icons and build their
   own context menus.
@@ -633,7 +633,7 @@ Add these when the API lands.
 
 **What it does.** Replaces the sidebar's scrolling thread list with a plugin
 component. Exclusive: Automatic activates the first available provider, while
-the user can pin BB or one provider in client-local Settings. A crash or a
+the user can pin Beam or one provider in client-local Settings. A crash or a
 missing explicitly selected plugin falls back to the built-in list.
 
 **Audit before stabilizing.**
@@ -661,7 +661,7 @@ plugin component.
 
 1. **DTO scope.** Confirm every `PluginSidebarThread` field earns its place,
    and that the copy stays worth its maintenance over `ThreadListEntry`.
-2. **Indicator coupling.** `indicator` freezes bb's precedence into the
+2. **Indicator coupling.** `indicator` freezes Beam's precedence into the
    contract. Confirm new indicator kinds can ship without breaking plugins,
    and that plugins handle an unknown kind by drawing nothing.
 3. **Scale.** Confirm one array of every thread is right at ten thousand
@@ -683,7 +683,7 @@ reports where that thread sits in the split layout.
 2. **Gesture ownership.** The host cancels dnd-kit sensors on engage by
    dispatching Escape. Confirm that stays correct when a plugin brings a
    different drag library, or replace it with an explicit cancel hook.
-3. **Layout leak.** `layout.panes` exposes bb's pane geometry. Confirm the
+3. **Layout leak.** `layout.panes` exposes Beam's pane geometry. Confirm the
    fraction-based rect stays stable as the split model evolves.
 4. **Per-row hook cost.** One hook per visible row reads the split atom.
    Confirm this holds with hundreds of rendered rows.

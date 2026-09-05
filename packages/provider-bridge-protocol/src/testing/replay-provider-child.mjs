@@ -158,7 +158,7 @@ const DIALECTS = {
   /**
    * `pi --mode rpc`: commands carry `{ id, type }`, responses are
    * `{ id, type: "response", command, success }`, and every other line is a
-   * raw AgentSessionEvent (or an `extension_ui_request`). The bb extension's
+   * raw AgentSessionEvent (or an `extension_ui_request`). The Beam extension's
    * channel (fd 3 child → bridge, fd 4 bridge → child) is recorded on the
    * same lanes wrapped as `{ bbChannel: <message> }`; this dialect routes
    * those back onto the channel fds.

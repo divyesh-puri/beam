@@ -122,28 +122,28 @@ afterEach(async () => {
 describe("ConnectTunnelClient", () => {
   it("allows HTTP only for a local machine gate and derives ws URLs", () => {
     expect(
-      resolveTrustedConnectGate("http://owner.bb.localhost:42745"),
+      resolveTrustedConnectGate("http://owner.beam.localhost:42745"),
     ).toEqual({
-      apiOrigin: "http://owner.bb.localhost:42745",
-      baseDomain: "bb.localhost:42745",
+      apiOrigin: "http://owner.beam.localhost:42745",
+      baseDomain: "beam.localhost:42745",
     });
     expect(
       buildMachineTunnelUrl({
         label: "sawyer-air",
-        baseDomain: "bb.localhost:42745",
+        baseDomain: "beam.localhost:42745",
       }),
-    ).toBe("ws://sawyer-air.bb.localhost:42745/__tunnel?v=1");
+    ).toBe("ws://sawyer-air.beam.localhost:42745/__tunnel?v=1");
     expect(
       buildMachineSharePublicOrigin(
-        { label: "sawyer-air", baseDomain: "bb.localhost:42745" },
+        { label: "sawyer-air", baseDomain: "beam.localhost:42745" },
         4173,
       ),
-    ).toBe("http://sawyer-air--4173.bb.localhost:42745");
-    expect(() => resolveTrustedConnectGate("http://owner.getbb.app")).toThrow(
-      "require HTTPS",
-    );
+    ).toBe("http://sawyer-air--4173.beam.localhost:42745");
     expect(() =>
-      resolveTrustedConnectGate("https://owner.bb.localhost:42745"),
+      resolveTrustedConnectGate("http://owner.connect.beam.invalid"),
+    ).toThrow("require HTTPS");
+    expect(() =>
+      resolveTrustedConnectGate("https://owner.beam.localhost:42745"),
     ).toThrow("HTTP for a local *.localhost");
   });
 
@@ -162,7 +162,7 @@ describe("ConnectTunnelClient", () => {
     });
 
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Sawyer Air",
       machineCredential: "bbcm_machine-secret",
       fetchFn: labelFetch(labelRequests),
@@ -178,13 +178,15 @@ describe("ConnectTunnelClient", () => {
       {
         body: { desiredName: "Sawyer Air" },
         credential: "bbcm_machine-secret",
-        url: "https://owner.getbb.app/api/connect/machine-label",
+        url: "https://owner.connect.beam.invalid/api/connect/machine-label",
       },
     ]);
     expect(identities).toEqual([
-      { label: "sawyer-air", baseDomain: "getbb.app" },
+      { label: "sawyer-air", baseDomain: "connect.beam.invalid" },
     ]);
-    expect(requestedUrls).toEqual(["wss://sawyer-air.getbb.app/__tunnel?v=1"]);
+    expect(requestedUrls).toEqual([
+      "wss://sawyer-air.connect.beam.invalid/__tunnel?v=1",
+    ]);
     expect(credentials).toEqual(["Bearer bbcm_machine-secret"]);
     await waitFor(() => client.status().state === "connected", "connected");
 
@@ -234,7 +236,7 @@ describe("ConnectTunnelClient", () => {
     });
 
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       machineCredential: "bbcm_machine-secret",
       fetchFn: labelFetch([], "machine-a"),
@@ -338,7 +340,7 @@ describe("ConnectTunnelClient", () => {
 
     const statuses: ConnectTunnelStatus[] = [];
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       machineCredential: "bbcm_machine-secret",
       fetchFn: labelFetch([], "machine-a"),
@@ -376,7 +378,7 @@ describe("ConnectTunnelClient", () => {
       );
     });
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       machineCredential: "bbcm_machine-secret",
       fetchFn: labelFetch([], "machine-a"),
@@ -424,7 +426,7 @@ describe("ConnectTunnelClient", () => {
       });
     });
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       machineCredential: "bbcm_machine-secret",
       fetchFn: labelFetch([], "machine-a"),
@@ -459,7 +461,7 @@ describe("ConnectTunnelClient", () => {
 
   it("accepts a new low generation after an authoritative session reopen", () => {
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       logger,
     });
@@ -474,7 +476,7 @@ describe("ConnectTunnelClient", () => {
     let dialCount = 0;
     let fetchCount = 0;
     const client = new ConnectTunnelClient({
-      serverUrl: "https://owner.getbb.app",
+      serverUrl: "https://owner.connect.beam.invalid",
       hostName: "Machine A",
       logger,
       fetchFn: async () => {

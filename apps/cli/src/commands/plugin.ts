@@ -52,11 +52,11 @@ interface NewPluginTarget {
 export function resolveNewPluginTarget(name: string): NewPluginTarget | null {
   const packageName = name.startsWith("@")
     ? name
-    : name.startsWith("bb-plugin-")
+    : /^(?:beam|bb)-plugin-/.test(name)
       ? name
-      : `bb-plugin-${name}`;
+      : `beam-plugin-${name}`;
   if (
-    !/^(?:@[a-z0-9][a-z0-9-]*\/)?bb-plugin-[a-z0-9][a-z0-9-]*$/.test(
+    !/^(?:@[a-z0-9][a-z0-9-]*\/)?(?:beam|bb)-plugin-[a-z0-9][a-z0-9-]*$/.test(
       packageName,
     )
   ) {
@@ -66,7 +66,7 @@ export function resolveNewPluginTarget(name: string): NewPluginTarget | null {
   if (RESERVED_BB_CLI_COMMANDS.includes(pluginId)) return null;
   return {
     packageName,
-    directoryName: `bb-plugin-${pluginId}`,
+    directoryName: packageName.split("/").at(-1) ?? packageName,
   };
 }
 
@@ -178,7 +178,7 @@ async function refreshPluginTypes(
     );
   }
   console.log(
-    "This plugin vendors types/ — `bb plugin migrate` switches it to the @get-bb/plugin-sdk npm package.",
+    "This plugin vendors types/ — `beam plugin migrate` switches it to the @get-bb/plugin-sdk npm package.",
   );
 }
 
@@ -188,7 +188,7 @@ function warnIfSdkPinIsStale(pin: string | null): void {
   if (pin === null || !EXACT_VERSION_PATTERN.test(pin)) return;
   if (pin === PLUGIN_SDK_VERSION) return;
   console.warn(
-    `This plugin pins @get-bb/plugin-sdk ${pin}; this bb's SDK is ${PLUGIN_SDK_VERSION} — \`bb plugin types\` updates the pin.`,
+    `This plugin pins @get-bb/plugin-sdk ${pin}; this Beam's SDK is ${PLUGIN_SDK_VERSION} — \`beam plugin types\` updates the pin.`,
   );
 }
 
@@ -246,7 +246,7 @@ async function requirePluginManifest(
   }
   if (typeof manifest.bb?.server !== "string") {
     console.error(
-      `${rootDir} is not a bb plugin — package.json has no "bb.server" entry.`,
+      `${rootDir} is not a Beam plugin — package.json has no "bb.server" entry.`,
     );
     process.exit(1);
   }
@@ -307,7 +307,7 @@ async function warnIfSdkVersionUnpublished(): Promise<void> {
   if (status === "published") return;
   if (status === "unknown") {
     console.warn(
-      `Warning: could not reach the npm registry to verify that @get-bb/plugin-sdk ${PLUGIN_SDK_VERSION} — this bb's SDK version — is published.`,
+      `Warning: could not reach the npm registry to verify that @get-bb/plugin-sdk ${PLUGIN_SDK_VERSION} — this Beam's SDK version — is published.`,
     );
     console.warn(
       "  If `npm install` fails to resolve it, the version may not be on your registry yet.",
@@ -315,16 +315,16 @@ async function warnIfSdkVersionUnpublished(): Promise<void> {
     return;
   }
   console.warn(
-    `Warning: @get-bb/plugin-sdk ${PLUGIN_SDK_VERSION} — this bb's SDK version — was not found on npm.`,
+    `Warning: @get-bb/plugin-sdk ${PLUGIN_SDK_VERSION} — this Beam's SDK version — was not found on npm.`,
   );
   console.warn(
     "  `npm install` in the new plugin will fail until that version publishes.",
   );
   console.warn(
-    "  To work around it, pack the SDK from a bb checkout and point the",
+    "  To work around it, pack the SDK from a Beam checkout and point the",
   );
   console.warn("  devDependency at the tarball:");
-  console.warn("    (cd <bb-repo>/packages/plugin-sdk && npm pack)");
+  console.warn("    (cd <beam-repo>/packages/plugin-sdk && npm pack)");
   console.warn(
     '    npm pkg set devDependencies.@get-bb/plugin-sdk="file:/abs/path/to/get-bb-plugin-sdk-' +
       `${PLUGIN_SDK_VERSION}.tgz"`,
@@ -389,14 +389,14 @@ async function installScaffoldDependencies(
     );
   } catch (cause) {
     console.warn(
-      `Could not run npm install — run it in the plugin directory before \`bb plugin build\`.${npmFailureDetail(cause)}`,
+      `Could not run npm install — run it in the plugin directory before \`beam plugin build\`.${npmFailureDetail(cause)}`,
     );
     return false;
   }
   const problem = await unresolvedScaffoldPackages(targetDir);
   if (problem !== null) {
     console.warn(
-      `npm install reported success but ${problem} — run \`npm install --include=dev\` in the plugin directory before \`bb plugin build\`.`,
+      `npm install reported success but ${problem} — run \`npm install --include=dev\` in the plugin directory before \`beam plugin build\`.`,
     );
     return false;
   }
@@ -639,10 +639,10 @@ function resolvedSourceLines(source: PluginCatalogResolvedSource): string[] {
 
 function installPlanSummary(plan: PluginCatalogInstallPlan): string {
   if (plan.kind === "bundled") {
-    return `Installing ${plan.displayName}, bundled with BB (${plan.source})`;
+    return `Installing ${plan.displayName}, bundled with Beam (${plan.source})`;
   }
   if (plan.official) {
-    return `Installing ${plan.displayName} from the ${plan.marketplaceDisplayName} marketplace, reviewed by BB (${plan.source})`;
+    return `Installing ${plan.displayName} from the ${plan.marketplaceDisplayName} marketplace, reviewed by Beam (${plan.source})`;
   }
   const author =
     plan.author.url === null
@@ -650,7 +650,7 @@ function installPlanSummary(plan: PluginCatalogInstallPlan): string {
       : `${plan.author.name} (${plan.author.url})`;
   return [
     `Installing ${plan.displayName} (${plan.entryId}@${plan.marketplace})`,
-    `  marketplace: ${plan.marketplaceDisplayName} — a third-party marketplace, not reviewed by BB`,
+    `  marketplace: ${plan.marketplaceDisplayName} — a third-party marketplace, not reviewed by Beam`,
     `  author: ${author}`,
     ...resolvedSourceLines(plan.resolvedSource),
   ].join("\n");
@@ -682,7 +682,7 @@ function printPlugin(plugin: PluginEntry): void {
     const collisionNote = RESERVED_BB_CLI_COMMANDS.includes(
       plugin.cliCommand.name,
     )
-      ? ` (core command "bb ${plugin.cliCommand.name}" takes precedence)`
+      ? ` (core command "beam ${plugin.cliCommand.name}" takes precedence)`
       : "";
     console.log(
       `  command: ${pluginCliCall(plugin.id, plugin.cliCommand.name)} — ${plugin.cliCommand.summary}${collisionNote}`,
@@ -761,13 +761,13 @@ export function registerPluginCommands(
 ): void {
   const plugin = program
     .command("plugin")
-    .description("Manage BB plugins")
+    .description("Manage Beam plugins")
     .enablePositionalOptions();
 
   plugin
     .command("search <query>")
     .description(
-      "Search every plugin the store lists: the plugins bundled with the app, the reserved bb-community marketplace catalog BB reviews, and any third-party marketplace added on this host. The Marketplace column names the source; only bb-community is reviewed by BB",
+      "Search every plugin the store lists: the plugins bundled with the app, the reserved bb-community marketplace catalog Beam reviews, and any third-party marketplace added on this host. The Marketplace column names the source; only bb-community is reviewed by Beam",
     )
     .option("--json", "Output JSON")
     .action(
@@ -794,7 +794,7 @@ export function registerPluginCommands(
             ? "✓ installed"
             : result.compatible
               ? "compatible"
-              : `requires newer bb${result.incompatibleReason ? `: ${result.incompatibleReason}` : ""}`,
+              : `requires newer Beam${result.incompatibleReason ? `: ${result.incompatibleReason}` : ""}`,
         ]);
         console.log(
           renderBorderlessTable(
@@ -895,7 +895,7 @@ export function registerPluginCommands(
   plugin
     .command("install <source>")
     .description(
-      "Install a catalog entry by name or <entry>@<marketplace>, a Git repository URL, a local path, builtin:<name>, git:<url>[@<ref|semver-range>], or npm:<name>@<version>. A catalog entry from a third-party marketplace is not reviewed by BB, so its confirmation names the marketplace, the author, and the exact resolved source (managed sources validate engines ranges and build artifacts; bundled plugin ids are reserved)",
+      "Install a catalog entry by name or <entry>@<marketplace>, a Git repository URL, a local path, builtin:<name>, git:<url>[@<ref|semver-range>], or npm:<name>@<version>. A catalog entry from a third-party marketplace is not reviewed by Beam, so its confirmation names the marketplace, the author, and the exact resolved source (managed sources validate engines ranges and build artifacts; bundled plugin ids are reserved)",
     )
     .option(
       "--subdirectory <path>",
@@ -981,8 +981,8 @@ export function registerPluginCommands(
           if (!opts.json) {
             console.log(summary);
             console.log(
-              "Plugins are full-trust code running inside the BB server. " +
-                "They can read all local BB data, including other plugins' secrets.",
+              "Plugins are full-trust code running inside the Beam server. " +
+                "They can read all local Beam data, including other plugins' secrets.",
             );
           }
           if (!opts.yes) {
@@ -1110,7 +1110,7 @@ export function registerPluginCommands(
             if (!shouldAttempt) {
               if (result.outcome === "pinned") {
                 console.log(
-                  `${result.id}: skipped — pinned${detail ? ` (${detail})` : ""}; remove and reinstall with a tracking npm range, git branch, or git semver range to receive updates (remove deletes the plugin's settings, secrets, and schedules). A local path plugin updates with \`bb plugin reload\`; move it with \`bb plugin install path:<new directory>\`.`,
+                  `${result.id}: skipped — pinned${detail ? ` (${detail})` : ""}; remove and reinstall with a tracking npm range, git branch, or git semver range to receive updates (remove deletes the plugin's settings, secrets, and schedules). A local path plugin updates with \`beam plugin reload\`; move it with \`beam plugin install path:<new directory>\`.`,
                 );
               } else if (result.outcome === "incompatible") {
                 console.log(
@@ -1163,14 +1163,14 @@ export function registerPluginCommands(
   plugin
     .command("new <name>")
     .description(
-      "Scaffold a plugin in ./bb-plugin-<name>; accepts @scope/bb-plugin-<name>",
+      "Scaffold a plugin in ./beam-plugin-<name>; accepts @scope/beam-plugin-<name>",
     )
     .action(
       action(async (name: string) => {
         const target = resolveNewPluginTarget(name);
         if (target === null) {
           console.error(
-            `Invalid or reserved plugin name "${name}" — use a non-core name, bb-plugin-name, or @scope/bb-plugin-name.`,
+            `Invalid or reserved plugin name "${name}" — use a non-core name, beam-plugin-name, or @scope/beam-plugin-name.`,
           );
           process.exit(1);
         }
@@ -1189,14 +1189,14 @@ export function registerPluginCommands(
         if (!installed) {
           console.log("  npm install --include=dev");
         }
-        console.log("  bb plugin install .");
+        console.log("  beam plugin install .");
       }),
     );
 
   plugin
     .command("types [path]")
     .description(
-      "Sync a plugin's @get-bb/plugin-sdk surface to the running bb (default: cwd): repin the npm devDependency and the type-only devDependencies of the packages bb shims at runtime (sonner, vaul, the portal radix families, ...) for plugins that depend on the package, or rewrite the vendored types/ declarations for plugins that still carry them",
+      "Sync a plugin's @get-bb/plugin-sdk surface to the running Beam (default: cwd): repin the npm devDependency and the type-only devDependencies of the packages Beam shims at runtime (sonner, vaul, the portal radix families, ...) for plugins that depend on the package, or rewrite the vendored types/ declarations for plugins that still carry them",
     )
     .option(
       "--check",
@@ -1228,15 +1228,15 @@ export function registerPluginCommands(
             if (pending.pin !== null || pending.movedFromDependencies) {
               console.error(
                 pending.pin === null
-                  ? 'Move "@get-bb/plugin-sdk" from dependencies to devDependencies — bb provides its runtime (`bb plugin types` does it for you).'
-                  : `Set "@get-bb/plugin-sdk" to ${PLUGIN_SDK_VERSION} in devDependencies and re-run npm install (\`bb plugin types\` does it for you).`,
+                  ? 'Move "@get-bb/plugin-sdk" from dependencies to devDependencies — Beam provides its runtime (`beam plugin types` does it for you).'
+                  : `Set "@get-bb/plugin-sdk" to ${PLUGIN_SDK_VERSION} in devDependencies and re-run npm install (\`beam plugin types\` does it for you).`,
               );
             }
             for (const shim of pending.shimmedTypePins) {
               console.error(
                 shim.movedFromDependencies
-                  ? `Move "${shim.name}" from dependencies to devDependencies at ${shim.to} — bb shims it at runtime and never bundles it (\`bb plugin types\` does it for you).`
-                  : `Set "${shim.name}" to ${shim.to} in devDependencies — the version this bb shims at runtime (\`bb plugin types\` does it for you).`,
+                  ? `Move "${shim.name}" from dependencies to devDependencies at ${shim.to} — Beam shims it at runtime and never bundles it (\`beam plugin types\` does it for you).`
+                  : `Set "${shim.name}" to ${shim.to} in devDependencies — the version this Beam instance shims at runtime (\`beam plugin types\` does it for you).`,
               );
             }
             process.exit(1);
@@ -1248,7 +1248,7 @@ export function registerPluginCommands(
           });
           if (changed === null) {
             console.log(
-              `@get-bb/plugin-sdk is already pinned to ${PLUGIN_SDK_VERSION} — this bb's SDK version${hasApp ? ", and the runtime-shimmed packages are at this bb's versions" : ""}.`,
+              `@get-bb/plugin-sdk is already pinned to ${PLUGIN_SDK_VERSION} — this Beam's SDK version${hasApp ? ", and the runtime-shimmed packages are at this Beam's versions" : ""}.`,
             );
             console.log(
               "The declarations are in node_modules/@get-bb/plugin-sdk/bundled-types/ — read them for exact signatures.",
@@ -1287,7 +1287,7 @@ export function registerPluginCommands(
         if (opts.check) {
           if (files.some((file) => file.outcome === "stale")) {
             console.error(
-              "Declarations are out of date — run `bb plugin types` to refresh them.",
+              "Declarations are out of date — run `beam plugin types` to refresh them.",
             );
             process.exit(1);
           }
@@ -1339,7 +1339,7 @@ export function registerPluginCommands(
         });
         if (!samePlan(plan, confirmedPlan)) {
           console.error(
-            "The plugin changed while awaiting confirmation — nothing was written. Re-run `bb plugin migrate` to see the current plan.",
+            "The plugin changed while awaiting confirmation — nothing was written. Re-run `beam plugin migrate` to see the current plan.",
           );
           process.exit(1);
         }
@@ -1412,7 +1412,7 @@ export function registerPluginCommands(
         );
         if (!entry) {
           console.error(
-            `This directory is not installed as a plugin — run \`bb plugin install ${path ?? "."}\` first, then re-run \`bb plugin dev\`.`,
+            `This directory is not installed as a plugin — run \`beam plugin install ${path ?? "."}\` first, then re-run \`beam plugin dev\`.`,
           );
           process.exit(1);
         }
@@ -1572,15 +1572,15 @@ export function registerPluginCommands(
           ) {
             console.error(
               actionName === "set"
-                ? "Usage: bb plugin config <id> set <key> <value>"
-                : "Usage: bb plugin config <id> unset <key>",
+                ? "Usage: beam plugin config <id> set <key> <value>"
+                : "Usage: beam plugin config <id> unset <key>",
             );
             process.exit(1);
           }
           let parsedValue: string | boolean | null = null;
           if (actionName === "set") {
             if (value === undefined) {
-              console.error("Usage: bb plugin config <id> set <key> <value>");
+              console.error("Usage: beam plugin config <id> set <key> <value>");
               process.exit(1);
             }
             const current = pluginSettingsResultSchema.parse(
@@ -1645,7 +1645,7 @@ export function registerPluginCommands(
   plugin
     .command("run <id> [args...]")
     .description(
-      "Run a plugin's CLI command (explicit form of `bb <command> ...`)",
+      "Run a plugin's CLI command (explicit form of `beam <command> ...`)",
     )
     .passThroughOptions()
     .allowUnknownOption()

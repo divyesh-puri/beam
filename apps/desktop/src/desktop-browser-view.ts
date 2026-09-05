@@ -53,7 +53,7 @@ function truncate(value: string, max: number): string {
   return value.length > max ? value.slice(0, max) : value;
 }
 
-const BB_BROWSER_PARTITION = "persist:bb-browser";
+const BEAM_BROWSER_PARTITION = "persist:beam-browser";
 
 const ERR_ABORTED = -3;
 
@@ -272,7 +272,7 @@ export function isAllowedBrowserPermission(permission: string): boolean {
 export function createDesktopBrowserViewManager(
   args: CreateDesktopBrowserViewManagerArgs,
 ): DesktopBrowserViewManager {
-  const partition = args.partition ?? BB_BROWSER_PARTITION;
+  const partition = args.partition ?? BEAM_BROWSER_PARTITION;
   const entries = new Map<string, BrowserViewEntry>();
   const entriesByWebContentsId = new Map<number, BrowserViewEntry>();
   const automation = new DesktopBrowserAutomationDriver();

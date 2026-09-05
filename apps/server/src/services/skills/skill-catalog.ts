@@ -16,7 +16,10 @@ interface ResolveSkillCatalogSourcesArgs {
 }
 
 export function resolveSkillCatalog(
-  deps: Pick<LoggedWorkSessionDeps, "config" | "db" | "logger" | "skillTreeRegistry">,
+  deps: Pick<
+    LoggedWorkSessionDeps,
+    "config" | "db" | "logger" | "skillTreeRegistry"
+  >,
   args: ResolveSkillCatalogSourcesArgs = {},
 ): ResolvedSkillCatalogEntry[] {
   const entries = resolveSkillCatalogEntries(deps.logger, {
@@ -42,6 +45,6 @@ export function resolveSkillCatalog(
   return entries.filter(
     (entry) =>
       entry.provenance.kind !== "builtin" ||
-      entry.runtimeSource.name !== "bb-browser",
+      entry.runtimeSource.name !== "beam-browser",
   );
 }

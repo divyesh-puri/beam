@@ -45,8 +45,8 @@ export function buildManagedBranchName(args: ManagedBranchNameArgs): string {
     ? sanitizeGeneratedBranchSlug(args.branchSlug)
     : null;
   return branchSlug
-    ? `bb/${branchSlug}-${args.threadId}`
-    : `bb/${args.threadId}`;
+    ? `beam/${branchSlug}-${args.threadId}`
+    : `beam/${args.threadId}`;
 }
 
 export function requirePublicProjectForThreadCreate(

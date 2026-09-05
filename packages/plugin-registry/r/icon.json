@@ -3,7 +3,7 @@
   "name": "icon",
   "type": "registry:ui",
   "title": "icon",
-  "description": "BB ui \"icon\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"icon\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "@hugeicons/core-free-icons",
     "@hugeicons/react"

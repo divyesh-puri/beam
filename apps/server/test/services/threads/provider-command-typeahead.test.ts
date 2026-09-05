@@ -74,18 +74,18 @@ describe("buildCommandListResponse", () => {
   it("keeps the first user-origin skill when global roots provide the same name", () => {
     const response = buildCommandListResponse({
       commands: [
-        skill("bb-cli", { description: "Data-dir override" }),
-        skill("bb-cli", { description: "Built-in default" }),
+        skill("beam-cli", { description: "Data-dir override" }),
+        skill("beam-cli", { description: "Built-in default" }),
       ],
       includeBuiltinCompact: true,
       skillCatalog: [],
     });
 
     expect(
-      response.commands.filter((command) => command.name === "bb-cli"),
+      response.commands.filter((command) => command.name === "beam-cli"),
     ).toEqual([
       {
-        name: "bb-cli",
+        name: "beam-cli",
         source: "skill",
         origin: "user",
         description: "Data-dir override",

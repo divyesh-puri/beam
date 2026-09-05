@@ -92,7 +92,7 @@ export function RootNavigator() {
         />
         <Stack.Screen
           name="connect/index"
-          options={{ title: "bb connect", ...MODAL_SCREEN_OPTIONS }}
+          options={{ title: "Beam Connect", ...MODAL_SCREEN_OPTIONS }}
         />
         <Stack.Screen name="dev/webview-spike" options={hiddenHeader} />
         <Stack.Screen name="e2e/reset" options={hiddenHeader} />

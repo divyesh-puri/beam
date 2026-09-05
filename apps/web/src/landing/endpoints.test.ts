@@ -18,8 +18,8 @@ describe("marketing download redirect", () => {
       return new Response(
         JSON.stringify({
           files: [
-            { url: "bb-0.0.26-arm64.zip" },
-            { url: "bb-0.0.26-arm64.dmg" },
+            { url: "Beam-0.0.26-arm64.zip" },
+            { url: "Beam-0.0.26-arm64.dmg" },
           ],
         }),
       );
@@ -27,7 +27,7 @@ describe("marketing download redirect", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const response = await handleDownloadMacos(
-      new Request("https://getbb.app/download/macos?placement=hero"),
+      new Request("https://connect.beam.invalid/download/macos?placement=hero"),
       {},
       vi.fn(),
     );
@@ -37,7 +37,7 @@ describe("marketing download redirect", () => {
     });
     expect(response.status).toBe(302);
     expect(response.headers.get("Location")).toBe(
-      `${DOWNLOAD_MACOS_RELEASE_ASSET_BASE_URL}/bb-0.0.26-arm64.dmg`,
+      `${DOWNLOAD_MACOS_RELEASE_ASSET_BASE_URL}/Beam-0.0.26-arm64.dmg`,
     );
   });
 
@@ -50,7 +50,7 @@ describe("marketing download redirect", () => {
     );
 
     const response = await handleDownloadMacos(
-      new Request("https://getbb.app/download/macos"),
+      new Request("https://connect.beam.invalid/download/macos"),
       {},
       vi.fn(),
     );
@@ -59,7 +59,7 @@ describe("marketing download redirect", () => {
     expect(response.headers.get("Location")).toBe(DOWNLOAD_MACOS_FALLBACK_URL);
   });
 
-  it("tracks the click through waitUntil when a PostHog key is set", async () => {
+  it("tracks the click only when a PostHog key and opt-in are set", async () => {
     const fetchMock = vi.fn(
       async (..._args: Parameters<typeof fetch>) => new Response("{}"),
     );
@@ -67,8 +67,8 @@ describe("marketing download redirect", () => {
     const waitUntil = vi.fn<(promise: Promise<void>) => void>();
 
     await handleDownloadMacos(
-      new Request("https://getbb.app/download/macos?placement=nav"),
-      { LANDING_POSTHOG_KEY: "phc_test" },
+      new Request("https://connect.beam.invalid/download/macos?placement=nav"),
+      { LANDING_POSTHOG_KEY: "phc_test", LANDING_TELEMETRY: "true" },
       waitUntil,
     );
 
@@ -79,6 +79,27 @@ describe("marketing download redirect", () => {
     );
     expect(captureCall).toBeTruthy();
   });
+
+  it("does not track with a PostHog key alone", async () => {
+    const fetchMock = vi.fn(
+      async (..._args: Parameters<typeof fetch>) => new Response("{}"),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const waitUntil = vi.fn<(promise: Promise<void>) => void>();
+
+    await handleDownloadMacos(
+      new Request("https://beam.invalid/download/macos"),
+      { LANDING_POSTHOG_KEY: "phc_test" },
+      waitUntil,
+    );
+
+    await waitUntil.mock.calls[0]?.[0];
+    expect(
+      fetchMock.mock.calls.some(
+        ([url]) => typeof url === "string" && url.includes("posthog"),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe("marketing subscribe endpoint", () => {
@@ -88,7 +109,7 @@ describe("marketing subscribe endpoint", () => {
   });
 
   function subscribeRequest(email: unknown): Request {
-    return new Request("https://getbb.app/api/subscribe", {
+    return new Request("https://connect.beam.invalid/api/subscribe", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ email }),

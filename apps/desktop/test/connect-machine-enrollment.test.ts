@@ -8,7 +8,7 @@ function machineCodeResponse(): Response {
       result: {
         code: "ABCD-1234",
         expiresAt: 1_800_000,
-        serverUrl: "https://laptop.getbb.app",
+        serverUrl: "https://laptop.connect.beam.invalid",
       },
     }),
   );
@@ -21,13 +21,15 @@ describe("enrollDesktopMachine", () => {
       if (url.endsWith("/rpc/createMachineCode")) {
         return machineCodeResponse();
       }
-      expect(url).toBe("https://getbb.app/api/connect/redeem-machine");
+      expect(url).toBe(
+        "https://connect.beam.invalid/api/connect/redeem-machine",
+      );
       return new Response(
         JSON.stringify({
           credential: "bbcm_desktop",
           machineId: "machine-1",
           handle: "laptop",
-          serverUrl: "https://laptop.getbb.app",
+          serverUrl: "https://laptop.connect.beam.invalid",
         }),
       );
     });
@@ -41,7 +43,7 @@ describe("enrollDesktopMachine", () => {
       credential: {
         credential: "bbcm_desktop",
         handle: "laptop",
-        serverUrl: "https://laptop.getbb.app",
+        serverUrl: "https://laptop.connect.beam.invalid",
       },
       ok: true,
     });
@@ -61,7 +63,7 @@ describe("enrollDesktopMachine", () => {
               credential: "bbcm_desktop",
               machineId: "machine-1",
               handle: "sawyer",
-              serverUrl: "https://laptop.getbb.app",
+              serverUrl: "https://laptop.connect.beam.invalid",
             }),
           );
 
@@ -73,7 +75,7 @@ describe("enrollDesktopMachine", () => {
     ).resolves.toMatchObject({ credential: { handle: "laptop" }, ok: true });
   });
 
-  it("reports an unpaired bb without calling the gate", async () => {
+  it("reports an unpaired Beam without calling the gate", async () => {
     const fetchImpl = vi.fn(
       async () =>
         new Response(
@@ -92,7 +94,7 @@ describe("enrollDesktopMachine", () => {
       }),
     ).resolves.toEqual({
       code: "not_paired",
-      detail: "this bb is not paired with bb Connect",
+      detail: "this Beam instance is not paired with Beam Connect",
       ok: false,
     });
     expect(fetchImpl).toHaveBeenCalledTimes(1);

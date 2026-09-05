@@ -17,7 +17,7 @@ const GIT_PLUGIN = {
   id: "prompt-shaper",
   source:
     "git:https://github.com/brsbl/bb-plugins.git@1c6bb2e8ad3551466981e7eb027cc4b1f3428cac",
-  rootDir: "/home/user/.bb/plugins/prompt-shaper",
+  rootDir: "/home/user/.beam/plugins/prompt-shaper",
   version: "0.1.0",
   enabled: true,
   status: "running",
@@ -38,7 +38,7 @@ const GIT_PLUGIN = {
   provenance: "catalog" as const,
   isOrphanedBuiltin: false,
   catalogEntryId: "prompt-shaper",
-  publisherLabel: "BB Community",
+  publisherLabel: "Beam Community",
   sourceDisplay: "git · github.com/brsbl/bb-plugins",
   updateState: { ...EMPTY_PLUGIN_UPDATE_STATE, availableVersion: FULL_HASH },
 } satisfies PluginListItem;

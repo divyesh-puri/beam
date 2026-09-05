@@ -151,8 +151,10 @@ describe("NewTaskDialog", () => {
     fireEvent.change(title, { target: { value: "First" } });
     fireEvent.click(slot.getByRole("button", { name: "Create task" }));
     await waitFor(() => expect(createCalls).toHaveLength(1));
-    expect((slot.getByLabelText("Task title") as HTMLInputElement).value).toBe(
-      "",
+    await waitFor(() =>
+      expect(
+        (slot.getByLabelText("Task title") as HTMLInputElement).value,
+      ).toBe(""),
     );
     expect(slot.navigateCalls).toEqual([]);
   });
@@ -1051,7 +1053,7 @@ describe("NewProjectDialog", () => {
     fireEvent.change(await slot.findByPlaceholderText("e.g. Tasks Plugin"), {
       target: { value: "Personal Tasks" },
     });
-    fireEvent.click(slot.getByLabelText("Linked bb project"));
+    fireEvent.click(slot.getByLabelText("Linked Beam project"));
     fireEvent.click(await slot.findByRole("option", { name: "Personal" }));
     fireEvent.click(slot.getByRole("button", { name: "Create project" }));
 

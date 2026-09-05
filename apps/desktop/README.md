@@ -1,6 +1,6 @@
 # @bb/desktop
 
-macOS and Linux Electron shell for bb. The desktop app loads the existing bb
+macOS and Linux Electron shell for Beam. The desktop app loads the Beam
 web UI and uses the packaged `bb-app` launcher for server and host-daemon
 lifecycle.
 
@@ -9,7 +9,7 @@ This fork packages the shell as `Beam.app` with bundle identifier
 `beam-desktop-latest` release in `divyesh-puri/beam`; nightly uses
 `beam-desktop-nightly`. Production runtime and Electron state live below
 `~/.beam`, while source development remains checkout-isolated below
-`~/.bb-dev`.
+`~/.beam-dev`.
 
 The retained `publish-bb-app.yml` workflow is upstream BB compatibility only:
 every job is restricted to `get-bb/bb`, so it cannot run in this fork and is
@@ -25,7 +25,7 @@ pnpm dev:desktop
 ```
 
 That starts the source dev server and the Electron shell through
-`scripts/bb-dev-app`. To run only the desktop package task directly:
+`scripts/beam-dev-app`. To run only the desktop package task directly:
 
 ```bash
 pnpm exec turbo run dev --filter=@bb/desktop
@@ -33,11 +33,11 @@ pnpm exec turbo run dev --filter=@bb/desktop
 
 The dev script builds `bb-app`, compiles the Electron main/preload files, and
 opens Electron directly. By default it uses the same checkout-scoped
-`~/.bb-dev/<checkout-instance>` data directory and deterministic high ports as
+`~/.beam-dev/<checkout-instance>` data directory and deterministic high ports as
 the main repo dev launcher; it prints the resolved data dir, server URL, and
 Electron user-data dir at startup. It intentionally overwrites inherited
 `BB_DATA_DIR`, `BB_SERVER_PORT`, `BB_SERVER_URL`, and `BB_HOST_DAEMON_PORT` so a
-desktop dev run launched from an existing bb session still targets the current
+desktop dev run launched from an existing Beam session still targets the current
 checkout. Set `BB_DESKTOP_USER_DATA_DIR` to override only Electron's user-data
 directory.
 
@@ -117,7 +117,7 @@ Linux users whose window manager supplies all window controls can remove the
 native Electron title bar with `--no-window-frame`:
 
 ```bash
-./bb-x86_64.AppImage --no-window-frame
+./Beam-*-x86_64.AppImage --no-window-frame
 ```
 
 The native frame remains the default. Changing this startup option requires a
@@ -127,7 +127,7 @@ Linux users can opt into a transparent Electron window with
 `--transparent-window`:
 
 ```bash
-./bb-x86_64.AppImage --transparent-window
+./Beam-*-x86_64.AppImage --transparent-window
 ```
 
 The window remains opaque by default. Transparency also requires a compositor
@@ -199,57 +199,6 @@ tag:
 macOS keeps the unsuffixed feed name because released macOS builds already
 request it. Linux artifacts are unsigned; only the macOS binaries wait on the
 Apple signing secrets.
-
-## Upstream BB nightly compatibility
-
-This retained section describes upstream BB, not Beam. The
-`publish-bb-app.yml` workflow cannot run in this fork because every job is
-guarded to `get-bb/bb`.
-
-Upstream's scheduled `publish-bb-app.yml` workflow runs from `main` every day at
-3:00 AM Pacific (`America/Los_Angeles`, including daylight-saving changes). It
-derives a unique version such as `0.34.1-nightly.<run-id>.<attempt>` without
-committing that version, publishes `bb-app` with the npm `nightly` dist-tag,
-and builds the desktop app from that same lockstep version.
-
-To publish or dry-run the channel manually from `main`, dispatch the same
-workflow with `npm_tag=nightly`. A non-dry run publishes both npm and desktop;
-a dry run validates only the npm package path.
-
-A stable release also refreshes the channel. A non-dry `npm_tag=latest` run
-publishes the release, then derives the next nightly version from the release
-commit and publishes npm and desktop nightly again. Without this step the
-nightly channel stays below `latest` until the next scheduled run.
-
-The nightly desktop is a separate installation:
-
-- product name: `bb Nightly`
-- bundle identifier: `dev.bb.desktop.nightly`
-- Linux binary name: `bb-nightly`, so it never shadows stable `bb` on PATH
-- app/update release: `desktop-nightly`
-- update metadata: `nightly-mac.yml` and `nightly-linux.yml`
-- version feeds: `desktop-version.json` (macOS) and
-  `desktop-version-linux.json` (Linux)
-- icon: `assets/icon-nightly.icns` and `assets/icon-nightly.png`
-
-Download it from
-[`desktop-nightly`](https://github.com/get-bb/bb/releases/tag/desktop-nightly)
-or run the CLI build with:
-
-```bash
-npx bb-app@nightly
-```
-
-Stable and nightly desktop bundles can coexist. Electron-owned preferences,
-window state, and process supervision use separate application data
-directories; the embedded bb runtime still uses the normal `~/.bb` data and
-default server port unless the corresponding environment variables are
-overridden.
-
-Nightly builds set `BB_DESKTOP_RELEASE_CHANNEL=nightly` at build time. The value
-is baked into the Electron main/preload bundles and selects the nightly product
-identity, yellow icon, and update URLs. Omit the variable (or set it to
-`latest`) for stable and local builds.
 
 ## About panel
 
@@ -330,14 +279,6 @@ BB_DESKTOP_OPEN_DEVTOOLS=1 apps/desktop/release/mac-arm64/Beam.app/Contents/MacO
 
 When the desktop app spawns `bb-app`, server and daemon logs land under
 `~/.beam/logs/` or `$BB_DATA_DIR/logs/` when `BB_DATA_DIR` is set.
-
-To verify attach-if-found manually, start a compatible bb first, then launch the
-desktop app:
-
-```bash
-npx bb-app@latest
-pnpm exec turbo run dev --filter=@bb/desktop
-```
 
 The desktop supervisor handles normal quits plus `SIGINT` and `SIGTERM`, and it
 writes a PID file so the next launch can reap a stale Electron-owned `bb-app`

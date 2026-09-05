@@ -606,7 +606,7 @@ describe("Docs vault operations", () => {
       content: "AP+AQA==",
       contentEncoding: "base64",
     });
-    expect(files.has("/work/sync/.bb-docs-state.json")).toBe(true);
+    expect(files.has("/work/sync/.beam-docs-state.json")).toBe(true);
 
     setUtf8("/work/sync/plans/plan.md", "# Plan\n\nEdited locally\n");
     const status = await harness.runCli(
@@ -845,7 +845,7 @@ describe("Docs vault operations", () => {
         modifiedAtMs: 1,
       },
     });
-    setUtf8("/work/sync/.bb-docs-state.json", "{not-json");
+    setUtf8("/work/sync/.beam-docs-state.json", "{not-json");
 
     const result = await harness.runCli(["push", "sync", "--json"], {
       cwd: "/work",
@@ -915,7 +915,7 @@ describe("Docs vault operations", () => {
     const statusHelp = await harness.runCli(["status", "--help"]);
     expect(statusHelp).toMatchObject({ exitCode: 0 });
     expect(statusHelp.stdout).toContain("Exit 4: changes present");
-    expect(statusHelp.stdout).toContain("run bb docs push separately");
+    expect(statusHelp.stdout).toContain("run beam docs push separately");
 
     const unsafePull = await harness.runCli(
       ["pull", "plan.md", "--into", "sync", "--dry-run", "--json"],

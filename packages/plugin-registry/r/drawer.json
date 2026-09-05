@@ -3,7 +3,7 @@
   "name": "drawer",
   "type": "registry:ui",
   "title": "drawer",
-  "description": "BB ui \"drawer\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"drawer\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "vaul"
   ],

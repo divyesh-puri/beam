@@ -90,7 +90,7 @@ async function runGit(
 async function initRepo(): Promise<string> {
   const repoPath = await makeTempDir("bb-runtime-manager-repo-");
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await fs.writeFile(path.join(repoPath, "README.md"), "hello\n", "utf8");
   await runGit(["add", "."], { cwd: repoPath });

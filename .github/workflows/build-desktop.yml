@@ -210,6 +210,7 @@ jobs:
 
   publish:
     name: Publish stable desktop release
+    if: ${{ github.repository == 'divyesh-puri/beam' }}
     needs:
       - macos
       - linux

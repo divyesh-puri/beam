@@ -904,7 +904,7 @@ describe("TerminalManager", () => {
     ]);
   });
 
-  it("scrubs inherited bb runtime env vars before spawning a terminal", async () => {
+  it("scrubs inherited Beam runtime env vars before spawning a terminal", async () => {
     vi.stubEnv("BB_DATA_DIR", "/tmp/leaked-bb-data");
     vi.stubEnv("BB_HOST_DAEMON_PORT", "38887");
     vi.stubEnv("NODE_ENV", "development");

@@ -87,7 +87,7 @@ describe("hero plugin: agent-enrichment", () => {
     };
   }
 
-  it("bb docs search returns excerpts from the bundled docs via the CLI endpoint", async () => {
+  it("beam docs search returns excerpts from the bundled docs via the CLI endpoint", async () => {
     const result = await runDocs(["search", "conventional commits"]);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("conventions.md");
@@ -116,8 +116,8 @@ describe("hero plugin: agent-enrichment", () => {
       "SKILL.md",
     );
     const content = await readFile(skillFile, "utf8");
-    expect(content).toContain("## bb docs —");
-    expect(content).toContain("bb docs search <query...>");
+    expect(content).toContain("## beam docs —");
+    expect(content).toContain("beam docs search <query...>");
 
     const sources = resolveInjectedSkillSources(testLogger, {
       additionalSkillsRootPaths: [
@@ -194,7 +194,7 @@ describe("hero plugin: slack-bot", () => {
       );
       expect(entry.id).toBe("slack-bot");
       expect(entry.status).toBe("needs-configuration");
-      expect(entry.statusDetail).toContain("bb plugin config slack-bot");
+      expect(entry.statusDetail).toContain("beam plugin config slack-bot");
 
       const signingSecret = "test-signing-secret";
       await server.pluginService.updateSettings("slack-bot", {

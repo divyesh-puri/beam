@@ -181,7 +181,7 @@ function agentMessageDeltaId(events: ThreadEvent[]): string | undefined {
 }
 
 describe("pi delta translation equivalence", () => {
-  it("keeps turn_start as internal noise while agent_start owns the bb turn", () => {
+  it("keeps turn_start as internal noise while agent_start owns the Beam turn", () => {
     const harness = createHarness();
     harness.translate(loadFixture("agent-start.json"));
 
@@ -192,7 +192,7 @@ describe("pi delta translation equivalence", () => {
     expect(events).toEqual([]);
   });
 
-  it("agent_start opens exactly one bb turn", () => {
+  it("agent_start opens exactly one Beam turn", () => {
     const harness = createHarness();
     const events = harness.translate(loadFixture("agent-start.json"));
     expect(events).toEqual([

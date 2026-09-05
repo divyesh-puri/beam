@@ -28,13 +28,13 @@
 
 ## CLI, Guide, And Skill
 
-- When you add or change a `bb` CLI command, flag, or a user-facing configuration knob (env var, `.bb/` workspace file, settings field), update its discoverable surfaces in the same change. See [docs/cli-guide-and-skill.md](docs/cli-guide-and-skill.md) for which surfaces to update.
-- Every end-user feature must also be usable by agents through both the SDK and the `bb` CLI; ship and document those surfaces in the same change as the UI.
+- When you add or change a `beam` CLI command, flag, or a user-facing configuration knob (env var, `.bb/` workspace file, settings field), update its discoverable surfaces in the same change. See [docs/cli-guide-and-skill.md](docs/cli-guide-and-skill.md) for which surfaces to update.
+- Every end-user feature must also be usable by agents through both the SDK and the `beam` CLI; ship and document those surfaces in the same change as the UI.
 
 ## Plugin API
 
 - Any new public plugin API member (a `@get-bb/plugin-sdk/app` export, an `app.slots.*` method, or a `BbPluginApi` property) ships with an `experimental_` name prefix and an entry in [docs/api_to_audit.md](docs/api_to_audit.md) describing what it does and what to audit before stabilizing. Dropping the prefix is the deliberate stabilization step: audit the entry, rename project-wide, and remove it from the doc in the same change.
-- The Plugin Guide (the `plugin-api-docs` plugin, rendering `packages/plugin-api-map`) is bb's only plugin API documentation. A new surface needs a card in `packages/plugin-api-map/src/surfaces.ts` naming its SDK symbols in the same change; `packages/plugin-api-map/test/api-sync.test.ts` fails the build when the map and the SDK drift apart.
+- The Plugin Guide (the `plugin-api-docs` plugin, rendering `packages/plugin-api-map`) is Beam's only plugin API documentation. A new surface needs a card in `packages/plugin-api-map/src/surfaces.ts` naming its SDK symbols in the same change; `packages/plugin-api-map/test/api-sync.test.ts` fails the build when the map and the SDK drift apart.
 
 ## Data Access
 
@@ -78,4 +78,4 @@
 ## Debugging And QA
 
 - Do not assume. Inspect logs, query the database, call server APIs, or use the CLI to observe real state.
-- See [docs/debugging-and-qa.md](docs/debugging-and-qa.md) for dev ports/data dirs, entity-ID lookups, and the `scripts/bb-dev-app` local dev QA launcher.
+- See [docs/debugging-and-qa.md](docs/debugging-and-qa.md) for dev ports/data dirs, entity-ID lookups, and the `scripts/beam-dev-app` local dev QA launcher.

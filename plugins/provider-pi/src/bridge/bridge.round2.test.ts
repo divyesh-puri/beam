@@ -368,7 +368,7 @@ it("reports a bash call's cwd as the thread's working directory, never an empty 
   expect(JSON.stringify(harness.deltasOf(threadId))).not.toContain('"cwd":""');
 }, 90_000);
 
-it("a resumed thread reports the session header's cwd, not the cwd bb asked for", async () => {
+it("a resumed thread reports the session header's cwd, not the cwd Beam asked for", async () => {
   const headerDir = mkdtempSync(join(tmpdir(), "bb-pi-header-cwd-"));
   try {
     const sessionDir = join(harness.workspaceDir, "sessions");

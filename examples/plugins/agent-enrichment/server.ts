@@ -8,8 +8,8 @@ const docsDir = join(dirname(fileURLToPath(import.meta.url)), "docs");
 
 const USAGE = [
   "Usage:",
-  "  bb docs search <query...>   Search the bundled docs and print matching lines",
-  "  bb docs last                Show the cached last search",
+  "  beam docs search <query...>   Search the bundled docs and print matching lines",
+  "  beam docs last                Show the cached last search",
 ].join("\n");
 
 const DOC_FILE_PATTERN = /^[a-z0-9-]+\.md$/;
@@ -78,12 +78,12 @@ export default async function plugin(bb: BbPluginApi) {
       {
         name: "search",
         summary: "Search the docs and print matching lines",
-        usage: "bb docs search <query...>",
+        usage: "beam docs search <query...>",
       },
       {
         name: "last",
         summary: "Show the cached last search",
-        usage: "bb docs last",
+        usage: "beam docs last",
       },
     ],
     async run(argv) {

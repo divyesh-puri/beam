@@ -27,7 +27,7 @@ async function initReadGitBlobRepo() {
   );
   tempDirs.push(repoPath);
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await fs.mkdir(path.join(repoPath, "docs"));
   await fs.writeFile(path.join(repoPath, "README.md"), "hello\n", "utf8");
@@ -49,7 +49,7 @@ async function initConflictRepo() {
   const repoPath = await fs.mkdtemp(path.join(os.tmpdir(), "bb-git-conflict-"));
   tempDirs.push(repoPath);
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await fs.writeFile(path.join(repoPath, "README.md"), "base\n", "utf8");
   await runGit(["add", "."], { cwd: repoPath });
@@ -83,7 +83,7 @@ async function pushRemoteMainCommit(remotePath: string) {
   await runGit(["clone", "--branch", "main", remotePath, clonePath], {
     cwd: cloneParent,
   });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: clonePath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: clonePath });
   await runGit(["config", "user.email", "bb@example.com"], {
     cwd: clonePath,
   });
@@ -114,7 +114,7 @@ afterEach(async () => {
 });
 
 describe("runShellPipeline", () => {
-  it("scrubs inherited bb runtime env vars and node mode", async () => {
+  it("scrubs inherited Beam runtime env vars and node mode", async () => {
     const repoPath = await initEmptyRepo();
     vi.stubEnv("BB_DATA_DIR", "/tmp/leaked-bb-data");
     vi.stubEnv("NODE_ENV", "development");

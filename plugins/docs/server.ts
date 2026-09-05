@@ -14,15 +14,15 @@ const DEFAULT_DIR = "~/Notes";
 const PREVIEW_LENGTH = 100;
 const MAX_TREE_ENTRIES = 5_000;
 const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
-const SYNC_STATE_FILE = ".bb-docs-state.json";
+const SYNC_STATE_FILE = ".beam-docs-state.json";
 const SYNC_STATE_VERSION = 1;
 
 class CliUsageError extends Error {}
 
 const DOCS_CLI_USAGE =
-  "Usage: bb docs <vaults|vault-add|vault-remove|list|read|pull|status|push|write|mkdir|move|remove>";
+  "Usage: beam docs <vaults|vault-add|vault-remove|list|read|pull|status|push|write|mkdir|move|remove>";
 const DOCS_STATUS_USAGE =
-  "bb docs status [workspace-dir] [--delete] [--diff] [--workspace-host <id>] [--json]";
+  "beam docs status [workspace-dir] [--delete] [--diff] [--workspace-host <id>] [--json]";
 const DOCS_STATUS_HELP = [
   `Usage: ${DOCS_STATUS_USAGE}`,
   "",
@@ -32,7 +32,7 @@ const DOCS_STATUS_HELP = [
   "Exit 3: local and remote changes conflict.",
   "Exit 4: changes present.",
   "",
-  "Exit 4 is a successful status result. Review the output, then run bb docs push separately.",
+  "Exit 4 is a successful status result. Review the output, then run beam docs push separately.",
 ].join("\n");
 
 const CLI_OPTIONS_BY_COMMAND: Record<string, ReadonlySet<string>> = {
@@ -663,7 +663,7 @@ function parseCli(argv: string[]): {
   for (let index = 1; index < argv.length; index += 1) {
     const arg = argv[index]!;
     if (arg.startsWith("--") && allowedOptions && !allowedOptions.has(arg)) {
-      throw new CliUsageError(`${arg} is not valid for bb docs ${command}`);
+      throw new CliUsageError(`${arg} is not valid for beam docs ${command}`);
     }
     if (arg === "--vault") vaultId = nextValue(arg, index++);
     else if (arg === "--content") content = nextValue(arg, index++);
@@ -719,7 +719,7 @@ function validateCliPositionals(args: ReturnType<typeof parseCli>): void {
     args.positionals.length > range.maximum
   ) {
     throw new CliUsageError(
-      `bb docs ${args.command} received ${args.positionals.length} positional argument(s); expected ${
+      `beam docs ${args.command} received ${args.positionals.length} positional argument(s); expected ${
         range.minimum === range.maximum
           ? range.minimum
           : `${range.minimum}-${range.maximum}`
@@ -2227,7 +2227,7 @@ export default async function plugin(
     const existing = await readSyncState(rootPath, hostId);
     if (!existing) {
       throw new Error(
-        `${SYNC_STATE_FILE} was not found; run bb docs pull first`,
+        `${SYNC_STATE_FILE} was not found; run beam docs pull first`,
       );
     }
     if (args.vaultId && args.vaultId !== existing.state.vault.id) {
@@ -2670,33 +2670,33 @@ export default async function plugin(
       {
         name: "vaults",
         summary: "List configured vaults",
-        usage: "bb docs vaults [--json]",
+        usage: "beam docs vaults [--json]",
       },
       {
         name: "vault-add",
         summary: "Add a vault",
-        usage: "bb docs vault-add <name> <absolute-root> [host-id]",
+        usage: "beam docs vault-add <name> <absolute-root> [host-id]",
       },
       {
         name: "vault-remove",
         summary: "Remove a vault configuration",
-        usage: "bb docs vault-remove <id>",
+        usage: "beam docs vault-remove <id>",
       },
       {
         name: "list",
         summary: "List notes and folders",
-        usage: "bb docs list [--vault <id>] [--json]",
+        usage: "beam docs list [--vault <id>] [--json]",
       },
       {
         name: "read",
         summary: "Read a file",
-        usage: "bb docs read <path> [--vault <id>]",
+        usage: "beam docs read <path> [--vault <id>]",
       },
       {
         name: "pull",
         summary: "Pull one file, a folder subtree, or a whole vault",
         usage:
-          "bb docs pull <path> [--folder] | --all [--vault <id>] [--into <dir>] [--workspace-host <id>] [--json]",
+          "beam docs pull <path> [--folder] | --all [--vault <id>] [--into <dir>] [--workspace-host <id>] [--json]",
       },
       {
         name: "status",
@@ -2707,27 +2707,27 @@ export default async function plugin(
         name: "push",
         summary: "Safely push local edits using optimistic concurrency",
         usage:
-          "bb docs push [workspace-dir] [--delete] [--dry-run] [--diff] [--workspace-host <id>] [--json]",
+          "beam docs push [workspace-dir] [--delete] [--dry-run] [--diff] [--workspace-host <id>] [--json]",
       },
       {
         name: "write",
         summary: "Deprecated: write a UTF-8 file directly",
-        usage: "bb docs write <path> --content <text> [--vault <id>]",
+        usage: "beam docs write <path> --content <text> [--vault <id>]",
       },
       {
         name: "mkdir",
         summary: "Deprecated: create a folder directly",
-        usage: "bb docs mkdir <path> [--vault <id>]",
+        usage: "beam docs mkdir <path> [--vault <id>]",
       },
       {
         name: "move",
         summary: "Deprecated: move a path directly",
-        usage: "bb docs move <from> <to> [--vault <id>]",
+        usage: "beam docs move <from> <to> [--vault <id>]",
       },
       {
         name: "remove",
         summary: "Deprecated: remove a file or directory directly",
-        usage: "bb docs remove <path> [--vault <id>] [--recursive]",
+        usage: "beam docs remove <path> [--vault <id>] [--recursive]",
       },
     ],
     async run(argv, context) {
@@ -2800,14 +2800,14 @@ export default async function plugin(
             content: args.content,
           });
           warning =
-            "Deprecated: direct Docs mutations will be removed; use bb docs pull, edit local files, then bb docs push.";
+            "Deprecated: direct Docs mutations will be removed; use beam docs pull, edit local files, then beam docs push.";
         } else if (args.command === "mkdir") {
           result = await handlers.createFolder({
             vaultId: args.vaultId,
             path: args.positionals[0],
           });
           warning =
-            "Deprecated: direct Docs mutations will be removed; use bb docs pull, edit local files, then bb docs push.";
+            "Deprecated: direct Docs mutations will be removed; use beam docs pull, edit local files, then beam docs push.";
         } else if (args.command === "move") {
           result = await movePath(
             args.vaultId,
@@ -2815,7 +2815,7 @@ export default async function plugin(
             args.positionals[1],
           );
           warning =
-            "Deprecated: direct Docs mutations will be removed; use bb docs pull, edit local files, then bb docs push.";
+            "Deprecated: direct Docs mutations will be removed; use beam docs pull, edit local files, then beam docs push.";
         } else if (args.command === "remove") {
           result = await removePath(
             args.vaultId,
@@ -2823,7 +2823,7 @@ export default async function plugin(
             args.recursive,
           );
           warning =
-            "Deprecated: direct Docs mutations will be removed; use bb docs pull, edit local files, then bb docs push --delete.";
+            "Deprecated: direct Docs mutations will be removed; use beam docs pull, edit local files, then beam docs push --delete.";
         } else {
           return {
             exitCode: 2,

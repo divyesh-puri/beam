@@ -72,6 +72,6 @@ export function resolveRealtimeUrl(args: ResolveRealtimeUrlArgs): string {
   }
 
   throw new Error(
-    "BB SDK realtime requires an absolute baseUrl or realtimeUrl in this runtime.",
+    "Beam SDK realtime requires an absolute baseUrl or realtimeUrl in this runtime.",
   );
 }

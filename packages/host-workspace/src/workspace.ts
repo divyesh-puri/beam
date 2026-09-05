@@ -1098,7 +1098,7 @@ export class Workspace {
     }
 
     const target = await this.resolveSquashMergeTarget(options.targetBranch);
-    const tempDir = await createTempDir("bb-squash-");
+    const tempDir = await createTempDir("beam-squash-");
     const tempDirPath = path.resolve(tempDir);
 
     try {
@@ -2460,7 +2460,7 @@ export class Workspace {
     ) => Promise<T>,
     options: { signal?: AbortSignal; timeoutMs?: number } = {},
   ): Promise<T> {
-    const tempDir = await createTempDir("bb-untracked-index-");
+    const tempDir = await createTempDir("beam-untracked-index-");
     const indexPath = path.join(tempDir, "index");
     const pathspecPath = path.join(tempDir, "pathspec");
     const env = { GIT_INDEX_FILE: indexPath };

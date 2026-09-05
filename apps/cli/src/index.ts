@@ -65,8 +65,8 @@ async function tryPluginCommandProxy(
     );
     if (disabled !== null) {
       console.error(
-        `bb ${candidate} is provided by the "${disabled.id}" plugin, which is disabled — ` +
-          `run \`bb plugin enable ${disabled.id}\` or enable it in Plugins.`,
+        `beam ${candidate} is provided by the "${disabled.id}" plugin, which is disabled — ` +
+          `run \`beam plugin enable ${disabled.id}\` or enable it in Plugins.`,
       );
       process.exit(1);
     }

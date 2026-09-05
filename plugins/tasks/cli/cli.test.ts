@@ -81,7 +81,7 @@ function stdout(result: {
   return result.stdout;
 }
 
-describe("bb tasks CLI", () => {
+describe("beam tasks CLI", () => {
   it("lists seed-demo in help while retaining the explicit confirmation guard", async () => {
     const { bb, harness } = createFakePluginHost({ pluginId: "tasks" });
     await plugin(bb);
@@ -629,7 +629,7 @@ describe("bb tasks CLI", () => {
         "Linked",
         "--prefix",
         "LINK",
-        "--link-bb-project",
+        "--link-beam-project",
         context.projectId,
       ]),
     );
@@ -660,7 +660,7 @@ describe("bb tasks CLI", () => {
       exitCode: 1,
       stdout: "",
       stderr:
-        "no tracker project is linked to BB project proj_missing; pass --project or link one with bb tasks project update",
+        "no tracker project is linked to Beam project proj_missing; pass --project or link one with beam tasks project update",
     });
 
     await harness.dispose();
@@ -1175,7 +1175,7 @@ describe("bb tasks CLI", () => {
     await harness.dispose();
   });
 
-  it("detaches a thread with `bb tasks detach` and lists live threads first", async () => {
+  it("detaches a thread with `beam tasks detach` and lists live threads first", async () => {
     const { bb, harness } = createFakePluginHost({
       pluginId: "tasks",
       sdk: {
@@ -1448,7 +1448,7 @@ describe("bb tasks CLI", () => {
         `Failed to attach ${boomPath}: simulated blob write failure`,
       );
       expect(human.stdout).toContain(
-        `Retry with: bb tasks attachment add MIX-2 --file ${boomPath}`,
+        `Retry with: beam tasks attachment add MIX-2 --file ${boomPath}`,
       );
     } finally {
       await rm(directory, { recursive: true, force: true });
@@ -1482,7 +1482,7 @@ describe("bb tasks CLI", () => {
                   outcome: "available",
                   pullRequest: {
                     number: 12,
-                    title: "BB-15 Show PRs in tasks",
+                    title: "Beam-15 Show PRs in tasks",
                     state: "draft",
                     url: "https://github.com/acme/bb/pull/12",
                     baseRefName: "main",
@@ -1539,7 +1539,7 @@ describe("bb tasks CLI", () => {
 
     const shown = stdout(await harness.runCli(["show", "PRS-1"]));
     expect(shown).toContain("Pull requests");
-    expect(shown).toContain("#12  draft  BB-15 Show PRs in tasks");
+    expect(shown).toContain("#12  draft  Beam-15 Show PRs in tasks");
     expect(shown).toContain("https://github.com/acme/bb/pull/12");
     expect(shown).not.toContain("PR lookup unavailable");
 
@@ -1550,7 +1550,7 @@ describe("bb tasks CLI", () => {
       {
         url: "https://github.com/acme/bb/pull/12",
         number: 12,
-        title: "BB-15 Show PRs in tasks",
+        title: "Beam-15 Show PRs in tasks",
         state: "draft",
         updatedAt: "2026-07-16T10:00:00.000Z",
         threadIds: ["thr_pr_worker"],
@@ -2028,7 +2028,7 @@ describe("bb tasks CLI", () => {
     expect(result).toEqual({
       exitCode: 1,
       stdout: "",
-      stderr: 'Task project "Unlinked CLI" is not linked to a bb project',
+      stderr: 'Task project "Unlinked CLI" is not linked to a Beam project',
     });
     const aliased = await harness.runCli([
       "delegate",
@@ -2037,7 +2037,7 @@ describe("bb tasks CLI", () => {
       "CLI worker",
     ]);
     expect(aliased.stderr).toBe(
-      'Task project "Unlinked CLI" is not linked to a bb project',
+      'Task project "Unlinked CLI" is not linked to a Beam project',
     );
     expect(harness.sdk.callsTo("threads.spawn")).toEqual([]);
 

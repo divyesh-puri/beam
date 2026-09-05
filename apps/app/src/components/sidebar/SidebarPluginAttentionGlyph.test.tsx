@@ -25,7 +25,7 @@ function plugin(overrides: Partial<PluginListItem>): PluginListItem {
     name: "Notify",
     enabled: true,
     status: "incompatible",
-    statusDetail: "requires bb >=0.38.0 <0.39.0, this is 0.39.0",
+    statusDetail: "requires Beam >=0.38.0 <0.39.0, this is 0.39.0",
     ...overrides,
   } as PluginListItem;
 }
@@ -58,7 +58,7 @@ describe("SidebarPluginAttentionGlyph", () => {
     renderGlyph([plugin({})]);
     const el = glyph()!;
     expect(el.getAttribute("aria-label")).toBe(
-      "Notify is incompatible: requires bb >=0.38.0 <0.39.0, this is 0.39.0",
+      "Notify is incompatible: requires Beam >=0.38.0 <0.39.0, this is 0.39.0",
     );
     expect(el.getAttribute("href")).toBe("/extensions/plugins?view=installed");
     expect(el.className).toContain("text-warning-text");

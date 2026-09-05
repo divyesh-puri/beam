@@ -598,10 +598,10 @@ describe("plugin service", () => {
     const entry = after.list().find((p) => p.id === "notify");
     expect(entry?.status).toBe("incompatible");
     expect(entry?.statusDetail).toBe(
-      "requires bb >=0.38.0 <0.39.0, this is 0.39.0",
+      "requires Beam >=0.38.0 <0.39.0, this is 0.39.0",
     );
     expect(lines).toContain(
-      "warn plugin notify not loaded (incompatible): requires bb >=0.38.0 <0.39.0, this is 0.39.0",
+      "warn plugin notify not loaded (incompatible): requires Beam >=0.38.0 <0.39.0, this is 0.39.0",
     );
     await after.stop();
   });
@@ -1065,7 +1065,7 @@ describe("plugin service", () => {
 
     await service.installPath(managedRoot);
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("bb-managed workspace"),
+      expect.stringContaining("Beam-managed workspace"),
     );
   });
 });

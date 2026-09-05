@@ -27,7 +27,8 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy getbb.app site to Cloudflare Workers
+    if: ${{ github.repository == 'get-bb/bb' }}
+    name: Deploy upstream getbb.app site to Cloudflare Workers
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 20
 

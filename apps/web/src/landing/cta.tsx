@@ -5,13 +5,7 @@ import type { FormEvent, ReactNode } from "react";
 
 import { trackLandingEvent } from "./analytics";
 import type { CtaPlacement } from "./site";
-import {
-  DISCORD_URL,
-  GITHUB_URL,
-  X_URL,
-  SUBSCRIBE_PATH,
-  downloadMacosHref,
-} from "./site";
+import { GITHUB_URL, SUBSCRIBE_PATH, downloadMacosHref } from "./site";
 
 type CtaLinkProps = {
   placement: CtaPlacement;
@@ -37,44 +31,6 @@ export function GitHubLink({ placement, className, children }: CtaLinkProps) {
       onClick={() =>
         trackLandingEvent({
           name: "landing_github_clicked",
-          properties: { placement },
-        })
-      }
-    >
-      {children}
-    </a>
-  );
-}
-
-export function DiscordLink({ placement, className, children }: CtaLinkProps) {
-  return (
-    <a
-      className={className}
-      href={DISCORD_URL}
-      target="_blank"
-      rel="noreferrer"
-      onClick={() =>
-        trackLandingEvent({
-          name: "landing_discord_clicked",
-          properties: { placement },
-        })
-      }
-    >
-      {children}
-    </a>
-  );
-}
-
-export function XLink({ placement, className, children }: CtaLinkProps) {
-  return (
-    <a
-      className={className}
-      href={X_URL}
-      target="_blank"
-      rel="noreferrer"
-      onClick={() =>
-        trackLandingEvent({
-          name: "landing_x_clicked",
           properties: { placement },
         })
       }

@@ -289,7 +289,7 @@ describe("workspace read caches on the environment routes", () => {
       );
       await reportQueuedCommandSuccess(harness, commitCommand, {
         commitSha: "abc123",
-        commitSubject: "bb: automated commit",
+        commitSubject: "beam: automated commit",
       });
       expect((await commitResponse).status).toBe(200);
 

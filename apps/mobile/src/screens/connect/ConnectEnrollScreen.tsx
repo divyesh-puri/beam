@@ -97,6 +97,7 @@ export function ConnectEnrollScreen() {
     setFieldError(null);
     const target = resolveEnrollmentTarget(input);
     if (!target.ok) {
+      if (target.field === "apexUrl") setShowAdvanced(true);
       setFieldError({ field: target.field, message: target.message });
       return;
     }
@@ -168,7 +169,7 @@ export function ConnectEnrollScreen() {
       <>
         <Stack.Screen
           options={{
-            title: reauth ? "Paired again" : "Paired with bb connect",
+            title: reauth ? "Paired again" : "Paired with Beam Connect",
           }}
         />
         {IS_IOS ? (
@@ -183,7 +184,7 @@ export function ConnectEnrollScreen() {
           </Stack.Toolbar>
         ) : null}
         <GroupedScreen testID="connect-enrolled-screen">
-          <SettingsSection footnote="This phone is now a device on your getbb.app account. You can revoke it any time in the dashboard under Machines.">
+          <SettingsSection footnote="This phone is now a device on your Beam Connect account. You can revoke it any time in the dashboard under Machines.">
             <View
               className="flex-row items-center gap-3 px-4 py-3"
               testID="connect-enrolled-card"
@@ -228,8 +229,8 @@ export function ConnectEnrollScreen() {
           title: reauth
             ? `Sign in again to ${reauth.label}`
             : firstRun
-              ? "Connect to getbb.app"
-              : "Pair with bb connect",
+              ? "Connect with Beam Connect"
+              : "Pair with Beam Connect",
         }}
       />
       {IS_IOS ? (
@@ -250,7 +251,7 @@ export function ConnectEnrollScreen() {
             footnote={
               reauth
                 ? "This phone's access was revoked or has expired. Generate a new pairing code on the server and enter it here; your saved server keeps its place."
-                : "Pair this phone with your bb server through getbb.app. Generate a code in bb Settings → Remote access → Add mobile device, or run `bb connect machine-code`."
+                : "Pair this phone with your Beam server through its configured Beam Connect service. Generate a code in Beam Settings → Remote access → Add mobile device, or run `beam connect machine-code`."
             }
           >
             <GroupedRow
@@ -309,7 +310,7 @@ export function ConnectEnrollScreen() {
               ) : reauth ? (
                 "The server is fixed when signing in again."
               ) : (
-                "Optional: the code already names the server. A URL also sets the bb connect address for self-hosted gates."
+                "Optional: the code already names the server. A URL also sets the Beam Connect address for self-hosted gates."
               )
             }
           >
@@ -317,7 +318,7 @@ export function ConnectEnrollScreen() {
               <Input
                 value={server}
                 onChangeText={setServer}
-                placeholder="bee or https://bee.getbb.app"
+                placeholder="bee or https://bee.connect.example"
                 keyboardType="url"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -334,14 +335,14 @@ export function ConnectEnrollScreen() {
 
           {showAdvanced ? (
             <SettingsSection
-              title="bb connect address"
+              title="Beam Connect address"
               footnote={
                 fieldError?.field === "apexUrl" ? (
                   <Text variant="footnote" tone="destructive">
                     {fieldError.message}
                   </Text>
                 ) : (
-                  "The self-hosted bb connect gate this phone pairs through."
+                  "The self-hosted Beam Connect gate this phone pairs through."
                 )
               }
             >
@@ -369,7 +370,7 @@ export function ConnectEnrollScreen() {
               onPress={() => setShowAdvanced(true)}
               testID="connect-advanced-toggle"
             >
-              Self-hosted bb connect…
+              Self-hosted Beam Connect…
             </Button>
           )}
 
@@ -468,7 +469,7 @@ function SessionStatusLine({ session }: { session: SessionState | null }) {
           selectable
           testID="connect-session-auth-required"
         >
-          bb connect rejected the new credential: {session.detail}
+          Beam Connect rejected the new credential: {session.detail}
         </Text>
       );
     case "error":

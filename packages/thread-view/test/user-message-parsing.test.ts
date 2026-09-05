@@ -46,7 +46,7 @@ function systemSteerRequest(): ClientTurnRequestedEventRow {
     initiator: "system",
     senderThreadId: null,
     target: { kind: "auto", expectedTurnId: "turn-1" },
-    text: "[bb system] Mid-turn nudge",
+    text: "[Beam system] Mid-turn nudge",
   });
 }
 
@@ -56,7 +56,7 @@ function systemMessageRequest(): ClientTurnRequestedEventRow {
     initiator: "system",
     senderThreadId: null,
     target: { kind: "new-turn" },
-    text: "[bb system] Maintenance notice.",
+    text: "[Beam system] Maintenance notice.",
   });
 }
 
@@ -105,7 +105,7 @@ describe("user message parsing", () => {
     const parsed = parsePromptInput([
       {
         type: "text",
-        text: "[bb system]\n\nHidden agent-only context:\n\nsecret",
+        text: "[Beam system]\n\nHidden agent-only context:\n\nsecret",
         mentions: [],
         visibility: "agent-only",
       },
@@ -134,7 +134,7 @@ describe("user message parsing", () => {
     const parsed = parsePromptInput([
       {
         type: "text",
-        text: "[bb system]\n\nHidden agent-only context was removed.",
+        text: "[Beam system]\n\nHidden agent-only context was removed.",
         mentions: [],
         visibility: "agent-only",
       },
@@ -241,7 +241,7 @@ describe("user message parsing", () => {
 
   it("populates initiator, senderThreadId, and turnRequest for agent-initiated messages", () => {
     const factory = createTimelineEventFactory({ threadId: "thread-1" });
-    const agentText = "[bb message from thread:thr_sender]\n\nHi";
+    const agentText = "[Beam message from thread:thr_sender]\n\nHi";
     const row = factory.clientTurnRequested({
       initiator: "agent",
       senderThreadId: SENDER_THREAD_ID,
@@ -312,8 +312,8 @@ describe("user message parsing", () => {
   it("preserves mentions for system-initiated messages", () => {
     const factory = createTimelineEventFactory({ threadId: "thread-1" });
     const mentionText = "@thread:thr_child";
-    const text = `[bb system]\n\n${mentionText} needs help.\nIt is blocked on a pending interaction.\n\nReview the blocker. If you can resolve it from existing context, reply to the thread with guidance. Otherwise, ask the user for the missing decision.`;
-    const mentionStart = "[bb system]\n\n".length;
+    const text = `[Beam system]\n\n${mentionText} needs help.\nIt is blocked on a pending interaction.\n\nReview the blocker. If you can resolve it from existing context, reply to the thread with guidance. Otherwise, ask the user for the missing decision.`;
+    const mentionStart = "[Beam system]\n\n".length;
     const mention: PromptTextMention = {
       start: mentionStart,
       end: mentionStart + mentionText.length,
@@ -603,7 +603,7 @@ describe("user message parsing", () => {
     ).toMatchObject({
       initiator: "system",
       kind: "user",
-      text: "[bb system] Maintenance notice.",
+      text: "[Beam system] Maintenance notice.",
       turnRequest: { isGrouped: false, kind: "message", status: "pending" },
     });
   });

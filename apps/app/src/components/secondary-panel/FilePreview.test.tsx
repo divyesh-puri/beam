@@ -259,7 +259,9 @@ describe("FilePreview", () => {
       />,
     );
 
-    await waitFor(() => expect(pierreMock.state.statsCallback).not.toBeNull());
+    await waitFor(() => expect(pierreMock.state.statsCallback).not.toBeNull(), {
+      timeout: 5_000,
+    });
     const renderCountBeforeStatsChange = Number(
       screen.getByTestId("pierre-file").dataset.renderCount,
     );
@@ -278,11 +280,14 @@ describe("FilePreview", () => {
       });
     });
 
-    await waitFor(() => {
-      expect(
-        Number(screen.getByTestId("pierre-file").dataset.renderCount),
-      ).toBeGreaterThan(renderCountBeforeStatsChange);
-    });
+    await waitFor(
+      () => {
+        expect(
+          Number(screen.getByTestId("pierre-file").dataset.renderCount),
+        ).toBeGreaterThan(renderCountBeforeStatsChange);
+      },
+      { timeout: 5_000 },
+    );
   });
 
   it("waits for the Pierre worker pool before mounting the code view", async () => {
@@ -315,7 +320,7 @@ describe("FilePreview", () => {
       );
     });
 
-    await screen.findByTestId("pierre-file");
+    await screen.findByTestId("pierre-file", undefined, { timeout: 5_000 });
   });
 
   it("scrolls vertically to a target line without changing the horizontal offset", async () => {

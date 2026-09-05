@@ -410,7 +410,7 @@ async function smokeLinuxAppImageLifecycle() {
 
   const appImage = await resolveAppImage();
   const smokeRoot = await mkdtemp(
-    join(tmpdir(), "bb-appimage-lifecycle-smoke-"),
+    join(tmpdir(), "beam-appimage-lifecycle-smoke-"),
   );
   const dataDir = join(smokeRoot, "data");
   const userDataDir = join(smokeRoot, "user-data");
@@ -482,7 +482,7 @@ async function smokeLinuxAppImageLifecycle() {
       retryErrors: false,
     });
     await waitFor({
-      describe: `bb health at ${runtime.serverUrl}`,
+      describe: `beam health at ${runtime.serverUrl}`,
       predicate: async () => await serverIsHealthy(runtime.serverUrl),
     });
 
@@ -538,7 +538,7 @@ async function smokeLinuxAppImageLifecycle() {
     }
     for (let attempt = 0; attempt < 3; attempt += 1) {
       if (!(await serverIsHealthy(runtime.serverUrl))) {
-        throw new Error("bb became unhealthy after the GUI mount teardown");
+        throw new Error("beam became unhealthy after the GUI mount teardown");
       }
       await sleep(250);
     }

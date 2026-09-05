@@ -214,7 +214,7 @@ export function evaluateCompatibility(args: {
 } {
   const appVersion = semver.coerce(args.appVersion);
   if (!appVersion) {
-    throw new Error(`cannot parse running bb version "${args.appVersion}"`);
+    throw new Error(`cannot parse running Beam version "${args.appVersion}"`);
   }
   const devMode = appVersion.version === "0.0.0";
   const bbProblems: CompatibilityProblem[] = [];
@@ -231,7 +231,7 @@ export function evaluateCompatibility(args: {
         engine: "bb",
         required: args.bbRange,
         actual: appVersion.version,
-        message: `requires bb ${args.bbRange}, running bb is ${appVersion.version}`,
+        message: `requires Beam ${args.bbRange}, running Beam is ${appVersion.version}`,
       });
     }
   }
@@ -577,7 +577,7 @@ function movedGitTagDetail(args: {
   if (args.currentCommit === args.recordedCommit) return null;
   return (
     `security check failed: git tag "${args.tag}" in ${args.url} moved from ` +
-    `${args.recordedCommit} to ${args.currentCommit}; bb will not re-resolve a ` +
+    `${args.recordedCommit} to ${args.currentCommit}; Beam will not re-resolve a ` +
     `tag that changed. Remove the plugin and install it again to accept the new commit`
   );
 }
@@ -627,7 +627,7 @@ async function resolveGitRangeUpdate(args: {
       outcome: "unavailable",
       detail:
         `security check failed: recorded git tag "${args.intent.resolvedTag}" no longer exists in ${args.url}; ` +
-        "bb will not re-resolve a missing release tag. Restore the tag, or remove and install the plugin again",
+        "Beam will not re-resolve a missing release tag. Restore the tag, or remove and install the plugin again",
     };
   }
   const moved = movedGitTagDetail({
@@ -683,7 +683,7 @@ async function resolveGitRangeUpdate(args: {
     if (probes >= MAX_GIT_CANDIDATE_PROBES) {
       return {
         outcome: "unavailable",
-        detail: `no release of ${args.url} matching ${args.intent.range} runs on this bb within the newest ${MAX_GIT_CANDIDATE_PROBES} releases`,
+        detail: `no release of ${args.url} matching ${args.intent.range} runs on this Beam instance within the newest ${MAX_GIT_CANDIDATE_PROBES} releases`,
       };
     }
     probes += 1;
@@ -807,7 +807,7 @@ export async function resolveGitRange(args: {
     if (probes >= MAX_GIT_CANDIDATE_PROBES) {
       return {
         outcome: "unavailable",
-        detail: `no release of ${args.url} matching ${args.range} runs on this bb within the newest ${MAX_GIT_CANDIDATE_PROBES} releases`,
+        detail: `no release of ${args.url} matching ${args.range} runs on this Beam instance within the newest ${MAX_GIT_CANDIDATE_PROBES} releases`,
       };
     }
     probes += 1;
@@ -822,6 +822,6 @@ export async function resolveGitRange(args: {
     outcome: "unavailable",
     detail:
       firstProblem ??
-      `no release of ${args.url} matching ${args.range} runs on this bb`,
+      `no release of ${args.url} matching ${args.range} runs on this Beam instance`,
   };
 }

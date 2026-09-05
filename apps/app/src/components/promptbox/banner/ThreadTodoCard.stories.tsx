@@ -56,7 +56,7 @@ const mixedTodos: ThreadTimelinePendingTodos = {
     },
     {
       id: "todo:4",
-      text: "Surface pendingTodos in `bb thread show` and `bb status`",
+      text: "Surface pendingTodos in `beam thread show` and `beam status`",
       status: "pending",
     },
     {

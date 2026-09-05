@@ -1,6 +1,7 @@
 import type { ThreadEvent } from "./provider-event.js";
 
-export const BB_THREAD_NAME_TAG = "bb";
+export const BB_THREAD_NAME_TAG = "beam";
+const LEGACY_BB_THREAD_NAME_TAG = "bb";
 
 interface TagThreadNameArgs {
   name: string;
@@ -33,7 +34,11 @@ export function toProviderExternalThreadName(title: string): string {
 }
 
 export function fromProviderExternalThreadName(name: string): string {
-  return untagThreadName({ name, tag: BB_THREAD_NAME_TAG });
+  const currentPrefix = threadNameTagPrefix(BB_THREAD_NAME_TAG);
+  if (name.startsWith(currentPrefix)) {
+    return untagThreadName({ name, tag: BB_THREAD_NAME_TAG });
+  }
+  return untagThreadName({ name, tag: LEGACY_BB_THREAD_NAME_TAG });
 }
 
 export function normalizeProviderThreadNameEvent(

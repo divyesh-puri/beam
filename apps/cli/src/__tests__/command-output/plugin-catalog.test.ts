@@ -21,9 +21,9 @@ const searchResult = {
   source: "builtin:linear",
   repositoryUrl: null,
   marketplace: "bb-community",
-  marketplaceDisplayName: "BB Official",
+  marketplaceDisplayName: "Beam Official",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   official: true,
   author: null,
   installed: false,
@@ -75,7 +75,7 @@ const installedPlugin = {
   provenance: "catalog",
   isOrphanedBuiltin: false,
   catalogEntryId: "linear",
-  publisherLabel: "BB Community",
+  publisherLabel: "Beam Community",
   sourceDisplay: "builtin · linear",
   updateState: {},
   enabled: true,
@@ -105,7 +105,7 @@ function json(value: object, status = 200): Response {
   });
 }
 
-describe("bb plugin catalog", () => {
+describe("beam plugin catalog", () => {
   setupCommandOutputTestEnvironment();
   const register: CommandRegistrar = (program) =>
     registerPluginCommands(program, () => "http://server");
@@ -147,7 +147,7 @@ describe("bb plugin catalog", () => {
     const output = collectLogPayloads(vi.mocked(console.log)).join("\n");
     expect(output).toContain("Marketplace");
     expect(output).toContain("Acme Plugins");
-    expect(output).toContain("BB Official");
+    expect(output).toContain("Beam Official");
   });
 
   it("adds an Installs column only once a listing reports counts", async () => {
@@ -347,7 +347,7 @@ describe("bb plugin catalog", () => {
       entryId: "linear",
     });
     expect(collectLogPayloads(vi.mocked(console.log)).join("\n")).toContain(
-      "bundled with BB",
+      "bundled with Beam",
     );
   });
 

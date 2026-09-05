@@ -49,8 +49,8 @@ beforeEach(() => {
   mocks.fetchHostStatus.mockReset();
   vi.stubGlobal("window", {
     location: {
-      hostname: "remote.getbb.app",
-      origin: "https://remote.getbb.app",
+      hostname: "remote.connect.beam.invalid",
+      origin: "https://remote.connect.beam.invalid",
     },
   });
   vi.stubGlobal("navigator", {
@@ -99,7 +99,7 @@ describe("local host daemon access atoms", () => {
     mocks.fetchHostStatus.mockResolvedValue({
       connected: true,
       hostId: "host-local",
-      serverUrl: "https://remote.getbb.app",
+      serverUrl: "https://remote.connect.beam.invalid",
     });
     const store = createStore();
 
@@ -119,7 +119,9 @@ describe("local host daemon access atoms", () => {
       connected: true,
       hostId: port === 38_888 ? "host-browser-machine" : "host-primary",
       serverUrl:
-        port === 38_888 ? "https://remote.getbb.app" : "http://127.0.0.1:38886",
+        port === 38_888
+          ? "https://remote.connect.beam.invalid"
+          : "http://127.0.0.1:38886",
     }));
     const store = createStore();
 

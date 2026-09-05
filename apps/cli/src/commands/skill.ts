@@ -191,7 +191,7 @@ export function registerSkillCommands(
               entry.id,
               entry.name,
               entry.scope,
-              entry.provider ?? "bb",
+              entry.provider ?? "Beam",
               entry.manageable ? "yes" : "no",
               entry.filePath,
             ]),
@@ -242,7 +242,7 @@ export function registerSkillCommands(
     .requiredOption("--file <path>", "Local SKILL.md to upload")
     .requiredOption(
       "--revision <sha256>",
-      "Revision returned by bb skill show --json",
+      "Revision returned by beam skill show --json",
     )
     .action(
       action(async (skillId: string, options: SkillUpdateOptions) => {
@@ -383,7 +383,7 @@ export function registerSkillCommands(
 
   skill
     .command("install <registry-skill-id>")
-    .description("Install a canonical skills.sh entry into bb user skills")
+    .description("Install a canonical skills.sh entry into Beam user skills")
     .option("--json", "Print machine-readable JSON output")
     .action(
       action(async (registrySkillId: string, options: JsonOutputOptions) => {
@@ -398,7 +398,7 @@ export function registerSkillCommands(
   skill
     .command("cli-skills-status")
     .description(
-      "Show whether each machine has bb's built-in CLI skills installed",
+      "Show whether each machine has Beam's built-in CLI skills installed",
     )
     .option(
       "--machine <id-or-name>",
@@ -438,7 +438,7 @@ export function registerSkillCommands(
   skill
     .command("install-cli-skills")
     .description(
-      "Install bb's built-in CLI skills into ~/.agents/skills and ~/.claude/skills on a machine",
+      "Install Beam's built-in CLI skills into ~/.agents/skills and ~/.claude/skills on a machine",
     )
     .option(
       "--machine <id-or-name>",

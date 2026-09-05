@@ -632,7 +632,7 @@ describe("buildCodexConfig", () => {
     });
   });
 
-  it("injects the bb thread id into the shell env and drops invalid keys", () => {
+  it("injects the Beam thread id into the shell env and drops invalid keys", () => {
     const config = configFor({
       ...FULL_OPTIONS,
       envVars: {
@@ -703,7 +703,7 @@ describe("resolveCodexInstructionOverrides", () => {
 });
 
 describe("toCodexReasoningEffort", () => {
-  it("maps the top of the bb reasoning ladder", () => {
+  it("maps the top of the Beam reasoning ladder", () => {
     expect(toCodexReasoningEffort("max")).toBe("max");
     expect(toCodexReasoningEffort("ultra")).toBe("ultra");
   });

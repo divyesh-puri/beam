@@ -69,7 +69,7 @@ const EXCLUDED_SEGMENTS = new Set([
  * ratchet exists to keep provider ids out of CORE. `plugins/provider-*` is
  * one such implementation, and so is the published ACP bridge kit — the same
  * code, moved into `packages/` so the plugin SDK can re-export it
- * (`@get-bb/plugin-sdk/provider-bridge/acp`). It carries no bb provider id
+ * (`@get-bb/plugin-sdk/provider-bridge/acp`). It carries no Beam provider id
  * today: it selects behavior by the agent's dialect, never by a provider id.
  */
 const EXCLUDED_PREFIXES = [
@@ -176,7 +176,9 @@ export function checkAllowlist(scan, allowlist) {
   }
   for (const rel of Object.keys(entries)) {
     if (!(rel in scan.files)) {
-      problems.push(`  − ${rel}: allowlisted but has no reference left — remove the entry`);
+      problems.push(
+        `  − ${rel}: allowlisted but has no reference left — remove the entry`,
+      );
     }
   }
   return problems;
@@ -227,7 +229,8 @@ function baselineFromGit(root, ref) {
 // --- CLI ---------------------------------------------------------------------
 function main() {
   const ROOT =
-    process.env.BB_RATCHET_ROOT ?? fileURLToPath(new URL("..", import.meta.url));
+    process.env.BB_RATCHET_ROOT ??
+    fileURLToPath(new URL("..", import.meta.url));
   const BASELINE_PATH = join(ROOT, "scripts", "provider-literal-baseline.json");
   const argv = process.argv.slice(2);
   const flags = new Set(argv.filter((a) => a.startsWith("--")));

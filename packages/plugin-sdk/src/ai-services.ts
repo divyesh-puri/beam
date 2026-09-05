@@ -1,5 +1,5 @@
 /**
- * `@get-bb/plugin-sdk/ai-services` — the contract between bb's AI-services
+ * `@get-bb/plugin-sdk/ai-services` — the contract between Beam's AI-services
  * feature (server-side helper inference: thread titles, commit messages;
  * voice transcription) and a plugin that serves them from a host.
  *

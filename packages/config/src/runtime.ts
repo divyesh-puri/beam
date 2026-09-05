@@ -79,7 +79,7 @@ interface ResolvePortFromEnvArgs {
 }
 
 const BEAM_PROD_DATA_DIR_NAME = ".beam";
-const BB_DEV_DATA_ROOT_DIR = ".bb-dev";
+const BEAM_DEV_DATA_ROOT_DIR = ".beam-dev";
 const UPSTREAM_BB_PROD_SERVER_PORT = 38886;
 const UPSTREAM_BB_PROD_HOST_DAEMON_PORT = 38887;
 export const BB_PROD_SERVER_PORT = 48886;
@@ -140,9 +140,11 @@ function resolvePortOffset(repoRootPath: string): number {
   return Number.parseInt(hash.slice(0, 8), 16) % DEV_PORT_BUCKETS;
 }
 
-function reservePackagedAppPorts(port: number): number {
+function reserveProductionPorts(port: number): number {
   if (port === UPSTREAM_BB_PROD_SERVER_PORT) return 59_000;
   if (port === UPSTREAM_BB_PROD_HOST_DAEMON_PORT) return 59_001;
+  if (port === BB_PROD_SERVER_PORT) return 59_002;
+  if (port === BB_PROD_HOST_DAEMON_PORT) return 59_003;
   return port;
 }
 
@@ -150,8 +152,10 @@ function resolvePorts(repoRootPath: string): DevPortSet {
   const offset = resolvePortOffset(repoRootPath);
   return {
     appPort: DEV_APP_PORT_BASE + offset,
-    cloudPort: reservePackagedAppPorts(DEV_CLOUD_PORT_BASE + offset),
-    cloudWorkerPort: DEV_CLOUD_WORKER_PORT_BASE + offset,
+    cloudPort: reserveProductionPorts(DEV_CLOUD_PORT_BASE + offset),
+    cloudWorkerPort: reserveProductionPorts(
+      DEV_CLOUD_WORKER_PORT_BASE + offset,
+    ),
     hostDaemonPort: DEV_HOST_DAEMON_PORT_BASE + offset,
     serverPort: DEV_SERVER_PORT_BASE + offset,
   };
@@ -206,7 +210,7 @@ export function resolveDevInstanceConfig(
   args: ResolveDevInstanceConfigArgs,
 ): DevInstanceConfig {
   const instanceId = resolveInstanceId(args);
-  const dataDir = join(args.homeDir, BB_DEV_DATA_ROOT_DIR, instanceId);
+  const dataDir = join(args.homeDir, BEAM_DEV_DATA_ROOT_DIR, instanceId);
   const ports = resolvePorts(args.repoRoot);
   const serverUrl = `http://${BB_LOOPBACK_HOST}:${ports.serverPort}`;
   return {
@@ -330,7 +334,7 @@ export function toDevProcessEnv(args: DevProcessEnvArgs): NodeJS.ProcessEnv {
     ...env,
     BB_DATA_DIR: args.config.dataDir,
     BB_DEV_APP_PORT: String(args.config.ports.appPort),
-    BB_DEV_CONNECT_BASE_URL: `http://bb.localhost:${args.config.ports.cloudPort}`,
+    BB_DEV_CONNECT_BASE_URL: `http://beam.localhost:${args.config.ports.cloudPort}`,
     BB_HOST_DAEMON_PORT: String(args.config.ports.hostDaemonPort),
     BB_INHERITED_SKILLS_ROOTS: inheritedSkillsRootPaths.join(delimiter),
     BB_SERVER_PORT: String(args.config.ports.serverPort),

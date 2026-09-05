@@ -380,7 +380,7 @@ function DispatchTargetMenu({
             </span>
           ) : (
             <span className="truncate text-muted-foreground">
-              Link a bb project…
+              Link a Beam project…
             </span>
           )}
         </button>

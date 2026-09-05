@@ -42,7 +42,7 @@ const REPO_ROOT = fileURLToPath(new URL("../../../../../", import.meta.url));
 
 const SKILL_ROOT = fileURLToPath(
   new URL(
-    "../../../src/services/skills/builtin-skills/bb-plugin-authoring/",
+    "../../../src/services/skills/builtin-skills/beam-plugin-authoring/",
     import.meta.url,
   ),
 );
@@ -210,7 +210,9 @@ const THREAD_EVENT_PAYLOAD_FIELDS = {
   "thread.archived": ["thread"],
   "thread.deleted": ["thread"],
 } as const satisfies {
-  [E in keyof PluginThreadEventPayloads]: readonly (keyof PluginThreadEventPayloads[E])[];
+  [
+    E in keyof PluginThreadEventPayloads
+  ]: readonly (keyof PluginThreadEventPayloads[E])[];
 };
 
 type MissingThreadEventField = {
@@ -465,12 +467,12 @@ const _assertAllThreadChatMessageActionFieldsListed: MissingThreadChatMessageAct
   : never = true;
 void _assertAllThreadChatMessageActionFieldsListed;
 
-describe("bb-plugin-authoring skill", () => {
+describe("beam-plugin-authoring skill", () => {
   const skillEntry = readFileSync(SKILL_PATH, "utf8");
   const skill = readSkillTree();
 
   it("has frontmatter naming the skill after its directory", () => {
-    expect(skillEntry).toMatch(/^---\nname: bb-plugin-authoring\n/);
+    expect(skillEntry).toMatch(/^---\nname: beam-plugin-authoring\n/);
   });
 
   it("documents every BbPluginApi property", () => {
@@ -645,8 +647,8 @@ describe("bb-plugin-authoring skill", () => {
     expect(skill).toContain("branding.icon");
     expect(skill).toContain("./assets/icon.svg");
     expect(skill).toContain("CSS mask");
-    expect(skill).toContain("canonical BB icon name");
-    expect(skill).toContain("BB reuses this icon on roomy");
+    expect(skill).toContain("canonical Beam icon name");
+    expect(skill).toContain("Beam reuses this icon on roomy");
     expect(skill).toContain("Logo-only");
     expect(skill).toContain("manifests remain supported");
     expect(skill).toContain("Do not duplicate");

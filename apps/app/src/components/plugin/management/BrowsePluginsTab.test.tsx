@@ -32,9 +32,9 @@ const MEMORY_ENTRY: PluginCatalogSearchEntry = {
   category: "Context & knowledge",
   source: "builtin:memory",
   repositoryUrl: null,
-  marketplaceDisplayName: "BB Community",
+  marketplaceDisplayName: "Beam Community",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   official: true,
   author: null,
   installed: false,
@@ -56,7 +56,7 @@ const INCOMPATIBLE_ENTRY: PluginCatalogSearchEntry = {
   pluginId: "future-memory",
   displayName: "Future Memory",
   compatible: false,
-  incompatibleReason: "Requires a newer BB version",
+  incompatibleReason: "Requires a newer Beam version",
 };
 
 const GITHUB_ENTRY: PluginCatalogSearchEntry = {
@@ -65,7 +65,7 @@ const GITHUB_ENTRY: PluginCatalogSearchEntry = {
   marketplace: "bb-community",
   pluginId: "github",
   displayName: "GitHub",
-  description: "Browse GitHub issues and pull requests in BB.",
+  description: "Browse GitHub issues and pull requests in Beam.",
   icon: "Github",
   iconUrl: null,
   iconTinted: false,
@@ -82,8 +82,8 @@ const INSTALLED_MEMORY_PLUGIN = {
   isOrphanedBuiltin: false,
   catalogEntryId: "memory",
   publisherKey: "bb-community",
-  publisherLabel: "BB Community",
-  sourceDisplay: "BB Official · Memory",
+  publisherLabel: "Beam Community",
+  sourceDisplay: "Beam Official · Memory",
   updateState: {},
   enabled: true,
   description: MEMORY_ENTRY.description,
@@ -211,7 +211,7 @@ describe("BrowsePluginsTab", () => {
     );
 
     await screen.findByText("Acme Notes");
-    expect(screen.getByText("BB Official")).toBeTruthy();
+    expect(screen.getByText("Beam Official")).toBeTruthy();
     expect(screen.getAllByText("Acme Plugins").length).toBeGreaterThan(0);
     expect(screen.getByText("third-party marketplace")).toBeTruthy();
     expect(screen.getByText("By: Acme")).toBeTruthy();
@@ -433,7 +433,7 @@ describe("BrowsePluginsTab", () => {
         pluginId: "notes",
         displayName: "Acme Notes",
         marketplace: "acme-plugins",
-        marketplaceDisplayName: "BB Official",
+        marketplaceDisplayName: "Beam Official",
         publisherKey: "acme-plugins",
         publisherLabel: "acme-plugins",
         official: false,
@@ -469,7 +469,7 @@ describe("BrowsePluginsTab", () => {
     );
 
     await screen.findByText("Acme Notes");
-    expect(screen.getByText("BB Official")).toBeTruthy();
+    expect(screen.getByText("Beam Official")).toBeTruthy();
     expect(screen.getByText("third-party marketplace")).toBeTruthy();
   });
 
@@ -544,7 +544,7 @@ describe("BrowsePluginsTab", () => {
       screen.getByRole("menuitemcheckbox", { name: "Context & knowledge" }),
     );
     expect(cardCount()).toBe(CATALOG_STATUS.pluginCount);
-    expect(screen.queryByText("BB Official plugins")).toBeNull();
+    expect(screen.queryByText("Beam Official plugins")).toBeNull();
   });
 
   it("shows the official plugins and entries", async () => {
@@ -595,17 +595,17 @@ describe("BrowsePluginsTab", () => {
     expect(screen.getByText(GITHUB_ENTRY.description)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Category" })).toBeTruthy();
     expect(
-      screen.queryByRole("heading", { name: /BB Official plugins/i }),
+      screen.queryByRole("heading", { name: /Beam Official plugins/i }),
     ).toBeNull();
     expect(screen.getByRole("heading", { level: 2 }).textContent).toContain(
-      "Turn bb into",
+      "Turn Beam into",
     );
     expect(screen.getByRole("button", { name: "Install Memory" })).toBeTruthy();
-    expect(screen.queryByText("BB Official plugins")).toBeNull();
+    expect(screen.queryByText("Beam Official plugins")).toBeNull();
 
     expect(screen.queryByText(MEMORY_ENTRY.source)).toBeNull();
     expect(screen.queryByText("Future Memory")).toBeNull();
-    expect(screen.queryByText("Requires a newer BB version")).toBeNull();
+    expect(screen.queryByText("Requires a newer Beam version")).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Install Future Memory" }),
     ).toBeNull();
@@ -622,7 +622,7 @@ describe("BrowsePluginsTab", () => {
     expect(onInstall).toHaveBeenCalledWith({
       entryId: "memory",
       marketplace: "bb-community",
-      publisherLabel: "BB Official",
+      publisherLabel: "Beam Official",
       displayName: "Memory",
       icon: "Brain",
       iconUrl: null,
@@ -671,7 +671,7 @@ describe("BrowsePluginsTab", () => {
     );
 
     expect((await screen.findByRole("alert")).textContent).toContain(
-      "BB's official plugins are unavailable.",
+      "Beam's official plugins are unavailable.",
     );
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
@@ -902,7 +902,7 @@ describe("BrowsePluginsTab", () => {
       await screen.findByRole("button", { name: "Create a plugin" }),
     );
     const blank = await screen.findByTestId("inline-composer");
-    expect(blank.textContent).toBe("Create a new bb plugin that ");
+    expect(blank.textContent).toBe("Create a new Beam plugin that ");
 
     fireEvent.click(
       screen.getByText(

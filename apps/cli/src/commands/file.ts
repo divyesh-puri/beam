@@ -58,7 +58,7 @@ export function registerFileCommands(
 ): void {
   const file = program
     .command("file")
-    .description("Read and manage files on BB machines");
+    .description("Read and manage files on Beam machines");
 
   file
     .command("read <path>")

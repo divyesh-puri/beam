@@ -53,11 +53,11 @@ async function readAuthoritativeBbVersion(): Promise<string> {
     if (parsed.success) return parsed.data.version;
   } catch (error) {
     throw new Error(
-      `cannot read authoritative bb version from ${bbAppPackageJsonPath}: ${error instanceof Error ? error.message : String(error)}`,
+      `cannot read authoritative Beam version from ${bbAppPackageJsonPath}: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
   throw new Error(
-    `cannot read authoritative bb version from ${bbAppPackageJsonPath}`,
+    `cannot read authoritative Beam version from ${bbAppPackageJsonPath}`,
   );
 }
 

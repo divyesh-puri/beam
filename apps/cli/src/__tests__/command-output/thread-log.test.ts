@@ -10,20 +10,20 @@ import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import * as fixtures from "../helpers/command-output-fixtures.js";
 import { registerThreadCommands } from "../../commands/thread/index.js";
 
-describe("bb thread log command output", () => {
+describe("beam thread log command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
     registerThreadCommands(program, () => "http://server");
 
-  it("bb thread log help describes verbose as expanded timeline output", async () => {
+  it("beam thread log help describes verbose as expanded timeline output", async () => {
     const helpOutput = await getHelpOutput(["thread", "log"], register);
 
     expect(helpOutput).toContain("verbose (expanded timeline)");
     expect(helpOutput).not.toContain("verbose (full timeline)");
   });
 
-  it("bb thread log --json prints raw events", async () => {
+  it("beam thread log --json prints raw events", async () => {
     const thread = {
       id: "thread-json-log",
       projectId: "proj-1",
@@ -57,7 +57,7 @@ describe("bb thread log command output", () => {
     ).toEqual(events);
   });
 
-  it("bb thread log renders merged timeline rows for human output", async () => {
+  it("beam thread log renders merged timeline rows for human output", async () => {
     const getEvents = vi.fn(async () => []);
     const getTimeline = vi.fn(async () =>
       fixtures.makeTimelineResponse([
@@ -126,7 +126,7 @@ describe("bb thread log command output", () => {
     expect(getEvents).not.toHaveBeenCalled();
   });
 
-  it("bb thread log renders pending steers for human output", async () => {
+  it("beam thread log renders pending steers for human output", async () => {
     const getEvents = vi.fn(async () => []);
     const getTimeline = vi.fn(async () =>
       fixtures.makeTimelineResponse([fixtures.makePendingSteerTimelineRow()]),
@@ -151,7 +151,7 @@ describe("bb thread log command output", () => {
     expect(getEvents).not.toHaveBeenCalled();
   });
 
-  it("bb thread log renders pending steers with default formatting", async () => {
+  it("beam thread log renders pending steers with default formatting", async () => {
     const getEvents = vi.fn(async () => []);
     const getTimeline = vi.fn(async () =>
       fixtures.makeTimelineResponse([fixtures.makePendingSteerTimelineRow()]),
@@ -173,7 +173,7 @@ describe("bb thread log command output", () => {
     expect(getEvents).not.toHaveBeenCalled();
   });
 
-  it("bb thread log renders approval state on command and file-change rows", async () => {
+  it("beam thread log renders approval state on command and file-change rows", async () => {
     const getEvents = vi.fn(async () => []);
     const getTimeline = vi.fn(async () =>
       fixtures.makeTimelineResponse([
@@ -237,7 +237,7 @@ describe("bb thread log command output", () => {
     expect(getEvents).not.toHaveBeenCalled();
   });
 
-  it("bb thread log --json caps at --limit and warns on stderr when more events exist", async () => {
+  it("beam thread log --json caps at --limit and warns on stderr when more events exist", async () => {
     const events = Array.from({ length: 4 }, (_, index) => ({
       id: `evt-${index + 1}`,
       scope: { kind: "thread" },
@@ -270,7 +270,7 @@ describe("bb thread log command output", () => {
     expect(stderr).toContain("--all");
   });
 
-  it("bb thread log --json stays quiet when the page is not full", async () => {
+  it("beam thread log --json stays quiet when the page is not full", async () => {
     const events = [
       {
         id: "evt-1",
@@ -294,7 +294,7 @@ describe("bb thread log command output", () => {
     expect(collectLogLines(vi.mocked(console.error))).toEqual([]);
   });
 
-  it("bb thread log --json --all pages through every event with --after-seq", async () => {
+  it("beam thread log --json --all pages through every event with --after-seq", async () => {
     const makeEvent = (seq: number) => ({
       id: `evt-${seq}`,
       scope: { kind: "thread" },
@@ -335,7 +335,7 @@ describe("bb thread log command output", () => {
     expect(collectLogLines(vi.mocked(console.error))).toEqual([]);
   });
 
-  it("bb thread log prints an older-history notice when the timeline page is cut", async () => {
+  it("beam thread log prints an older-history notice when the timeline page is cut", async () => {
     const getTimeline = vi.fn(async () => ({
       ...fixtures.makeTimelineResponse([
         fixtures.makePendingSteerTimelineRow(),
@@ -361,7 +361,7 @@ describe("bb thread log command output", () => {
     expect(output).toContain("--all");
   });
 
-  it("bb thread log --limit sets the timeline segment limit for human output", async () => {
+  it("beam thread log --limit sets the timeline segment limit for human output", async () => {
     const getTimeline = vi.fn(async () =>
       fixtures.makeTimelineResponse([fixtures.makePendingSteerTimelineRow()]),
     );
@@ -383,7 +383,7 @@ describe("bb thread log command output", () => {
     expect(output).not.toContain("older history omitted");
   });
 
-  it("bb thread log --all walks older timeline pages and prints them oldest first", async () => {
+  it("beam thread log --all walks older timeline pages and prints them oldest first", async () => {
     const makeUserRow = (id: string, seq: number, text: string) => ({
       ...fixtures.makePendingSteerTimelineRow(),
       ...fixtures.makeTimelineBase({ id, sourceSeqStart: seq }),
@@ -462,7 +462,7 @@ describe("bb thread log command output", () => {
     expect(output).not.toContain("older history omitted");
   });
 
-  it("bb thread log rejects --all combined with --limit", async () => {
+  it("beam thread log rejects --all combined with --limit", async () => {
     stubServerApi({
       "v1.threads.:id.timeline.$get": vi.fn(async () =>
         fixtures.makeTimelineResponse([]),
@@ -480,7 +480,7 @@ describe("bb thread log command output", () => {
     );
   });
 
-  it("bb thread log --self resolves from BB_THREAD_ID", async () => {
+  it("beam thread log --self resolves from BB_THREAD_ID", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-log-self");
     const getEvents = vi.fn(async () => []);
     const getTimeline = vi.fn(async () => fixtures.makeTimelineResponse([]));

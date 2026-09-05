@@ -643,7 +643,7 @@ function RightPanelTabLaneBadges({
     <>
       <MeasuredBadge
         id="code-renderers"
-        label="Plugin code and diff renderers on bb's Diff tab"
+        label="Plugin code and diff renderers on Beam's Diff tab"
         anchor='[data-guide-region="code-renderers"]'
         at="lane"
         onActivate={() => onTabSelect("code-renderers")}
@@ -869,7 +869,7 @@ export function CommandPaletteWireframe() {
                 {}
                 <MeasuredBadge
                   id="command-palette-actions"
-                  label="Plugin actions in bb's quick command palette"
+                  label="Plugin actions in Beam's quick command palette"
                   anchor='[data-guide-region="command-palette-actions"]'
                   at="start"
                 />
@@ -1172,7 +1172,7 @@ export function AppShellRightPanel({
           </span>
           <Mark
             id="code-renderers"
-            label="Plugin code and diff renderers on bb's Diff tab"
+            label="Plugin code and diff renderers on Beam's Diff tab"
             className={cn(
               tabClass("code-renderers"),
               "gap-1.5 whitespace-nowrap pl-1.5 pr-2",
@@ -1670,7 +1670,7 @@ export function SettingsWireframe() {
           <span className="block text-subtle-foreground">Configuration</span>
           <Mark
             id="declarative-settings"
-            label="The form bb generates from the fields you declare"
+            label="The form Beam generates from the fields you declare"
             className="block bg-surface-recessed-solid p-3"
           >
             <span className="flex items-start justify-between gap-3 py-1.5">
@@ -1767,7 +1767,7 @@ export function ExtensionsPluginPageWireframe() {
         {}
         <Mark
           id="plugin-status"
-          label="The needs-configuration banner bb shows for a plugin that reports it"
+          label="The needs-configuration banner Beam shows for a plugin that reports it"
           className="flex items-start gap-2 border-b border-border bg-surface-recessed/55 px-5 py-2.5 text-sm"
           chip="corner-inset"
         >
@@ -1794,7 +1794,7 @@ export function ExtensionsPluginPageWireframe() {
             <PluginGlyph className="size-4" />
             <span className="text-sm font-semibold text-foreground">Hello</span>
             <span className="rounded border border-border px-1.5 py-0.5 text-xs">
-              BB Official
+              Beam Official
             </span>
             <span className="flex-1" />
             <span
@@ -1806,7 +1806,7 @@ export function ExtensionsPluginPageWireframe() {
             <MiniIcon icon={MoreHorizontalIcon} className="size-3.5" />
           </div>
           <span className="block font-mono text-xs text-subtle-foreground">
-            ~/.bb/plugins/hello
+            ~/.beam/plugins/hello
           </span>
 
           <div className="space-y-1.5 border-t border-border-hairline pt-3">
@@ -1835,7 +1835,7 @@ export function ExtensionsPluginPageWireframe() {
             >
               {[
                 ["Settings", "API key, Case-sensitive search"],
-                ["bb hello", "Say hello from the terminal"],
+                ["beam hello", "Say hello from the terminal"],
               ].map(([name, what]) => (
                 <span
                   key={name}

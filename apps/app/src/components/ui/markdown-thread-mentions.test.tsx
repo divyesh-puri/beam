@@ -282,7 +282,7 @@ describe("MarkdownPreview thread mentions", () => {
     const { container } = renderMarkdown(
       <MarkdownPreview
         content={[
-          "Run `bb thread show thr_dcwivn5n8w`.",
+          "Run `beam thread show thr_dcwivn5n8w`.",
           "",
           "```text",
           "thr_dcwivn5n8w",

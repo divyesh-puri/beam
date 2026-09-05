@@ -46,7 +46,7 @@ export const PROJECT_IDS = {
 } as const;
 
 export const PROJECT_NAMES = {
-  bb: "bb",
+  bb: "beam",
   pierre: "pierre",
   ingest: "ingest-pipeline",
 } as const;
@@ -201,7 +201,7 @@ export const STORY_PROJECT_SOURCES: readonly ProjectSource[] = [
     projectId: PROJECT_IDS.bb,
     type: "local_path",
     hostId: HOST_IDS.local,
-    path: "/Users/michael/Projects/bb",
+    path: "/Users/michael/Projects/beam",
     isDefault: true,
     createdAt: 0,
     updatedAt: 0,
@@ -223,13 +223,13 @@ export const STORY_BRANCH_OPTIONS: readonly string[] = [
   "release/1.2",
   "feat/sidebar-rail",
   "fix/timeline-pagination",
-  "bb/refactor-project-creation-thr_jj65bdsiwa",
+  "beam/refactor-project-creation-thr_jj65bdsiwa",
 ];
 
 export const STORY_WORKTREE_OPTIONS: readonly ReuseThreadOption[] = [
   {
     environmentId: "env_review_flow",
-    branchName: "bb/review-flow-thr_4hge9xn14m",
+    branchName: "beam/review-flow-thr_4hge9xn14m",
     name: null,
     threads: [
       { id: "thr_review", title: "Review flow cleanup" },
@@ -238,7 +238,7 @@ export const STORY_WORKTREE_OPTIONS: readonly ReuseThreadOption[] = [
   },
   {
     environmentId: "env_timeline",
-    branchName: "bb/timeline-pagination-thr_qfk8ksbxkk",
+    branchName: "beam/timeline-pagination-thr_qfk8ksbxkk",
     name: "Timeline workspace",
     threads: [{ id: "thr_timeline", title: "Timeline pagination" }],
   },
@@ -417,7 +417,7 @@ export function makeEnvironment(
     name: null,
     projectId: PROJECT_IDS.bb,
     hostId: HOST_IDS.local,
-    path: "/Users/michael/Projects/bb",
+    path: "/Users/michael/Projects/beam",
     managed: true,
     isGitRepo: true,
     isWorktree: true,

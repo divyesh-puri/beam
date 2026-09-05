@@ -80,12 +80,12 @@ function railProps(linkedBbProjectId: string | null) {
 }
 
 describe("dispatch target rail control", () => {
-  it("links a discovered bb project", async () => {
+  it("links a discovered Beam project", async () => {
     const updateCalls: Array<Record<string, unknown>> = [];
     const slot = renderSlot({ component: RailHarness }, railProps(null), {
       rpc: {
         listBbProjects: () => ({
-          bbProjects: [{ id: BB_PROJECT_ID, name: "bb monorepo" }],
+          bbProjects: [{ id: BB_PROJECT_ID, name: "beam monorepo" }],
         }),
         updateProject: (input: Record<string, unknown>) => {
           updateCalls.push(input);
@@ -98,8 +98,8 @@ describe("dispatch target rail control", () => {
       },
     });
     fireEvent.click(slot.getByRole("button", { name: "Edit dispatch target" }));
-    fireEvent.click(await slot.findByLabelText("Linked bb project"));
-    fireEvent.click(await slot.findByRole("option", { name: "bb monorepo" }));
+    fireEvent.click(await slot.findByLabelText("Linked Beam project"));
+    fireEvent.click(await slot.findByRole("option", { name: "beam monorepo" }));
     fireEvent.click(slot.getByRole("button", { name: "Save" }));
     await waitFor(() => expect(updateCalls).toHaveLength(1));
     expect(updateCalls[0]).toEqual({
@@ -108,7 +108,7 @@ describe("dispatch target rail control", () => {
     });
   });
 
-  it("shows the linked bb project's name and unlinks it", async () => {
+  it("shows the linked Beam project's name and unlinks it", async () => {
     const updateCalls: Array<Record<string, unknown>> = [];
     const slot = renderSlot(
       { component: RailHarness },
@@ -116,7 +116,7 @@ describe("dispatch target rail control", () => {
       {
         rpc: {
           listBbProjects: () => ({
-            bbProjects: [{ id: BB_PROJECT_ID, name: "bb monorepo" }],
+            bbProjects: [{ id: BB_PROJECT_ID, name: "beam monorepo" }],
           }),
           updateProject: (input: Record<string, unknown>) => {
             updateCalls.push(input);
@@ -132,7 +132,7 @@ describe("dispatch target rail control", () => {
     const trigger = slot.getByRole("button", {
       name: "Edit dispatch target",
     });
-    await slot.findByText("bb monorepo");
+    await slot.findByText("beam monorepo");
 
     fireEvent.click(trigger);
     fireEvent.click(await slot.findByRole("button", { name: "Unlink" }));

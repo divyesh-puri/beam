@@ -58,7 +58,7 @@ const READONLY_ALLOWED_TOOLS = new Set([
 ]);
 const READONLY_BASH_TOOL_NAME = "Bash";
 const READONLY_ASK_REASON =
-  "bb readonly mode requires approval before using tools that can modify state, run commands, access network, or perform non-read actions.";
+  "Beam readonly mode requires approval before using tools that can modify state, run commands, access network, or perform non-read actions.";
 const SUMMARIZED_ADAPTIVE_THINKING = {
   type: "adaptive",
   display: "summarized",
@@ -98,11 +98,11 @@ export function buildMutableFlagSettings(args: {
 }
 
 export function buildReadonlyDenialMessage(): string {
-  return "bb readonly mode allows reading and analysis only. Continue with a read-only answer; do not modify files, run mutating shell commands, use network, or use mutating tools.";
+  return "Beam readonly mode allows reading and analysis only. Continue with a read-only answer; do not modify files, run mutating shell commands, use network, or use mutating tools.";
 }
 
 export function buildWorkspaceWriteDenialMessage(): string {
-  return "bb's workspace sandbox allows work inside the current workspace only. Stay inside the workspace or explain why extra access is needed.";
+  return "Beam's workspace sandbox allows work inside the current workspace only. Stay inside the workspace or explain why extra access is needed.";
 }
 
 function buildReadonlyHooks(

@@ -12,10 +12,6 @@ import { registerAutomationCli } from "./cli.js";
 import { createAutomationService } from "./service.js";
 import { sleep, sweepDueAutomations, SWEEP_INTERVAL_MS } from "./sweep.js";
 
-function resolveServerUrl(): string {
-  return process.env.BB_SERVER_URL?.trim() || "http://127.0.0.1:38886";
-}
-
 export default async function plugin(bb: BbPluginApi) {
   const db = bb.storage.database();
   bb.storage.migrate(db, migrations);
@@ -26,7 +22,7 @@ export default async function plugin(bb: BbPluginApi) {
     bb,
     db,
     pluginDataDir,
-    serverUrl: resolveServerUrl(),
+    serverUrl: bb.server.loopbackBaseUrl,
   });
 
   bb.rpc.register(automationRpcContract, createRpcHandlers(service));
@@ -65,7 +61,7 @@ export default async function plugin(bb: BbPluginApi) {
         try {
           await sweepDueAutomations(bb, db, {
             pluginDataDir,
-            serverUrl: resolveServerUrl(),
+            serverUrl: bb.server.loopbackBaseUrl,
           });
         } catch (error) {
           bb.log.error(

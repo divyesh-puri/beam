@@ -56,7 +56,7 @@ describe("markdown round-trip", () => {
     ["task list", "- [ ] open task\n- [x] done task"],
     ["code block", "```ts\nconst answer = 42;\n```"],
     ["blockquote", "> quoted wisdom"],
-    ["link", "Read the [bb guide](https://example.com/guide)."],
+    ["link", "Read the [beam guide](https://example.com/guide)."],
     ["image", "![diagram](https://example.com/diagram.png)"],
     ["mention", "Blocked on [TSK-42](bbtask://TSK-42) for review."],
     [

@@ -1,38 +1,38 @@
 ---
 kind: instruction
-title: bb Guide — Plugins
-summary: Command reference for installing, configuring, running, and authoring bb plugins and their contributed CLI commands.
-intent: Provide complete plugin command documentation plus an authoring walkthrough for agents and humans building bb plugins.
-editingNotes: Keep flags accurate against the CLI implementation (apps/cli/src/commands/plugin.ts, apps/cli/src/commands/marketplace.ts) and the server plugin service; a CLI test asserts every `bb plugin` and `bb marketplace` subcommand appears in this chapter. The full authoring reference is the bb-plugin-authoring builtin skill.
+title: Beam Guide — Plugins
+summary: Command reference for installing, configuring, running, and authoring Beam plugins and their contributed CLI commands.
+intent: Provide complete plugin command documentation plus an authoring walkthrough for agents and humans building Beam plugins.
+editingNotes: Keep flags accurate against the CLI implementation (apps/cli/src/commands/plugin.ts, apps/cli/src/commands/marketplace.ts) and the server plugin service; a CLI test asserts every `beam plugin` and `beam marketplace` subcommand appears in this chapter. The full authoring reference is the beam-plugin-authoring builtin skill.
 ---
 Plugin commands
 
-A bb plugin is a TypeScript package that extends the bb server in-process and
+A Beam plugin is a TypeScript package that extends the Beam server in-process and
 may also declare one bundled Node entry for enrolled hosts: background
 services, cron schedules, HTTP/RPC endpoints, thread lifecycle handlers,
-settings, storage, host-local operations — and `bb` CLI subcommands that agents
+settings, storage, host-local operations — and `beam` CLI subcommands that agents
 and humans run like any other command. Plugins are full-trust code in both
 runtimes.
 
-Plugins are on by default. Builtin plugins (`builtin:<name>`) ship with bb;
-user-installed plugins come from `bb plugin install` or the official store.
-Plugin state lives under `<bb-data-dir>/plugins/<id>/` (per-plugin SQLite file,
+Plugins are on by default. Builtin plugins (`builtin:<name>`) ship with Beam;
+user-installed plugins come from `beam plugin install` or the official store.
+Plugin state lives under `<beam-data-dir>/plugins/<id>/` (per-plugin SQLite file,
 secrets, logs).
 
 The builtin Custom instructions plugin adds a multiline editor under Settings
-→ Custom instructions. Saved text is persisted on this bb host and included in
+→ Custom instructions. Saved text is persisted on this Beam instance host and included in
 agent task instructions; blank text contributes nothing.
 
-The builtin Keep Awake plugin prevents macOS idle sleep while bb is running.
+The builtin Keep Awake plugin prevents macOS idle sleep while Beam is running.
 Its settings page lets you target all hosts or selected hosts. The CLI
 equivalents are:
 
 ```
-bb keep-awake status [--json]
-bb keep-awake enable [--json]
-bb keep-awake disable [--json]
-bb keep-awake hosts all
-bb keep-awake hosts <host-id>...
+beam keep-awake status [--json]
+beam keep-awake enable [--json]
+beam keep-awake disable [--json]
+beam keep-awake hosts all
+beam keep-awake hosts <host-id>...
 ```
 
 It reconciles when the plugin starts, a host connects, its configuration
@@ -47,28 +47,28 @@ automatic retry is pending.
 The banner disappears when the retry starts, is cancelled, or the user
 continues the thread. A server restart or plugin reload clears pending timers
 without changing the original failed thread. Inspect it with
-`bb provider-retry status`. See `bb guide providers` for the eligibility rules.
+`beam provider-retry status`. See `beam guide providers` for the eligibility rules.
 Prior output or tool activity does not block recovery. Its `maximumWait`
 setting defaults to `6 hours`; choose `24 hours` or `No limit` from the plugin
 detail page, or configure it with
-`bb plugin config provider-retry set maximumWait <value>`.
+`beam plugin config provider-retry set maximumWait <value>`.
 
 The builtin Workflows plugin runs durable provider-independent JavaScript
 orchestration. It is disabled on fresh installations; enable `workflows` under
-Extensions → Plugins or run `bb plugin enable workflows` before using:
+Extensions → Plugins or run `beam plugin enable workflows` before using:
 
-  bb workflows validate (--script '<javascript>'|--source '<javascript>'|
+  beam workflows validate (--script '<javascript>'|--source '<javascript>'|
                         --file <path>|--name <name>)
-  bb workflows run (--script '<javascript>'|--source '<javascript>'|
+  beam workflows run (--script '<javascript>'|--source '<javascript>'|
                    --file <path>|--name <name>)
                    [--args '<json>'] [--resume <run-id>]
-  bb workflows status <run-id>
-  bb workflows history <run-id> [--cursor <call-index>] [--limit <1-100>]
-  bb workflows list [--limit <1-50>]
-  bb workflows stop <run-id>
+  beam workflows status <run-id>
+  beam workflows history <run-id> [--cursor <call-index>] [--limit <1-100>]
+  beam workflows list [--limit <1-50>]
+  beam workflows stop <run-id>
 
-Commands must run from a BB project thread. Workflows has six plugin
-settings, configurable with `bb plugin config workflows set <key> <value>`:
+Commands must run from a Beam project thread. Workflows has six plugin
+settings, configurable with `beam plugin config workflows set <key> <value>`:
 `maxActiveRuns` (default 4, range 1–32), `maxConcurrentAgents` (8, 1–64),
 `maxAgentCalls` (100, 1–1000), `totalRunTimeoutMs` (86400000, 60000–604800000),
 `retentionDays` (7, 1–3650), and `maxNotificationBytes` (16384,
@@ -80,13 +80,13 @@ summaries. Detailed run and call records are paged JSONL: redirect `history`
 into `$BB_THREAD_STORAGE` before inspecting it, and continue with the final
 page record's `nextCursor`. The invoking shell writes
 that file on the thread's execution host, so this works the same on local and
-remote hosts without granting the plugin arbitrary filesystem access. Use `bb
-provider list --environment "$BB_ENVIRONMENT_ID" --json` and then `bb provider
+remote hosts without granting the plugin arbitrary filesystem access. Use `beam
+provider list --environment "$BB_ENVIRONMENT_ID" --json` and then `beam provider
 models <provider-id> --environment "$BB_ENVIRONMENT_ID" --json` before writing
 an explicit selection; never guess ACP model IDs.
 
 The Memory plugin is an opt-in install, bundled with the app:
-`bb plugin install memory`. Once installed, it injects a compact global and
+`beam plugin install memory`. Once installed, it injects a compact global and
 current-project memory index into agent context and progressively discloses
 full records through CLI-only commands. Because its store works across
 providers, we recommend disabling provider-native memory under Settings →
@@ -94,30 +94,30 @@ Providers to avoid duplicate or conflicting stores. Settings → Memory lists
 every global and project memory and supports version-checked edits and soft
 deletion.
 
-  bb memory catalog [--scope project|global|all] [--json]
-  bb memory search <query> [--scope project|global|all] [--json]
-  bb memory get <id> [--scope project|global|all] [--json]
-  bb memory add --scope project|global --name <name> --summary <text>
+  beam memory catalog [--scope project|global|all] [--json]
+  beam memory search <query> [--scope project|global|all] [--json]
+  beam memory get <id> [--scope project|global|all] [--json]
+  beam memory add --scope project|global --name <name> --summary <text>
                 --details <text> --reason <text> [--kind <kind>]
                 [--tag <tag>]... [--importance <0-100>] [--pinned] [--json]
-  bb memory update <id> --expected-version <n> [fields...] [--json]
-  bb memory forget <id> --expected-version <n> --reason <text> [--json]
-  bb memory history <id> [--scope project|global|all] [--limit 1-100] [--json]
+  beam memory update <id> --expected-version <n> [fields...] [--json]
+  beam memory forget <id> --expected-version <n> --reason <text> [--json]
+  beam memory history <id> [--scope project|global|all] [--limit 1-100] [--json]
 
 Project writes use the invoking CLI's current project. Global writes require
 the explicit `--scope global` flag.
 
 The Docs plugin is an opt-in official plugin bundled with the app:
-`bb plugin install docs`. Read-only discovery remains direct, while edits use
+`beam plugin install docs`. Read-only discovery remains direct, while edits use
 a manifest-backed local workspace:
 
-  bb docs vaults [--json]
-  bb docs list [--vault <id>] [--json]
-  bb docs read <path> [--vault <id>]
-  bb docs pull <path> [--folder] [--vault <id>] [--into <dir>]
-  bb docs pull --all [--vault <id>] [--into <dir>]
-  bb docs status [workspace-dir] [--delete] [--diff] [--json]
-  bb docs push [workspace-dir] [--delete] [--dry-run] [--diff] [--json]
+  beam docs vaults [--json]
+  beam docs list [--vault <id>] [--json]
+  beam docs read <path> [--vault <id>]
+  beam docs pull <path> [--folder] [--vault <id>] [--into <dir>]
+  beam docs pull --all [--vault <id>] [--into <dir>]
+  beam docs status [workspace-dir] [--delete] [--diff] [--json]
+  beam docs push [workspace-dir] [--delete] [--dry-run] [--diff] [--json]
 
 Pull preserves vault-relative paths and writes `.bb-docs-state.json`; edit the
 ordinary files and leave that state file untouched. Push uses pulled SHA-256
@@ -132,24 +132,24 @@ CLI's working directory is on a non-primary host. Direct `write`, `mkdir`,
 `move`, and `remove` remain only as deprecated compatibility commands.
 
 The Tasks plugin is an opt-in official plugin bundled with the app:
-`bb plugin install tasks`. It adds a task tracker, agent delegation,
-and the `bb tasks` command. Common agent operations are:
+`beam plugin install tasks`. It adds a task tracker, agent delegation,
+and the `beam tasks` command. Common agent operations are:
 
-  bb tasks show <key-or-id> [--json]
-  bb tasks list [--project <prefix-or-id>] [filters...] [--sort manual|priority|due] [--limit 1-500] [--cursor <opaque>] [--json]
-  bb tasks comment <key-or-id> (--body <markdown> | --body-file <path>) [--json]
-  bb tasks attachment add <key-or-comment-id> --file <path> [--json]
-  bb tasks attachment get <attachment-id> --out <path> [--json]
-  bb tasks attach <key-or-id> [--thread <thread-id>] [--json]
-  bb tasks detach <key-or-id> [--thread <thread-id>] [--json]
-  bb tasks update <key-or-id> --status in_review [--json]
-  bb tasks update <key-or-id> (--parent <parent-key-or-id> | --no-parent) [--json]
+  beam tasks show <key-or-id> [--json]
+  beam tasks list [--project <prefix-or-id>] [filters...] [--sort manual|priority|due] [--limit 1-500] [--cursor <opaque>] [--json]
+  beam tasks comment <key-or-id> (--body <markdown> | --body-file <path>) [--json]
+  beam tasks attachment add <key-or-comment-id> --file <path> [--json]
+  beam tasks attachment get <attachment-id> --out <path> [--json]
+  beam tasks attach <key-or-id> [--thread <thread-id>] [--json]
+  beam tasks detach <key-or-id> [--thread <thread-id>] [--json]
+  beam tasks update <key-or-id> --status in_review [--json]
+  beam tasks update <key-or-id> (--parent <parent-key-or-id> | --no-parent) [--json]
 
-Run `bb tasks --help` for project, folder, task, label, attachment, and demo-data
+Run `beam tasks --help` for project, folder, task, label, attachment, and demo-data
 commands, plus preset management, delegation, and attached-thread inspection.
-Delegated threads are attached automatically; use `bb tasks attach` only when
-work started outside Tasks, and `bb tasks detach` when a thread is done with a
-task or a respawned worker replaced it. `bb tasks threads <key>` lists live
+Delegated threads are attached automatically; use `beam tasks attach` only when
+work started outside Tasks, and `beam tasks detach` when a thread is done with a
+task or a respawned worker replaced it. `beam tasks threads <key>` lists live
 threads first, newest first. Task update resolves both task keys and IDs for
 `--parent`; use `--no-parent` to promote a subtask to the top level. File paths
 in tasks commands resolve on the invoking machine (the thread's machine inside
@@ -165,7 +165,7 @@ snapshot.
 The builtin Secrets plugin provides a secure credential form and guarded
 dotenv reconciliation:
 
-  bb secret request <NAME...> --write-env <path>
+  beam secret request <NAME...> --write-env <path>
                     [--purpose <text>] [--describe <NAME> <text>]...
 
 The command blocks until the user submits or cancels the form. Secret values
@@ -173,10 +173,10 @@ never appear in command arguments, model-visible output, or persisted
 interaction data; success prints only the path, variable names, and
 added/updated/unchanged counts.
 
-  bb plugin search <query>       Search the store: the plugins bundled with
+  beam plugin search <query>       Search the store: the plugins bundled with
                                  the app plus every registered marketplace
                                  catalog
-  bb plugin install <entry>      Install a bundled official plugin by name
+  beam plugin install <entry>      Install a bundled official plugin by name
                                  (github, docs, memory, tasks),
                                  <entry-id>@<marketplace>, a Git repository
                                  URL, local path, builtin:<name>,
@@ -201,57 +201,57 @@ added/updated/unchanged counts.
                                  Installing a local path for an id that is
                                  already installed from another local path
                                  moves it there and keeps its settings
-  bb plugin outdated             Check installed plugins for compatible
+  beam plugin outdated             Check installed plugins for compatible
                                  updates (table; --json for raw results).
                                  Columns: installed, latest compatible,
                                  blocked newer (incompatible releases not
-                                 selected), status. Dev builds (bb 0.0.0)
+                                 selected), status. Dev builds (Beam 0.0.0)
                                  annotate that engines.bb is not enforced
-  bb plugin update <id> | --all  Apply compatible updates for one plugin or
+  beam plugin update <id> | --all  Apply compatible updates for one plugin or
                                  every tracking plugin with an update. Same
                                  full-trust confirmation as
                                  install (--yes skips; non-TTY refuses without
                                  --yes). Use outdated to preview; pinned
                                  installs stay put
-  bb plugin list                 Status, services, schedules, handler timings.
-                                 `bb status` also names enabled plugins that
+  beam plugin list                 Status, services, schedules, handler timings.
+                                 `beam status` also names enabled plugins that
                                  are incompatible, failed, or missing
-  bb plugin source <id> [--json] Show requested/resolved source, subdirectory,
+  beam plugin source <id> [--json] Show requested/resolved source, subdirectory,
                                  semver range with its tag prefix and resolved
                                  tag, engine ranges, install time, and recent
                                  activation history
-  bb plugin enable|disable <id>  Load or unload an installed plugin
-  bb plugin reload [id]          Re-run factories against current sources.
+  beam plugin enable|disable <id>  Load or unload an installed plugin
+  beam plugin reload [id]          Re-run factories against current sources.
                                  Exits 1 when a plugin does not come up on
                                  them (previous instance kept, or degraded
                                  because a service ignored its abort)
-  bb plugin config <id> [set <key> <value> | unset <key>]
+  beam plugin config <id> [set <key> <value> | unset <key>]
                                  Show or change a plugin's declared settings
-  bb plugin logs <id> [-n N] [-f]  Print (or follow) a plugin's bb.log output
-  bb plugin run <id> [args...]   Run a plugin command explicitly (also works when core owns its name)
-  bb plugin token <id> [--rotate]  Print the token for auth:"token" HTTP
+  beam plugin logs <id> [-n N] [-f]  Print (or follow) a plugin's bb.log output
+  beam plugin run <id> [args...]   Run a plugin command explicitly (also works when core owns its name)
+  beam plugin token <id> [--rotate]  Print the token for auth:"token" HTTP
                                  routes; --rotate generates a new token,
                                  invalidating the old one
-  bb plugin remove <id>          Uninstall and delete the plugin's settings,
+  beam plugin remove <id>          Uninstall and delete the plugin's settings,
                                  secrets, and schedules (managed git:/npm:
                                  files deleted; local path sources stay on
                                  disk; builtin removals are remembered)
-  bb plugin new <name>           Scaffold a todo-list plugin (server.ts,
-                                 app.tsx with a sidebar page, a `bb <id>` CLI
+  beam plugin new <name>           Scaffold a todo-list plugin (server.ts,
+                                 app.tsx with a sidebar page, a `beam <id>` CLI
                                  command, and a skill) and install its npm
                                  dependencies, including @get-bb/plugin-sdk
-                                 pinned to this bb's exact SDK version (no
+                                 pinned to this Beam's exact SDK version (no
                                  server required)
-  bb plugin types [path]         Sync a plugin's @get-bb/plugin-sdk surface to
-                                 this bb (default: cwd): repin the npm
-                                 devDependency to this bb's SDK version and
+  beam plugin types [path]         Sync a plugin's @get-bb/plugin-sdk surface to
+                                 this Beam instance (default: cwd): repin the npm
+                                 devDependency to this Beam's SDK version and
                                  the type-only devDependencies of the packages
-                                 bb shims at runtime (sonner, vaul, the portal
-                                 radix families, ...) to this bb's versions, or
+                                 Beam shims at runtime (sonner, vaul, the portal
+                                 radix families, ...) to this Beam's versions, or
                                  rewrite the vendored types/ of a plugin that
                                  still carries them; --check writes nothing
                                  and exits non-zero on a mismatch
-  bb plugin migrate [path]       Switch a plugin that still vendors types/ to
+  beam plugin migrate [path]       Switch a plugin that still vendors types/ to
                                  the @get-bb/plugin-sdk npm package (default:
                                  cwd): pin the devDependency, drop the tsconfig
                                  path map, delete the vendored declarations.
@@ -259,7 +259,7 @@ added/updated/unchanged counts.
                                  the prompt (required when stdin is not a
                                  terminal). The old layout keeps working, so
                                  nothing migrates unless you ask
-  bb plugin build [path]         Compile the plugin into dist/ — the backend
+  beam plugin build [path]         Compile the plugin into dist/ — the backend
                                  bundle (server.js, server.meta.json); when
                                  bb.app is declared, the minified frontend
                                  bundle (app.js, app.css, app.meta.json); when
@@ -271,27 +271,27 @@ added/updated/unchanged counts.
                                  provider bridge, or both). Each
                                  *.meta.json is stamped with SDK
                                  major/version, artifactFormatVersion,
-                                 pluginId, pluginVersion, and builtWith (bb +
+                                 pluginId, pluginVersion, and builtWith (Beam +
                                  plugin SDK versions); no server required
-  bb plugin dev [path]           Watch a plugin's sources (default: cwd) and
+  beam plugin dev [path]           Watch a plugin's sources (default: cwd) and
                                  on every change rebuild its declared frontend
                                  (unminified, for readable stack traces),
                                  host, and provider-bridge bundles, then
                                  reload the plugin; Ctrl+C to stop
 
-  bb marketplace add <source>    Add a marketplace from an https manifest URL,
-                                 git:<url>[@<ref>], or path:<directory>. bb
+  beam marketplace add <source>    Add a marketplace from an https manifest URL,
+                                 git:<url>[@<ref>], or path:<directory>. Beam
                                  validates the manifest, caches the catalog,
                                  and fetches the entry icons. Adding a
                                  marketplace installs nothing
-  bb marketplace list            Name, source, entry count, and last refresh of
+  beam marketplace list            Name, source, entry count, and last refresh of
                                  every marketplace (--json for raw rows)
-  bb marketplace refresh [name]  Re-read one catalog, or every one of them.
+  beam marketplace refresh [name]  Re-read one catalog, or every one of them.
                                  Discovery metadata and icons only — a refresh
                                  never installs, updates, or runs plugin code.
-                                 A failed refresh keeps the last catalog bb
+                                 A failed refresh keeps the last catalog Beam
                                  validated and exits non-zero
-  bb marketplace remove <name>   Forget a marketplace. Its catalog rows and
+  beam marketplace remove <name>   Forget a marketplace. Its catalog rows and
                                  cached icons are deleted; plugins installed
                                  from it keep running as direct installs and
                                  keep checking for updates from their recorded
@@ -300,11 +300,11 @@ added/updated/unchanged counts.
 Multi-plugin repositories
 
 One repository can hold several plugins. Each plugin directory stays an
-ordinary plugin package with its own package.json and bb manifest. An optional
+ordinary plugin package with its own package.json and `bb` manifest. An optional
 collection manifest at .bb/plugins.json indexes them:
 
   {
-    "$schema": "https://getbb.app/schemas/plugins.schema.json",
+    "$schema": "https://raw.githubusercontent.com/divyesh-puri/beam/main/apps/web/public/schemas/plugins.schema.json",
     "schemaVersion": 1,
     "name": "acme-plugins",
     "plugins": [
@@ -321,70 +321,68 @@ plugin's own manifest.
 
 Install one plugin of the repository:
 
-  bb plugin install git:github.com/acme/repo@main --plugin sidebar
-  bb plugin install git:github.com/acme/repo@main --subdirectory plugins/sidebar
-  bb plugin install path:/work/repo --plugin sidebar
+  beam plugin install git:github.com/acme/repo@main --plugin sidebar
+  beam plugin install git:github.com/acme/repo@main --subdirectory plugins/sidebar
+  beam plugin install path:/work/repo --plugin sidebar
 
 --subdirectory is the primitive and works without a collection manifest.
 --plugin resolves a name from .bb/plugins.json. Installs from one repository
 and commit share a single checkout. When a repository has a collection
 manifest, is not a plugin itself, and neither flag is given, the install fails
-and lists the entry names. bb records the subdirectory, so outdated, update,
+and lists the entry names. Beam records the subdirectory, so outdated, update,
 rollback, and remove keep working per plugin.
 
-BB Official plugins
+Beam Official plugins
 
-BB's official plugins — GitHub, Docs, Memory, and Tasks — ship bundled inside
+Beam's official plugins — GitHub, Docs, Memory, and Tasks — ship bundled inside
 the app itself. They appear in Extensions → Plugins → Browse
 and install with one click from the local bundled copy: no network, no
 download, no separate release. Install from the CLI by bare name
-(`bb plugin install github`, `bb plugin install docs`, `bb plugin install
-memory`, or `bb plugin install tasks`). Installed official plugins are pinned
-to the bundled copy and update automatically when the BB app updates.
+(`beam plugin install github`, `beam plugin install docs`, `beam plugin install
+memory`, or `beam plugin install tasks`). Installed official plugins are pinned
+to the bundled copy and update automatically when the Beam app updates.
 
-The BB Community marketplace (reserved name `bb-community`) lists reviewed
-plugins that live outside the app bundle. bb reads its manifest from
-https://getbb.app/marketplace/v1/marketplace.json (override the URL with
-BB_MARKETPLACE_URL) at startup and every two hours, with a conditional
-request. bb stores the last catalog it validated: an unreachable server or an
-invalid manifest keeps that catalog, and the app bundles a seed snapshot for
-a first run with no network. A refresh updates discovery metadata and icons
-only — it never installs, updates, or runs plugin code. Entry icons are
-fetched, validated, and served by the bb server, so the app never requests a
+The Beam Community marketplace (reserved name `bb-community`) lists reviewed
+plugins that live outside the app bundle. Beam ships its catalog as a bundled
+snapshot and does not contact a remote marketplace by default. Set
+BB_MARKETPLACE_URL to a public HTTPS manifest to enable a refresh at startup and
+every two hours, with a conditional request. Beam stores the last catalog it
+validated: an unreachable server or an invalid manifest keeps that catalog. A
+refresh updates discovery metadata and icons only — it never installs, updates,
+or runs plugin code. Entry icons are
+fetched, validated, and served by the Beam server, so the app never requests a
 marketplace URL. Installing an entry runs the normal install pipeline against
 its listed git or npm source and records which marketplace listed it.
 
-The BB Community marketplace also publishes install counts beside its
-manifest, at https://getbb.app/marketplace/v1/stats.json. bb re-reads that
-file on every refresh — the counts move while the manifest sits unchanged —
-and shows them in the store and in the Installs column of `bb plugin search`.
-The number is how many BB installations reported installing the plugin
-through anonymous telemetry, so it undercounts: telemetry is opt-out and only
-production builds report. No third-party marketplace has counts; bb measures
-them itself rather than repeating a publisher's claim.
+A Beam Community deployment may publish `stats.json` beside its manifest. Beam
+re-reads that file on every refresh and shows available counts in the store and
+in the Installs column of `beam plugin search`. Beam ships with telemetry off,
+so a count can include only installations whose operators explicitly supplied
+a PostHog key and opted in. No third-party marketplace has counts; Beam never
+repeats a publisher's claim.
 
 Third-party marketplaces
 
 Anyone can host a marketplace manifest. Add one with its https manifest URL,
-with git:<url>[@<ref>] (bb reads marketplace.json from the checkout), or with
-path:<directory> on the bb server's machine:
+with git:<url>[@<ref>] (Beam reads marketplace.json from the checkout), or with
+path:<directory> on the Beam server's machine:
 
-  bb marketplace add https://plugins.acme.dev/marketplace.json
-  bb marketplace add git:github.com/acme/bb-marketplace@main
-  bb marketplace add path:/work/acme-marketplace
+  beam marketplace add https://plugins.acme.dev/marketplace.json
+  beam marketplace add git:github.com/acme/bb-marketplace@main
+  beam marketplace add path:/work/acme-marketplace
 
 The manifest's own `name` is the marketplace's identity, so adding refuses a
 name another marketplace already uses. `bb-community` is reserved: it cannot be
 added and cannot be removed. A git or path marketplace reads its icons from
 the checkout beside the manifest; an https one resolves relative icon URLs
-against the manifest URL. Either way the bb server fetches, validates, and
+against the manifest URL. Either way the Beam server fetches, validates, and
 serves the icons, so the app never requests a marketplace URL. A git
-marketplace is cloned into a throwaway checkout that bb deletes after reading
-it — the validated manifest and icon bytes are all bb keeps.
+marketplace is cloned into a throwaway checkout that Beam deletes after reading
+it — the validated manifest and icon bytes are all Beam keeps.
 
 Install an entry of a specific marketplace with <entry-id>@<marketplace>:
 
-  bb plugin install thread-hover-cards@acme-plugins
+  beam plugin install thread-hover-cards@acme-plugins
 
 A bare id resolves across every marketplace. Exactly one match installs, no
 match falls back to the bundled official plugin of that name, and several
@@ -392,7 +390,7 @@ matches fail and list the id@marketplace choices. Every other source
 form — Git repository URLs, path:, npm:, git:, builtin:, and path-like
 syntax — is unchanged and still bypasses catalog resolution.
 
-Before an install from a marketplace other than bb-community, bb resolves and
+Before an install from a marketplace other than bb-community, Beam resolves and
 shows the true source: the npm package with its range or dist-tag, or the git
 URL with its ref or semver range, its subdirectory, and the exact release tag
 and commit that range currently lands on. The confirmation names the
@@ -400,33 +398,33 @@ marketplace and the entry's author. `--yes` skips the prompt, not the
 resolution. The same disclosure appears in the app's install dialog, and
 Settings → Plugin marketplaces adds, refreshes, and removes marketplaces with
 the same server routes the CLI uses.
-The install must still match these confirmed source facts. bb refuses the
+The install must still match these confirmed source facts. Beam refuses the
 install when the listing or its resolved git commit changes after confirmation.
 
 Removing a marketplace never disturbs installed code. Each plugin it listed
 becomes a direct install that keeps its full source intent and exact
-resolution, so `bb plugin outdated` and `bb plugin update` keep working from
+resolution, so `beam plugin outdated` and `beam plugin update` keep working from
 the recorded source. Only the catalog rows and the cached icons are deleted.
 
-The Browse tab groups entries by publisher: BB Official for the plugins
-bundled with the app, BB Community for the curated marketplace's listings, and
+The Browse tab groups entries by publisher: Beam Official for the plugins
+bundled with the app, Beam Community for the curated marketplace's listings, and
 each third-party marketplace under its own display name. Grouping keys on the
 marketplace identity, not on the display name, so a marketplace cannot join
 another publisher's group by copying its name — and only bb-community may
-present the BB Official or BB Community labels. Entry cards show the author.
+present the Beam Official or Beam Community labels. Entry cards show the author.
 
-For direct git:/npm: installs, updates are manual: `bb plugin outdated`
-checks tracking sources and `bb plugin update` applies compatible candidates.
+For direct git:/npm: installs, updates are manual: `beam plugin outdated`
+checks tracking sources and `beam plugin update` applies compatible candidates.
 Reinstalling an already-installed managed plugin is refused — use
-`bb plugin update`. A failed activation restores the pre-update snapshot and
+`beam plugin update`. A failed activation restores the pre-update snapshot and
 leaves the latest failure visible as needing attention. Exact npm versions,
 git tags and commits, path sources, and bundled official plugins are pinned;
 npm ranges/omitted specs/dist-tags, omitted Git refs (the repository default
 branch), Git branches, and Git semver ranges track compatible updates. A
-pinned git:/npm: source changes only through `bb plugin remove` (which
+pinned git:/npm: source changes only through `beam plugin remove` (which
 deletes the plugin's settings, secrets, and schedules) and a fresh install. A
 local path plugin is never removed to change it: edit it in place and
-`bb plugin reload <id>`, or `bb plugin install path:<new dir>` to move it to
+`beam plugin reload <id>`, or `beam plugin install path:<new dir>` to move it to
 another directory; both keep its configuration.
 
 Git semver ranges
@@ -434,18 +432,18 @@ Git semver ranges
 A git source can track releases the way an npm range does, over the
 repository's tags:
 
-  bb plugin install git:github.com/acme/repo@^1.2.0
-  bb plugin install git:github.com/acme/repo@semver:^1.2.0
-  bb plugin install git:github.com/acme/repo@^1.2.0 --tag-prefix notes/
+  beam plugin install git:github.com/acme/repo@^1.2.0
+  beam plugin install git:github.com/acme/repo@semver:^1.2.0
+  beam plugin install git:github.com/acme/repo@^1.2.0 --tag-prefix notes/
 
-bb lists refs/tags, keeps the tags named [<tag-prefix>]vX.Y.Z that parse as
+Beam lists refs/tags, keeps the tags named [<tag-prefix>]vX.Y.Z that parse as
 semver, and installs the highest one the range allows. Prereleases are
 excluded unless the range itself names one (^1.0.0-beta.1), exactly as for an
 npm range. Without --tag-prefix the tags are repository-wide (v1.2.3); with
 it they version one plugin of a repository (notes/v1.2.3).
 
-bb records the tag it selected and the commit that tag pointed at. If that
-tag later points at another commit, bb refuses to resolve it and names both
+Beam records the tag it selected and the commit that tag pointed at. If that
+tag later points at another commit, Beam refuses to resolve it and names both
 commits: a released version is not allowed to change under you. Remove and
 reinstall the plugin to accept the new commit.
 
@@ -455,9 +453,9 @@ it has both, the install fails and asks you to choose. Write
 `@semver:<range>` for the range or `@ref:<name>` for the literal ref. Bare
 version tags such as `v1` and `v1.2.3` are always the literal tag.
 
-`bb plugin search <query>` matches id, display name, description, category,
+`beam plugin search <query>` matches id, display name, description, category,
 and tags across the bundled plugins and every registered marketplace catalog
-(status: installed / compatible / requires newer bb). Entries carry tags,
+(status: installed / compatible / requires newer Beam). Entries carry tags,
 which feed the category filter. Install a bundled plugin by its bare name. Direct
 HTTP(S) Git repository URLs, `path:`, `npm:`, `git:`, and `builtin:`
 sources—and path-like syntax—continue to bypass official-plugin resolution.
@@ -466,34 +464,36 @@ Builds are automatic once installed. Git installs run `npm install`
 (lifecycle scripts disabled), then compile both bundles — so a git plugin may
 depend on third-party packages. node_modules is kept, because bundling cannot
 inline data files a dependency reads at runtime. A committed dist/ is always
-replaced by the bundles bb builds. Path installs compile dist/ at install time
+replaced by the bundles Beam builds. Path installs compile dist/ at install time
 from dependencies you have already installed. A build failure fails the
 install. npm packages must ship a metadata-validated prebuilt app or the
-install is refused. The server rebuilds source-built apps after a bb upgrade.
+install is refused. The server rebuilds source-built apps after a Beam upgrade.
 
 Installing or updating a git plugin requires `npm` on PATH. Checking for
 updates does not: a check reads the candidate's manifest and stops, so
 polling never resolves a dependency tree or builds. A candidate that fails to
 build is reported as available and fails when you apply it.
 
-bb ships no build toolchain. The first time a git or path plugin is built on
-a machine, bb downloads a pinned esbuild + Tailwind set into
+Beam ships no build toolchain. The first time a git or path plugin is built on
+a machine, Beam downloads a pinned esbuild + Tailwind set into
 `<dataDir>/plugins/toolchain-<versions>/` and reuses it afterwards. Installing
 a prebuilt npm plugin never triggers that download.
 
 To build a plugin yourself — in CI, or to check it compiles without a running
-bb — depend on the published `bb-app` package and call the CLI:
+Beam — install a locally built Beam `bb-app` compatibility tarball and call the
+CLI. No Beam package has been published yet; the `bb-app` currently on npm is
+upstream BB and must not be used as a Beam dependency.
 
 ```jsonc
 // your plugin's package.json
-"devDependencies": { "bb-app": "^0.35.1" },
-"scripts": { "build": "bb plugin build" }
+"devDependencies": { "bb-app": "file:../artifacts/bb-app.tgz" },
+"scripts": { "build": "beam plugin build" }
 ```
 
-`bb plugin build` talks to no server. Depending on `bb-app@X` builds with
-exactly that release's shim configuration, so the bundle cannot be built
+`beam plugin build` talks to no server. Depending on the Beam tarball builds
+with exactly that build's shim configuration, so the bundle cannot be built
 against a mismatched host runtime. Cache the toolchain directory in CI to skip
-the download on later runs. Only `bb plugin dev` needs a running bb, because
+the download on later runs. Only `beam plugin dev` needs a running Beam, because
 it reloads the installed plugin after each rebuild.
 
 The backend half is prebuilt too: when a builtin/official/git/npm install ships
@@ -511,12 +511,12 @@ SDK subpath (`@get-bb/plugin-sdk/host`, `/provider-bridge`,
 `/provider-bridge/acp`, `/ai-services`) imported from server or host code is
 bundled from the plugin's own installed SDK, so a plugin that imports one
 needs the SDK as a real dependency; the build names the missing install
-rather than shipping an import bb cannot serve.
-Path installs always load server.ts from source, so `bb plugin dev`/reload see
+rather than shipping an import Beam cannot serve.
+Path installs always load server.ts from source, so `beam plugin dev`/reload see
 edits immediately.
 
-`bb plugin dev` is the edit loop: it requires the directory to already be
-installed as a plugin (`bb plugin install .` first), ignores dist/,
+`beam plugin dev` is the edit loop: it requires the directory to already be
+installed as a plugin (`beam plugin install .` first), ignores dist/,
 node_modules/, and .git/, batches saves, and prints one line per cycle. A
 build or reload failure prints the error and keeps watching (a failed build
 skips that cycle's reload). Reloads reach open app pages live — changed
@@ -572,10 +572,10 @@ backend contract import with `useRpc<typeof contract>()` for exact frontend
 method/input/result inference. The server validates both schemas and rejects
 non-JSON results (including cyclic and non-finite values) with structured
 error codes. Components are vendored shadcn source the plugin owns (the
-shadcn model): `bb plugin new` pre-vendors a starter set into
-components/ui/ and `npx shadcn add @bb/<name>` pulls more from the BB
+shadcn model): `beam plugin new` pre-vendors a starter set into
+components/ui/ and `npx shadcn add @bb/<name>` pulls more from the Beam
 component registry (the full stock shadcn set, version-matched to the
-running BB via the pinned ref in components.json). Product capabilities are
+running Beam via the pinned ref in components.json). Product capabilities are
 the exception: UrlLink renders a real anchor whose ordinary
 HTTP(S) activation uses the same client preference as first-party links while
 leaving app routes, modifiers, copying, unsupported schemes, and explicit
@@ -589,7 +589,7 @@ lazy context menu adds Open with, preferred-external, installed-app, and copy
 actions without reading the file or discovering editors on mount.
 experimental_ProviderModelPicker is the controlled
 `{ providerId, model, reasoningLevel, serviceTier? }` selector backed by the
-same catalog and picker as bb's composers; provider switches emit only after
+same catalog and picker as Beam's composers; provider switches emit only after
 the target provider's verified defaults and capabilities resolve. Its optional
 `routing` targets a host or existing environment; `disabled` renders the same
 selection summary read-only. Tasks presets and Automations use this component
@@ -609,31 +609,31 @@ sonner, vaul, @pierre/diffs, and the host-resident clsx, tailwind-merge, and
 class-variance-authority libraries are runtime-shimmed (never bundled). Shimmed
 does not mean undeclared: tsc resolves their declarations through node_modules,
 so each shimmed package a plugin imports is a type-only devDependency at the
-host's version — the scaffold declares all of them and `bb plugin types`
+host's version — the scaffold declares all of them and `beam plugin types`
 repins them; never list one in dependencies, which would bundle a second copy —
 though source and diffs should go through the host's own
 experimental_SourceCode / experimental_Diff components rather than
-@pierre/diffs directly, so bb owns patch normalization, syntax
+@pierre/diffs directly, so Beam owns patch normalization, syntax
 highlighting, and the live code theme. A Diff caller that has loaded complete
 old/new UTF-8 file contents can pass them through
 `experimental_fullFileContents` to enable
-expand-context controls without exposing Pierre types. BB's original renderer
+expand-context controls without exposing Pierre types. Beam's original renderer
 validates those paths and hunk lines before enabling expansion; a replacement
 that implements its own expansion must do the same.
-Everything else (zod included) bundles from the plugin's node_modules (`npm install` for authors; BB installs
+Everything else (zod included) bundles from the plugin's node_modules (`npm install` for authors; Beam installs
 release packages with their declared production dependencies). A crashing slot collapses to a
 "plugin <id> crashed" chip without
 touching the rest of the app. Installed plugins and their declared settings
-(same data as `bb plugin config`) also appear under Extensions → Plugins.
+(same data as `beam plugin config`) also appear under Extensions → Plugins.
 
 Plugin CLI commands: a plugin can register one top-level subcommand (for
-example `bb github …`). Unknown `bb` commands are looked up against installed
+example `beam github …`). Unknown `beam` commands are looked up against installed
 plugins and proxied to the server, so plugin commands work exactly like core
 commands; core command names always win. A collision logs an activation warning,
-and `bb plugin list` shows the required `bb plugin run <id>` form. Inside agent
+and `beam plugin list` shows the required `beam plugin run <id>` form. Inside agent
 threads the generated `plugin-commands` skill lists the available plugin commands.
 
-Settings changes do not auto-reload a plugin — run `bb plugin reload <id>`
+Settings changes do not auto-reload a plugin — run `beam plugin reload <id>`
 after configuring. Add --json to plugin commands for machine-readable output.
 Plugin CLI stdout plus stderr is capped at 1,048,576 UTF-8 bytes from the
 shared `@get-bb/plugin-sdk` constant. Results above the ceiling are rejected in
@@ -643,9 +643,9 @@ large content.
 
 Authoring a plugin
 
-The loop: `bb plugin new <name>` scaffolds `./bb-plugin-<name>` — a working
-todo list with a backend, a sidebar page, a `bb <name>` command, and a skill;
-delete what you do not need; `bb plugin install .` registers it; `bb plugin
+The loop: `beam plugin new <name>` scaffolds `./beam-plugin-<name>` — a working
+todo list with a backend, a sidebar page, a `beam <name>` command, and a skill;
+delete what you do not need; `beam plugin install .` registers it; `beam plugin
 dev` watches and reloads on every save. The manifest is package.json: required
 `bb.name` and `bb.description` human identity, required `bb.branding` with at
 least `icon` or `logo.light`, `bb.server`
@@ -653,26 +653,26 @@ least `icon` or `logo.light`, `bb.server`
 (frontend entry), optional singular `bb.host` (full-trust Node entry run by
 targeted enrolled daemons), optional `bb.skills` (static skill directories auto-imported
 into agent threads unless filtered by `bb.agents.configure`; default
-`skills/`), `engines.bb` (supported bb range),
+`skills/`), `engines.bb` (supported Beam range),
 and optional `engines.bbPluginSdk` (the lowest plugin SDK you need, read as a
 floor rather than a ceiling; scaffold writes `">=0.4.3"` for SDK 0.4.3). Use
-`bb-plugin-hello` for the package name by
-default. Scoped names such as `@acme/bb-plugin-hello` are also supported. The
-plugin id is the final package-name component minus `bb-plugin-`, so both forms
-use `hello`.
+`beam-plugin-hello` for the package name by
+default. Scoped names such as `@acme/beam-plugin-hello` are also supported. The
+plugin id is the final package-name component minus `beam-plugin-`; legacy
+`bb-plugin-` names remain supported, so all forms use `hello`.
 
 Plugins can contribute palettes with `bb.themes`: an array of
 `{ id, name, description?, css, codeTheme? }`, where `css` is a
 plugin-relative `.css` file and optional `codeTheme` is
 `{ dark?, light? }` (a bundled Shiki / Pierre name or a plugin-relative
 VS Code theme `.json`). Loaded plugin palettes appear in Settings →
-Appearance and `bb theme list`; their selectable id is
+Appearance and `beam theme list`; their selectable id is
 `plugin:<plugin-id>:<theme-id>`. Disabling or removing the owning plugin
-makes bb fall back to the default palette.
+makes Beam fall back to the default palette.
 
 Branding is explicit. Declare `bb.branding.icon` as either the plugin's
-canonical BB icon name or a plugin-relative compact SVG such as
-`./assets/icon.svg`. BB validates and hash-serves path-shaped SVGs, then
+canonical Beam icon name or a plugin-relative compact SVG such as
+`./assets/icon.svg`. Beam validates and hash-serves path-shaped SVGs, then
 renders them as masks that inherit the surrounding text color. Compact chrome
 prefers the manifest icon, then a contribution's local icon hint, and finally
 Zap. Roomy surfaces reuse the same icon when no logo override is declared.
@@ -680,14 +680,14 @@ Zap. Roomy surfaces reuse the same icon when no logo override is declared.
 Add `bb.branding.logo.light` only for intentionally different rich/full-size
 identity artwork; optional `bb.branding.logo.dark` is preferred in dark mode.
 Logo paths must be plugin-relative `.svg`, `.png`, or `.webp` files.
-`bb plugin build` refuses an SVG logo that carries a script vector (a
+`beam plugin build` refuses an SVG logo that carries a script vector (a
 `script`, `handler` or `listener` element, an `on*` attribute, or a
 `javascript:` href) and takes any other tool export as-is; install and load
-never refuse a logo, and every SVG bb serves carries `nosniff` and a
+never refuse a logo, and every SVG Beam serves carries `nosniff` and a
 `default-src 'none'` CSP. Root logo files are not auto-detected, and a dark
 logo requires a light logo. Logo-only
 manifests remain supported for compatibility, so at least an icon or light logo
-is required. Do not duplicate the same artwork across fields. BB rejects nulls,
+is required. Do not duplicate the same artwork across fields. Beam rejects nulls,
 empty strings, missing or escaping assets, and unsupported extensions. Reload
 the plugin to pick up branding changes.
 
@@ -697,29 +697,29 @@ The backend entry default-exports a factory receiving the full plugin API:
   export default async function plugin(bb: BbPluginApi) { ... }
 
 The import is type-only and erased at load; the scaffold depends on the npm
-package @get-bb/plugin-sdk, pinned to this bb's exact SDK version, so
-`npm install && npx tsc --noEmit` typechecks anywhere — no bb checkout
+package @get-bb/plugin-sdk, pinned to this Beam's exact SDK version, so
+`npm install && npx tsc --noEmit` typechecks anywhere — no Beam checkout
 needed. The full API lands at
 node_modules/@get-bb/plugin-sdk/bundled-types/bb-plugin-sdk.d.ts (plus
 -app.d.ts and -host.d.ts): ordinary readable declarations, not a minified
 bundle — read them
 for an exact signature. Plugins scaffolded before this switch instead vendor
 the root/app declarations in types/, mapped through tsconfig; that layout still
-works for existing entries. Run `bb plugin migrate` before adding `bb.host` so
+works for existing entries. Run `beam plugin migrate` before adding `bb.host` so
 the `/host` and `/testing/host` declaration subpaths are available; migration
 shows every change and asks first.
-The SDK surface grows every release, so `bb plugin types` syncs a plugin to
-the running bb — repinning the SDK devDependency and the shimmed packages'
+The SDK surface grows every release, so `beam plugin types` syncs a plugin to
+the running Beam — repinning the SDK devDependency and the shimmed packages'
 type-only devDependencies, or rewriting types/ for a plugin that still
-vendors them. Run it in a cloned or older plugin, and `bb
-plugin types --check` in CI. `bb plugin build` and `bb plugin dev` keep a
+vendors them. Run it in a cloned or older plugin, and `beam
+plugin types --check` in CI. `beam plugin build` and `beam plugin dev` keep a
 vendored plugin in step for you. Need a symbol the types
-don't explain? Clone the repo: https://github.com/get-bb/bb. The API in
-one line each — bb.log (plugin-scoped logger behind `bb plugin logs`);
+don't explain? Clone the repo: https://github.com/divyesh-puri/beam. The API in
+one line each — bb.log (plugin-scoped logger behind `beam plugin logs`);
 bb.settings.define (declarative settings incl. secrets, editable via
-`bb plugin config`); bb.storage.kv (JSON rows ≤256KB) and
+`beam plugin config`); bb.storage.kv (JSON rows ≤256KB) and
 bb.storage.database()+migrate (the plugin's own database); bb.sdk (the full
-bb SDK — handlers/services only, not the factory; spawned threads are
+Beam SDK — handlers/services only, not the factory; spawned threads are
 attributed to the plugin; `visibility: "hidden"` creates directly addressable
 background workers omitted from sidebar organization and unread/pending
 favicon attention, with other behavior unchanged; a child thread inherits
@@ -744,7 +744,7 @@ experimental_createHostEntryHarness from
 bb.realtime.publish (ephemeral signals to open app pages);
 bb.background.service (long-lived, AbortSignal, restart w/ backoff) and
 bb.background.schedule (durable cron rows); bb.cli.register (a top-level
-`bb <name>` command agents run through bash, with a shared 1 MiB combined
+`beam <name>` command agents run through bash, with a shared 1 MiB combined
 stdout/stderr ceiling and atomic structured over-limit errors); bb.agents.registerTool
 (static native tools with zod or JSON-schema parameters) and
 bb.agents.configure (one synchronous per-resolution callback selecting this
@@ -772,16 +772,16 @@ tw-animate-css utilities compile in plugin builds).
 
 For the complete authoring reference — exact signatures, working snippets
 for every surface, the reload lifecycle, testing tips, and gotchas — use
-the built-in `bb-plugin-authoring` skill (agents: it loads on demand;
-humans: apps/server/src/services/skills/builtin-skills/bb-plugin-authoring/
+the built-in `beam-plugin-authoring` skill (agents: it loads on demand;
+humans: apps/server/src/services/skills/builtin-skills/beam-plugin-authoring/
 in a checkout). The builtin `inline-vis` plugin renders
 `::inline-vis{file="demo.html" height="480"}` through the sidebar's
 path-shaped, sandboxed worktree HTML iframe preview; `height` is optional.
 Its card header includes an open-in-sidebar action for the source HTML file.
 The `plugins/` directory contains every bundled plugin: the auto-installed
-builtins and the store-only BB Official GitHub, Docs, Memory, and Tasks
+builtins and the store-only Beam Official GitHub, Docs, Memory, and Tasks
 plugins. The `examples/plugins/` reference plugins cover slack-bot (webhook
 bot), agent-enrichment (agent surfaces), and composer-customization (all
 composer regions). Thread Hover
-Cards installs from the BB Community marketplace (source: the bb-plugins
+Cards installs from the Beam Community marketplace (source: the bb-plugins
 repo).

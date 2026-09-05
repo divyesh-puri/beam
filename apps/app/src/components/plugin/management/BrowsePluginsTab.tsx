@@ -232,7 +232,7 @@ export function BrowsePluginsTab({
                   state={searchQuery.isError ? "error" : "empty"}
                   message={
                     searchQuery.isError
-                      ? "BB's official plugins are unavailable."
+                      ? "Beam's official plugins are unavailable."
                       : "No plugins match this search."
                   }
                   onRetry={
@@ -488,7 +488,7 @@ function BrowseCard({
       >
         <ConfirmDeleteDialogContent
           title={`Uninstall ${entry.displayName}?`}
-          description="The plugin, its installed files, and its settings, secrets, and schedules are removed from this BB host."
+          description="The plugin, its installed files, and its settings, secrets, and schedules are removed from this Beam host."
           confirmLabel={uninstall.isPending ? "Uninstalling…" : "Uninstall"}
           pending={uninstall.isPending}
           onConfirm={() => uninstall.mutate()}

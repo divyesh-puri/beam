@@ -19,6 +19,7 @@ type DownloadPlacement = CtaPlacement | "direct";
 
 type MarketingEnv = {
   LANDING_POSTHOG_KEY?: string;
+  LANDING_TELEMETRY?: string;
   RESEND_API_KEY?: string;
   RESEND_AUDIENCE_ID?: string;
 };
@@ -58,7 +59,8 @@ export async function handleDownloadMacos(
   const requestUrl = new URL(request.url);
   waitUntil(
     trackDownloadClick({
-      postHogKey: env.LANDING_POSTHOG_KEY,
+      postHogKey:
+        env.LANDING_TELEMETRY === "true" ? env.LANDING_POSTHOG_KEY : undefined,
       request,
       requestUrl,
     }),

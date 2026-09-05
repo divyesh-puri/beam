@@ -387,7 +387,7 @@ describe("Tasks RPC domain API", () => {
     await harness.dispose();
   });
 
-  it("lists bb workspace projects as id/name options", async () => {
+  it("lists Beam workspace projects as id/name options", async () => {
     const { bb, harness } = createFakePluginHost({
       pluginId: "tasks",
       sdk: {
@@ -414,7 +414,7 @@ describe("Tasks RPC domain API", () => {
     await harness.dispose();
   });
 
-  it("lists machines as id/name options from the BB SDK", async () => {
+  it("lists machines as id/name options from the Beam SDK", async () => {
     const { bb, harness } = createFakePluginHost({
       pluginId: "tasks",
       sdk: {

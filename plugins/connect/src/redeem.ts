@@ -1,4 +1,4 @@
-export const DEFAULT_CONNECT_BASE_URL = "https://getbb.app";
+export const DEFAULT_CONNECT_BASE_URL = "https://connect.beam.invalid";
 
 export function resolveDefaultConnectBaseUrl(env: NodeJS.ProcessEnv): string {
   const configured = env.BB_DEV_CONNECT_BASE_URL?.trim();
@@ -11,12 +11,12 @@ export function resolveDefaultConnectBaseUrl(env: NodeJS.ProcessEnv): string {
     url = new URL(configured);
   } catch {
     throw new Error(
-      "BB_DEV_CONNECT_BASE_URL must be an http://bb.localhost:<port> origin",
+      "BB_DEV_CONNECT_BASE_URL must be an http://beam.localhost:<port> origin",
     );
   }
   if (
     url.protocol !== "http:" ||
-    url.hostname !== "bb.localhost" ||
+    url.hostname !== "beam.localhost" ||
     url.port.length === 0 ||
     url.username.length > 0 ||
     url.password.length > 0 ||
@@ -25,7 +25,7 @@ export function resolveDefaultConnectBaseUrl(env: NodeJS.ProcessEnv): string {
     url.hash.length > 0
   ) {
     throw new Error(
-      "BB_DEV_CONNECT_BASE_URL must be an http://bb.localhost:<port> origin",
+      "BB_DEV_CONNECT_BASE_URL must be an http://beam.localhost:<port> origin",
     );
   }
   return url.origin;

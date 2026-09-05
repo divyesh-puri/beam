@@ -950,7 +950,7 @@ function applyTimelineWindowByteBudget(
         kind: "system",
         systemKind: "error",
         title: "Timeline event is too large to display",
-        detail: `Event ${floor.sequenceStart} contains ${floor.eventDataBytes} bytes. BB omitted its content to keep this thread available.`,
+        detail: `Event ${floor.sequenceStart} contains ${floor.eventDataBytes} bytes. Beam omitted its content to keep this thread available.`,
         status: "error",
       },
       sequenceStart: floor.sequenceStart + 1,

@@ -1,17 +1,17 @@
 # Worktrees, setup scripts, and teardown scripts
 
-When you start a thread in bb, you can run it in your project's existing
+When you start a thread in Beam, you can run it in your project's existing
 checkout or in a fresh **managed worktree** — a separate working copy on disk
-with its own branch. Worktrees let bb work on multiple things in parallel
+with its own branch. Worktrees let Beam work on multiple things in parallel
 without touching your main checkout, and they make it easy to throw away
 whatever the agent does without affecting the rest of your work.
 
 You can pair a worktree with a **`.worktreeinclude` file** that lists the local
-files each new worktree needs, and with a **setup script** that bb runs the
+files each new worktree needs, and with a **setup script** that Beam runs the
 first time the worktree is created — useful for installing dependencies,
 generating secrets, or anything else you need before the agent starts.
 You can also add a **teardown script** that releases resources outside the
-worktree before bb removes it.
+worktree before Beam removes it.
 
 ## What is a managed worktree?
 
@@ -22,8 +22,8 @@ branch. Under the hood it's `git worktree add` plus some bookkeeping:
   create, no full clone.
 - It gets its own branch so multiple threads can run in parallel.
 - It lives at `<BB_DATA_DIR>/worktrees/<environment-id>/<repo-name>` — for
-  example, `~/.bb/worktrees/env_abc.../myrepo`.
-- Once every thread using the environment is archived or deleted, bb cleans the
+  example, `~/.beam/worktrees/env_abc.../myrepo`.
+- Once every thread using the environment is archived or deleted, Beam cleans the
   worktree up (`git worktree remove --force`) along with the branch.
 
 ## Start a thread in a worktree
@@ -34,16 +34,16 @@ a thread.
 From the CLI:
 
 ```bash
-pnpm bb thread spawn \
+pnpm beam thread spawn \
   --project <project-id> \
   --new-environment worktree \
   --prompt "..."
 ```
 
-When you omit `--base-branch`, bb chooses the project's default worktree base,
+When you omit `--base-branch`, Beam chooses the project's default worktree base,
 preferring the origin default branch when safe. Pass `--base-branch <name>`
 only when you need a specific base. Naming the default branch (`--base-branch
-main`) behaves like omitting the flag: bb fetches and starts from
+main`) behaves like omitting the flag: Beam fetches and starts from
 `origin/main` unless your local `main` is ahead or has diverged. Any other
 plain name starts from that local branch as it is; pass `origin/<name>` to
 fetch and start from the remote branch.
@@ -65,17 +65,17 @@ comments, `!` to negate an earlier pattern:
 certs/
 ```
 
-bb copies every untracked file in the source checkout that matches a pattern,
+Beam copies every untracked file in the source checkout that matches a pattern,
 after it creates the worktree and before it runs `.bb-env-setup.sh`. Your
 setup script can therefore read the copied files.
 
 Contract:
 
-- bb copies files. It does not create symlinks, and each worktree gets its own
+- Beam copies files. It does not create symlinks, and each worktree gets its own
   copy — an edit inside the worktree does not change your main checkout.
-- bb never replaces anything the worktree already has. If the branch tracks a
-  file at that path, the tracked file wins and bb reports the skip.
-- bb skips symlinks in the source checkout rather than copying their targets,
+- Beam never replaces anything the worktree already has. If the branch tracks a
+  file at that path, the tracked file wins and Beam reports the skip.
+- Beam skips symlinks in the source checkout rather than copying their targets,
   and it never writes through a symlink in the worktree.
 - A pattern that matches nothing, an unreadable file, or a failed copy is
   reported in the provisioning transcript. Provisioning continues.
@@ -84,7 +84,7 @@ Contract:
 
 ## Run setup with `.bb-env-setup.sh`
 
-Drop a file named `.bb-env-setup.sh` at the root of your project. If bb finds
+Drop a file named `.bb-env-setup.sh` at the root of your project. If Beam finds
 one when it creates a worktree, it runs the script inside the new worktree
 before handing the thread to the agent.
 
@@ -111,13 +111,13 @@ Contract:
 
 ## Cleanup
 
-You don't need to clean up worktrees by hand — bb removes them once every
+You don't need to clean up worktrees by hand — Beam removes them once every
 thread using the environment is archived or deleted, and the branch goes with
 it. If you
 want to keep work the agent did, commit and push (or open a PR) from inside
 the worktree before letting the thread go.
 
-Before bb removes the directory, it stops every process whose working
+Before Beam removes the directory, it stops every process whose working
 directory is inside the worktree — the agent's provider process, its
 background jobs (dev servers, MCP servers, `nohup` jobs), and any process
 you started there yourself, such as a shell you `cd`'d into the worktree or
@@ -140,13 +140,13 @@ docker rm -f "my-project-${USER}"
 
 Contract:
 
-- bb runs the script only when it destroys a managed worktree.
-- bb runs `env bash .bb-env-teardown.sh` from the worktree before it removes
+- Beam runs the script only when it destroys a managed worktree.
+- Beam runs `env bash .bb-env-teardown.sh` from the worktree before it removes
   the worktree, so the script can read tracked and generated files.
-- stdin is closed. bb records stdout and stderr in the environment destroy
+- stdin is closed. Beam records stdout and stderr in the environment destroy
   transcript.
 - The script gets a separate 15-minute timeout.
-- A non-zero exit, a signal, or a timeout reports a failure. It never stops bb
+- A non-zero exit, a signal, or a timeout reports a failure. It never stops Beam
   from removing the worktree.
 - The script receives the same sanitized environment as the setup script.
 - POSIX only — supported on macOS, Linux, and WSL2. Native Windows isn't
@@ -166,6 +166,6 @@ A few quick checks:
 3. If your setup script hangs, remember stdin is closed. Anything that
    prompts for input will time out at 15 minutes.
 4. Run `bash .bb-env-setup.sh` manually in a clean clone to verify it works
-   outside bb before debugging through the provisioning transcript.
+   outside Beam before debugging through the provisioning transcript.
 5. Run `bash .bb-env-teardown.sh` manually before you delete a test worktree.
    Confirm that repeated runs do not fail or remove shared resources.

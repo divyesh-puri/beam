@@ -35,7 +35,7 @@ it("carries U+2028/U+2029 through stdout events, RPC responses, and both channel
     dynamicTools: [
       {
         name: "bb_probe",
-        description: "A bb tool.",
+        description: "A Beam tool.",
         inputSchema: {
           type: "object",
           properties: { value: { type: "string" } },

@@ -1,7 +1,7 @@
 # bb-plugin-echo-provider
 
-The **third-party canary** for bb's provider plugin API. It is a complete
-agent provider — a picker entry, a bridge, a bb tool, plugin settings, and
+The **third-party canary** for Beam's provider plugin API. It is a complete
+agent provider — a picker entry, a bridge, a Beam tool, plugin settings, and
 its own timeline vocabulary — that answers every prompt by echoing it back.
 Useless as an agent, complete as a proof: it exercises **every** capability
 a provider plugin has, and it does so through the public SDK alone.
@@ -19,50 +19,50 @@ Tests may add the published test harnesses (`@get-bb/plugin-sdk/testing`,
 `@get-bb/plugin-sdk/provider-bridge/testing`) and the test runner. **No
 `@bb/*` workspace package is imported anywhere**, and
 `public-sdk-only.test.ts` fails the suite if one ever is. A marketplace
-plugin cannot resolve bb's private packages; if this example needed one, the
+plugin cannot resolve Beam's private packages; if this example needed one, the
 public API would have a hole.
 
 ## What it demonstrates
 
 Registration (`server.ts`, `bb.providers.register`):
 
-| Capability                                                                                                                                                              | Where                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `strings` — sign-in and expiry hints, install URL, brand prefix, plan-mode copy, icon tint                                                                 | `server.ts`                                        |
-| `reasoningLevels` — labelled picker options beside the coarse ladder                                                                                       | `server.ts`                                        |
-| `serviceTiers` and `capabilities.supportsServiceTier`                                                                                                      | `server.ts`                                        |
-| `capabilities` — permission modes, fork, archive/rename                                                                                                                 | `server.ts`                                        |
-| `maintenance.health: true` — the server polls `provider/health` through the bridge; usage and installation stay off                                         | `server.ts`, answered in `src/provider-bridge.ts`  |
-| `composerActions: ["plan"]`                                                                                                                                             | `server.ts`                                        |
-| `models.fallback` — the cold-cache model list                                                                                                              | `server.ts`                                        |
-| `env.passthrough` — one daemon env var the bridge may read                                                                                                 | `server.ts`, read in `src/provider-bridge.ts`      |
-| `experimental_nativeSkillRoots` — one workspace-relative skill root (`.echo/skills`) bb lists beside its own skills                                        | `server.ts`, asserted in `server.test.ts`          |
-| `deriveProviderOptions` — the plugin's `shout` setting (`bb.settings.define`) travels to the bridge as `providerOptions`                                   | `server.ts`, read back in `src/provider-bridge.ts` |
-| `extensionKinds` — one item kind (`echo-provider/receipt`) and one state kind (`echo-provider/mood`), each with a zod schema the server enforces at ingest | `src/vocabulary.ts`                                |
-| `bb.agents.registerTool` with `presentation` — a bb tool whose row reads the way the plugin says                                                           | `server.ts`                                        |
+| Capability                                                                                                                                                                         | Where                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `strings` — sign-in and expiry hints, install URL, brand prefix, plan-mode copy, icon tint                                                                                         | `server.ts`                                              |
+| `reasoningLevels` — labelled picker options beside the coarse ladder                                                                                                               | `server.ts`                                              |
+| `serviceTiers` and `capabilities.supportsServiceTier`                                                                                                                              | `server.ts`                                              |
+| `capabilities` — permission modes, fork, archive/rename                                                                                                                            | `server.ts`                                              |
+| `maintenance.health: true` — the server polls `provider/health` through the bridge; usage and installation stay off                                                                | `server.ts`, answered in `src/provider-bridge.ts`        |
+| `composerActions: ["plan"]`                                                                                                                                                        | `server.ts`                                              |
+| `models.fallback` — the cold-cache model list                                                                                                                                      | `server.ts`                                              |
+| `env.passthrough` — one daemon env var the bridge may read                                                                                                                         | `server.ts`, read in `src/provider-bridge.ts`            |
+| `experimental_nativeSkillRoots` — one workspace-relative skill root (`.echo/skills`) Beam lists beside its own skills                                                              | `server.ts`, asserted in `server.test.ts`                |
+| `deriveProviderOptions` — the plugin's `shout` setting (`bb.settings.define`) travels to the bridge as `providerOptions`                                                           | `server.ts`, read back in `src/provider-bridge.ts`       |
+| `extensionKinds` — one item kind (`echo-provider/receipt`) and one state kind (`echo-provider/mood`), each with a zod schema the server enforces at ingest                         | `src/vocabulary.ts`                                      |
+| `bb.agents.registerTool` with `presentation` — a Beam tool whose row reads the way the plugin says                                                                                 | `server.ts`                                              |
 | `bb.branding.experimental_icons` — one declared icon (`receipt`) the receipt row references as `echo-provider/receipt`; the server serves it hashed and checks the glyph at ingest | `package.json`, `icons/receipt.svg`, `src/vocabulary.ts` |
-| `bb.host` — one artifact carrying the bridge and a host RPC entry                                                                                                       | `host.ts`, `contract.ts`                           |
+| `bb.host` — one artifact carrying the bridge and a host RPC entry                                                                                                                  | `host.ts`, `contract.ts`                                 |
 
 The bridge (`src/provider-bridge.ts`, grammar v3). Every accepted prompt runs
 the same scripted turn:
 
-| Capability                                                                                                       | Delta                               |
-| ---------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| Handshake reports `grammarVersions: [3, 3]`, `steerMode`, `sessionRestore`, `approvalEnforcedBy`                 | `initialize`                        |
-| `presentation` on **every** `item.open` and `item.close`                                                         | all items                           |
-| A shell command with streamed output                                                                             | `command` + `item.outputDelta`      |
-| A file read                                                                                                      | `fileRead`                          |
-| A content search                                                                                                 | `search`                            |
-| Delegated work with a real child turn linked through `parentRef`                                                 | `delegation` + keyed `turn.open`    |
-| A plan snapshot                                                                                                  | `planSteps`                         |
-| A bookkeeping tool whose row clients collapse                                                                    | `tool` with `presentation.suppress` |
-| The plugin's bb tool, called over `item/tool/call` and stamped `server: "bb"` with the definition's presentation | `tool`                              |
-| The extension item, validated server-side against the declared schema                                            | `extension`                         |
-| The extension state, latest snapshot wins                                                                        | `extension.state`                   |
-| The echoed message, reporting the derived `providerOptions` and the passed-through env var                       | `item.textDelta` / `item.textClose` |
-| Usage and the context-window meter                                                                               | `usage`, `contextWindow`            |
-| A zero-work turn (`/noop`) that still settles                                                                    | `turn.boundary` with `claimIfIdle`  |
-| A malformed extension payload (`malformed-receipt`) the server replaces with `provider/unhandled`                | `extension`                         |
+| Capability                                                                                                         | Delta                               |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| Handshake reports `grammarVersions: [3, 3]`, `steerMode`, `sessionRestore`, `approvalEnforcedBy`                   | `initialize`                        |
+| `presentation` on **every** `item.open` and `item.close`                                                           | all items                           |
+| A shell command with streamed output                                                                               | `command` + `item.outputDelta`      |
+| A file read                                                                                                        | `fileRead`                          |
+| A content search                                                                                                   | `search`                            |
+| Delegated work with a real child turn linked through `parentRef`                                                   | `delegation` + keyed `turn.open`    |
+| A plan snapshot                                                                                                    | `planSteps`                         |
+| A bookkeeping tool whose row clients collapse                                                                      | `tool` with `presentation.suppress` |
+| The plugin's Beam tool, called over `item/tool/call` and stamped `server: "bb"` with the definition's presentation | `tool`                              |
+| The extension item, validated server-side against the declared schema                                              | `extension`                         |
+| The extension state, latest snapshot wins                                                                          | `extension.state`                   |
+| The echoed message, reporting the derived `providerOptions` and the passed-through env var                         | `item.textDelta` / `item.textClose` |
+| Usage and the context-window meter                                                                                 | `usage`, `contextWindow`            |
+| A zero-work turn (`/noop`) that still settles                                                                      | `turn.boundary` with `claimIfIdle`  |
+| A malformed extension payload (`malformed-receipt`) the server replaces with `provider/unhandled`                  | `extension`                         |
 
 Outside any session, the bridge answers the one maintenance request the
 declaration turns on: `provider/health` → `{ supported: true, health: { status:
@@ -88,7 +88,7 @@ off and answer method-not-found, so declaration and bridge cannot disagree.
      runtime builds it and parses the answer through the protocol schema the
      runtime enforces.
    - `provider-bridge.parity.test.ts` replays `recordings/echo-agent/turn-tools`
-     — a real recording bb made of this plugin's built artifact (record
+     — a real recording Beam made of this plugin's built artifact (record
      mode, `BB_PROVIDER_BRIDGE_RECORD_DIR`) — through the bridge the way the
      runtime spawns it, and diffs the assembled events against the
      recording's own: zero diffs, every recorded-cell conformance rule green.
@@ -127,12 +127,12 @@ only what its server instructs.
 ## Install
 
 ```
-bb plugin install ./examples/plugins/echo-provider --yes
-bb plugin config echo-provider set shout true   # optional: prove the settings round trip
+beam plugin install ./examples/plugins/echo-provider --yes
+beam plugin config echo-provider set shout true   # optional: prove the settings round trip
 ```
 
 Then pick "Echo" in the provider picker and send a message. After editing
-sources, `bb plugin reload echo-provider`.
+sources, `beam plugin reload echo-provider`.
 
 ## Test
 
@@ -143,7 +143,7 @@ pnpm exec turbo run test --filter=bb-plugin-echo-provider
 ## Re-record
 
 The recording under `recordings/` is never rewritten. To capture a new one,
-start a dev bb with `BB_PROVIDER_BRIDGE_RECORD_DIR=<dir>` exported in the
+start a dev Beam with `BB_PROVIDER_BRIDGE_RECORD_DIR=<dir>` exported in the
 daemon's environment, install this plugin, spawn a thread on `echo-agent`,
 then package the thread's lanes:
 

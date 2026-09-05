@@ -45,7 +45,7 @@ async function createTrackedForkWorkspace(
 ): Promise<string> {
   const workspacePath = await makeTempDir("bb-pr-upstream-workspace-");
   await runGit(["init", "-b", localBranch], { cwd: workspacePath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: workspacePath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: workspacePath });
   await runGit(["config", "user.email", "bb@example.com"], {
     cwd: workspacePath,
   });
@@ -77,7 +77,7 @@ async function createTrackedForkWorkspace(
 async function createManagedBaseTrackedWorkspace(): Promise<string> {
   const workspacePath = await makeTempDir("bb-pr-base-upstream-workspace-");
   await runGit(["init", "-b", localBranch], { cwd: workspacePath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: workspacePath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: workspacePath });
   await runGit(["config", "user.email", "bb@example.com"], {
     cwd: workspacePath,
   });

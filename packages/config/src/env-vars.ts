@@ -178,28 +178,28 @@ export const BB_HOST_DAEMON_PORT_ENV = defineEnvVar<number>({
 });
 
 export const BB_SERVER_URL_ENV = defineEnvVar<string>({
-  description: "URL of the bb server",
+  description: "URL of the Beam server",
   name: "BB_SERVER_URL",
   parse: parseRequiredUrlEnvValue,
 });
 
 export const BB_APP_VERSION_ENV = defineEnvVar<string>({
   description:
-    "Version of the running bb-app package. The bb-app launcher sets this from packages/bb-app/package.json; defaults to a sentinel for dev/source runs.",
+    "Version of the running Beam runtime package (bb-app). The Beam launcher sets this from packages/bb-app/package.json; defaults to a sentinel for dev/source runs.",
   name: "BB_APP_VERSION",
   parse: parseNonEmptyStringEnvValue,
 });
 
 export const BB_SERVER_LAUNCH_ID_ENV = defineEnvVar<string>({
   description:
-    "Internal per-spawn identity the bb-app launcher hands its server child. The server echoes it on /health so the launcher can tell its own child apart from another bb server that already owns the port.",
+    "Internal per-spawn identity the Beam launcher hands its server child. The server echoes it on /health so the launcher can tell its own child apart from another Beam server that already owns the port.",
   name: "BB_SERVER_LAUNCH_ID",
   parse: parseNonEmptyStringEnvValue,
 });
 
 export const BB_APP_SURFACE_ENV = defineEnvVar<AppSurface>({
   description:
-    "Internal launcher marker for telemetry attribution. Set by bb-app and desktop launchers.",
+    "Internal launcher marker for telemetry attribution. Set by the Beam package and desktop launchers.",
   name: APP_SURFACE_ENV_NAME,
   parse: parseAppSurfaceEnvValue,
 });
@@ -220,7 +220,7 @@ export const BB_EXTERNAL_URL_ENV = defineEnvVar<string>({
 
 export const BB_MARKETPLACE_URL_ENV = defineEnvVar<string>({
   description:
-    "Manifest URL of the reserved bb-community plugin marketplace, which lists as BB Community. Point it at a local file server to test catalog refreshes.",
+    "Manifest URL of the reserved bb-community plugin marketplace, which lists as Beam Community. Remote refresh is disabled when unset; set a public HTTPS endpoint to enable it.",
   name: "BB_MARKETPLACE_URL",
   parse: parseOptionalUrlEnvValue,
 });
@@ -253,14 +253,14 @@ export const OPENAI_API_KEY_ENV = defineEnvVar<string>({
 
 export const BB_POSTHOG_API_KEY_ENV = defineEnvVar<string>({
   description:
-    "PostHog project API key for anonymous usage telemetry. Telemetry is disabled when empty.",
+    "PostHog project API key for anonymous usage telemetry. Telemetry requires both this key and BB_TELEMETRY=true.",
   name: "BB_POSTHOG_API_KEY",
   parse: parseStringEnvValue,
 });
 
 export const BB_TELEMETRY_ENV = defineEnvVar<boolean>({
   description:
-    "Anonymous usage telemetry (app starts, thread creation counts, user message counts, and plugin installs). Set to false to opt out.",
+    "Anonymous usage telemetry (app starts, thread creation counts, user message counts, and plugin installs). Set to true to opt in; disabled by default.",
   name: "BB_TELEMETRY",
   parse: parseBooleanEnvValue,
 });
@@ -294,14 +294,14 @@ export const BB_DEV_APP_PORT_ENV = defineEnvVar<number | undefined>({
 
 export const BB_CLI_DIR_ENV = defineEnvVar<string | undefined>({
   description:
-    "Directory containing the bb CLI executable to inject into runtime shells",
+    "Directory containing the Beam CLI executable to inject into runtime shells",
   name: "BB_CLI_DIR",
   parse: parseOptionalTrimmedStringEnvValue,
 });
 
 export const BB_INHERITED_SKILLS_ROOTS_ENV = defineEnvVar<string[]>({
   description:
-    "Development-only path list of lower-priority inherited bb skill roots",
+    "Development-only path list of lower-priority inherited Beam skill roots",
   name: "BB_INHERITED_SKILLS_ROOTS",
   parse: parsePathListEnvValue,
 });
@@ -317,20 +317,21 @@ export const BB_CONNECT_MACHINE_CREDENTIAL_ENV = defineEnvVar<
   string | undefined
 >({
   description:
-    "Daemon-managed bb connect credential for traversing the public machine gate",
+    "Daemon-managed Beam Connect credential for traversing the public machine gate",
   name: "BB_CONNECT_MACHINE_CREDENTIAL",
   parse: parseOptionalTrimmedStringEnvValue,
 });
 
 export const BB_CONNECT_MACHINE_ID_ENV = defineEnvVar<string>({
-  description: "Cloud machine identifier paired with the bb connect credential",
+  description:
+    "Cloud machine identifier paired with the Beam Connect credential",
   name: "BB_CONNECT_MACHINE_ID",
   parse: parseNonEmptyStringEnvValue,
 });
 
 export const BB_HOST_ENROLL_KEY_ENV = defineEnvVar<string | undefined>({
   description:
-    "One-time enrollment token used to bootstrap a host daemon with the bb server",
+    "One-time enrollment token used to bootstrap a host daemon with the Beam server",
   name: "BB_HOST_ENROLL_KEY",
   parse: parseOptionalTrimmedStringEnvValue,
 });
@@ -368,12 +369,10 @@ export const DEFAULT_BB_APP_URL = "";
 export const DEFAULT_BB_SERVER_BIND_HOST: ServerBindHost = BB_LOOPBACK_HOST;
 export const DEFAULT_BB_EXTERNAL_URL = "";
 export const DEFAULT_OPENAI_API_KEY = "";
-export const DEFAULT_BB_POSTHOG_API_KEY =
-  "phc_tejoYoNLV6vG8QAd5eYXXvcsENFYnP4brpZDGqG7zvpy";
-export const DEFAULT_BB_TELEMETRY = true;
+export const DEFAULT_BB_POSTHOG_API_KEY = "";
+export const DEFAULT_BB_TELEMETRY = false;
 export const DEFAULT_BB_DEV_APP_HOST = "";
-export const DEFAULT_BB_MARKETPLACE_URL =
-  "https://getbb.app/marketplace/v1/marketplace.json";
+export const DEFAULT_BB_MARKETPLACE_URL = "";
 export const DEFAULT_BB_INFERENCE = DEFAULTS.inferenceModel;
 export const DEFAULT_BB_INFERENCE_FALLBACK = DEFAULTS.inferenceFallbackModel;
 export const DEFAULT_BB_TRANSCRIPTION = DEFAULTS.transcriptionModel;

@@ -115,7 +115,7 @@ async function readApprovals(path: string): Promise<string[]> {
 
 async function writeApprovals(path: string, approvals: readonly string[]) {
   await mkdir(dirname(path), { recursive: true });
-  const tempPath = `${path}.bb-${process.pid}-${randomBytes(6).toString("hex")}.tmp`;
+  const tempPath = `${path}.beam-${process.pid}-${randomBytes(6).toString("hex")}.tmp`;
   try {
     await writeFile(tempPath, `${JSON.stringify(approvals, null, 2)}\n`, {
       encoding: "utf8",
@@ -129,7 +129,7 @@ async function writeApprovals(path: string, approvals: readonly string[]) {
 }
 
 async function acquireApprovalLock(path: string): Promise<() => Promise<void>> {
-  const lockPath = `${path}.bb-lock`;
+  const lockPath = `${path}.beam-lock`;
   const deadline = Date.now() + CURSOR_APPROVAL_LOCK_TIMEOUT_MS;
   await mkdir(dirname(path), { recursive: true });
   for (;;) {

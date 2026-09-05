@@ -434,7 +434,7 @@ export function UpdateStates() {
         </State>
 
         <State
-          name="Machine updating bb"
+          name="Machine updating Beam"
           note="The enrolled daemon is applying its required update automatically."
         >
           <StoryMachineSection machine={daemonUpdating} />
@@ -442,7 +442,7 @@ export function UpdateStates() {
 
         <State
           name="Machine offline"
-          note="bb cannot currently reach this machine."
+          note="Beam cannot currently reach this machine."
         >
           <StoryMachineSection machine={daemonOffline} />
         </State>
@@ -461,7 +461,7 @@ export function UpdateStates() {
 
         <State
           name="Update available"
-          note="bb has an installer it can run for this provider."
+          note="Beam has an installer it can run for this provider."
         >
           <StoryMachineSection machine={providerUpdate} />
         </State>
@@ -486,7 +486,7 @@ export function UpdateStates() {
 
         <State
           name="Update in terminal"
-          note="The CLI was installed outside bb, so the update must run in its own package manager."
+          note="The CLI was installed outside Beam, so the update must run in its own package manager."
         >
           <StoryMachineSection machine={providerManual} />
         </State>
@@ -507,7 +507,7 @@ export function UpdateStates() {
 
         <State
           name="Status check failed"
-          note="The machine is connected, but bb could not inspect its provider CLIs."
+          note="The machine is connected, but Beam could not inspect its provider CLIs."
         >
           <StoryMachineSection machine={providerCheckFailed} />
         </State>

@@ -11,7 +11,8 @@ import {
 } from "../../../src/services/plugin-catalog/marketplace-manifest.js";
 import { BUNDLED_CURATED_MARKETPLACE } from "../../../src/services/plugin-catalog/curated-marketplace.js";
 
-const MANIFEST_URL = "https://getbb.app/marketplace/v1/marketplace.json";
+const MANIFEST_URL =
+  "https://connect.beam.invalid/marketplace/v1/marketplace.json";
 
 const publishedSchemaShape = z.object({
   $defs: z.object({
@@ -60,7 +61,7 @@ function manifest(plugins: unknown[]): unknown {
   return {
     schemaVersion: 1,
     name: "bb-community",
-    displayName: "BB Community",
+    displayName: "Beam Community",
     plugins,
   };
 }
@@ -152,7 +153,7 @@ describe("marketplace manifest schema", () => {
         ),
       ).toEqual({
         kind: "remote",
-        url: "https://getbb.app/marketplace/v1/icons/widgets.svg",
+        url: "https://connect.beam.invalid/marketplace/v1/icons/widgets.svg",
       });
       expect(
         resolveEntryIcon(firstEntry([entry()]), {

@@ -76,17 +76,17 @@ export default async function plugin(bb: BbPluginApi) {
       {
         name: "get",
         summary: "Print the current custom instructions",
-        usage: "bb instructions get [--json]",
+        usage: "beam instructions get [--json]",
       },
       {
         name: "set",
         summary: "Replace the custom instructions",
-        usage: "bb instructions set <text...> [--json]",
+        usage: "beam instructions set <text...> [--json]",
       },
       {
         name: "clear",
         summary: "Clear the custom instructions",
-        usage: "bb instructions clear [--json]",
+        usage: "beam instructions clear [--json]",
       },
     ],
     async run(argv) {
@@ -126,7 +126,7 @@ export default async function plugin(bb: BbPluginApi) {
       }
       return {
         exitCode: 1,
-        stderr: "Usage: bb instructions get|set <text...>|clear [--json]",
+        stderr: "Usage: beam instructions get|set <text...>|clear [--json]",
       };
     },
   });

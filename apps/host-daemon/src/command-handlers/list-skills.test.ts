@@ -113,7 +113,7 @@ afterEach(async () => {
 });
 
 describe("resolveSkillScanRoots + discoverSkills", () => {
-  it("classifies the host-owned bb project root and the declared provider roots only", async () => {
+  it("classifies the host-owned Beam project root and the declared provider roots only", async () => {
     const fixture = await makeWorkspaceFixture();
     const files = {
       "proj-bb": path.join(fixture.cwd, ".bb", "skills", "proj-bb", "SKILL.md"),
@@ -577,7 +577,7 @@ describe("discoverSkills marks the linked flag per root shape", () => {
 });
 
 describe("deleteHostSkill", () => {
-  it("deletes a bb-user skill directory", async () => {
+  it("deletes a Beam user skill directory", async () => {
     const fixture = await makeWorkspaceFixture();
     const skillDir = path.join(fixture.dataDir, "skills", "doomed");
     await writeSkill(path.join(skillDir, "SKILL.md"), "doomed");
@@ -597,7 +597,7 @@ describe("deleteHostSkill", () => {
     expect(result.deletedPath).toContain("doomed");
   });
 
-  it("deletes a bb-project skill directory under cwd/.bb/skills", async () => {
+  it("deletes a Beam project skill directory under cwd/.bb/skills", async () => {
     const fixture = await makeWorkspaceFixture();
     const skillDir = path.join(fixture.cwd, ".bb", "skills", "proj-doomed");
     await writeSkill(path.join(skillDir, "SKILL.md"), "proj-doomed");
@@ -652,7 +652,7 @@ describe("deleteHostSkill", () => {
     ).rejects.toMatchObject({ code: "invalid_skill_name" });
   });
 
-  it("refuses a skill symlinked outside the bb root after realpath", async () => {
+  it("refuses a skill symlinked outside the Beam root after realpath", async () => {
     const fixture = await makeWorkspaceFixture();
     const outside = path.join(tempRoot, "outside", "secret");
     await writeSkill(path.join(outside, "SKILL.md"), "secret");
@@ -743,7 +743,7 @@ describe("deleteHostSkill", () => {
 });
 
 describe("writeHostSkill", () => {
-  it("atomically replaces a bb skill only at the expected revision", async () => {
+  it("atomically replaces a Beam skill only at the expected revision", async () => {
     const fixture = await makeWorkspaceFixture();
     const filePath = path.join(fixture.dataDir, "skills", "review", "SKILL.md");
     const original = "---\nname: review\ndescription: Review\n---\n";

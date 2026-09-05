@@ -34,7 +34,7 @@ function renderList(
       <SidebarProvider>
         <PluginThreadList
           replacement={replacement}
-          original={<div data-testid="bb-thread-list">bb thread list</div>}
+          original={<div data-testid="bb-thread-list">beam thread list</div>}
           searchQuery={query}
           onNavigate={() => {}}
         />
@@ -59,7 +59,7 @@ afterEach(() => {
 });
 
 describe("PluginThreadList experimental_Original alias", () => {
-  it("delegates to BB's list through the alias and warns once across renders", () => {
+  it("delegates to Beam's list through the alias and warns once across renders", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const seen: string[] = [];
     const { rerenderWith } = renderList(
@@ -81,7 +81,7 @@ describe("PluginThreadList experimental_Original alias", () => {
     expect(seen).toEqual(["", "needle"]);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn).toHaveBeenCalledWith(
-      "experimental_Original is deprecated; use Original. Removed in bb 0.42",
+      "experimental_Original is deprecated; use Original. Removed in Beam 0.42",
     );
   });
 

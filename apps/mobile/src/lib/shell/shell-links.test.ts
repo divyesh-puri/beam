@@ -6,7 +6,7 @@ import {
 } from "./shell-links";
 
 const profiles = [
-  { id: "p_bee", serverUrl: "https://bee.getbb.app" },
+  { id: "p_bee", serverUrl: "https://bee.connect.beam.invalid" },
   { id: "p_lan", serverUrl: "http://10.0.0.7:38886" },
   { id: "p_prefix", serverUrl: "https://box.example.ts.net/bb" },
 ];
@@ -44,7 +44,7 @@ describe("isNativeOnlyShellPath", () => {
 
 describe("resolveShellIncomingLink", () => {
   it("sends a scheme link to the page", () => {
-    expect(resolveShellIncomingLink("bb://threads/thr_1", context)).toEqual({
+    expect(resolveShellIncomingLink("beam://threads/thr_1", context)).toEqual({
       kind: "navigate",
       path: "/webview?path=%2Fthreads%2Fthr_1",
       profileId: null,
@@ -53,7 +53,7 @@ describe("resolveShellIncomingLink", () => {
 
   it("keeps connect enrolment native", () => {
     expect(
-      resolveShellIncomingLink("bb://connect?code=ABCD-EFGH", context),
+      resolveShellIncomingLink("beam://connect?code=ABCD-EFGH", context),
     ).toEqual({
       kind: "navigate",
       path: "/connect?code=ABCD-EFGH",
@@ -62,11 +62,11 @@ describe("resolveShellIncomingLink", () => {
   });
 
   it("hides developer routes in a release bundle", () => {
-    expect(resolveShellIncomingLink("bb://dev/webview-spike", context)).toEqual(
-      { kind: "navigate", path: "/", profileId: null },
-    );
     expect(
-      resolveShellIncomingLink("bb://dev/webview-spike", {
+      resolveShellIncomingLink("beam://dev/webview-spike", context),
+    ).toEqual({ kind: "navigate", path: "/", profileId: null });
+    expect(
+      resolveShellIncomingLink("beam://dev/webview-spike", {
         ...context,
         developerRoutesEnabled: true,
       }),
@@ -79,7 +79,10 @@ describe("resolveShellIncomingLink", () => {
 
   it("opens a web link on the profile that owns it", () => {
     expect(
-      resolveShellIncomingLink("https://bee.getbb.app/threads/x?a=1", context),
+      resolveShellIncomingLink(
+        "https://bee.connect.beam.invalid/threads/x?a=1",
+        context,
+      ),
     ).toEqual({
       kind: "navigate",
       path: "/webview?path=%2Fthreads%2Fx%3Fa%3D1",
@@ -113,18 +116,21 @@ describe("resolveShellIncomingLink", () => {
 
   it("offers to add a server the phone does not know", () => {
     const resolution = resolveShellIncomingLink(
-      "https://other.getbb.app/threads/x",
+      "https://other.connect.beam.invalid/threads/x",
       context,
     );
     expect(resolution.kind).toBe("unknown-server");
     if (resolution.kind !== "unknown-server") throw new Error("unreachable");
-    expect(resolution.serverUrl).toBe("https://other.getbb.app");
+    expect(resolution.serverUrl).toBe("https://other.connect.beam.invalid");
     expect(resolution.path).toBe("/webview?path=%2Fthreads%2Fx");
   });
 
   it("leaves a foreign scheme alone", () => {
     expect(
-      resolveShellIncomingLink("exp+bb-app://expo-development-client", context),
+      resolveShellIncomingLink(
+        "exp+beam-app://expo-development-client",
+        context,
+      ),
     ).toEqual({ kind: "passthrough" });
   });
 });

@@ -39,20 +39,20 @@ export function fixtureResponsiveStrategy(
 export const SURFACE_GROUPS: SurfaceGroup[] = [
   {
     id: "app-shell",
-    title: "The bb app window",
+    title: "The Beam app window",
     fixtureKind: "spatial",
     blurb:
-      "The main bb window, containing the sidebar, the conversation, and the side panel. A plugin can add rows, controls, panel tabs, and message content to the numbered regions.",
+      "The main Beam window, containing the sidebar, the conversation, and the side panel. A plugin can add rows, controls, panel tabs, and message content to the numbered regions.",
     surfaces: [
       {
         id: "nav-panel",
         title: "Full-page panels",
         summary:
-          "Adds a row to bb's sidebar that opens a page your plugin renders where threads normally appear. With this, a plugin can:",
+          "Adds a row to Beam's sidebar that opens a page your plugin renders where threads normally appear. With this, a plugin can:",
         bullets: [
           "Render any React you write across that whole area",
-          "Get its own URL, so the page can be linked to and bb's back and forward buttons work",
-          "Register tabs in the panel to the right of its page, beside bb's own Browser and Terminal tabs",
+          "Get its own URL, so the page can be linked to and Beam's back and forward buttons work",
+          "Register tabs in the panel to the right of its page, beside Beam's own Browser and Terminal tabs",
         ],
         apiSymbols: ["PluginNavPanelRegistration"],
         firstParty: ["Automations", "Docs", "GitHub", "Tasks"],
@@ -61,11 +61,11 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "thread-list",
         title: "The thread list",
         summary:
-          "Replaces the list of threads in bb's sidebar with a component your plugin renders. With this, a plugin can:",
+          "Replaces the list of threads in Beam's sidebar with a component your plugin renders. With this, a plugin can:",
         bullets: [
           "Render every row, and decide the grouping, the ordering, and what each row shows",
-          "Read the same live thread data and run statuses bb's own list reads",
-          "Replace only the list. The New thread button, the search action, the plugin rows, and the sidebar footer stay bb's",
+          "Read the same live thread data and run statuses Beam's own list reads",
+          "Replace only the list. The New thread button, the search action, the plugin rows, and the sidebar footer stay Beam's",
         ],
         apiSymbols: [
           "PluginThreadListRegistration",
@@ -77,13 +77,13 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "thread-row-status",
         title: "Thread row status",
         summary:
-          "A small status bb can draw on a thread's row in the sidebar. With this, a plugin can:",
+          "A small status Beam can draw on a thread's row in the sidebar. With this, a plugin can:",
         bullets: [
           "Give the status an icon and a label",
-          "Mark a thread as running while it works on it, and bb shimmers the icon",
-          "Mark it succeeded or failed when the work ends, and bb settles the icon",
+          "Mark a thread as running while it works on it, and Beam shimmers the icon",
+          "Mark it succeeded or failed when the work ends, and Beam settles the icon",
           "Set it only from an [app-wide script](content-scripts). A status needs an owner that outlives any single screen, and those scripts are the only plugin code that does",
-          "Rely on bb to clear it when the script unmounts",
+          "Rely on Beam to clear it when the script unmounts",
         ],
         apiSymbols: [
           "PluginComposerThreadRowStatus",
@@ -95,11 +95,11 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "sidebar-footer",
         title: "Sidebar footer buttons",
         summary:
-          "Adds an icon button to the row at the bottom of bb's sidebar, beside the Settings button. With this, a plugin can:",
+          "Adds an icon button to the row at the bottom of Beam's sidebar, beside the Settings button. With this, a plugin can:",
         bullets: [
           "Supply the button's icon and its hover tooltip",
           "Run a callback when the button is clicked",
-          "Stay reachable wherever bb's sidebar is showing",
+          "Stay reachable wherever Beam's sidebar is showing",
         ],
         apiSymbols: ["PluginSidebarFooterActionRegistration"],
         firstParty: ["Remote access"],
@@ -112,7 +112,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         bullets: [
           "Render a React component rather than a plain button, so it can show live state",
           "Receive the id of the thread currently on screen",
-          "Render in the same row as bb's own header controls",
+          "Render in the same row as Beam's own header controls",
         ],
         apiSymbols: ["PluginThreadHeaderActionRegistration"],
         experimental: true,
@@ -160,11 +160,11 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "code-renderers",
         title: "Code & diff renderers",
         summary:
-          "Replaces bb's source-code or diff renderer everywhere that kind of content appears. With this, a plugin can:",
+          "Replaces Beam's source-code or diff renderer everywhere that kind of content appears. With this, a plugin can:",
         bullets: [
           "Register the source-code and diff replacements independently",
-          "Apply each replacement across bb's file previews, timeline and environment diffs, and plugin pages",
-          "Hand any individual render back to bb's built-in renderer, and fall back to it automatically if the plugin is unavailable or crashes",
+          "Apply each replacement across Beam's file previews, timeline and environment diffs, and plugin pages",
+          "Hand any individual render back to Beam's built-in renderer, and fall back to it automatically if the plugin is unavailable or crashes",
         ],
         apiSymbols: [
           "PluginSourceCodeRendererRegistration",
@@ -190,10 +190,10 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "file-opener",
         title: "File viewers & editors",
         summary:
-          "Registers a viewer for the file types you name, so bb opens those files there instead of its built-in preview. With this, a plugin can:",
+          "Registers a viewer for the file types you name, so Beam opens those files there instead of its built-in preview. With this, a plugin can:",
         bullets: [
           "Declare the file extensions it handles, for example `.csv` or `.excalidraw`",
-          "Render its own viewer or editor whenever a file of that type is opened in bb",
+          "Render its own viewer or editor whenever a file of that type is opened in Beam",
           "Receive the file's path, then read it however the plugin already reads files",
         ],
         apiSymbols: ["PluginFileOpenerRegistration"],
@@ -203,11 +203,11 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "timeline-renderers",
         title: "Timeline entry content",
         summary:
-          "Renders the expanded content of plugin-owned timeline entries while bb keeps each entry's header and controls. With this, a plugin can:",
+          "Renders the expanded content of plugin-owned timeline entries while Beam keeps each entry's header and controls. With this, a plugin can:",
         bullets: [
           "Draw the expanded content beneath timeline entries created by the plugin's own provider",
-          "Receive the entry data and plugin payload, plus bb's default content as `Original`",
-          "Fall back to bb's default content automatically when the plugin is unavailable or crashes",
+          "Receive the entry data and plugin payload, plus Beam's default content as `Original`",
+          "Fall back to Beam's default content automatically when the plugin is unavailable or crashes",
         ],
         apiSymbols: [
           "PluginTimelineRendererRegistration",
@@ -219,13 +219,13 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "content-scripts",
         title: "App-wide scripts",
         summary:
-          "Runs your code inside the bb window itself, without rendering a UI of its own. With this, a plugin can:",
+          "Runs your code inside the Beam window itself, without rendering a UI of its own. With this, a plugin can:",
         bullets: [
-          "Mount once per bb window and unmount when the window reloads",
+          "Mount once per Beam window and unmount when the window reloads",
           "Add behavior that is not tied to one screen, such as a keyboard shortcut",
           "Set a [thread row status](thread-row-status) on any thread, for as long as the script is mounted",
-          "Add plugin-owned elements to app pages without taking ownership of bb's built-in layout",
-          "Return a cleanup function. bb calls it once on unmount, and clears any row statuses the script set",
+          "Add plugin-owned elements to app pages without taking ownership of Beam's built-in layout",
+          "Return a cleanup function. Beam calls it once on unmount, and clears any row statuses the script set",
         ],
         apiSymbols: [
           "PluginContentScriptRegistration",
@@ -239,15 +239,15 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
     title: "Command palette",
     fixtureKind: "spatial",
     blurb:
-      "bb's searchable command menu. A plugin can add actions that match, rank, and run alongside bb's own commands.",
+      "Beam's searchable command menu. A plugin can add actions that match, rank, and run alongside Beam's own commands.",
     surfaces: [
       {
         id: "command-palette-actions",
         title: "Command palette actions",
         summary:
-          "Adds a row under Plugins in bb's quick command palette. With this, a plugin can:",
+          "Adds a row under Plugins in Beam's quick command palette. With this, a plugin can:",
         bullets: [
-          "Supply the row's label and run behavior; bb owns matching, ordering, and recency",
+          "Supply the row's label and run behavior; Beam owns matching, ordering, and recency",
           "Read the current thread and project, and hide the row when it is unavailable",
           "Open one of the plugin's own thread side-panel tabs when a thread is on screen",
         ],
@@ -282,7 +282,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "mention-provider",
         title: "Mentions",
         summary:
-          "Adds results to the menu that opens when someone types a trigger character in the prompt box. On a trigger bb does not use itself, your plugin opens that menu and owns it. With this, a plugin can:",
+          "Adds results to the menu that opens when someone types a trigger character in the prompt box. On a trigger Beam does not use itself, your plugin opens that menu and owns it. With this, a plugin can:",
         bullets: [
           "Answer each keystroke after the trigger with a list of items to show",
           "Claim one or more of the trigger characters @, #, $, !, and ~. Omit them to answer the default @",
@@ -327,7 +327,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         summary:
           "Adds rows to the menu that opens from the + button beside the prompt box. With this, a plugin can:",
         bullets: [
-          "Supply each row's icon, label, and disabled state; bb renders the row itself",
+          "Supply each row's icon, label, and disabled state; Beam renders the row itself",
           "Run a callback when someone picks the row",
           "Read and rewrite the draft prompt from that callback",
         ],
@@ -337,9 +337,9 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "provider-picker",
         title: "Agent providers",
         summary:
-          "Adds an agent to bb's model picker and runs the threads started with it. With this, a plugin can:",
+          "Adds an agent to Beam's model picker and runs the threads started with it. With this, a plugin can:",
         bullets: [
-          "Appear in the model picker beside bb's built-in providers",
+          "Appear in the model picker beside Beam's built-in providers",
           "Declare what the provider supports, then serve its model list at runtime",
           "Supply a small icon that appears next to its name",
           "Receive every message in a thread started with it, through a bridge process the plugin ships",
@@ -365,7 +365,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
           "Read and rewrite the draft prompt, for example rephrasing it or inserting a template",
           "Insert an @-mention into the draft so its provider can resolve fresh context when the message is sent",
           "Lock the input while it works, and tint the whole draft while it does",
-          "Render in the same row as bb's own prompt-box buttons. If you have more than 3 plugins enabled, bb keeps the 3 most-used plugins inline and moves the rest into an overflow menu",
+          "Render in the same row as Beam's own prompt-box buttons. If you have more than 3 plugins enabled, Beam keeps the 3 most-used plugins inline and moves the rest into an overflow menu",
         ],
         apiSymbols: ["PluginComposerApi"],
       },
@@ -376,17 +376,17 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
     title: "Home page",
     fixtureKind: "spatial",
     blurb:
-      "The screen bb opens on, holding the new-thread composer and a side panel. A plugin can add a section below the composer, and an action in that panel that opens its own tab.",
+      "The screen Beam opens on, holding the new-thread composer and a side panel. A plugin can add a section below the composer, and an action in that panel that opens its own tab.",
     surfaces: [
       {
         id: "homepage-section",
         title: "Home-screen sections",
         summary:
-          "Adds a full-width section to the page bb opens on, below the prompt box. With this, a plugin can:",
+          "Adds a full-width section to the page Beam opens on, below the prompt box. With this, a plugin can:",
         bullets: [
           "Render its own component across the width of the content area",
           "Render before any thread exists, which suits shortcuts and pinned work",
-          "Render after bb's own content, in the order plugins registered",
+          "Render after Beam's own content, in the order plugins registered",
         ],
         apiSymbols: ["PluginHomepageSectionRegistration"],
       },
@@ -410,17 +410,17 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
     title: "Plugin settings page",
     fixtureKind: "spatial",
     blurb:
-      "The settings page bb creates for every installed plugin. A plugin can declare fields for bb to render and add its own section below them.",
+      "The settings page Beam creates for every installed plugin. A plugin can declare fields for Beam to render and add its own section below them.",
     surfaces: [
       {
         id: "declarative-settings",
         title: "Settings fields",
         summary:
-          "Declares the settings your plugin needs as plain data; bb renders the form for them on the plugin's settings page and stores the values. With this, a plugin can:",
+          "Declares the settings your plugin needs as plain data; Beam renders the form for them on the plugin's settings page and stores the values. With this, a plugin can:",
         bullets: [
           "Declare each field's type (text, toggle, choice, or project) with a label and an optional default",
           "Get the form, its validation, and saving without writing any UI",
-          "Mark a text field secret: bb stores it in a protected file on the server and never sends it to the browser",
+          "Mark a text field secret: Beam stores it in a protected file on the server and never sends it to the browser",
           "Read saved values from its server code, or the non-secret ones from its own UI with `useSettings()`",
         ],
         apiSymbols: [
@@ -434,11 +434,11 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         id: "settings-section",
         title: "Custom settings section",
         summary:
-          "Renders your own React component on the plugin's settings page, below the [fields bb generated](declarative-settings). Use it for anything that is not a value in a form. With this, a plugin can:",
+          "Renders your own React component on the plugin's settings page, below the [fields Beam generated](declarative-settings). Use it for anything that is not a value in a form. With this, a plugin can:",
         bullets: [
           "Render whatever UI it needs, such as a connect-account button, a test-connection result, or a preview",
           "Run in the browser, so it stores nothing itself. It calls the plugin's own backend to do that",
-          "Supply a heading and a one-line description for bb to render above it",
+          "Supply a heading and a one-line description for Beam to render above it",
         ],
         apiSymbols: ["PluginSettingsSectionRegistration"],
         firstParty: [
@@ -455,13 +455,13 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
     title: "Plugin page in Extensions",
     fixtureKind: "spatial",
     blurb:
-      "The page bb shows for an installed plugin under Extensions: what it is, what it registers, and whether it is healthy. A plugin can report that it needs configuring, and bb says so at the top of this page.",
+      "The page Beam shows for an installed plugin under Extensions: what it is, what it registers, and whether it is healthy. A plugin can report that it needs configuring, and Beam says so at the top of this page.",
     surfaces: [
       {
         id: "plugin-status",
         title: "Configuration status",
         summary:
-          "Reports that the plugin cannot run until someone configures it, so bb can say so instead of the plugin failing silently. With this, a plugin can:",
+          "Reports that the plugin cannot run until someone configures it, so Beam can say so instead of the plugin failing silently. With this, a plugin can:",
         bullets: [
           "Set a needs-configuration state with a message naming what is missing",
           "Show a warning banner with that message on the plugin's page in Extensions",
@@ -497,13 +497,13 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
     surfaces: [
       {
         id: "cli",
-        tagline: "Your own `bb <name>` command",
-        title: "bb CLI commands",
+        tagline: "Your own `beam <name>` command",
+        title: "Beam CLI commands",
         summary:
-          "Registers a top-level `bb <name>` command, available in the terminal and to agents. With this, a plugin can:",
+          "Registers a top-level `beam <name>` command, available in the terminal and to agents. With this, a plugin can:",
         bullets: [
           "Be invoked the same way by a person at a terminal and by an agent mid-task",
-          "Receive the thread and project it was invoked from, when bb knows them",
+          "Receive the thread and project it was invoked from, when Beam knows them",
           "Make the plugin usable from scripts and automations, not only from the UI",
         ],
         apiSymbols: ["PluginCli"],
@@ -526,9 +526,9 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         tagline: "Native tools, skills, and instructions in every session",
         title: "Agent tools & skills",
         summary:
-          "Adds tools, skills, and instructions to the agent sessions bb runs. With this, a plugin can:",
+          "Adds tools, skills, and instructions to the agent sessions Beam runs. With this, a plugin can:",
         bullets: [
-          "Register tools an agent calls the same way it calls bb's built-in tools",
+          "Register tools an agent calls the same way it calls Beam's built-in tools",
           "Decide per thread which of its tools and skills are available",
           "Append instructions to a session's system prompt as that session starts",
         ],
@@ -546,9 +546,9 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         tagline: "Supervised services and cron schedules",
         title: "Background work",
         summary:
-          "Runs code on the bb server when no window is open. With this, a plugin can:",
+          "Runs code on the Beam server when no window is open. With this, a plugin can:",
         bullets: [
-          "Register long-running services that bb starts, supervises, and restarts after a failure",
+          "Register long-running services that Beam starts, supervises, and restarts after a failure",
           "Register jobs that run on a cron schedule",
           "Be told to shut down cleanly before it reloads or is disabled",
         ],
@@ -574,7 +574,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         bullets: [
           "Call its server from its UI over RPC, with arguments and results checked against a schema",
           "Serve HTTP routes other systems can call, webhooks included",
-          "Push messages to every open bb window, so the UI does not have to poll",
+          "Push messages to every open Beam window, so the UI does not have to poll",
         ],
         apiSymbols: ["PluginRpc", "PluginHttp", "PluginRealtime"],
         firstParty: [
@@ -611,12 +611,12 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         tagline: "Run code on enrolled machines",
         title: "Host workers",
         summary:
-          "Runs the plugin's code on an enrolled machine, not only on the bb server. With this, a plugin can:",
+          "Runs the plugin's code on an enrolled machine, not only on the Beam server. With this, a plugin can:",
         bullets: [
-          "Ship a Node entry point bb starts on demand on the machine it calls",
+          "Ship a Node entry point Beam starts on demand on the machine it calls",
           "Call that worker from its server code over typed RPC",
           "Do work that has to happen on the machine itself, such as watching files or holding a wake lock",
-          "Declare desired loopback ports once and let bb deliver retained declarations when an enrolled machine reconnects",
+          "Declare desired loopback ports once and let Beam deliver retained declarations when an enrolled machine reconnects",
         ],
         apiSymbols: ["PluginHosts"],
         firstParty: ["Keep Awake", "Remote access"],
@@ -627,7 +627,7 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
         tagline: "Namespaced KV plus your own SQLite",
         title: "Storage",
         summary:
-          "Stores the plugin's data on the bb server. With this, a plugin can:",
+          "Stores the plugin's data on the Beam server. With this, a plugin can:",
         bullets: [
           "Get a key-value store for small values such as flags and cursors",
           "Get its own SQLite database, with migrations, for larger or relational data",
@@ -651,12 +651,12 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
       {
         id: "bb-sdk",
         tagline: "Create threads and projects from plugin code",
-        title: "The bb SDK",
+        title: "The Beam SDK",
         summary:
-          "Calls bb's own API from the plugin's server code. With this, a plugin can:",
+          "Calls Beam's own API from the plugin's server code. With this, a plugin can:",
         bullets: [
           "Create threads, send messages to them, and manage projects",
-          "Reach the same operations the [bb CLI](cli) and the bb UI use",
+          "Reach the same operations the [Beam CLI](cli) and the Beam UI use",
           "Have the threads it creates attributed back to the plugin",
         ],
         apiSymbols: ["BbPluginApi"],
@@ -675,14 +675,14 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
       },
       {
         id: "host-components",
-        tagline: "Embed bb's chat and prompt box",
+        tagline: "Embed Beam's chat and prompt box",
         title: "Host components",
         summary:
-          "Renders bb's own conversation and prompt-box components inside the plugin's pages. With this, a plugin can:",
+          "Renders Beam's own conversation and prompt-box components inside the plugin's pages. With this, a plugin can:",
         bullets: [
           "Embed the thread view and the new-thread prompt box as components",
-          "Render message text with the same Markdown renderer bb uses",
-          "Inherit bb's styling, so embedded UI matches the rest of the app",
+          "Render message text with the same Markdown renderer Beam uses",
+          "Inherit Beam's styling, so embedded UI matches the rest of the app",
         ],
         apiSymbols: [
           "ThreadChat",
@@ -693,12 +693,12 @@ export const SURFACE_GROUPS: SurfaceGroup[] = [
       },
       {
         id: "testing",
-        tagline: "Unit-test every surface without a running bb",
+        tagline: "Unit-test every surface without a running Beam",
         title: "Testing harnesses",
         summary:
-          "Tests the plugin without a running bb. With this, a plugin can:",
+          "Tests the plugin without a running Beam. With this, a plugin can:",
         bullets: [
-          "Run its server code against an in-process fake of the bb server",
+          "Run its server code against an in-process fake of the Beam server",
           "Render its UI slots under vitest and jsdom",
           "Drive its host worker with no host daemon running",
         ],

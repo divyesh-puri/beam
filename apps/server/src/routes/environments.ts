@@ -53,9 +53,9 @@ import {
   selectInitialPatchPaths,
 } from "./diff-tiering.js";
 
-const COMMIT_FALLBACK_MESSAGE = "bb: automated commit";
-const SQUASH_MERGE_FALLBACK_MESSAGE = "bb: squash merge";
-const PRE_MERGE_COMMIT_MESSAGE = "bb: pre-merge commit";
+const COMMIT_FALLBACK_MESSAGE = "beam: automated commit";
+const SQUASH_MERGE_FALLBACK_MESSAGE = "beam: squash merge";
+const PRE_MERGE_COMMIT_MESSAGE = "beam: pre-merge commit";
 
 const AI_MAX_DIFF_BYTES = 32_000;
 const AI_MAX_FILE_LIST_BYTES = 4_000;

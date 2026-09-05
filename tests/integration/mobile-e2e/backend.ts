@@ -147,7 +147,7 @@ const LONG_MARKDOWN_MESSAGE = [
   "",
   "## Reference",
   "",
-  "See the [bb docs](https://docs.getbb.app) for the server contract and the",
+  "See the [Beam repository](https://github.com/divyesh-puri/beam) for the server contract and the",
   "plan in `plans/bb-mobile-expo.md` for the phase breakdown.",
   "",
   "## Notes",

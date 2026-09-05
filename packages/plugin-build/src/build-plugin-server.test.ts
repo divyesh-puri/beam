@@ -2,6 +2,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  realpath,
   rm,
   symlink,
   writeFile,
@@ -133,13 +134,13 @@ describe("plugin server build", () => {
       await expect(
         buildPluginServer(dir, "0.0.0-test", await testToolchain()),
       ).rejects.toThrow(
-        '"@get-bb/plugin-sdk/host" is not installed for this plugin (no node_modules/@get-bb/plugin-sdk); a server entry\'s "@get-bb/plugin-sdk/host" import is bundled from the plugin\'s own SDK install (bb serves only the bare "@get-bb/plugin-sdk" at load time), so the plugin needs the SDK as a dependency',
+        '"@get-bb/plugin-sdk/host" is not installed for this plugin (no node_modules/@get-bb/plugin-sdk); a server entry\'s "@get-bb/plugin-sdk/host" import is bundled from the plugin\'s own SDK install (Beam serves only the bare "@get-bb/plugin-sdk" at load time), so the plugin needs the SDK as a dependency',
       );
     });
 
     it("names the unbuilt SDK dist when the package is installed without it", async () => {
-      const dir = await mkdtemp(
-        join(tmpdir(), "bb-plugin-server-unbuilt-sdk-"),
+      const dir = await realpath(
+        await mkdtemp(join(tmpdir(), "bb-plugin-server-unbuilt-sdk-")),
       );
       tempDirs.push(dir);
       await writeFixture(dir);

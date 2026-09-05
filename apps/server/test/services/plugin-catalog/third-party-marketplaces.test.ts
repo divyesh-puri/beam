@@ -1024,7 +1024,7 @@ describe("third-party marketplaces", () => {
     expect(getPluginMarketplace(db, "a".repeat(65))).toBeUndefined();
   });
 
-  it("refuses a marketplace source bb cannot interpret", async () => {
+  it("refuses a marketplace source Beam cannot interpret", async () => {
     const catalog = service({ fetch: marketplaceFetch({}) });
     await expect(catalog.addMarketplace("acme/marketplace")).rejects.toThrow(
       /expected "https:/u,

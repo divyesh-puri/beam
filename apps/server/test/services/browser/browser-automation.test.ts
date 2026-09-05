@@ -263,7 +263,7 @@ describe("BrowserAutomationService", () => {
       body: {
         code: "browser_client_unavailable",
         details: { reason: "incompatible" },
-        message: expect.stringContaining("Update the bb desktop app"),
+        message: expect.stringContaining("Update the Beam desktop app"),
       },
     });
     expect(legacySocket.messages).toHaveLength(0);

@@ -3,7 +3,7 @@
   "name": "responsive-overlay",
   "type": "registry:ui",
   "title": "responsive-overlay",
-  "description": "BB ui \"responsive-overlay\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"responsive-overlay\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "@radix-ui/react-slot"
   ],

@@ -295,9 +295,12 @@ describe("verifyServerCredential / resolveAccountUserId", () => {
 
     expect(await verifyMachineCredential(machinePlain, db)).toBe("acct-a");
 
-    const req = new Request("https://sawyer.getbb.app/api/connect/servers", {
-      headers: { "x-bb-connect-machine": machinePlain },
-    });
+    const req = new Request(
+      "https://sawyer.connect.beam.invalid/api/connect/servers",
+      {
+        headers: { "x-bb-connect-machine": machinePlain },
+      },
+    );
     const userId = await resolveAccountUserId(
       req,
       "secret",
@@ -310,7 +313,9 @@ describe("verifyServerCredential / resolveAccountUserId", () => {
   });
 
   it("returns null (unauthorized) when no credential or session is presented", async () => {
-    const req = new Request("https://sawyer.getbb.app/api/connect/servers");
+    const req = new Request(
+      "https://sawyer.connect.beam.invalid/api/connect/servers",
+    );
     expect(
       await resolveAccountUserId(req, "secret", db, SECURE_SESSION_COOKIE),
     ).toBeNull();
@@ -346,17 +351,20 @@ describe("verifyServerCredential / resolveAccountUserId", () => {
       })
       .run();
 
-    const req = new Request("https://sawyer.getbb.app/api/connect/servers", {
-      headers: {
-        cookie: `__Secure-better-auth.session_token=${cookieValue}`,
+    const req = new Request(
+      "https://sawyer.connect.beam.invalid/api/connect/servers",
+      {
+        headers: {
+          cookie: `__Secure-better-auth.session_token=${cookieValue}`,
+        },
       },
-    });
+    );
     expect(
       await resolveAccountUserId(req, secret, db, SECURE_SESSION_COOKIE),
     ).toBe("acct-a");
 
     const localRequest = new Request(
-      "http://sawyer.bb.localhost:8787/api/connect/servers",
+      "http://sawyer.beam.localhost:8787/api/connect/servers",
       {
         headers: { cookie: `better-auth.session_token=${cookieValue}` },
       },

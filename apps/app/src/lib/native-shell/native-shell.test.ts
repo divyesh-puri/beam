@@ -158,7 +158,9 @@ describe("shellOpenExternal", () => {
 describe("shellShare", () => {
   it("resolves with the shell's answer", async () => {
     installShell();
-    const promise = shellShare({ url: "https://bee.getbb.app/threads/thr_1" });
+    const promise = shellShare({
+      url: "https://bee.connect.beam.invalid/threads/thr_1",
+    });
     const message = lastMessage() as { type: string; id: string };
     expect(message.type).toBe("request");
     const bridge = (

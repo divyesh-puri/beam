@@ -396,7 +396,7 @@ true;
 export const CLIPBOARD_PROBE = String.raw`
 (function () {
   var post = window.__bbSpike.post;
-  var sample = "bb-clipboard-probe-" + Math.round(performance.now());
+  var sample = "beam-clipboard-probe-" + Math.round(performance.now());
   var execCommandResult = null;
   try {
     var textarea = document.createElement("textarea");

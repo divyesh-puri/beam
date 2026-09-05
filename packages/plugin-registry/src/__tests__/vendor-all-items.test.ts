@@ -45,7 +45,7 @@ afterAll(async () => {
 });
 
 describe("plugin component registry", () => {
-  it("every item vendors into a plugin that bb plugin build compiles", async () => {
+  it("every item vendors into a plugin that `beam plugin build` compiles", async () => {
     const itemNames: string[] = [];
     for (const fileName of (await readdir(registryDir)).sort()) {
       if (fileName === "index.json") continue;

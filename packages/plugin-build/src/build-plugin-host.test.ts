@@ -4,6 +4,7 @@ import {
   mkdtemp,
   readFile,
   readdir,
+  realpath,
   rm,
   utimes,
   writeFile,
@@ -195,7 +196,7 @@ describe("plugin host build", () => {
     ).rejects.toThrow(/escapes the plugin directory/u);
   });
 
-  it("rejects private BB workspace imports from host entries", async () => {
+  it("rejects private Beam workspace imports from host entries", async () => {
     const dir = await mkdtemp(join(process.cwd(), ".host-build-private-test-"));
     tempDirs.push(dir);
     await writeFile(
@@ -228,7 +229,7 @@ describe("plugin host build", () => {
 
     await expect(
       buildPluginHost(dir, "0.9.0-test", await testToolchain()),
-    ).rejects.toThrow(/cannot import private BB workspace package/u);
+    ).rejects.toThrow(/cannot import private Beam workspace package/u);
   });
 
   it("bundles the published bridge surface without stubbing it", async () => {
@@ -324,7 +325,9 @@ describe("plugin host build", () => {
     });
 
     it("names the unbuilt SDK dist when the package is installed without it", async () => {
-      const dir = await mkdtemp(join(tmpdir(), "bb-host-unbuilt-sdk-test-"));
+      const dir = await realpath(
+        await mkdtemp(join(tmpdir(), "bb-host-unbuilt-sdk-test-")),
+      );
       tempDirs.push(dir);
       await writeFixture(dir);
       const sdkDir = join(dir, "node_modules", "@get-bb", "plugin-sdk");
@@ -353,7 +356,7 @@ describe("plugin host build", () => {
     });
   });
 
-  it("rejects relative type imports into private BB workspace packages", async () => {
+  it("rejects relative type imports into private Beam workspace packages", async () => {
     const parent = await mkdtemp(join(tmpdir(), "bb-host-relative-private-"));
     tempDirs.push(parent);
     const dir = join(parent, "plugin");

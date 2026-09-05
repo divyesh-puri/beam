@@ -7,13 +7,13 @@ import {
 import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import { registerThreadCommands } from "../../commands/thread/index.js";
 
-describe("bb thread tell command output", () => {
+describe("beam thread tell command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
     registerThreadCommands(program, () => "http://server");
 
-  it("bb thread tell --json prints the raw response plus thread id", async () => {
+  it("beam thread tell --json prints the raw response plus thread id", async () => {
     const post = vi.fn(async () => ({ ok: true, delivery: "sent" }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -32,7 +32,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell says when the target is awaiting user interaction and the message is held", async () => {
+  it("beam thread tell says when the target is awaiting user interaction and the message is held", async () => {
     const post = vi.fn(async () => ({ ok: true, delivery: "deferred" }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -43,7 +43,7 @@ describe("bb thread tell command output", () => {
     );
   });
 
-  it("bb thread tell keeps the steered wording for servers that only report ok", async () => {
+  it("beam thread tell keeps the steered wording for servers that only report ok", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -54,7 +54,7 @@ describe("bb thread tell command output", () => {
     );
   });
 
-  it("bb thread tell --mode queue preserves non-urgent queued delivery", async () => {
+  it("beam thread tell --mode queue preserves non-urgent queued delivery", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -72,7 +72,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell --mode auto preserves explicit legacy auto delivery", async () => {
+  it("beam thread tell --mode auto preserves explicit legacy auto delivery", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -90,7 +90,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell forwards execution options", async () => {
+  it("beam thread tell forwards execution options", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -125,7 +125,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell forwards automatic review mode", async () => {
+  it("beam thread tell forwards automatic review mode", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -151,7 +151,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell --plan sends the composer's /plan command mention", async () => {
+  it("beam thread tell --plan sends the composer's /plan command mention", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -198,7 +198,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell forwards host-readable paths without reading them on the CLI machine", async () => {
+  it("beam thread tell forwards host-readable paths without reading them on the CLI machine", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
 
@@ -229,7 +229,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell includes sender thread metadata when run inside another thread", async () => {
+  it("beam thread tell includes sender thread metadata when run inside another thread", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-sender");
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });
@@ -249,7 +249,7 @@ describe("bb thread tell command output", () => {
     });
   });
 
-  it("bb thread tell omits sender metadata when targeting the current thread", async () => {
+  it("beam thread tell omits sender metadata when targeting the current thread", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-self");
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.send.$post": post });

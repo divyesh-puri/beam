@@ -33,6 +33,7 @@ import {
   resolveDataDir,
   resolveBbAppStartContext,
   resolveBbAppCommand,
+  resolveBeamEntrypoint,
   resolveServerListenerUrl,
   resolveWorktreeRuntimePolicy,
   runBbApp,
@@ -657,12 +658,12 @@ describe("bb-app launcher", () => {
     });
   });
 
-  it("starts bb when no command or the explicit start command is provided", () => {
+  it("starts Beam when no command or the explicit start command is provided", () => {
     expect(resolveBbAppCommand([])).toEqual({ kind: "start" });
     expect(resolveBbAppCommand(["start"])).toEqual({ kind: "start" });
   });
 
-  it("stops bb on the explicit stop command only", () => {
+  it("stops Beam on the explicit stop command only", () => {
     expect(resolveBbAppCommand(["stop"])).toEqual({ kind: "stop" });
     expect(resolveBbAppCommand(["stop", "now"])).toEqual({
       command: "stop",
@@ -670,7 +671,7 @@ describe("bb-app launcher", () => {
     });
   });
 
-  it("keeps CLI commands on the bb binary", () => {
+  it("rejects CLI commands passed directly to the compatibility launcher", () => {
     expect(resolveBbAppCommand(["status"])).toEqual({
       command: "status",
       kind: "invalid",
@@ -679,6 +680,28 @@ describe("bb-app launcher", () => {
       command: "thread",
       kind: "invalid",
     });
+  });
+
+  it("routes the primary Beam executable between runtime and CLI commands", () => {
+    expect(resolveBeamEntrypoint([])).toBe("launcher");
+    expect(resolveBeamEntrypoint(["--data-dir", "/tmp/beam", "start"])).toBe(
+      "launcher",
+    );
+    expect(resolveBeamEntrypoint(["env", "set", "OPENAI_API_KEY", "key"])).toBe(
+      "launcher",
+    );
+    expect(resolveBeamEntrypoint(["status"])).toBe("cli");
+    expect(resolveBeamEntrypoint(["thread", "list", "--limit", "10"])).toBe(
+      "cli",
+    );
+    expect(
+      resolveBeamEntrypoint([
+        "--server-url=https://beam.example.test",
+        "thread",
+        "list",
+      ]),
+    ).toBe("cli");
+    expect(resolveBeamEntrypoint(["--version"])).toBe("cli");
   });
 
   it("starts only the host daemon for the explicit host-daemon start command", () => {
@@ -1424,7 +1447,7 @@ describe("bb-app launcher", () => {
         "OPENAI_API_KEY",
         "test-openai-key",
       ]),
-    ).rejects.toThrow(/bb-app env set OPENAI_API_KEY/u);
+    ).rejects.toThrow(/beam env set OPENAI_API_KEY/u);
   });
 
   it("stores managed env values from the env command", async () => {
@@ -1631,9 +1654,9 @@ describe("bb-app launcher", () => {
       );
 
       expect(output).toContain(
-        "BB_LOG_LEVEL is startup-only. The running process keeps its current value; a full bb-app restart is required to apply this change. Run `bb-app stop && bb-app start`, or restart the desktop app.",
+        "BB_LOG_LEVEL is startup-only. The running process keeps its current value; a full Beam restart is required to apply this change. Run `beam stop && beam start`, or restart the desktop app.",
       );
-      expect(output).not.toContain("Reloaded running bb server config.");
+      expect(output).not.toContain("Reloaded running Beam server config.");
       expect(server.reloadRequests()).toEqual([
         expectedConfigReloadRequest(server),
       ]);
@@ -1662,9 +1685,9 @@ describe("bb-app launcher", () => {
         );
 
         expect(output).toContain(
-          `${testCase.key} is startup-only. The running process keeps its current value; a full bb-app restart is required to apply this change.`,
+          `${testCase.key} is startup-only. The running process keeps its current value; a full Beam restart is required to apply this change.`,
         );
-        expect(output).not.toContain("Reloaded running bb server config.");
+        expect(output).not.toContain("Reloaded running Beam server config.");
       }
       expect(server.reloadCount()).toBe(startupOnlyManagedEnvCases.length);
     } finally {
@@ -1695,12 +1718,12 @@ describe("bb-app launcher", () => {
       );
 
       expect(output).toContain(
-        "BB_SERVER_BIND_HOST is startup-only. The running process keeps its current value; a full bb-app restart is required to apply this change. Run `bb-app stop && bb-app start`, or restart the desktop app.",
+        "BB_SERVER_BIND_HOST is startup-only. The running process keeps its current value; a full Beam restart is required to apply this change. Run `beam stop && beam start`, or restart the desktop app.",
       );
       expect(output).toContain(
         "Until then, the server keeps its previous bind address. If it was bound to 0.0.0.0, that network exposure remains open.",
       );
-      expect(output).not.toContain("Reloaded running bb server config.");
+      expect(output).not.toContain("Reloaded running Beam server config.");
       expect(server.reloadRequests()).toEqual([
         expectedConfigReloadRequest(server),
       ]);
@@ -1727,7 +1750,7 @@ describe("bb-app launcher", () => {
         ]),
       );
 
-      expect(output).toContain("Reloaded running bb server config.");
+      expect(output).toContain("Reloaded running Beam server config.");
       expect(output).not.toContain("is startup-only");
     } finally {
       await server.close();
@@ -1790,9 +1813,9 @@ describe("bb-app launcher", () => {
         ]),
       );
 
-      expect(output).toContain("Reloaded running bb server config.");
+      expect(output).toContain("Reloaded running Beam server config.");
       expect(output).toContain(
-        "Startup-only settings currently configured (BB_FF_PLACEHOLDER, BB_LOG_LEVEL, BB_SERVER_BIND_HOST, BB_SERVER_PORT, BB_TELEMETRY) apply on the next full bb-app restart.",
+        "Startup-only settings currently configured (BB_FF_PLACEHOLDER, BB_LOG_LEVEL, BB_SERVER_BIND_HOST, BB_SERVER_PORT, BB_TELEMETRY) apply on the next full Beam restart.",
       );
     } finally {
       await server.close();
@@ -2143,12 +2166,13 @@ describe("bb-app launcher", () => {
     expect(metadata.files).toContain(
       "host-daemon/dist/bb-plugin-host-worker.mjs",
     );
+    expect(metadata.files).toContain("host-daemon/dist/beam");
     expect(metadata.files).toContain("host-daemon/dist/bb");
     expect(metadata.files).toContain("host-daemon/dist/bb-chunks");
     expect(metadata.os).toEqual(["darwin", "linux"]);
   });
 
-  it("requires the bundled CLI's chunk directory next to host-daemon/dist/bb", () => {
+  it("requires the bundled CLI executables and chunk directory", () => {
     const packageRoot = mkdtempSync(join(tmpdir(), "bb-app-artifacts-"));
     try {
       const context = resolveBbAppStartContext({
@@ -2159,6 +2183,7 @@ describe("bb-app launcher", () => {
       for (const artifact of [
         context.serverEntry,
         context.daemonEntry,
+        join(context.daemonBundleDir, "beam"),
         join(context.daemonBundleDir, "bb"),
         join(context.daemonBundleDir, "bb-provider-bridge-worker.mjs"),
         join(context.daemonBundleDir, "bb-parcel-watcher-child.mjs"),
@@ -2170,7 +2195,7 @@ describe("bb-app launcher", () => {
       }
 
       const missingChunks =
-        /^Missing bundled bb CLI chunks at .*\/host-daemon\/dist\/bb-chunks\. Rebuild bb-app/;
+        /^Missing bundled Beam CLI chunks at .*\/host-daemon\/dist\/bb-chunks\. Rebuild bb-app/;
       expect(() => assertBbAppArtifacts(context)).toThrow(missingChunks);
 
       const chunkDir = join(context.daemonBundleDir, "bb-chunks");
@@ -2184,7 +2209,7 @@ describe("bb-app launcher", () => {
     }
   });
 
-  it("prunes stale bb CLI chunks from package build output", () => {
+  it("prunes stale Beam CLI chunks from package build output", () => {
     const pruneScript = resolve(
       dirname(fileURLToPath(import.meta.url)),
       "..",

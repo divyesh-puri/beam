@@ -61,7 +61,7 @@ export function ExperimentalFileLinkMenu({
                 navigation.openFilePreview({ ...intent, viewer: "builtin" })
               }
             >
-              BB preview
+              Beam preview
             </ContextMenuItem>
             {matchingOpeners.map((opener) => (
               <ContextMenuItem

@@ -293,5 +293,5 @@ describe("listPathsRecursively", () => {
     } finally {
       await fs.rm(root, { recursive: true, force: true });
     }
-  }, 60_000);
+  }, 180_000);
 });

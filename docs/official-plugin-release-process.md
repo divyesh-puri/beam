@@ -1,6 +1,6 @@
-# Releasing BB Official plugins
+# Releasing Beam Official plugins
 
-Official plugins ship **bundled inside the BB app**. There is no separate
+Official plugins ship **bundled inside the Beam app**. There is no separate
 publish pipeline: at packaging time, `apps/server/scripts/copy-builtin-plugins.ts`
 builds every plugin declared in `BUNDLED_PLUGINS`
 (`apps/server/src/services/plugins/builtin-registry.ts`) and copies each
@@ -29,7 +29,7 @@ The official plugins are:
    version is shown in plugin management and drives startup reconciliation
    (an installed official plugin re-points to the new bundled copy when its
    version or root directory changes).
-2. Ship a normal BB app release. The packaging step rebuilds and bundles every
+2. Ship a normal Beam app release. The packaging step rebuilds and bundles every
    official plugin automatically; installed plugins pick up the new code at
    the next server start.
 
@@ -58,8 +58,8 @@ pointing at `./dist/server.js` plus the prebuilt `dist/` artifacts. Then, in a
 dev build:
 
 ```bash
-bb plugin search docs
-bb plugin install docs --yes
-bb plugin list
-bb plugin remove simple-notes
+beam plugin search docs
+beam plugin install docs --yes
+beam plugin list
+beam plugin remove simple-notes
 ```

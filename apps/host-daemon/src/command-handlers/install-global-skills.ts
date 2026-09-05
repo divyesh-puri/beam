@@ -65,7 +65,7 @@ async function replaceSkillDirectory(args: {
   await fs.mkdir(parentPath, { recursive: true });
   const stagingPath = path.join(
     parentPath,
-    `.bb-tmp-${args.name}-${process.pid}-${randomUUID()}`,
+    `.beam-tmp-${args.name}-${process.pid}-${randomUUID()}`,
   );
   try {
     await copyInjectedSkillSource({

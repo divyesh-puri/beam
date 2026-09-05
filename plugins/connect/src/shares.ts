@@ -254,13 +254,13 @@ export class ShareRegistry {
       validated === serverOwnPort(this.options.getLoopbackBaseUrl())
     ) {
       throw new SharePortError(
-        `Cannot share port ${validated}: that is the bb server's own port — the bare handle URL already serves bb`,
+        `Cannot share port ${validated}: that is the Beam server's own port — the bare handle URL already serves Beam`,
       );
     }
     const credential = this.options.getCredential();
     if (credential === null) {
       throw new SharePortError(
-        "this bb is not connected to getbb.app — run `bb connect` for how to pair",
+        "this Beam instance is not connected to Beam Connect — run `beam connect` for how to pair",
       );
     }
     if (host.isServer) this.serverHostId = host.id;
@@ -482,7 +482,7 @@ export class ShareRegistry {
 
   private unavailableReason(share: RestoredShare, error: unknown): string {
     if (error instanceof ShareHostNotFoundError) {
-      return `Host ${error.hostId} was removed. Run \`bb connect unexpose ${share.port} --host ${error.hostId}\` to prune this share.`;
+      return `Host ${error.hostId} was removed. Run \`beam connect unexpose ${share.port} --host ${error.hostId}\` to prune this share.`;
     }
     return error instanceof SharePortError
       ? error.message
@@ -499,7 +499,7 @@ export class ShareRegistry {
       const code = sharedPortErrorCode(error);
       if (code === "connect_host_unenrolled") {
         throw new SharePortError(
-          `${prefix}: this host has no bb connect machine credential. Enroll it via Connect in Settings > Machines.`,
+          `${prefix}: this host has no Beam Connect machine credential. Enroll it via Connect in Settings > Machines.`,
         );
       }
       if (code === "connect_host_offline" || code === "host_unavailable") {

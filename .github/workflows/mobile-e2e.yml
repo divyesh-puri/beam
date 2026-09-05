@@ -175,7 +175,7 @@ jobs:
         id: deriveddata-cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/Library/Developer/Xcode/DerivedData/bb-*/Build
+          path: ~/Library/Developer/Xcode/DerivedData/Beam-*/Build
           key: ${{ steps.native-key.outputs.key }}-deriveddata
 
       - name: Prebuild and install pods
@@ -194,11 +194,7 @@ jobs:
       #
       # `--device generic` builds for the generic iOS Simulator destination
       # and copies the product to `--output`; `--device <udid>` must not be
-      # used here. The app declares `associatedDomains` (universal links), and
-      # `expo run:ios` insists on a development signing identity whenever the
-      # entitlements contain `com.apple.developer.associated-domains` — even
-      # for a simulator build — which a runner without a certificate cannot
-      # provide. Simulator products need no signature, so the binary is
+      # used here. Simulator products need no signature, so the binary is
       # installed with simctl instead. DerivedData is still the default
       # location, so the cache below keeps working.
       - name: Build the Release app
@@ -227,7 +223,7 @@ jobs:
             echo "No .app product in apps/mobile/build-output"; ls -la build-output; exit 1
           fi
           xcrun simctl install "$SIMULATOR_UDID" "$app"
-          xcrun simctl listapps "$SIMULATOR_UDID" | grep -A3 app.getbb.mobile || true
+          xcrun simctl listapps "$SIMULATOR_UDID" | grep -A3 com.divyeshpuri.beam.mobile || true
 
       - name: Save CocoaPods
         if: always() && steps.build.outcome == 'success' && steps.pods-cache.outputs.cache-hit != 'true'
@@ -241,7 +237,7 @@ jobs:
         if: always() && env.CACHE_DERIVED_DATA == 'true' && steps.build.outcome == 'success' && steps.deriveddata-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/Library/Developer/Xcode/DerivedData/bb-*/Build
+          path: ~/Library/Developer/Xcode/DerivedData/Beam-*/Build
           key: ${{ steps.native-key.outputs.key }}-deriveddata
 
       # The harness backend (in-process server + host daemon, fake provider,
@@ -249,7 +245,7 @@ jobs:
       # its prerequisites (plugin SDK, native modules) first; the script
       # prints one JSON line when it is ready and keeps running.
       # Every flow drives the WebView shell, so the harness has to serve a
-      # built apps/app the way a bb server does.
+      # built apps/app the way a Beam server does.
       - name: Build the web app the shell renders
         run: pnpm exec turbo run build --filter=@bb/app
 
@@ -306,7 +302,7 @@ jobs:
       - name: Collect simulator logs
         if: always()
         run: |
-          xcrun simctl spawn "$SIMULATOR_UDID" log show --last 30m --predicate 'process == "bb"' > e2e-artifacts/simulator-bb.log 2>&1 || true
+          xcrun simctl spawn "$SIMULATOR_UDID" log show --last 30m --predicate 'process == "Beam"' > e2e-artifacts/simulator-beam.log 2>&1 || true
           cp -R "$HOME/.maestro/tests" e2e-artifacts/maestro-debug 2>/dev/null || true
 
       - name: Stop the e2e backend

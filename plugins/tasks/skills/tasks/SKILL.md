@@ -5,11 +5,11 @@ description: Use when asked to work on or track a task in the Tasks plugin, when
 
 # Tasks
 
-Use the `bb tasks` CLI to understand the assigned task, keep its record useful,
+Use the `beam tasks` CLI to understand the assigned task, keep its record useful,
 and report the outcome where the work is tracked.
 
 Delegation presets are user-defined; Tasks ships with none. Before dispatching
-work, use `bb tasks preset list` and create a preset if the required one does
+work, use `beam tasks preset list` and create a preset if the required one does
 not already exist. Dispatch requires an existing preset.
 
 Create or update the same execution selection exposed in the Tasks UI with
@@ -17,7 +17,7 @@ Create or update the same execution selection exposed in the Tasks UI with
 `--service-tier default|fast|none`:
 
 ```sh
-bb tasks preset create --name "Codex high" --provider codex \
+beam tasks preset create --name "Codex high" --provider codex \
   --model gpt-5.6-sol --reasoning high --service-tier fast \
   --permission auto
 ```
@@ -29,16 +29,16 @@ bb tasks preset create --name "Codex high" --provider codex \
 1. Find and read the task before acting:
 
    ```sh
-   bb tasks show ABC-12
+   beam tasks show ABC-12
    ```
 
    The detail includes the description, status, priority, labels, subtasks,
    comments, attachments, attached worker threads, and the GitHub pull
    requests those threads produced (from environment metadata, with state
    open/draft/merged/closed). Use
-   `bb tasks show ABC-12 --json` when the result will drive commands or code.
+   `beam tasks show ABC-12 --json` when the result will drive commands or code.
 
-   For project-wide discovery, `bb tasks list` returns at most 100 rows by
+   For project-wide discovery, `beam tasks list` returns at most 100 rows by
    default. Pass `--limit 1-500`; in JSON, continue with `nextCursor` via the
    same filters/sort and `--cursor <value>`. A task-list mutation makes an old
    cursor stale, so restart without it.
@@ -46,7 +46,7 @@ bb tasks preset create --name "Codex high" --provider codex \
 2. Fetch every relevant attachment before making assumptions about it:
 
    ```sh
-   bb tasks attachment get <attachment-id> --out <path>
+   beam tasks attachment get <attachment-id> --out <path>
    ```
 
 3. Do the work. Post one substantive comment at each meaningful milestone,
@@ -54,7 +54,7 @@ bb tasks preset create --name "Codex high" --provider codex \
    or a concrete blocker:
 
    ```sh
-   bb tasks comment ABC-12 --body "Implemented the change; focused validation now passes."
+   beam tasks comment ABC-12 --body "Implemented the change; focused validation now passes."
    ```
 
    Add `--notify` only when the new comment should be delivered to the thread
@@ -68,8 +68,8 @@ bb tasks preset create --name "Codex high" --provider codex \
    screenshots, patches, or generated files:
 
    ```sh
-   bb tasks attachment add ABC-12 --file ./report.md
-   bb tasks attachment add ABC-12 --file ./screenshot.png
+   beam tasks attachment add ABC-12 --file ./report.md
+   beam tasks attachment add ABC-12 --file ./screenshot.png
    ```
 
    Read `references/attachments.md` for comment attachments, initial files,
@@ -78,12 +78,12 @@ bb tasks preset create --name "Codex high" --provider codex \
 5. When the work is ready for review, update the task:
 
    ```sh
-   bb tasks update ABC-12 --status in_review
+   beam tasks update ABC-12 --status in_review
    ```
 
-   Change task hierarchy with `bb tasks update ABC-12 --parent ABC-10`, using
+   Change task hierarchy with `beam tasks update ABC-12 --parent ABC-10`, using
    either a task key or ID for the parent. Promote a subtask to the top level
-   with `bb tasks update ABC-12 --no-parent`; the two parent flags cannot be
+   with `beam tasks update ABC-12 --no-parent`; the two parent flags cannot be
    combined.
 
    If the work cannot proceed, leave the status accurate and comment with the
@@ -94,15 +94,15 @@ bb tasks preset create --name "Codex high" --provider codex \
    delegated from Tasks, attach it yourself so the task shows the active work:
 
    ```sh
-   bb tasks attach ABC-12
+   beam tasks attach ABC-12
    ```
 
    When a thread is done with a task (hand-off, respawned replacement, or a
-   predecessor that died), detach it so `bb tasks threads ABC-12` stays
+   predecessor that died), detach it so `beam tasks threads ABC-12` stays
    accurate. Omit `--thread` to detach the current thread:
 
    ```sh
-   bb tasks detach ABC-12 --thread thr_dead_predecessor
+   beam tasks detach ABC-12 --thread thr_dead_predecessor
    ```
 
 ## Link tasks in responses

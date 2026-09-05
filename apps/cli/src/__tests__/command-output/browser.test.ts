@@ -32,7 +32,7 @@ afterEach(async () => {
   await Promise.all(directories.splice(0).map((path) => rm(path, { force: true, recursive: true })));
 });
 
-describe("bb browser", () => {
+describe("beam browser", () => {
   it("lists the cohesive command surface without an ignored visible flag", async () => {
     const help = await getHelpOutput(["browser", "--help"], register);
     for (const command of ["open", "list", "navigate", "wait", "snapshot", "click", "type", "press", "select", "screenshot", "close"]) {
@@ -79,7 +79,7 @@ describe("bb browser", () => {
   });
 
   it("materializes screenshot bytes without printing base64", async () => {
-    const storage = await mkdtemp(join(tmpdir(), "bb-browser-cli-"));
+    const storage = await mkdtemp(join(tmpdir(), "beam-browser-cli-"));
     directories.push(storage);
     vi.stubEnv("BB_THREAD_ID", "thread_env");
     vi.stubEnv("BB_THREAD_STORAGE", storage);

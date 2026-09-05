@@ -64,30 +64,30 @@ function validateFlags(
 
 function helpText(): string {
   return [
-    "Remote access via getbb.app — this bb becomes reachable at https://<handle>.getbb.app.",
+    "Remote access via an explicitly provisioned Beam Connect service.",
     "Share HTTP ports from any enrolled host (owner session only).",
     "",
-    "  1. Sign in at https://getbb.app and claim a handle.",
+    "  1. Sign in to your Beam Connect dashboard and claim a handle.",
     "  2. Copy the connect command from the dashboard and run it here:",
-    "       bb connect --code <code> --server https://<handle>.getbb.app",
+    "       beam connect --code <code> --server https://<handle>.<connect-domain>",
     "",
-    "  bb connect status              Show remote-access status",
-    "  bb connect off                 Disconnect and forget the pairing (re-pairing needs a new code)",
-    "  bb connect expose <port> [--host <name-or-id>]    Share a port from the thread's host",
-    "  bb connect unexpose <port> [--host <name-or-id>]  Stop sharing a port on that host",
-    "  bb connect shares [--host <name-or-id>]           List shares for the thread's host",
-    "  bb connect servers             List every bb on this account (from getbb.app)",
-    "  bb connect machine-code        Mint a one-time code that enrolls the bb mobile app (or another",
-    "                                 device) as a connect machine for this bb (needs the",
+    "  beam connect status              Show remote-access status",
+    "  beam connect off                 Disconnect and forget the pairing (re-pairing needs a new code)",
+    "  beam connect expose <port> [--host <name-or-id>]    Share a port from the thread's host",
+    "  beam connect unexpose <port> [--host <name-or-id>]  Stop sharing a port on that host",
+    "  beam connect shares [--host <name-or-id>]           List shares for the thread's host",
+    "  beam connect servers             List every Beam on this Connect account",
+    "  beam connect machine-code        Mint a one-time code that enrolls the Beam mobile app (or another",
+    "                                 device) as a connect machine for this Beam instance (needs the",
     '                                 "Mobile app" experiment in Settings → Experiments)',
     "",
-    "The server holds the tunnel; it stays up while bb is running.",
+    "The server holds the tunnel; it stays up while Beam is running.",
   ].join("\n");
 }
 
 function formatStatus(status: ConnectStatus): string {
   if (!status.paired) {
-    return "Not paired\nPair from the getbb.app dashboard — run `bb connect` for a how-to.";
+    return "Not paired\nPair from your Beam Connect dashboard — run `beam connect` for a how-to.";
   }
   const lines = [`${status.handle}  ${status.url}  ${status.state}`];
   if (status.lastError !== null && status.state !== "connected") {
@@ -109,7 +109,7 @@ function asJson(value: unknown): string {
 }
 
 function notPairedError(): string {
-  return "this bb is not connected to getbb.app — run `bb connect` for how to pair";
+  return "this Beam instance is not connected to Beam Connect — run `beam connect` for how to pair";
 }
 
 function machineCodeErrorText(
@@ -127,7 +127,7 @@ function machineCodeErrorText(
 }
 
 function mobilePairingDisabledError(): string {
-  return 'mobile pairing is off — turn on the "Mobile app" experiment in Settings → Experiments (or `bb settings experiment mobileApp true`), then run this again';
+  return 'mobile pairing is off — turn on the "Mobile app" experiment in Settings → Experiments (or `beam settings experiment mobileApp true`), then run this again';
 }
 
 function formatMachineCode(payload: MobilePairingPayload): string {
@@ -141,9 +141,9 @@ function formatMachineCode(payload: MobilePairingPayload): string {
     `Apex:       ${payload.apex}`,
     `Expires:    ${new Date(payload.expiresAt).toISOString()} (in about ${minutes} min)`,
     "",
-    "Enter the code in the bb mobile app when it asks to pair over bb connect (or",
+    "Enter the code in the Beam mobile app when it asks to pair over Beam Connect (or",
     "scan the QR code from Settings → Remote access → Add mobile device). The phone",
-    "enrolls as a connect machine on this account — it appears in the getbb.app",
+    "enrolls as a connect machine on this account — it appears in your Beam Connect",
     "dashboard's machine list, where you can revoke it. The code works once.",
   ].join("\n");
 }
@@ -158,43 +158,43 @@ export function registerConnectCli(args: {
   bb.cli.register({
     name: "connect",
     summary:
-      "Expose this bb at https://<handle>.getbb.app (pair with --code/--server from the dashboard)",
+      "Expose this Beam instance through a provisioned Beam Connect service (pair with --code/--server from the dashboard)",
     commands: [
       {
         name: "status",
         summary: "Show remote-access status",
-        usage: "bb connect status [--json]",
+        usage: "beam connect status [--json]",
       },
       {
         name: "off",
         summary: "Disconnect and forget the pairing",
-        usage: "bb connect off [--json]",
+        usage: "beam connect off [--json]",
       },
       {
         name: "expose",
         summary: "Share an HTTP port from an enrolled host",
-        usage: "bb connect expose <port> [--host <name-or-id>] [--json]",
+        usage: "beam connect expose <port> [--host <name-or-id>] [--json]",
       },
       {
         name: "unexpose",
         summary: "Stop sharing an HTTP port from a host",
-        usage: "bb connect unexpose <port> [--host <name-or-id>] [--json]",
+        usage: "beam connect unexpose <port> [--host <name-or-id>] [--json]",
       },
       {
         name: "shares",
         summary: "List shared ports and their public URLs",
-        usage: "bb connect shares [--host <name-or-id>] [--json]",
+        usage: "beam connect shares [--host <name-or-id>] [--json]",
       },
       {
         name: "servers",
-        summary: "List every bb server on this account",
-        usage: "bb connect servers [--json]",
+        summary: "List every Beam server on this account",
+        usage: "beam connect servers [--json]",
       },
       {
         name: "machine-code",
         summary:
-          'Mint a one-time code that enrolls the bb mobile app as a connect machine (needs the "Mobile app" experiment)',
-        usage: "bb connect machine-code [--json]",
+          'Mint a one-time code that enrolls the Beam mobile app as a connect machine (needs the "Mobile app" experiment)',
+        usage: "beam connect machine-code [--json]",
       },
     ],
     async run(argv, ctx): Promise<PluginCliResult> {
@@ -228,7 +228,7 @@ export function registerConnectCli(args: {
             return {
               exitCode: 1,
               stderr:
-                "Usage: bb connect expose <port> [--host <name-or-id>] [--json]\n",
+                "Usage: beam connect expose <port> [--host <name-or-id>] [--json]\n",
             };
           }
           const parsed = parseFlags(argv.slice(2));
@@ -258,7 +258,7 @@ export function registerConnectCli(args: {
             return {
               exitCode: 1,
               stderr:
-                "Usage: bb connect unexpose <port> [--host <name-or-id>] [--json]\n",
+                "Usage: beam connect unexpose <port> [--host <name-or-id>] [--json]\n",
             };
           }
           const parsed = parseFlags(argv.slice(2));
@@ -396,7 +396,7 @@ export function registerConnectCli(args: {
           exitCode: 0,
           stdout:
             `Paired as ${status.handle} — reachable at ${status.url}\n` +
-            "The server holds the tunnel; it stays up while bb is running.\n",
+            "The server holds the tunnel; it stays up while Beam is running.\n",
         };
       } catch (error) {
         return {

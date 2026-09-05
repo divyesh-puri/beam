@@ -60,7 +60,7 @@ describe("reset-bb-data", () => {
         repoRoot,
       }),
     ]);
-    expect(targets).not.toContain(join(os.homedir(), ".bb-dev"));
+    expect(targets).not.toContain(join(os.homedir(), ".beam-dev"));
   });
 
   it("lets BB_DATA_DIR override the production target for --all", () => {

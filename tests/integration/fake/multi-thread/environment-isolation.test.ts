@@ -167,7 +167,7 @@ describe.sequential("fake provider environment-isolation multi-thread integratio
             cwd: harness.repoDir,
           })
         ).trim(),
-      ).toBe("bb: automated commit");
+      ).toBe("beam: automated commit");
       expect(
         (
           await runGit({
@@ -175,7 +175,7 @@ describe.sequential("fake provider environment-isolation multi-thread integratio
             cwd: secondRepoDir,
           })
         ).trim(),
-      ).toBe("bb: automated commit");
+      ).toBe("beam: automated commit");
     }));
 
   it("runs two isolated bb instances concurrently without cross-contamination", async () => {
@@ -266,7 +266,7 @@ describe.sequential("fake provider environment-isolation multi-thread integratio
             cwd: harnessA.repoDir,
           })
         ).trim(),
-      ).toBe("bb: automated commit");
+      ).toBe("beam: automated commit");
       expect(
         (
           await runGit({
@@ -274,7 +274,7 @@ describe.sequential("fake provider environment-isolation multi-thread integratio
             cwd: harnessB.repoDir,
           })
         ).trim(),
-      ).toBe("bb: automated commit");
+      ).toBe("beam: automated commit");
       await expect(
         fs.access(path.join(harnessB.repoDir, "instance-a.txt")),
       ).rejects.toThrow();

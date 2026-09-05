@@ -188,7 +188,7 @@ export function WorkspacePath() {
         <RowStage>
           <WorkspacePathRow
             environment={makeEnvironment({
-              path: "/Users/michael/.bb-dev/worktrees/env_demo/bb",
+              path: "/Users/michael/.beam-dev/worktrees/env_demo/beam",
             })}
           />
         </RowStage>
@@ -197,7 +197,7 @@ export function WorkspacePath() {
         <RowStage>
           <WorkspacePathRow
             environment={makeEnvironment({
-              path: "/Users/michael/.bb-dev/worktrees/env_7m3cieyz6q/bb/apps/app/src/components/right-panel",
+              path: "/Users/michael/.beam-dev/worktrees/env_7m3cieyz6q/beam/apps/app/src/components/right-panel",
             })}
           />
         </RowStage>
@@ -217,7 +217,7 @@ export function WorkspacePath() {
         <RowStage>
           <WorkspacePathRow
             environment={makeEnvironment({
-              path: "/Users/michael/Projects/bb",
+              path: "/Users/michael/Projects/beam",
               isWorktree: false,
               workspaceProvisionType: "personal",
             })}

@@ -195,7 +195,7 @@ function PluginDetailToolView({ pluginId }: { pluginId: string }) {
     onSuccess: (_data, deletedPlugin) => {
       appToast.success(
         pluginIsLocalSource(deletedPlugin)
-          ? "Plugin removed from bb"
+          ? "Plugin removed from Beam"
           : "Plugin uninstalled",
       );
       setDeleteTarget(null);
@@ -349,7 +349,7 @@ function PluginDetailToolView({ pluginId }: { pluginId: string }) {
               <ConfirmDeleteDialogContent
                 title={
                   pluginIsLocalSource(deleteTarget)
-                    ? "Remove plugin from bb?"
+                    ? "Remove plugin from Beam?"
                     : "Uninstall plugin?"
                 }
                 description={pluginRemovalDescription(deleteTarget)}

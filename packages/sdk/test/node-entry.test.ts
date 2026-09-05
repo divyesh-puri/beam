@@ -8,7 +8,7 @@ afterEach(() => {
 
 describe("@bb/sdk/node entry", () => {
   it(
-    "imports and builds explicit SDKs without BB server configuration",
+    "imports and builds explicit SDKs without Beam server configuration",
     async () => {
       vi.stubEnv("BB_SERVER_URL", undefined);
       vi.stubEnv("BB_HOST_DAEMON_PORT", undefined);

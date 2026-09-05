@@ -1,10 +1,8 @@
 name: Deploy Demo Server
 
-# The bb demo server is the mock bb server an App Store reviewer connects to
-# (apps/demo-server). It has no database, no secrets, and no route of its
-# own, so this is the short form of deploy-connect.yml: install, typecheck
-# and test, deploy. It serves from workers.dev; see the wrangler config for
-# why it is not on demo.getbb.app.
+# This inherited upstream deployment is intentionally disabled in the Beam
+# fork. The Beam demo server has no database, secrets, workers.dev endpoint, or
+# custom route until Beam-owned distribution infrastructure is provisioned.
 #
 # Paths: the worker bundles @bb/server-contract from source, and the
 # contract is what its tests check the fixtures against, so a contract change
@@ -36,7 +34,8 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy demo server to Cloudflare Workers
+    if: ${{ github.repository == 'get-bb/bb' }}
+    name: Deploy upstream demo server to Cloudflare Workers
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
 
@@ -65,16 +64,15 @@ jobs:
       - name: Typecheck and test
         run: pnpm exec turbo run typecheck test --filter=@bb/demo-server
 
-      # No build step: wrangler's esbuild bundles the worker and its workspace
-      # dependency straight from source. The account is pinned in
-      # wrangler.jsonc, so the token never has to pick one.
+      # No build step: Wrangler's esbuild bundles the worker and its workspace
+      # dependency straight from source. This inherited upstream-only workflow
+      # is disabled in the Beam fork.
       - name: Deploy demo server
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: pnpm --filter @bb/demo-server exec wrangler deploy | tee deploy.log
 
-      # The workers.dev URL is what goes in the App Store review notes. Surface
-      # it on the run so nobody has to open the Cloudflare dashboard for it.
+      # Preserve the inherited upstream job's deployment summary.
       - name: Report the URL
         run: |
           {

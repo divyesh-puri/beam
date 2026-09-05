@@ -754,7 +754,7 @@ async function writeFileAtomically(
   label: string,
   content: string,
 ): Promise<void> {
-  const suffix = `${process.pid}-${randomBytes(6).toString("hex")}.bb-tmp`;
+  const suffix = `${process.pid}-${randomBytes(6).toString("hex")}.beam-tmp`;
   const tempPath = `${filePath}.${suffix}`;
   if (await pathExists(tempPath)) {
     throw new Error(
@@ -783,7 +783,7 @@ function enginesRange(bbVersion: string): string {
 }
 
 function registryRef(bbVersion: string): string {
-  return bbVersion === "0.0.0" ? "main" : `desktop-v${bbVersion}`;
+  return bbVersion === "0.0.0" ? "main" : `beam-desktop-v${bbVersion}`;
 }
 
 function componentsJsonSource(bbVersion: string): string {
@@ -806,7 +806,7 @@ function componentsJsonSource(bbVersion: string): string {
         hooks: "@/hooks",
       },
       registries: {
-        "@bb": `https://raw.githubusercontent.com/get-bb/bb/${registryRef(bbVersion)}/packages/plugin-registry/r/{name}.json`,
+        "@bb": `https://raw.githubusercontent.com/divyesh-puri/beam/${registryRef(bbVersion)}/packages/plugin-registry/r/{name}.json`,
       },
     },
     null,
@@ -817,13 +817,13 @@ function componentsJsonSource(bbVersion: string): string {
 function serverEntrySource(packageName: string): string {
   const id = derivePluginId(packageName);
   const name = pluginNameOf(packageName);
-  return `// ${packageName} — a BB plugin backend entry.
+  return `// ${packageName} — a Beam plugin backend entry.
 //
-// The default export is a factory that receives the plugin API. BB supplies
+// The default export is a factory that receives the plugin API. Beam supplies
 // the tiny defineRpcContract runtime helper; the API type remains type-only.
 //
 // The example is a todo list. One store in bb.storage.kv serves three
-// surfaces: the Example todos page (app.tsx, over RPC), the \`bb ${id}\` CLI
+// surfaces: the Example todos page (app.tsx, over RPC), the \`beam ${id}\` CLI
 // command (below), and the skill in skills/example-todos/SKILL.md that tells
 // agents how to use that command. A write from any surface publishes a realtime signal so
 // every open page refetches.
@@ -866,8 +866,8 @@ const TODOS_CHANGED = "todos-changed";
 export default async function plugin(bb: BbPluginApi) {
   bb.log.info("loaded");
 
-  // Declarative settings — rendered in BB's settings UI and editable with
-  // \`bb plugin config ${id}\`. Add \`secret: true\` for values like API keys.
+  // Declarative settings — rendered in Beam's settings UI and editable with
+  // \`beam plugin config ${id}\`. Add \`secret: true\` for values like API keys.
   // Settings are read once per load: reload the plugin after changing one.
   const settings = bb.settings.define({
     showDone: {
@@ -930,16 +930,16 @@ export default async function plugin(bb: BbPluginApi) {
     todos_remove: async ({ id }) => ({ removed: await removeTodo(id) }),
   });
 
-  // The \`bb ${id}\` command: what agents (and you) use from a shell. Parsing
-  // argv is plugin-owned; \`commands\` is metadata BB renders into help and
+  // The \`beam ${id}\` command: what agents (and you) use from a shell. Parsing
+  // argv is plugin-owned; \`commands\` is metadata Beam renders into help and
   // the generated plugin-commands skill without running plugin code.
   const usage = [
     "Usage:",
-    "  bb ${id} list [--json]",
-    "  bb ${id} add <title> [--json]",
-    "  bb ${id} done <todo-id> [--json]",
-    "  bb ${id} undo <todo-id> [--json]",
-    "  bb ${id} remove <todo-id> [--json]",
+    "  beam ${id} list [--json]",
+    "  beam ${id} add <title> [--json]",
+    "  beam ${id} done <todo-id> [--json]",
+    "  beam ${id} undo <todo-id> [--json]",
+    "  beam ${id} remove <todo-id> [--json]",
   ].join("\\n");
   function formatTodo(todo: Todo): string {
     return \`[\${todo.done ? "x" : " "}] \${todo.id}  \${todo.title}\`;
@@ -948,26 +948,26 @@ export default async function plugin(bb: BbPluginApi) {
     name: "${id}",
     summary: "Manage the ${name} plugin's example todo list",
     commands: [
-      { name: "list", summary: "List todos", usage: "bb ${id} list [--json]" },
+      { name: "list", summary: "List todos", usage: "beam ${id} list [--json]" },
       {
         name: "add",
         summary: "Add a todo",
-        usage: "bb ${id} add <title> [--json]",
+        usage: "beam ${id} add <title> [--json]",
       },
       {
         name: "done",
         summary: "Mark a todo done",
-        usage: "bb ${id} done <todo-id> [--json]",
+        usage: "beam ${id} done <todo-id> [--json]",
       },
       {
         name: "undo",
         summary: "Mark a todo not done",
-        usage: "bb ${id} undo <todo-id> [--json]",
+        usage: "beam ${id} undo <todo-id> [--json]",
       },
       {
         name: "remove",
         summary: "Remove a todo",
-        usage: "bb ${id} remove <todo-id> [--json]",
+        usage: "beam ${id} remove <todo-id> [--json]",
       },
     ],
     async run(argv) {
@@ -979,7 +979,7 @@ export default async function plugin(bb: BbPluginApi) {
       });
       const notFound = (missingId: string) => ({
         exitCode: 1,
-        stderr: \`No todo with id \${missingId}. Run "bb ${id} list" to see ids.\`,
+        stderr: \`No todo with id \${missingId}. Run "beam ${id} list" to see ids.\`,
       });
       const todoId = args[0];
       switch (command) {
@@ -1047,17 +1047,17 @@ export default async function plugin(bb: BbPluginApi) {
 
 function appEntrySource(packageName: string): string {
   const id = derivePluginId(packageName);
-  return `// ${packageName} — a BB plugin frontend entry.
+  return `// ${packageName} — a Beam plugin frontend entry.
 //
-// Compiled by \`bb plugin build\` into dist/app.js + dist/app.css. React and
-// @get-bb/plugin-sdk/app are provided by the BB app at load time (never bundled),
-// so this file must be loaded by BB, not imported directly.
+// Compiled by \`beam plugin build\` into dist/app.js + dist/app.css. React and
+// @get-bb/plugin-sdk/app are provided by the Beam app at load time (never bundled),
+// so this file must be loaded by Beam, not imported directly.
 //
 // The components under components/ui/ are YOURS: vendored source (shadcn
-// model), edit freely. Add more from the BB registry with
+// model), edit freely. Add more from the Beam registry with
 // \`npx shadcn add @bb/<name>\` (see components.json) — dropdowns, tables,
-// the full shadcn set, version-matched to this BB install. Run
-// \`npm install\` once before \`bb plugin build\`.
+// the full shadcn set, version-matched to this Beam install. Run
+// \`npm install\` once before \`beam plugin build\`.
 import { useCallback, useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { definePluginApp, useRealtime, useRpc } from "@get-bb/plugin-sdk/app";
@@ -1086,7 +1086,7 @@ function useTodos() {
     refetch();
   }, [refetch]);
   // server.ts publishes after every write — from this page, another window,
-  // or \`bb ${id} add\` run by an agent — so the list never goes stale.
+  // or \`beam ${id} add\` run by an agent — so the list never goes stale.
   useRealtime("todos-changed", refetch);
   return { rpc, todos, error, report, refetch };
 }
@@ -1131,7 +1131,7 @@ function TodoRow({
   );
 }
 
-/** The dashed box BB's own list pages use for loading and empty states. */
+/** The dashed box Beam's own list pages use for loading and empty states. */
 function EmptyState({ children }: { children: ReactNode }) {
   return (
     <div
@@ -1145,7 +1145,7 @@ function EmptyState({ children }: { children: ReactNode }) {
 
 // Tailwind classes compile against the host theme's live CSS variables —
 // derive colors from the theme tokens, never hardcoded grays. The frame
-// (scrolling page, centered column) matches BB's own nav-panel pages.
+// (scrolling page, centered column) matches Beam's own nav-panel pages.
 function TodosPage() {
   const { rpc, todos, error, report, refetch } = useTodos();
   const [title, setTitle] = useState("");
@@ -1170,7 +1170,7 @@ function TodosPage() {
     <div className="h-full min-h-0 flex-1 overflow-y-auto">
       <div className="mx-auto box-border w-full max-w-3xl px-4 pb-4 pt-3 md:px-5 md:pt-4">
         <p className="text-sm text-muted-foreground">
-          Agents keep this list with <code>bb ${id}</code>; the skill in{" "}
+          Agents keep this list with <code>beam ${id}</code>; the skill in{" "}
           <code>skills/example-todos</code> tells them how.
         </p>
         <form onSubmit={add} className="mt-4 flex items-center gap-2">
@@ -1196,7 +1196,7 @@ function TodosPage() {
           ) : todos.length === 0 ? (
             <EmptyState>
               Nothing to do. Add one above, or run{" "}
-              <code>bb ${id} add "Ship it"</code>.
+              <code>beam ${id} add "Ship it"</code>.
             </EmptyState>
           ) : (
             <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card px-4">
@@ -1229,10 +1229,10 @@ function TodosPage() {
   );
 }
 
-// The default export must be definePluginApp(...); BB interprets it after
+// The default export must be definePluginApp(...); Beam interprets it after
 // loading the bundle. navPanel adds a page to the left sidebar; register
 // other UI under app.slots and composer actions, plus-menu rows, banners, or
-// rich-text rules with app.composer.customize(...) (see the bb guide's
+// rich-text rules with app.composer.customize(...) (see the beam guide's
 // plugins chapter).
 export default definePluginApp((app) => {
   app.slots.navPanel({
@@ -1275,34 +1275,34 @@ function skillSource(packageName: string): string {
   const name = pluginNameOf(packageName);
   return `---
 name: example-todos
-description: Read and update the ${name} plugin's example todo list with the \`bb ${id}\` CLI. Use when the user asks to add, complete, reopen, remove, or review todos, or when the steps of a task should be tracked as todos.
+description: Read and update the ${name} plugin's example todo list with the \`beam ${id}\` CLI. Use when the user asks to add, complete, reopen, remove, or review todos, or when the steps of a task should be tracked as todos.
 ---
 
 # Example todos
 
-The ${name} plugin keeps one todo list. The Example todos page in the BB sidebar and
-the \`bb ${id}\` command read and write the same list, so a change from either
+The ${name} plugin keeps one todo list. The Example todos page in the Beam sidebar and
+the \`beam ${id}\` command read and write the same list, so a change from either
 side shows in the other at once.
 
 ## Commands
 
 | Command | Effect |
 | --- | --- |
-| \`bb ${id} list\` | Show every todo with its id. \`[x]\` marks a done todo. |
-| \`bb ${id} add <title>\` | Add a todo. Quote a title that has spaces. |
-| \`bb ${id} done <todo-id>\` | Mark a todo done. |
-| \`bb ${id} undo <todo-id>\` | Mark a todo not done. |
-| \`bb ${id} remove <todo-id>\` | Delete a todo. |
+| \`beam ${id} list\` | Show every todo with its id. \`[x]\` marks a done todo. |
+| \`beam ${id} add <title>\` | Add a todo. Quote a title that has spaces. |
+| \`beam ${id} done <todo-id>\` | Mark a todo done. |
+| \`beam ${id} undo <todo-id>\` | Mark a todo not done. |
+| \`beam ${id} remove <todo-id>\` | Delete a todo. |
 
 Add \`--json\` to any command when the output drives code.
 
 ## Procedure
 
-1. Run \`bb ${id} list\` before you change the list. Use the ids it prints;
+1. Run \`beam ${id} list\` before you change the list. Use the ids it prints;
    never guess an id.
 2. Add todos one at a time with a short title that starts with a verb:
-   \`bb ${id} add "Write the release notes"\`.
-3. When you finish a todo, mark it done: \`bb ${id} done <todo-id>\`. Do not
+   \`beam ${id} add "Write the release notes"\`.
+3. When you finish a todo, mark it done: \`beam ${id} done <todo-id>\`. Do not
    remove a todo to mark it done.
 4. Remove a todo only when the user asks for it or when it duplicates
    another todo.
@@ -1310,10 +1310,10 @@ Add \`--json\` to any command when the output drives code.
 
 ## Rules
 
-- Change the list only through \`bb ${id}\`. Do not edit bb.db or the plugin's
+- Change the list only through \`beam ${id}\`. Do not edit bb.db or the plugin's
   storage directly.
 - A non-zero exit with "No todo with id" means the id is stale: run
-  \`bb ${id} list\` again.
+  \`beam ${id} list\` again.
 `;
 }
 
@@ -1321,37 +1321,37 @@ function readmeSource(packageName: string): string {
   const id = derivePluginId(packageName);
   return `# ${packageName}
 
-A BB plugin that keeps a todo list. It shows every surface a plugin can own:
+A Beam plugin that keeps a todo list. It shows every surface a plugin can own:
 
 - \`server.ts\` — the backend: a todo store in \`bb.storage.kv\`, RPC methods
-  for the page, a \`bb ${id}\` CLI command, a setting, and a realtime signal
+  for the page, a \`beam ${id}\` CLI command, a setting, and a realtime signal
   that keeps every open page current.
 - \`app.tsx\` — the frontend: an **Example todos** page in the left sidebar
   (\`app.slots.navPanel\`) built from the vendored components.
 - \`skills/example-todos/SKILL.md\` — a skill that tells agents how to keep the list
-  with \`bb ${id}\`. BB imports it into agent threads automatically.
+  with \`beam ${id}\`. Beam imports it into agent threads automatically.
 
 Try it: install the plugin, open **Example todos** in the sidebar, then run
-\`bb ${id} add "Ship it"\` in a terminal. The page updates at once.
+\`beam ${id} add "Ship it"\` in a terminal. The page updates at once.
 
 ## UI components
 
 \`components/ui/\` is vendored source you own (the shadcn model): edit the
-files freely — they never update out from under you. Add more from the BB
-component registry (the full shadcn set, version-matched to your BB install
+files freely — they never update out from under you. Add more from the Beam
+component registry (the full shadcn set, version-matched to your Beam install
 via the pinned ref in \`components.json\`):
 
 \`\`\`
 npx shadcn add @bb/select @bb/table
 \`\`\`
 
-Run \`npm install\` once before \`bb plugin build\` — the vendored components'
-npm deps bundle into your dist. React, and BB-shimmed packages like the
+Run \`npm install\` once before \`beam plugin build\` — the vendored components'
+npm deps bundle into your dist. React, and Beam-shimmed packages like the
 radix portal primitives and \`sonner\` (\`import { toast } from "sonner"\`
-reaches BB's own toaster), are provided by the BB app at runtime and never
+reaches Beam's own toaster), are provided by the Beam app at runtime and never
 bundled. Every shimmed package is declared in \`devDependencies\` at the
 host's version so those imports typecheck; keep them there (never in
-\`dependencies\`, which would bundle a second copy), and \`bb plugin types\`
+\`dependencies\`, which would bundle a second copy), and \`beam plugin types\`
 repins them alongside the SDK. Ship \`dist/\` (npm tarball or committed for
 git installs) so people installing your plugin never need npm.
 
@@ -1362,25 +1362,25 @@ git installs) so people installing your plugin never need npm.
 - \`bb.server\` — backend entry (required).
 - \`bb.app\` — frontend entry. Delete it, \`app.tsx\`, \`components/\`,
   \`hooks/\`, and \`lib/\` for a headless plugin.
-- \`bb.skills\` — skill roots; omitted here, so BB reads \`skills/\`. Each
+- \`bb.skills\` — skill roots; omitted here, so Beam reads \`skills/\`. Each
   directory with a \`SKILL.md\` is one skill, named after the directory.
 - \`bb.name\` and \`bb.description\` — required human-facing identity.
-- \`bb.branding\` — required; declare \`icon\` as a BB icon name or a
+- \`bb.branding\` — required; declare \`icon\` as a Beam icon name or a
   plugin-relative compact SVG, or declare \`logo.light\` (with optional
   \`logo.dark\`). Logo assets must be relative \`.svg\`, \`.png\`, or
   \`.webp\` files.
-- \`engines.bb\` — supported bb app version range.
+- \`engines.bb\` — supported Beam app version range.
 - \`engines.bbPluginSdk\` — the lowest plugin SDK you need (scaffold:
-  \`>=${PLUGIN_SDK_VERSION}\`). BB reads this as a floor, not a ceiling: a later
+  \`>=${PLUGIN_SDK_VERSION}\`). Beam reads this as a floor, not a ceiling: a later
   SDK in the same major still loads your plugin.
-- \`dependencies\` — every package your source imports that BB does not provide.
-  \`bb plugin build\` inlines them into \`dist/\`, and git installs resolve this
+- \`dependencies\` — every package your source imports that Beam does not provide.
+  \`beam plugin build\` inlines them into \`dist/\`, and git installs resolve this
   list alone, so a build-required package here rather than in
   \`devDependencies\` is what keeps your plugin installable. \`devDependencies\`
-  is for types and tooling only (BB shims React, the portal primitives, and
+  is for types and tooling only (Beam shims React, the portal primitives, and
   \`@get-bb/plugin-sdk\` at runtime — never bundle them).
 
-Run \`bb plugin build\` before publishing git/npm installs. It writes
+Run \`beam plugin build\` before publishing git/npm installs. It writes
 \`dist/server.js\` + \`server.meta.json\` and \`app.js\` / \`app.css\` /
 \`app.meta.json\`. Each \`*.meta.json\` stamps SDK major/version,
 \`artifactFormatVersion\`, \`pluginId\`, \`pluginVersion\`, and
@@ -1388,34 +1388,34 @@ Run \`bb plugin build\` before publishing git/npm installs. It writes
 
 ## Install
 
-From this directory (\`bb plugin new\` already ran the install; a fresh clone
+From this directory (\`beam plugin new\` already ran the install; a fresh clone
 needs it):
 
 \`\`\`
 npm install
-bb plugin install .
+beam plugin install .
 \`\`\`
 
 After editing sources, reload:
 
 \`\`\`
-bb plugin reload ${id}
+beam plugin reload ${id}
 \`\`\`
 
-Or let \`bb plugin dev\` rebuild and reload on every save.
+Or let \`beam plugin dev\` rebuild and reload on every save.
 
 ## Configure
 
 \`\`\`
-bb plugin config ${id}
-bb plugin config ${id} set showDone false
-bb plugin reload ${id}
+beam plugin config ${id}
+beam plugin config ${id} set showDone false
+beam plugin reload ${id}
 \`\`\`
 
 ## Types & API reference
 
 The plugin API ships as the npm package \`@get-bb/plugin-sdk\`, pinned to an
-exact version in \`devDependencies\` (\`${PLUGIN_SDK_VERSION}\` — the SDK of the BB
+exact version in \`devDependencies\` (\`${PLUGIN_SDK_VERSION}\` — the SDK of the Beam
 that scaffolded this plugin). After \`npm install\`, the full surface is on disk
 at:
 
@@ -1428,19 +1428,19 @@ Your editor and \`tsc\` resolve \`@get-bb/plugin-sdk\` there through ordinary no
 resolution — no path mapping. These are readable declarations: open them for an
 exact signature.
 
-The SDK surface grows with every BB release, so the pin has to track the BB you
+The SDK surface grows with every Beam release, so the pin has to track the Beam you
 actually run:
 
 \`\`\`
-bb plugin types          # sync this plugin's SDK surface to the running BB
-bb plugin types --check  # CI: fail when it does not match
+beam plugin types          # sync this plugin's SDK surface to the running Beam
+beam plugin types --check  # CI: fail when it does not match
 \`\`\`
 
-Ask BB to write plugins for you: the \`bb-plugin-authoring\` skill documents
+Ask Beam to write plugins for you: the \`beam-plugin-authoring\` skill documents
 the whole surface with examples.
 
-Confused by the API, or need something the types don't explain? Clone the BB
-repo and read the source: <https://github.com/get-bb/bb>.
+Confused by the API, or need something the types don't explain? Clone the Beam
+repo and read the source: <https://github.com/divyesh-puri/beam>.
 `;
 }
 
@@ -1467,7 +1467,7 @@ export async function scaffoldPlugin(args: ScaffoldPluginArgs): Promise<void> {
         },
         bb: {
           name: pluginNameOf(packageName),
-          description: "A BB plugin with an example todo list.",
+          description: "A Beam plugin with an example todo list.",
           branding: { icon: "ListTodo" },
           server: "./server.ts",
           app: "./app.tsx",

@@ -302,7 +302,7 @@ jobs:
           echo "version=${nightly_version}" >> "$GITHUB_OUTPUT"
           echo "Prepared bb-app and desktop version ${nightly_version}."
 
-      # bb-app's prepack hook prunes stale bb CLI chunks immediately before
+      # bb-app's prepack hook prunes stale compatibility CLI chunks immediately before
       # `npm publish` packs the built output selected by its `files` list.
       # This job runs on a fresh runner, so it must build before it packs.
       # smoke:tarball depends on build and also proves the packed tarball

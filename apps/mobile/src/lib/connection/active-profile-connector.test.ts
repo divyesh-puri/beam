@@ -34,7 +34,7 @@ const direct: DirectServerProfile = {
 const connect: ConnectServerProfile = {
   id: "c1",
   mode: "connect",
-  serverUrl: "https://bee.getbb.app",
+  serverUrl: "https://bee.connect.beam.invalid",
   label: "bee",
   handle: "bee",
   credential: "bbcm_one",
@@ -130,7 +130,7 @@ function sessionCookie(value: string): DesktopSession {
     cookie: {
       name: "bb_desktop_session",
       value,
-      domain: ".getbb.app",
+      domain: ".connect.beam.invalid",
       expiresAt: Date.now() + 3_600_000,
     },
   };
@@ -214,14 +214,14 @@ describe("createActiveProfileConnector", () => {
       cookie: {
         name: "bb_desktop_session",
         value: "s",
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         expiresAt: Date.now() + 3_600_000,
       },
     });
     await flush();
     expect(connector.getSnapshot()?.session.status).toBe("authenticated");
     expect(sockets.sockets).toHaveLength(1);
-    expect(sockets.latest().url).toBe("wss://bee.getbb.app/ws");
+    expect(sockets.latest().url).toBe("wss://bee.connect.beam.invalid/ws");
   });
 
   it("closes the socket and stops when the credential is rejected, and rebuilds on a new credential", async () => {
@@ -230,7 +230,7 @@ describe("createActiveProfileConnector", () => {
       cookie: {
         name: "bb_desktop_session",
         value: "s",
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         expiresAt: Date.now() + 3_600_000,
       },
     });
@@ -251,7 +251,7 @@ describe("createActiveProfileConnector", () => {
       cookie: {
         name: "bb_desktop_session",
         value: "s2",
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         expiresAt: Date.now() + 3_600_000,
       },
     });
@@ -526,7 +526,7 @@ describe("createActiveProfileConnector", () => {
       cookie: {
         name: "bb_desktop_session",
         value: "s",
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         expiresAt: Date.now() + 3_600_000,
       },
     });

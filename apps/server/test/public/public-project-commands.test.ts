@@ -652,7 +652,7 @@ describe("public project command typeahead route", () => {
     });
   });
 
-  it("keeps inherited bb skill roots out of provider-native discovery", async () => {
+  it("keeps inherited Beam skill roots out of provider-native discovery", async () => {
     await withTestHarness(
       {
         inheritedSkillsRootPaths: ["/tmp/bb-parent-skills"],
@@ -783,7 +783,9 @@ describe("public project command typeahead route", () => {
       const stub = registerCommandRpc(harness, {
         hostId: host.id,
         sessionId: session.id,
-        commands: [skill("bb-cli", "user", { description: "Use the bb CLI" })],
+        commands: [
+          skill("beam-cli", "user", { description: "Use the Beam CLI" }),
+        ],
       });
 
       const response = await harness.app.request(
@@ -794,7 +796,7 @@ describe("public project command typeahead route", () => {
       const body = commandListResponseSchema.parse(await readJson(response));
       expect(body.commands.map((command) => command.name)).toEqual([
         "compact",
-        "bb-cli",
+        "beam-cli",
       ]);
       expect(stub.requests[0]?.command).toEqual({
         type: "host.list_commands",

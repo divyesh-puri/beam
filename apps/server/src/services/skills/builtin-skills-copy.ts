@@ -13,7 +13,7 @@ interface ResolveBuiltinSkillsRootPathArgs {
 }
 
 export const BUILTIN_SKILLS_DIRECTORY_NAME = "builtin-skills";
-const BUILTIN_SKILLS_SENTINEL_PATH = path.join("bb-cli", "SKILL.md");
+const BUILTIN_SKILLS_SENTINEL_PATH = path.join("beam-cli", "SKILL.md");
 const BUILTIN_SKILLS_COPY_MODE = fsConstants.COPYFILE_FICLONE;
 const builtinSkillsModuleDir = path.dirname(fileURLToPath(import.meta.url));
 

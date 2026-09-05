@@ -150,19 +150,19 @@ const CLIENT_UNAVAILABLE_MESSAGES: Record<
   string
 > = {
   no_client:
-    "No bb desktop app is showing this thread. Open the thread in the bb desktop app, then retry.",
+    "No Beam desktop app is showing this thread. Open the thread in the Beam desktop app, then retry.",
   incompatible:
-    "The app showing this thread does not support Browser automation. Update the bb desktop app, then retry.",
+    "The app showing this thread does not support Browser automation. Update the Beam desktop app, then retry.",
   disconnected:
-    "The bb desktop app disconnected before the Browser target was ready. Reopen the thread in the bb desktop app, then retry.",
+    "The Beam desktop app disconnected before the Browser target was ready. Reopen the thread in the Beam desktop app, then retry.",
 };
 
 const OPEN_FAILED_MESSAGES: Record<BrowserAutomationOpenFailureCode, string> =
   {
     thread_not_open:
-      "The bb desktop app is not showing this thread. Open the thread in the bb desktop app, then retry.",
+      "The Beam desktop app is not showing this thread. Open the thread in the Beam desktop app, then retry.",
     tab_unavailable:
-      "The bb desktop app could not create a Browser tab for this thread.",
+      "The Beam desktop app could not create a Browser tab for this thread.",
   };
 
 function clientUnavailableError(
@@ -210,7 +210,7 @@ function openTimeoutError(timeoutMs: number): ApiError {
   return new ApiError(
     504,
     "browser_open_timeout",
-    `The bb desktop app did not open the Browser tab within ${timeoutMs}ms.`,
+    `The Beam desktop app did not open the Browser tab within ${timeoutMs}ms.`,
     { details },
   );
 }

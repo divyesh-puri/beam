@@ -108,7 +108,7 @@ function migrationStatementHash(statement: string): string {
 }
 
 /**
- * `createFakePluginHost` — an in-process stand-in for the BB server's plugin
+ * `createFakePluginHost` — an in-process stand-in for the Beam server's plugin
  * runtime (apps/server/src/services/plugins/plugin-api.ts), for unit-testing
  * a plugin's `server.ts` without a server. `bb` satisfies {@link BbPluginApi};
  * `harness` drives and inspects it.
@@ -187,7 +187,7 @@ export interface FakeAgentToolRecord {
   /**
    * The plugin's declared row presentation, null when it declared none.
    * Parsed by the shared `parsePluginAgentToolPresentation`, so the record
-   * holds exactly what the production host stores and a presentation bb
+   * holds exactly what the production host stores and a presentation Beam
    * rejects is rejected here with the same message.
    */
   presentation: PluginAgentToolPresentation | null;
@@ -277,7 +277,7 @@ export interface FakePluginInspectionState {
   })[];
 }
 
-/** Deterministic inputs that stand in for behavior normally driven by BB. */
+/** Deterministic inputs that stand in for behavior normally driven by Beam. */
 export interface FakePluginBehaviorDrivers {
   /** Deliver an unexpected host-worker exit to every registered client. */
   experimental_emitHostWorkerExit(hostId: string): Promise<void>;
@@ -305,7 +305,7 @@ export interface FakePluginBehaviorDrivers {
   /**
    * Invoke the plugin's CLI command with host semantics: the result's
    * exitCode must be a number, stdout/stderr default to "", and a throwing
-   * run() becomes `{ exitCode: 1, stderr: "bb <name> failed: …" }`.
+   * run() becomes `{ exitCode: 1, stderr: "beam <name> failed: …" }`.
    */
   runCli(
     argv: string[],
@@ -403,7 +403,7 @@ export interface CreateFakePluginHostOptions {
   pluginId?: string;
   /**
    * Value served by `bb.server.loopbackBaseUrl` (always bound here, like
-   * `bb.sdk`). Defaults to "http://127.0.0.1:38886".
+   * `bb.sdk`). Defaults to "http://127.0.0.1:48886".
    */
   loopbackBaseUrl?: string;
   /**
@@ -972,10 +972,9 @@ function createFakePluginHostInternal(
         );
       }
       const rows = database
-        .prepare<
-          [],
-          { id: number; statement_hash: string | null }
-        >("SELECT id, statement_hash FROM _bb_migrations ORDER BY id")
+        .prepare<[], { id: number; statement_hash: string | null }>(
+          "SELECT id, statement_hash FROM _bb_migrations ORDER BY id",
+        )
         .all();
       const applied = new Map<number, string | null>();
       for (const row of rows) applied.set(row.id, row.statement_hash);
@@ -1396,7 +1395,7 @@ function createFakePluginHostInternal(
       }
       if (RESERVED_AGENT_TOOL_NAMES.includes(name)) {
         throw new Error(
-          `tool name "${name}" is a built-in bb tool — pick another name`,
+          `tool name "${name}" is a built-in Beam tool — pick another name`,
         );
       }
       rejectStaleAgentToolFields(name, tool);
@@ -1560,7 +1559,7 @@ function createFakePluginHostInternal(
   };
 
   // --- server ---
-  const loopbackBaseUrl = options.loopbackBaseUrl ?? "http://127.0.0.1:38886";
+  const loopbackBaseUrl = options.loopbackBaseUrl ?? "http://127.0.0.1:48886";
   const dataDir = options.dataDir ?? "/tmp/bb-fake-data-dir";
   const server: PluginServerApi = {
     get loopbackBaseUrl(): string {
@@ -2088,7 +2087,7 @@ function createFakePluginHostInternal(
           {
             exitCode: 1,
             stdout: "",
-            stderr: `bb ${registration.name} failed: ${errorMessage(error)}`,
+            stderr: `beam ${registration.name} failed: ${errorMessage(error)}`,
           },
           argv.includes("--json"),
         );

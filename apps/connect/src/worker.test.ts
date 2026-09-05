@@ -19,11 +19,11 @@ describe("connect sign-in page", () => {
   it("points unauthenticated visitors at the dashboard auth flow with returnTo", () => {
     expect(
       dashboardSignInUrl(
-        "https://getbb.app",
-        "https://sawyer.getbb.app/thread/thr_123?view=full",
+        "https://connect.beam.invalid",
+        "https://sawyer.connect.beam.invalid/thread/thr_123?view=full",
       ),
     ).toBe(
-      "https://getbb.app/dashboard?returnTo=https%3A%2F%2Fsawyer.getbb.app%2Fthread%2Fthr_123%3Fview%3Dfull",
+      "https://connect.beam.invalid/dashboard?returnTo=https%3A%2F%2Fsawyer.connect.beam.invalid%2Fthread%2Fthr_123%3Fview%3Dfull",
     );
   });
 
@@ -41,7 +41,7 @@ describe("connect sign-in page", () => {
 
 describe("requestForTunnelDo", () => {
   it("sets the target header on share hosts and strips visitor-supplied values", () => {
-    const req = new Request("https://sawyer--8000.getbb.app/", {
+    const req = new Request("https://sawyer--8000.connect.beam.invalid/", {
       headers: { [TUNNEL_TARGET_HEADER]: "smuggled", cookie: "a=b" },
     });
     const out = requestForTunnelDo(req, "8000");
@@ -50,7 +50,7 @@ describe("requestForTunnelDo", () => {
   });
 
   it("strips a smuggled target header on bare-handle hosts", () => {
-    const req = new Request("https://sawyer.getbb.app/", {
+    const req = new Request("https://sawyer.connect.beam.invalid/", {
       headers: { [TUNNEL_TARGET_HEADER]: "9999" },
     });
     const out = requestForTunnelDo(req, null);
@@ -58,7 +58,7 @@ describe("requestForTunnelDo", () => {
   });
 
   it("strips a forged gate auth header and stamps the authenticated kind", () => {
-    const req = new Request("https://sawyer.getbb.app/", {
+    const req = new Request("https://sawyer.connect.beam.invalid/", {
       headers: {
         [GATE_AUTH_HEADER]: "machine",
         [GATE_MACHINE_ID_HEADER]: "forged-machine",
@@ -227,7 +227,7 @@ function resolvedMachine(
   };
 }
 
-const BASE = "getbb.app";
+const BASE = "connect.beam.invalid";
 const OWNER = "user-owner";
 const OTHER = "user-other";
 
@@ -287,7 +287,7 @@ describe("GET /api/connect/servers", () => {
   it("intercepts the path before host routing (never proxies to the tunnel)", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const res = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/connect/servers", {
+      visitorRequest("sawyer.connect.beam.invalid", "/api/connect/servers", {
         headers: { "x-bb-connect-machine": "bbcm_ok" },
       }),
       env as never,
@@ -305,8 +305,8 @@ describe("GET /api/connect/servers", () => {
       new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 }),
     );
     const res = await worker.fetch(
-      new Request("https://getbb.app/api/connect/servers", {
-        headers: { host: "getbb.app" },
+      new Request("https://connect.beam.invalid/api/connect/servers", {
+        headers: { host: "connect.beam.invalid" },
       }),
       env as never,
       ctx,
@@ -323,10 +323,14 @@ describe("POST /api/connect/desktop-session", () => {
     );
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/connect/desktop-session", {
-        method: "POST",
-        headers: { "x-bb-connect-machine": "paired" },
-      }),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/api/connect/desktop-session",
+        {
+          method: "POST",
+          headers: { "x-bb-connect-machine": "paired" },
+        },
+      ),
       env as never,
       ctx,
     );
@@ -341,7 +345,7 @@ describe("POST /api/connect/disconnect", () => {
     mockHandleDisconnectServer.mockResolvedValue(Response.json({ ok: true }));
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const request = visitorRequest(
-      "sawyer.getbb.app",
+      "sawyer.connect.beam.invalid",
       "/api/connect/disconnect",
       {
         method: "POST",
@@ -364,7 +368,7 @@ describe("POST /api/connect/machine-label", () => {
     );
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const request = visitorRequest(
-      "unknown.getbb.app",
+      "unknown.connect.beam.invalid",
       "/api/connect/machine-label",
       {
         method: "POST",
@@ -405,7 +409,7 @@ describe("gate tunnel authentication", () => {
     const { env, ctx, captured } = makeEnv(() => new Response("upgraded"));
     const response = await worker.fetch(
       visitorRequest(
-        "sawyer-air.getbb.app",
+        "sawyer-air.connect.beam.invalid",
         "/__tunnel?v=1&serverId=victim-server&machineId=spoofed-machine",
         {
           headers: {
@@ -446,7 +450,7 @@ describe("gate tunnel authentication", () => {
       .mockResolvedValueOnce(resolvedMachine({ credentialHash: hash }));
     const beforeEnv = makeEnv(() => new Response("origin"));
     const before = await worker.fetch(
-      visitorRequest("sawyer-air.getbb.app", "/"),
+      visitorRequest("sawyer-air.connect.beam.invalid", "/"),
       beforeEnv.env as never,
       beforeEnv.ctx,
     );
@@ -457,11 +461,15 @@ describe("gate tunnel authentication", () => {
     );
     const assignmentEnv = makeEnv(() => new Response("origin"));
     const assigned = await worker.fetch(
-      visitorRequest("unknown.getbb.app", "/api/connect/machine-label", {
-        method: "POST",
-        headers: { "x-bb-connect-machine": credential },
-        body: JSON.stringify({ desiredName: "Sawyer Air" }),
-      }),
+      visitorRequest(
+        "unknown.connect.beam.invalid",
+        "/api/connect/machine-label",
+        {
+          method: "POST",
+          headers: { "x-bb-connect-machine": credential },
+          body: JSON.stringify({ desiredName: "Sawyer Air" }),
+        },
+      ),
       assignmentEnv.env as never,
       assignmentEnv.ctx,
     );
@@ -469,7 +477,7 @@ describe("gate tunnel authentication", () => {
 
     const dialEnv = makeEnv(() => new Response("upgraded"));
     const dial = await worker.fetch(
-      visitorRequest("sawyer-air.getbb.app", "/__tunnel", {
+      visitorRequest("sawyer-air.connect.beam.invalid", "/__tunnel", {
         headers: { authorization: `Bearer ${credential}` },
       }),
       dialEnv.env as never,
@@ -503,7 +511,7 @@ describe("gate tunnel authentication", () => {
     mockResolveLabel.mockResolvedValueOnce(null);
     const firstEnv = makeEnv(() => new Response("origin"));
     const stale = await worker.fetch(
-      visitorRequest("sawyer-air.getbb.app", "/__tunnel", {
+      visitorRequest("sawyer-air.connect.beam.invalid", "/__tunnel", {
         headers: { authorization: `Bearer ${credential}` },
       }),
       firstEnv.env as never,
@@ -523,7 +531,7 @@ describe("gate tunnel authentication", () => {
     );
     const secondEnv = makeEnv(() => new Response("origin"));
     const revoked = await worker.fetch(
-      visitorRequest("sawyer-air.getbb.app", "/__tunnel", {
+      visitorRequest("sawyer-air.connect.beam.invalid", "/__tunnel", {
         headers: { authorization: `Bearer ${credential}` },
       }),
       secondEnv.env as never,
@@ -544,7 +552,7 @@ describe("machine gate auth", () => {
   it("rejects /internal without a machine credential", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/internal/session/open"),
+      visitorRequest("sawyer.connect.beam.invalid", "/internal/session/open"),
       env as never,
       ctx,
     );
@@ -559,14 +567,14 @@ describe("machine gate auth", () => {
       userId: OTHER,
     });
     const bogus = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/internal/session/open", {
+      visitorRequest("sawyer.connect.beam.invalid", "/internal/session/open", {
         headers: { "x-bb-connect-machine": "bogus" },
       }),
       env as never,
       ctx,
     );
     const crossTenant = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/internal/session/open", {
+      visitorRequest("sawyer.connect.beam.invalid", "/internal/session/open", {
         headers: { "x-bb-connect-machine": "bbcm_other" },
       }),
       env as never,
@@ -584,7 +592,7 @@ describe("machine gate auth", () => {
     });
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const internal = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/internal/session/open", {
+      visitorRequest("sawyer.connect.beam.invalid", "/internal/session/open", {
         headers: {
           "x-bb-connect-machine": "bbcm_owner",
           "x-bb-cloud-dev-host": "smuggled",
@@ -594,7 +602,7 @@ describe("machine gate auth", () => {
       ctx,
     );
     const api = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/v1/threads", {
+      visitorRequest("sawyer.connect.beam.invalid", "/api/v1/threads", {
         headers: {
           "x-bb-connect-machine": "bbcm_owner",
           "x-bb-cloud-dev-host": "smuggled",
@@ -640,10 +648,14 @@ describe("machine gate auth", () => {
     });
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/v1/hosts/join-codes", {
-        method: "POST",
-        headers: { "x-bb-connect-machine": "bbcm_owner" },
-      }),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/api/v1/hosts/join-codes",
+        {
+          method: "POST",
+          headers: { "x-bb-connect-machine": "bbcm_owner" },
+        },
+      ),
       env as never,
       ctx,
     );
@@ -658,10 +670,14 @@ describe("machine gate auth", () => {
     });
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/internal/hosts/enroll-key", {
-        method: "POST",
-        headers: { "x-bb-connect-machine": "bbcm_owner" },
-      }),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/internal/hosts/enroll-key",
+        {
+          method: "POST",
+          headers: { "x-bb-connect-machine": "bbcm_owner" },
+        },
+      ),
       env as never,
       ctx,
     );
@@ -674,7 +690,7 @@ describe("machine gate auth", () => {
     async (path) => {
       const { env, ctx, captured } = makeEnv(() => new Response("artifact"));
       const response = await worker.fetch(
-        visitorRequest("sawyer.getbb.app", path, {
+        visitorRequest("sawyer.connect.beam.invalid", path, {
           headers: { "x-bb-cloud-dev-host": "smuggled" },
         }),
         env as never,
@@ -689,7 +705,7 @@ describe("machine gate auth", () => {
   );
 });
 
-describe("bb mobile app-link association files", () => {
+describe("Beam mobile app-link association files", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockParseCookie.mockReturnValue(null);
@@ -708,7 +724,7 @@ describe("bb mobile app-link association files", () => {
     async (path) => {
       const { env, ctx, captured } = makeEnv(() => new Response("origin"));
       const response = await worker.fetch(
-        visitorRequest("sawyer.getbb.app", path),
+        visitorRequest("sawyer.connect.beam.invalid", path),
         env as never,
         ctx,
       );
@@ -725,10 +741,13 @@ describe("bb mobile app-link association files", () => {
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const unknown = await worker.fetch(
       visitorRequest(
-        "nobody-here.getbb.app",
+        "nobody-here.connect.beam.invalid",
         "/.well-known/apple-app-site-association",
       ),
-      env as never,
+      {
+        ...env,
+        APPLE_APP_ID: "TEAMID1234.com.divyeshpuri.beam.mobile",
+      } as never,
       ctx,
     );
     expect(unknown.status).toBe(200);
@@ -736,7 +755,7 @@ describe("bb mobile app-link association files", () => {
       applinks: { details: { appIDs: string[] }[] };
     };
     expect(body.applinks.details[0]?.appIDs).toEqual([
-      "9QCU24SXK5.app.getbb.mobile",
+      "TEAMID1234.com.divyeshpuri.beam.mobile",
     ]);
     expect(captured).toHaveLength(0);
   });
@@ -749,7 +768,7 @@ describe("bb mobile app-link association files", () => {
     async (path) => {
       const { env, ctx, captured } = makeEnv(() => new Response("origin"));
       const share = await worker.fetch(
-        visitorRequest("sawyer--8000.getbb.app", path),
+        visitorRequest("sawyer--8000.connect.beam.invalid", path),
         env as never,
         ctx,
       );
@@ -762,24 +781,32 @@ describe("bb mobile app-link association files", () => {
   it("reads Android fingerprints from the env and serves an empty list otherwise", async () => {
     const { env, ctx } = makeEnv(() => new Response("origin"));
     const empty = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/.well-known/assetlinks.json"),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/.well-known/assetlinks.json",
+      ),
       env as never,
       ctx,
     );
     const emptyBody = (await empty.json()) as {
       target: { sha256_cert_fingerprints: string[] };
     }[];
-    expect(emptyBody[0]?.target.sha256_cert_fingerprints).toEqual([]);
+    expect(emptyBody).toEqual([]);
 
     const withEnv = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/.well-known/assetlinks.json"),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/.well-known/assetlinks.json",
+      ),
       { ...env, ASSETLINKS_SHA256_FINGERPRINTS: "aa:bb,cc:dd" } as never,
       ctx,
     );
     const withEnvBody = (await withEnv.json()) as {
       target: { package_name: string; sha256_cert_fingerprints: string[] };
     }[];
-    expect(withEnvBody[0]?.target.package_name).toBe("app.getbb.mobile");
+    expect(withEnvBody[0]?.target.package_name).toBe(
+      "com.divyeshpuri.beam.mobile",
+    );
     expect(withEnvBody[0]?.target.sha256_cert_fingerprints).toEqual([
       "AA:BB",
       "CC:DD",
@@ -789,7 +816,10 @@ describe("bb mobile app-link association files", () => {
   it("leaves other .well-known paths to the session gate", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/.well-known/openid-configuration"),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/.well-known/openid-configuration",
+      ),
       env as never,
       ctx,
     );
@@ -814,7 +844,7 @@ describe("gate worker share hosts", () => {
   it("forwards share hosts to the DO with x-bb-tunnel-target", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/app", {
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/app", {
         headers: { [TUNNEL_TARGET_HEADER]: "smuggled" },
       }),
       env as never,
@@ -834,19 +864,19 @@ describe("gate worker share hosts", () => {
   it("renews an active owner session on an ordinary HTTP response", async () => {
     mockVerifySessionDetails.mockResolvedValue(sessionDetails(OWNER, true));
     mockRefreshAccountSession.mockResolvedValue([
-      "__Secure-better-auth.session_token=renewed; Max-Age=604800; Domain=.getbb.app; Path=/; HttpOnly; SameSite=Lax; Secure",
-      "__Secure-better-auth.session_data=cached; Max-Age=300; Domain=.getbb.app; Path=/; HttpOnly; SameSite=Lax; Secure",
+      "__Secure-better-auth.session_token=renewed; Max-Age=604800; Domain=.connect.beam.invalid; Path=/; HttpOnly; SameSite=Lax; Secure",
+      "__Secure-better-auth.session_data=cached; Max-Age=300; Domain=.connect.beam.invalid; Path=/; HttpOnly; SameSite=Lax; Secure",
     ]);
     const { env, ctx } = makeEnv(() => new Response("ok"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/v1/threads"),
+      visitorRequest("sawyer.connect.beam.invalid", "/api/v1/threads"),
       env as never,
       ctx,
     );
 
     expect(mockRefreshAccountSession).toHaveBeenCalledWith(
       "__Secure-better-auth.session_token=session-token",
-      "https://getbb.app",
+      "https://connect.beam.invalid",
       expect.any(Function),
     );
     expect(mockInvalidateSession).toHaveBeenCalledWith("session-token");
@@ -861,7 +891,7 @@ describe("gate worker share hosts", () => {
   it("does not call the account worker before the update-age boundary", async () => {
     const { env, ctx } = makeEnv(() => new Response("ok"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/v1/threads"),
+      visitorRequest("sawyer.connect.beam.invalid", "/api/v1/threads"),
       env as never,
       ctx,
     );
@@ -886,7 +916,7 @@ describe("gate worker share hosts", () => {
       const { env, ctx } = makeEnv(() => new Response("origin"));
 
       const response = await worker.fetch(
-        visitorRequest("sawyer.getbb.app", "/assets/app.js"),
+        visitorRequest("sawyer.connect.beam.invalid", "/assets/app.js"),
         env as never,
         ctx,
       );
@@ -901,12 +931,12 @@ describe("gate worker share hosts", () => {
   it("reissues the local Cloud cookie without the Secure attribute", async () => {
     mockVerifySessionDetails.mockResolvedValue(sessionDetails(OWNER, true));
     mockRefreshAccountSession.mockResolvedValue([
-      "better-auth.session_token=renewed; Max-Age=604800; Domain=.bb.localhost; Path=/; HttpOnly; SameSite=Lax",
+      "better-auth.session_token=renewed; Max-Age=604800; Domain=.beam.localhost; Path=/; HttpOnly; SameSite=Lax",
     ]);
     const { env, ctx } = makeEnv(() => new Response("ok"));
     Object.assign(env, {
-      ACCOUNT_APP_URL: "http://bb.localhost:42745",
-      BASE_DOMAIN: "bb.localhost",
+      ACCOUNT_APP_URL: "http://beam.localhost:42745",
+      BASE_DOMAIN: "beam.localhost",
       CLOUD_DEV: "true",
     });
     const response = await worker.fetch(
@@ -921,11 +951,11 @@ describe("gate worker share hosts", () => {
     );
 
     expect(response.headers.get("set-cookie")).toBe(
-      "better-auth.session_token=renewed; Max-Age=604800; Domain=.bb.localhost; Path=/; HttpOnly; SameSite=Lax",
+      "better-auth.session_token=renewed; Max-Age=604800; Domain=.beam.localhost; Path=/; HttpOnly; SameSite=Lax",
     );
     expect(mockRefreshAccountSession).toHaveBeenCalledWith(
       "better-auth.session_token=session-token",
-      "http://bb.localhost:42745",
+      "http://beam.localhost:42745",
       expect.any(Function),
     );
   });
@@ -935,7 +965,7 @@ describe("gate worker share hosts", () => {
     mockParseCookie.mockReturnValue(null);
     const { env, ctx, captured } = makeEnv(() => new Response("origin"));
     const response = await worker.fetch(
-      visitorRequest("sawyer-air.getbb.app", "/"),
+      visitorRequest("sawyer-air.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -943,8 +973,8 @@ describe("gate worker share hosts", () => {
     expect(response.status).toBe(200);
     const html = await response.text();
     expect(html).toContain("sawyer-air</code> is a machine");
-    expect(html).toContain("sawyer-air--&lt;port&gt;.getbb.app");
-    expect(html).toContain("sawyer.getbb.app");
+    expect(html).toContain("sawyer-air--&lt;port&gt;.connect.beam.invalid");
+    expect(html).toContain("sawyer.connect.beam.invalid");
     expect(captured).toHaveLength(0);
     expect(mockVerifySessionDetails).not.toHaveBeenCalled();
   });
@@ -953,8 +983,8 @@ describe("gate worker share hosts", () => {
     mockResolveLabel.mockResolvedValue(resolvedMachine());
     const { env, ctx } = makeEnv(() => new Response("origin"));
     Object.assign(env, {
-      ACCOUNT_APP_URL: "http://bb.localhost:42745",
-      BASE_DOMAIN: "bb.localhost",
+      ACCOUNT_APP_URL: "http://beam.localhost:42745",
+      BASE_DOMAIN: "beam.localhost",
       CLOUD_DEV: "true",
     });
     const response = await worker.fetch(
@@ -969,15 +999,15 @@ describe("gate worker share hosts", () => {
     );
 
     const html = await response.text();
-    expect(html).toContain("sawyer-air--&lt;port&gt;.bb.localhost:42745");
-    expect(html).toContain('href="http://sawyer.bb.localhost:42745"');
+    expect(html).toContain("sawyer-air--&lt;port&gt;.beam.localhost:42745");
+    expect(html).toContain('href="http://sawyer.beam.localhost:42745"');
   });
 
   it("applies the same owner-session check to machine share hosts", async () => {
     mockResolveLabel.mockResolvedValue(resolvedMachine());
     const ownerEnv = makeEnv(() => new Response("machine-origin"));
     const ownerResponse = await worker.fetch(
-      visitorRequest("sawyer-air--3000.getbb.app", "/"),
+      visitorRequest("sawyer-air--3000.connect.beam.invalid", "/"),
       ownerEnv.env as never,
       ownerEnv.ctx,
     );
@@ -993,7 +1023,7 @@ describe("gate worker share hosts", () => {
     mockVerifySessionDetails.mockResolvedValue(sessionDetails(OTHER));
     const otherEnv = makeEnv(() => new Response("machine-origin"));
     const otherResponse = await worker.fetch(
-      visitorRequest("sawyer-air--3000.getbb.app", "/"),
+      visitorRequest("sawyer-air--3000.connect.beam.invalid", "/"),
       otherEnv.env as never,
       otherEnv.ctx,
     );
@@ -1007,7 +1037,7 @@ describe("gate worker share hosts", () => {
     );
     const oldEnv = makeEnv(() => new Response("owner-a"));
     const oldResponse = await worker.fetch(
-      visitorRequest("shared-machine--3000.getbb.app", "/asset.js"),
+      visitorRequest("shared-machine--3000.connect.beam.invalid", "/asset.js"),
       oldEnv.env as never,
       oldEnv.ctx,
     );
@@ -1028,7 +1058,7 @@ describe("gate worker share hosts", () => {
     );
     const blockedEnv = makeEnv(() => new Response("wrong-owner-content"));
     const blockedResponse = await worker.fetch(
-      visitorRequest("shared-machine--3000.getbb.app", "/asset.js"),
+      visitorRequest("shared-machine--3000.connect.beam.invalid", "/asset.js"),
       blockedEnv.env as never,
       blockedEnv.ctx,
     );
@@ -1039,7 +1069,7 @@ describe("gate worker share hosts", () => {
     mockVerifySessionDetails.mockResolvedValue(sessionDetails(OTHER));
     const newEnv = makeEnv(() => new Response("owner-b"));
     const newResponse = await worker.fetch(
-      visitorRequest("shared-machine--3000.getbb.app", "/asset.js"),
+      visitorRequest("shared-machine--3000.connect.beam.invalid", "/asset.js"),
       newEnv.env as never,
       newEnv.ctx,
     );
@@ -1056,7 +1086,7 @@ describe("gate worker share hosts", () => {
   it("strips a smuggled target header on bare hosts", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/", {
+      visitorRequest("sawyer.connect.beam.invalid", "/", {
         headers: {
           [TUNNEL_TARGET_HEADER]: "9999",
           "x-bb-cloud-dev-host": "smuggled",
@@ -1079,10 +1109,14 @@ describe("gate worker share hosts", () => {
   it("strips forged gate auth and stamps session-authenticated forwards", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/v1/hosts/join-codes", {
-        method: "POST",
-        headers: { [GATE_AUTH_HEADER]: "machine" },
-      }),
+      visitorRequest(
+        "sawyer.connect.beam.invalid",
+        "/api/v1/hosts/join-codes",
+        {
+          method: "POST",
+          headers: { [GATE_AUTH_HEADER]: "machine" },
+        },
+      ),
       env as never,
       ctx,
     );
@@ -1095,7 +1129,7 @@ describe("gate worker share hosts", () => {
     mockResolveLabel.mockResolvedValue(resolvedServer());
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer-desktop--3000.getbb.app", "/app"),
+      visitorRequest("sawyer-desktop--3000.connect.beam.invalid", "/app"),
       env as never,
       ctx,
     );
@@ -1118,7 +1152,7 @@ describe("gate worker share hosts", () => {
     mockParseCookie.mockReturnValue(null);
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/"),
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -1133,8 +1167,8 @@ describe("gate worker share hosts", () => {
     mockParseCookie.mockReturnValue(null);
     const { env, ctx } = makeEnv(() => new Response("ok"));
     Object.assign(env, {
-      ACCOUNT_APP_URL: "http://bb.localhost:42745",
-      BASE_DOMAIN: "bb.localhost",
+      ACCOUNT_APP_URL: "http://beam.localhost:42745",
+      BASE_DOMAIN: "beam.localhost",
       CLOUD_DEV: "true",
     });
     const response = await worker.fetch(
@@ -1150,7 +1184,7 @@ describe("gate worker share hosts", () => {
 
     expect(response.status).toBe(401);
     expect(await response.text()).toContain(
-      "returnTo=http%3A%2F%2Fsawyer.bb.localhost%3A42745%2Fthreads%2Fthr_1%3Fview%3Dfull",
+      "returnTo=http%3A%2F%2Fsawyer.beam.localhost%3A42745%2Fthreads%2Fthr_1%3Fview%3Dfull",
     );
   });
 
@@ -1158,7 +1192,7 @@ describe("gate worker share hosts", () => {
     mockVerifySessionDetails.mockResolvedValue(sessionDetails(OTHER));
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/"),
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -1175,7 +1209,7 @@ describe("gate worker share hosts", () => {
     mockVerifyDesktopSession.mockResolvedValue(OWNER);
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/"),
+      visitorRequest("sawyer.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -1195,7 +1229,7 @@ describe("gate worker share hosts", () => {
     mockVerifyDesktopSession.mockResolvedValue(OWNER);
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const response = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/"),
+      visitorRequest("sawyer.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -1206,7 +1240,7 @@ describe("gate worker share hosts", () => {
   it("returns 404 for /__tunnel and /internal/* on share hosts", async () => {
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const tunnel = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/__tunnel"),
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/__tunnel"),
       env as never,
       ctx,
     );
@@ -1214,7 +1248,7 @@ describe("gate worker share hosts", () => {
     expect(await tunnel.text()).toContain("not found");
 
     const internal = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/internal/x"),
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/internal/x"),
       env as never,
       ctx,
     );
@@ -1226,15 +1260,19 @@ describe("gate worker share hosts", () => {
   it("redirects reserved handles and 404s the apex", async () => {
     const { env, ctx } = makeEnv(() => new Response("ok"));
     const reserved = await worker.fetch(
-      visitorRequest("docs.getbb.app", "/docs"),
+      visitorRequest("docs.connect.beam.invalid", "/docs"),
       env as never,
       ctx,
     );
     expect(reserved.status).toBe(301);
-    expect(reserved.headers.get("location")).toBe("https://getbb.app/docs");
+    expect(reserved.headers.get("location")).toBe(
+      "https://connect.beam.invalid/docs",
+    );
 
     const apex = await worker.fetch(
-      new Request("https://getbb.app/", { headers: { host: "getbb.app" } }),
+      new Request("https://connect.beam.invalid/", {
+        headers: { host: "connect.beam.invalid" },
+      }),
       env as never,
       ctx,
     );
@@ -1248,7 +1286,7 @@ describe("gate worker share hosts", () => {
       () => new Response("upgraded", { status: 200 }),
     );
     await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/ws", {
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/ws", {
         headers: { upgrade: "websocket" },
       }),
       env as never,
@@ -1269,7 +1307,7 @@ describe("gate worker share hosts", () => {
     });
     const { env, ctx, captured } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer--8000.getbb.app", "/internal/ws", {
+      visitorRequest("sawyer--8000.connect.beam.invalid", "/internal/ws", {
         headers: { "x-bb-connect-machine": "bbcm_ok" },
       }),
       env as never,
@@ -1283,7 +1321,7 @@ describe("gate worker share hosts", () => {
   it("rejects invalid share hosts as unknown", async () => {
     const { env, ctx } = makeEnv(() => new Response("ok"));
     const res = await worker.fetch(
-      visitorRequest("sawyer--08000.getbb.app", "/"),
+      visitorRequest("sawyer--08000.connect.beam.invalid", "/"),
       env as never,
       ctx,
     );
@@ -1293,7 +1331,7 @@ describe("gate worker share hosts", () => {
 });
 
 const OFFLINE_BODY =
-  "bb connect: this server is offline (no tunnel connected)\n";
+  "Beam Connect: this server is offline (no tunnel connected)\n";
 
 function offlineDoResponse(): Response {
   return new Response(OFFLINE_BODY, {
@@ -1318,7 +1356,7 @@ describe("gate offline page", () => {
     );
     const { env, ctx } = makeEnv(offlineDoResponse);
     const res = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/", {
+      visitorRequest("sawyer.connect.beam.invalid", "/", {
         headers: { accept: "text/html" },
       }),
       env as never,
@@ -1327,7 +1365,7 @@ describe("gate offline page", () => {
     expect(res.status).toBe(503);
     expect(res.headers.get("content-type")).toContain("text/html");
     const html = await res.text();
-    expect(html).toContain("Your bb is offline");
+    expect(html).toContain("Your Beam instance is offline");
     expect(html).toContain("Last seen 5 minutes ago");
     expect(html).toContain('http-equiv="refresh"');
   });
@@ -1336,14 +1374,14 @@ describe("gate offline page", () => {
     mockResolveLabel.mockResolvedValue(resolvedServer({ lastSeenAt: null }));
     const { env, ctx } = makeEnv(offlineDoResponse);
     const res = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/", {
+      visitorRequest("sawyer.connect.beam.invalid", "/", {
         headers: { accept: "text/html" },
       }),
       env as never,
       ctx,
     );
     const html = await res.text();
-    expect(html).toContain("Your bb is offline");
+    expect(html).toContain("Your Beam instance is offline");
     expect(html).not.toContain("Last seen");
   });
 
@@ -1353,7 +1391,7 @@ describe("gate offline page", () => {
     );
     const { env, ctx } = makeEnv(offlineDoResponse);
     const res = await worker.fetch(
-      visitorRequest("sawyer-air--3000.getbb.app", "/", {
+      visitorRequest("sawyer-air--3000.connect.beam.invalid", "/", {
         headers: { accept: "text/html" },
       }),
       env as never,
@@ -1363,14 +1401,14 @@ describe("gate offline page", () => {
     const html = await res.text();
     expect(html).toContain("This machine is offline");
     expect(html).toContain("This machine was last seen 5 minutes ago");
-    expect(html).not.toContain("Your bb is offline");
+    expect(html).not.toContain("Your Beam instance is offline");
   });
 
   it("keeps the plain 503 for non-navigation requests (API/assets/fetch)", async () => {
     mockResolveLabel.mockResolvedValue(resolvedServer());
     const { env, ctx } = makeEnv(offlineDoResponse);
     const res = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/api/threads", {
+      visitorRequest("sawyer.connect.beam.invalid", "/api/threads", {
         headers: { accept: "application/json" },
       }),
       env as never,
@@ -1387,7 +1425,7 @@ describe("gate offline page", () => {
       () => new Response("origin down", { status: 503 }),
     );
     const res = await worker.fetch(
-      visitorRequest("sawyer.getbb.app", "/", {
+      visitorRequest("sawyer.connect.beam.invalid", "/", {
         headers: { accept: "text/html" },
       }),
       env as never,

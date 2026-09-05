@@ -103,7 +103,7 @@ async function shimModuleSource(
     `const runtime = globalThis.__bbPluginRuntime;`,
     `if (runtime == null || runtime.${slot} == null) {`,
     `  throw new Error(${JSON.stringify(
-      `Cannot load "${specifier}": this bundle must be loaded by the BB app, which provides the shared plugin runtime (globalThis.__bbPluginRuntime).`,
+      `Cannot load "${specifier}": this bundle must be loaded by the Beam app, which provides the shared plugin runtime (globalThis.__bbPluginRuntime).`,
     )});`,
     `}`,
     `const mod = runtime.${slot};`,

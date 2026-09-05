@@ -3,7 +3,7 @@
   "name": "use-media-query",
   "type": "registry:hook",
   "title": "use-media-query",
-  "description": "BB hook \"use-media-query\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam hook \"use-media-query\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "files": [
     {
       "path": "registry/components/ui/hooks/use-media-query.ts",

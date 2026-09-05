@@ -1,16 +1,14 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/e40bda56-54a4-47f8-a417-6bbadf2e5b40">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/4d9d02fb-c179-449b-a38a-041955143232">
+    <source media="(prefers-color-scheme: dark)" srcset="apps/desktop/assets/icon.png">
+    <source media="(prefers-color-scheme: light)" srcset="apps/desktop/assets/icon.png">
     <img alt="Beam" src="apps/desktop/assets/icon.png" width="128">
   </picture>
 </p>
 
 # Beam
 
-[![Join Discord](https://img.shields.io/badge/Discord-Join%20server-5865F2?logo=discord&logoColor=white)](https://discord.gg/kvBU6tJhcJ)
-
-Beam is a standalone distribution of the bb agentic IDE. It can control, customize, and automate
+Beam is a standalone agent orchestrator derived from BB. It can control, customize, and automate
 itself, laying the groundwork for your own software factory.
 
 Every surface — the desktop app, web app, CLI, and HTTP API — is a first-class
@@ -20,10 +18,6 @@ or hand off to another agent.
 > [!NOTE]
 > No Beam release has been published yet. Do not use upstream BB downloads or
 > `npx bb-app` as a Beam installer.
-
-<p align="center">
-  <img alt="Beam desktop app showing a code review thread, dispatch panel, and task board" src="assets/app-screenshot.png" width="800">
-</p>
 
 ## Build Beam locally
 
@@ -47,24 +41,27 @@ Do not globally export upstream values such as `BB_DATA_DIR=~/.bb`,
 precedence and can intentionally defeat side-by-side isolation.
 
 The internal `@bb/*`, `BB_*`, and workspace `.bb/` names remain compatibility
-contracts to keep upstream synchronization practical. See [NOTICE](NOTICE) for
-attribution.
+contracts to keep upstream synchronization practical. Workspace packages that
+retain upstream npm coordinates are private and this fork does not publish into
+upstream package namespaces. See [NOTICE](NOTICE) for attribution.
 
 ### Telemetry
 
-Production Beam runs send anonymous usage
-telemetry (app starts, thread creation counts, user message counts, and plugin
-installs) to help us understand adoption. Identification is a random per-install
-id stored in your data dir — no user, host, project, workspace, or message
-content is ever attached. Plugin install events name only public plugins
-(bundled plugins and `bb-community` marketplace entries); installs from a local
-path, a private git or npm source, or a third-party marketplace report no name. Development/source runs never send. Opt out any run with
-`BB_TELEMETRY=false`. See
+Beam telemetry is disabled by default because this fork has no Beam-owned
+analytics project. Operators can opt in for their own deployment by setting
+`BB_POSTHOG_API_KEY` and `BB_TELEMETRY=true`. When enabled, Beam sends app starts,
+thread creation counts, user message counts, and plugin installs. Identification
+is a random per-install id stored in the data directory; no user, host, project,
+workspace, or message content is attached. Plugin install events name only
+public plugins. Development/source runs never send. See
 [`apps/server/src/services/system/telemetry.ts`](./apps/server/src/services/system/telemetry.ts).
+A separately deployed landing site also requires both `VITE_POSTHOG_KEY` and
+`VITE_TELEMETRY=true` for browser analytics, and both `LANDING_POSTHOG_KEY` and
+`LANDING_TELEMETRY=true` for worker-side download events.
 
 ## Development
 
-Use the development loop when working on bb itself:
+Use the development loop when working on Beam itself:
 
 ```bash
 pnpm dev
@@ -73,10 +70,10 @@ pnpm dev
 That starts the Vite app and proxies API and WebSocket traffic to a separate
 dev server. The launcher prints the actual ports at startup. Each checkout gets
 a data directory under
-`~/.bb-dev/<checkout-instance>/` and deterministic high ports derived from the
+`~/.beam-dev/<checkout-instance>/` and deterministic high ports derived from the
 checkout path. The checkout instance id is the sanitized path to the checkout,
 relative to your home directory, plus a short hash suffix. Separate worktrees
-can run alongside each other and the packaged `npx bb-app@latest` instance.
+can run alongside each other and a packaged production Beam instance.
 
 To test the production bundle and serving path without switching to production
 data or ports, use:
@@ -86,7 +83,7 @@ pnpm start:worktree
 ```
 
 This builds the same optimized frontend and runtime artifacts as `pnpm start`,
-then serves the app from the BB server on the checkout-specific dev server port.
+then serves the app from the Beam server on the checkout-specific dev server port.
 It keeps the normal checkout-specific dev data directory and host-daemon port.
 There is no Vite dev server or hot reload in this mode; rerun the command after
 source changes. As with `pnpm dev`, worktree starts do not send telemetry.
@@ -97,7 +94,7 @@ To run that same source dev server with the Electron desktop shell:
 pnpm dev:desktop
 ```
 
-This uses `scripts/bb-dev-app current --desktop`, which stops stale launcher
+This uses `scripts/beam-dev-app current --desktop`, which stops stale launcher
 sessions, checks dependencies and native modules, starts the source dev server,
 then opens the desktop shell against that dev app. The launcher prints the web
 URL but does not open a browser unless you pass `--open`.
@@ -159,14 +156,14 @@ pnpm start
 
 That builds only the app, server, and host-daemon runtime artifacts, then runs
 the launcher directly against those workspace outputs. Use the `bb-app`
-tarball smoke task when validating the published `npx bb-app@latest` package
+tarball smoke task when validating a locally built Beam package
 layout.
 
 ```bash
-pnpm bb --help            # built CLI, targets the default/prod instance
+pnpm beam --help            # built CLI, targets the default/prod instance
 pnpm reset                # clear production state
 
-pnpm bb:dev --help        # source CLI, targets this checkout's dev instance
+pnpm beam:dev --help        # source CLI, targets this checkout's dev instance
 pnpm reset:dev            # clear this checkout's dev state
 
 pnpm reset:all            # clear both production and dev states
@@ -187,7 +184,7 @@ See [System overview](docs/system-overview.md) for runtime architecture, data mo
 - [Vision](docs/VISION.md)
 - [Platform support](docs/platform-support.md)
 - [Configuration](docs/configuration.md)
-- [Using bb on multiple devices](docs/multiple-devices.md)
+- [Using Beam on multiple devices](docs/multiple-devices.md)
 - [Worktrees and setup scripts](docs/worktrees.md)
 
 ## Contributing
@@ -198,9 +195,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ### `Could not locate the bindings file`
 
-bb uses native add-ons, for example `better-sqlite3` and `@parcel/watcher`. npm
-downloads or builds those binaries in a package install script. If npm does not
-run install scripts, the binaries are absent. bb then stops at startup with this
+Beam uses native add-ons, including `better-sqlite3`, `node-pty`, and
+`@parcel/watcher`. The package manager downloads or builds those binaries during
+installation. If install scripts are blocked, Beam stops at startup with this
 error:
 
 ```
@@ -208,51 +205,16 @@ Error: Could not locate the bindings file. Tried:
  → .../node_modules/better-sqlite3/build/better_sqlite3.node
 ```
 
-There are two usual causes.
-
-The first cause is npm 12 or later. Since npm 12, npm blocks dependency install
-scripts by default and prints
-`npm warn install-scripts N packages had install scripts blocked`. Name bb's
-native add-ons in `--allow-scripts` to let this one command run their install
-scripts:
+Reinstall this checkout with lifecycle scripts enabled, then rebuild Beam:
 
 ```bash
-npx --allow-scripts=better-sqlite3,node-pty,@parcel/watcher bb-app@latest
+npm_config_ignore_scripts=false npm exec -- pnpm install --force
+npm exec -- pnpm --dir apps/desktop run package
 ```
 
-For a permanent install with the same setting, use:
-
-```bash
-npm install -g --allow-scripts=better-sqlite3,node-pty,@parcel/watcher bb-app
-bb-app
-```
-
-To allow them for all global installs on this machine, run
-`npm config set allow-scripts=better-sqlite3,node-pty,@parcel/watcher --location=user`.
-npm 10 and 11 accept or ignore the flag, so it is safe on every supported Node.
-
-The second cause is `ignore-scripts=true` in your `~/.npmrc`. Set the
-`npm_config_ignore_scripts` environment variable to let this one command run its
-install scripts:
-
-```bash
-npm_config_ignore_scripts=false npx bb-app@latest
-```
-
-For a permanent install with the same setting, use:
-
-```bash
-npm_config_ignore_scripts=false npm install -g bb-app
-bb-app
-```
-
-The environment variable applies to that one command only. Keep
-`ignore-scripts=true` in your `~/.npmrc` if you want it for security.
-
-The same error has other causes. A Node.js major-version change after the
-install causes it. A copy of `node_modules` from a different operating system,
-CPU architecture, or libc variant also causes it. To recover, install the
-package again, or run `npm rebuild better-sqlite3`.
+A Node.js major-version change or a `node_modules` directory copied from another
+operating system, CPU architecture, or libc variant can cause the same error.
+Reinstalling dependencies for the current machine fixes those cases.
 
 ## Acknowledgements
 

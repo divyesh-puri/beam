@@ -123,7 +123,7 @@ function answerToolCall(
   const call = harness.messages.find(
     (message) => message.method === "item/tool/call",
   );
-  expect(call, "the bridge called its bb tool").toBeDefined();
+  expect(call, "the bridge called its Beam tool").toBeDefined();
   const params = call?.params as Record<string, unknown>;
   handleLine(
     JSON.stringify({ jsonrpc: "2.0", id: call?.id, result: answer(params) }),

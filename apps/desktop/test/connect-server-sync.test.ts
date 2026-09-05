@@ -27,13 +27,13 @@ describe("fetchConnectAccountServers", () => {
                 handle: "me",
                 name: "primary",
                 live: true,
-                url: "https://me.getbb.app",
+                url: "https://me.connect.beam.invalid",
               },
               {
                 handle: "other",
                 name: "laptop",
                 live: false,
-                url: "https://other.getbb.app",
+                url: "https://other.connect.beam.invalid",
               },
             ],
           },
@@ -154,7 +154,7 @@ describe("createConnectServerSync", () => {
               handle: "other",
               name: "Other",
               live: true,
-              url: "https://other.getbb.app",
+              url: "https://other.connect.beam.invalid",
             },
           ],
         },
@@ -184,7 +184,7 @@ describe("createConnectServerSync", () => {
         handle: "other",
         name: "Other",
         live: true,
-        url: "https://other.getbb.app",
+        url: "https://other.connect.beam.invalid",
       },
     ]);
 
@@ -277,7 +277,7 @@ describe("createConnectServerSync without a local server", () => {
   const credential = {
     credential: "bbcm_desktop",
     handle: "me",
-    serverUrl: "https://me.getbb.app",
+    serverUrl: "https://me.connect.beam.invalid",
   };
 
   it("lists servers straight from the gate with the cached credential", async () => {
@@ -309,7 +309,7 @@ describe("createConnectServerSync without a local server", () => {
 
     await sync.syncNow();
     expect(gateFetchImpl).toHaveBeenCalledWith(
-      "https://me.getbb.app/api/connect/servers",
+      "https://me.connect.beam.invalid/api/connect/servers",
       expect.objectContaining({
         headers: { "x-bb-connect-machine": "bbcm_desktop" },
       }),
@@ -319,7 +319,7 @@ describe("createConnectServerSync without a local server", () => {
         handle: "other",
         name: "Other",
         live: true,
-        url: "https://other.getbb.app",
+        url: "https://other.connect.beam.invalid",
       },
     ]);
   });

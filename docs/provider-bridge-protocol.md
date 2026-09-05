@@ -1,4 +1,4 @@
-# The bb Provider Bridge Protocol
+# The Beam Provider Bridge Protocol
 
 The one JSON-RPC contract between the agent runtime and every provider
 bridge process. Message schemas live in `@bb/provider-bridge-protocol` and
@@ -25,7 +25,7 @@ export const experimental_providerBridge = experimental_defineProviderBridge({
 });
 ```
 
-`bb plugin build` bundles the artifact to `dist/host.js`; the server records
+`beam plugin build` bundles the artifact to `dist/host.js`; the server records
 it content-addressed and hands hosts `{pluginId, digest}`; the daemon
 downloads, verifies, caches and runs it — through a bootstrap that owns
 everything outside the protocol: argv, the plugin-scoped `dataDir`/`tempDir`
@@ -36,7 +36,7 @@ host RPC entry. First-party bridges use exactly this path —
 and `examples/plugins/echo-provider` the smallest.
 
 The bundle is self-contained (only node builtins stay external) and may not
-import bb's private `@bb/*` workspace packages at all — an installed plugin
+import Beam's private `@bb/*` workspace packages at all — an installed plugin
 cannot resolve them. Everything a bridge compiles against is published at
 **`@get-bb/plugin-sdk/provider-bridge`**: the protocol schemas (including
 the `thread/delta` grammar), the bridge kit (JSON-RPC plumbing, tool-call
@@ -161,8 +161,8 @@ adapter) consumes the deltas and owns every timeline invariant:
   (entropy + serial, the #1224 discipline held centrally, reset per
   `session.reset`). Deltas carry provider-native join keys (tool-call ids,
   stream keys, parent refs, optional provider turn ids) and the assembler
-  holds the bidirectional provider↔bb maps — both for scoping incoming
-  deltas and for reverse-mapping bb ids on the command plane
+  holds the bidirectional provider↔Beam maps — both for scoping incoming
+  deltas and for reverse-mapping Beam ids on the command plane
   (`turn/steer.expectedTurnId`, `thread/stop.activeTurnId`) and on
   provider-native interaction requests (`providerNativeIds: true`). An
   `interaction/request` carries an approval, a user question, or a
@@ -176,7 +176,7 @@ adapter) consumes the deltas and owns every timeline invariant:
   `item.close` always carries the full terminal item shape and is applied
   uniformly (paired close, reclassifying dual-settle, or bare
   close-without-open); repeated closes for a settled provider-identified
-  key are deduped and an explicit reopen reuses the same bb id.
+  key are deduped and an explicit reopen reuses the same Beam id.
 - **Accumulation.** Streamed text, cumulative output snapshots (diffed into
   deltas/resets), and progress-event throttling.
 - **One streaming dialect.** Every text stream is an item keyed like every
@@ -256,7 +256,7 @@ range is what gates a bridge: every bridge in this repo reports
   `presentation` the server resolved for it (from the owning plugin's
   `presentation`, or a generic label and the plugin's glyph). A bridge stamps that presentation, beside `server: "bb"`,
   on the `item.open`/`item.close` of every call to the tool, so no tool-name
-  table labels bb tools anywhere downstream. Optional on the wire: a definition recorded before the field existed
+  table labels Beam tools anywhere downstream. Optional on the wire: a definition recorded before the field existed
   presents generically, and the committed recordings predate it, so it stays
   optional until those are re-minted.
 - **Extension kinds** `"<pluginId>/<name>"`: the `extension` item shape
@@ -293,13 +293,13 @@ may do about it. The `provider/error` delta beside it still carries the
 user-visible row; the hint carries the action. The runtime keys on `kind`
 only and never consults the provider id:
 
-| `kind` | Runtime action |
-| --- | --- |
-| `sessionArchived` | `thread/unarchive` the session, then retry the rejected request once (`retryable: true`). |
-| `authRequired` | Reject the request with a typed `auth_required` error (no text match anywhere downstream) and forward the hint so the host can re-check provider health. |
+| `kind`               | Runtime action                                                                                                                                                                                                                                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sessionArchived`    | `thread/unarchive` the session, then retry the rejected request once (`retryable: true`).                                                                                                                                                                                                                                               |
+| `authRequired`       | Reject the request with a typed `auth_required` error (no text match anywhere downstream) and forward the hint so the host can re-check provider health.                                                                                                                                                                                |
 | `restartRecommended` | Stop the bridge process the thread runs on and resume the thread on a fresh one — right away when the thread is idle, otherwise before its next turn. The restart waits while another thread on the same process is mid-turn or holds open background work, and never re-resumes a sibling the host already resumed on the replacement. |
-| `staleTurn` | Drop the steer: the turn it targeted is gone, and the runtime reports the steer as stale instead of failing it. |
-| `rateLimited` | With `retryable: true` on a rejected request: retry on a short bounded ladder and surface the last failure. With `retryable: false` (a turn that already failed): forward only; the runtime never re-runs a user's turn on its own. |
+| `staleTurn`          | Drop the steer: the turn it targeted is gone, and the runtime reports the steer as stale instead of failing it.                                                                                                                                                                                                                         |
+| `rateLimited`        | With `retryable: true` on a rejected request: retry on a short bounded ladder and surface the last failure. With `retryable: false` (a turn that already failed): forward only; the runtime never re-runs a user's turn on its own.                                                                                                     |
 
 The action follows the hint whichever attempt it arrives on: a rung of the
 rate-limit ladder or the retry after an unarchive that is rejected with
@@ -356,14 +356,14 @@ unvalidated.
 
 Three identifier families, three owners:
 
-| Identifier                              | Minted by                   | Notes                                                                                                                                                                                                |
-| --------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `threadId`                              | bb server                   | Opaque to the provider; echoed verbatim.                                                                                                                                                             |
-| `providerThreadId`                      | the provider                | Its session handle (rollout id, session id). Returned on the `thread/start`/`thread/resume`/`thread/fork` result (required) and echoed by `thread/identity`; never used to scope bb events directly. |
-| turn ids and item ids on `ThreadEvent`s | **the runtime's assembler** | Never the provider, never the bridge.                                                                                                                                                                |
+| Identifier                              | Minted by                   | Notes                                                                                                                                                                                                  |
+| --------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `threadId`                              | Beam server                 | Opaque to the provider; echoed verbatim.                                                                                                                                                               |
+| `providerThreadId`                      | the provider                | Its session handle (rollout id, session id). Returned on the `thread/start`/`thread/resume`/`thread/fork` result (required) and echoed by `thread/identity`; never used to scope Beam events directly. |
+| turn ids and item ids on `ThreadEvent`s | **the runtime's assembler** | Never the provider, never the bridge.                                                                                                                                                                  |
 
 The central-minting rule is the #1320 lesson made structural: a provider can
-inject arbitrary identifiers on its own wire, but the ids that reach bb's
+inject arbitrary identifiers on its own wire, but the ids that reach Beam's
 persistence are always minted by bb-owned assembler code. Bridges forward
 provider-native ids as vouched join keys on deltas; the assembler translates
 in both directions, so a bridge does zero id translation — including for a
@@ -411,7 +411,7 @@ it:
    active turn as interrupted (the bridge emits the settling deltas —
    `turn.boundary { interrupted }` plus explicit closes for provider-owned
    open items); `release` detaches an idle session and must not fabricate an
-   interruption (#1584). The bb turn ids these commands carry are
+   interruption (#1584). The Beam turn ids these commands carry are
    reverse-mapped to the bridge's provider-native turn ids by the adapter,
    so the bridge compares its own ids.
 6. **After `thread/stop` the bridge holds nothing for the thread.** The
@@ -446,7 +446,7 @@ Assembler-owned invariants over the assembled timeline:
 3. Item ids are unique across the life of a thread, including resumes: the
    assembler's maps survive within a session and `session.reset` (mandatory
    at every provider session construction) starts a fresh provider id space
-   so reused provider-native ids mint fresh bb ids.
+   so reused provider-native ids mint fresh Beam ids.
 4. Completion follows content from the bridge's perspective: if the provider
    emits completion before the content it refers to (codex `item.close`
    before the stdout record), the bridge holds the close delta and flushes
@@ -483,7 +483,7 @@ carries the whole item, so refusing it would lose real content.
    of a session and apply at the next construction.
 4. Fork: absent `sourceProviderCheckpointId` means fork at the tip. A
    `fork: "tip"` bridge rejects checkpoint forks with
-   `FORK_CHECKPOINT_UNSUPPORTED` rather than cloning history the bb timeline
+   `FORK_CHECKPOINT_UNSUPPORTED` rather than cloning history the Beam timeline
    does not show.
 5. Open work is what the timeline says it is. A `backgroundTask` item and a
    `delegation` item that are still pending are live provider work, and the
@@ -510,7 +510,7 @@ Consumers must NOT assume:
 - That a request's response arrives before notifications caused by the
   request (`turn/started` may precede the `turn/start` response).
 - Anything about `provider/raw` — it is droppable at any pressure point and
-  carries no ids the runtime treats as bb identifiers.
+  carries no ids the runtime treats as Beam identifiers.
 
 ## Parsing discipline
 
@@ -519,7 +519,7 @@ fields (forward skew between plugin and daemon versions is normal). One
 malformed entry degrades to one missing entry — a bad model in `model/list`
 drops that model, not the listing; a malformed notification is logged and
 dropped without poisoning the stream. But a `thread/delta` payload must be
-a valid delta: what it assembles into enters bb's persistence, so the core
+a valid delta: what it assembles into enters Beam's persistence, so the core
 stays strict.
 
 ## Child processes
@@ -545,7 +545,7 @@ right after `spawn()`; the call is a no-op when record mode is off. A bridge
 whose provider pipe belongs to an SDK checks
 `experimental_isProviderBridgeRecording()` and takes the spawn over (the
 Claude bridge does this through the Agent SDK's `spawnClaudeCodeProcess`
-seam). The pi bridge also records the bb extension's channel (fd 3 / fd 4)
+seam). The pi bridge also records the Beam extension's channel (fd 3 / fd 4)
 on the same two provider lanes, each message wrapped as
 `{ "bbChannel": <message> }`, so a replay can route it back onto the fds.
 

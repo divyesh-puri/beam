@@ -31,7 +31,7 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: [".getbb.app"],
+    allowedHosts: [".beam.localhost"],
     proxy: {
       "/api": {
         target: devInstance.serverUrl,

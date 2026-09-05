@@ -1,61 +1,61 @@
 # Configuration
 
-The packaged `npx bb-app` flow stores persistent package settings under
+The packaged `beam` launcher stores persistent package settings under
 `~/.beam/config.json`, provider environment values under `~/.beam/env.json`, and
 client SSH target mappings under `~/.beam/client.json`.
 
-Use `bb-app config` for non-secret bb settings:
+Use `beam config` for non-secret Beam settings:
 
 ```bash
-npx bb-app config set BB_APP_URL https://<machine>.<tailnet>.ts.net
-npx bb-app config set BB_INFERENCE codex/gpt-5.6-luna
-npx bb-app config set BB_INFERENCE_FALLBACK codex/gpt-5.4-mini
-npx bb-app config set BB_TRANSCRIPTION codex/gpt-transcribe
-npx bb-app config list
-npx bb-app config unset BB_APP_URL
-npx bb-app config refresh
+beam config set BB_APP_URL https://<machine>.<tailnet>.ts.net
+beam config set BB_INFERENCE codex/gpt-5.6-luna
+beam config set BB_INFERENCE_FALLBACK codex/gpt-5.4-mini
+beam config set BB_TRANSCRIPTION codex/gpt-transcribe
+beam config list
+beam config unset BB_APP_URL
+beam config refresh
 ```
 
-Use `bb-app env` for provider credentials and provider-specific environment:
+Use `beam env` for provider credentials and provider-specific environment:
 
 ```bash
-npx bb-app env set OPENAI_API_KEY <key>
-npx bb-app env list
-npx bb-app env unset OPENAI_API_KEY
+beam env set OPENAI_API_KEY <key>
+beam env list
+beam env unset OPENAI_API_KEY
 ```
 
 ## Repository worktree hooks
 
 Commit `.bb-env-setup.sh` when a managed worktree needs repository setup.
-Commit `.bb-env-teardown.sh` when bb must release external resources before it
+Commit `.bb-env-teardown.sh` when Beam must release external resources before it
 removes that worktree. See [Worktrees, setup scripts, and teardown
 scripts](worktrees.md) for the lifecycle, environment, timeout, and failure
 contracts.
 
-`bb-app config list` shows non-secret values. `bb-app env list` redacts every
+`beam config list` shows non-secret values. `beam env list` redacts every
 value and only shows whether a key is set.
 
 The Add machine installer may also store a `machineCredential` and its
 `connectMachineId` beside `serverUrl` in `config.json`. The credential is a
-secret managed by bb connect: do not copy, edit, or commit it. Both fields are
-intentionally omitted from `bb-app config list`. At runtime they are passed to
-the standalone host daemon and its bundled `bb` CLI as
+secret managed by Beam Connect: do not copy, edit, or commit it. Both fields are
+intentionally omitted from `beam config list`. At runtime they are passed to
+the standalone host daemon and its bundled `beam` CLI as
 `BB_CONNECT_MACHINE_CREDENTIAL` and `BB_CONNECT_MACHINE_ID`. These are
 installer-managed transport details, not user configuration knobs; re-add the
 machine instead of setting them by hand.
 
-Use `bb-app client ssh-target` to let a local helper open files from a remote
-bb server in local editors. The SSH target is the value that works after
+Use `beam client ssh-target` to let a local helper open files from a remote
+Beam server in local editors. The SSH target is the value that works after
 `ssh`, such as `devbox`, `user@devbox`, or a `Host` entry from `~/.ssh/config`:
 
 ```bash
-npx bb-app client ssh-target set https://bb.example.test devbox --host-id host_abc
-npx bb-app client ssh-target list
-npx bb-app client ssh-target remove https://bb.example.test --host-id host_abc
+beam client ssh-target set https://bb.example.test devbox --host-id host_abc
+beam client ssh-target list
+beam client ssh-target remove https://bb.example.test --host-id host_abc
 ```
 
 Use `--host-id` when the server has more than one machine; copy the ID from
-`bb machine list`. Omit it to preserve the single-machine auto-selection for
+`beam machine list`. Omit it to preserve the single-machine auto-selection for
 `set`, or to remove every mapping for that server with `remove`.
 
 ## Precedence
@@ -64,34 +64,35 @@ Configuration is resolved in this order:
 
 1. Explicit launcher flags, such as `--data-dir`, `--server-port`, or
    `--server-bind-host`.
-2. Persistent `bb-app config`, `bb-app env`, and client values.
+2. Persistent `beam config`, `beam env`, and client values.
 3. Ambient shell environment.
 4. Built-in defaults.
 
-For the packaged app, prefer `bb-app config`, `bb-app env`, and launcher flags
+For the packaged app, prefer `beam config`, `beam env`, and launcher flags
 over shell variables. The environment remains the internal and deployment
 substrate, and source-development commands still load `.env` files.
 
 For source development, `pnpm dev` automatically injects
-`BB_DEV_CONNECT_BASE_URL=http://bb.localhost:<worktree-cloud-port>`. The
+`BB_DEV_CONNECT_BASE_URL=http://beam.localhost:<worktree-cloud-port>`. The
 Connect plugin accepts this loopback origin only when `NODE_ENV=development`
-and uses it only as the unpaired default. Explicit `bb connect --server ...`
-or `--base-url ...` targets take precedence, and packaged/production bb keeps
-the `https://getbb.app` default. This value is launcher-managed, not a
-`bb-app config` setting.
+and uses it only as the unpaired default. Explicit `beam connect --server ...`
+or `--base-url ...` targets take precedence. Packaged and production Beam use
+the non-routable `https://connect.beam.invalid` sentinel until a Beam-owned
+Connect service is provisioned, so production pairing requires an explicit
+`--server`. This value is launcher-managed, not a `beam config` setting.
 
-After `bb-app config` writes `~/.beam/config.json` or `bb-app env` writes
+After `beam config` writes `~/.beam/config.json` or `beam env` writes
 `~/.beam/env.json`, it asks the running local server to reload. If Beam is not
 running, the new values apply on the next start. If you edit either file by
-hand, run `npx bb-app config refresh` to apply the files to a running server.
+hand, run `beam config refresh` to apply the files to a running server.
 
 The live reload applies config keys such as `BB_APP_URL`, `BB_INFERENCE`,
 `BB_INFERENCE_FALLBACK`, and `BB_TRANSCRIPTION`, plus env values explicitly
 consumed at runtime such as `OPENAI_API_KEY`. If one of those config keys is
-stored with `bb-app env` instead, it is startup-only; use `bb-app config` when
+stored with `beam env` instead, it is startup-only; use `beam config` when
 you need a live change.
 
-`BB_LOG_LEVEL` is the startup-only `bb-app config` key. The complete current
+`BB_LOG_LEVEL` is the startup-only `beam config` key. The complete current
 set of startup-only server or launcher env entries is:
 
 - `BB_APP_SURFACE`, `BB_APP_URL`, `BB_DATA_DIR`, and `BB_DEV_APP_PORT`
@@ -102,50 +103,56 @@ set of startup-only server or launcher env entries is:
 - `BB_SERVER_BIND_HOST`, `BB_SERVER_PORT`, `BB_TRANSCRIPTION`, and all
   `BB_FF_*` feature flags
 
+Beam ships with telemetry disabled and no default PostHog key. A deployment must
+set both `BB_POSTHOG_API_KEY` and `BB_TELEMETRY=true` to enable app telemetry.
+A separately deployed landing site also stays silent unless its client build has
+both `VITE_POSTHOG_KEY` and `VITE_TELEMETRY=true`; worker-side download events
+require both `LANDING_POSTHOG_KEY` and `LANDING_TELEMETRY=true`.
+
 Setting or unsetting one still runs the reload for any other pending changes,
 but the running processes keep their current values. Apply it with a full
-launcher restart (`bb-app stop && bb-app start`) or by restarting the desktop
+launcher restart (`beam stop && beam start`) or by restarting the desktop
 app. In particular, changing or unsetting `BB_SERVER_BIND_HOST` does not close
 an existing `0.0.0.0` listener until that restart.
 
-`bb-app config refresh` also notes any startup-only keys currently present in
+`beam config refresh` also notes any startup-only keys currently present in
 `config.json` or `env.json`; those values apply on the next full restart.
 
 When targeting a non-default running instance, pass the same `--data-dir` and
-`--server-port` to `bb-app config` or `bb-app env` commands so they write the
+`--server-port` to `beam config` or `beam env` commands so they write the
 right file and refresh the right server.
 
-## Stopping A Running bb
+## Stopping A Running Beam
 
-A running `bb-app start` writes `<dataDir>/bb-app-runtime.json` and removes the
+A running `beam start` writes `<dataDir>/bb-app-runtime.json` and removes the
 file when it exits. The file records the launcher process id, the server URL,
-the version, the start time, and how bb was started. Do not edit it.
+the version, the start time, and how Beam was started. Do not edit it.
 
 Two things read that file:
 
-- `npx bb-app stop` stops the bb that owns the data directory. Pass the same
+- `beam stop` stops the Beam that owns the data directory. Pass the same
   `--data-dir` you started with when it is not the default `~/.beam/`.
-- The macOS desktop app asks before it uses a bb it did not start, and offers to
+- The macOS desktop app asks before it uses a Beam it did not start, and offers to
   stop that copy for you.
 
-Both confirm that the recorded process really is a bb launcher before they
+Both confirm that the recorded process really is a Beam launcher before they
 signal it, so a stale file left by a crash cannot stop an unrelated process.
 
 ## Common Keys
 
-| Key                     | Command                                            | When to set             | Used for                                                                                                                                                                                                                                                                                                                                                                                              |
-| ----------------------- | -------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BB_APP_URL`            | `bb-app config`                                    | Optional for remote use | Human-facing app URL used for generated links and allowed browser origins. Leave empty for local-only use.                                                                                                                                                                                                                                                                                            |
-| `BB_INFERENCE`          | `bb-app config`                                    | Optional                | Primary server-side helper model in `<service>/<model>` format, where `<service>` is an AI service a loaded plugin registers (`bb settings ai-services` lists them; `codex` comes with the codex plugin and uses the codex CLI's credentials with no reasoning) or a pi-ai provider the server calls directly with its API key. Defaults to `codex/gpt-5.6-luna`.                                     |
-| `BB_INFERENCE_FALLBACK` | `bb-app config`                                    | Optional                | Helper model used after a transient primary timeout, rate limit, or service-unavailable failure. Defaults to `codex/gpt-5.4-mini`.                                                                                                                                                                                                                                                                    |
-| `BB_TRANSCRIPTION`      | `bb-app config`                                    | Optional                | Voice transcription model in `<service>/<model>` format: a plugin-registered AI service (`codex` with the codex plugin; audio up to 5MB) or `openai/<model>` with `OPENAI_API_KEY`. Defaults to `codex/gpt-transcribe`.                                                                                                                                                                               |
-| `BB_MARKETPLACE_URL`    | `bb-app env`, or environment                       | Startup-only testing    | Manifest URL of the reserved `bb-community` plugin marketplace, which lists as BB Community. Defaults to `https://getbb.app/marketplace/v1/marketplace.json`; point it at a local file server to test catalog refreshes. It sets only the reserved `bb-community` marketplace; other marketplaces are added at runtime with `bb marketplace add`. A full launcher or desktop app restart is required. |
-| `BB_SERVER_URL`         | `bb-app config`                                    | Remote CLI/host use     | Server URL for standalone `beam`/`bb` CLI and `host-daemon` commands on the current machine. The CLI defaults to `http://127.0.0.1:48886` when unset.                                                                                                                                                                                                                                                 |
-| `BB_SERVER_BIND_HOST`   | `bb-app env`, environment, or `--server-bind-host` | Startup-only            | Server listener host. Defaults to `127.0.0.1`; accepts only `127.0.0.1` or `0.0.0.0`. A full launcher or desktop app restart is required; until then, a previous `0.0.0.0` listener remains exposed. This is not a `bb-app config` key.                                                                                                                                                               |
-| `BB_SERVER_PORT`        | `bb-app env`, environment, or `--server-port`      | Startup-only            | HTTP listener port. Defaults to `48886`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                          |
-| `BB_HOST_DAEMON_PORT`   | `bb-app env`, environment, or `--host-daemon-port` | Startup-only            | Local host-daemon API port. Defaults to `48887`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                  |
-| `BB_LOG_LEVEL`          | `bb-app config`                                    | Startup-only debugging  | Log level: `trace`, `debug`, `info`, `warn`, `error`, or `fatal`. A full launcher or desktop app restart is required.                                                                                                                                                                                                                                                                                 |
-| `OPENAI_API_KEY`        | `bb-app env`                                       | OpenAI opt-in routes    | Required only when selecting explicit OpenAI provider routes such as `openai/gpt-4o-mini` or `openai/gpt-transcribe`.                                                                                                                                                                                                                                                                                 |
+| Key                     | Command                                          | When to set             | Used for                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BB_APP_URL`            | `beam config`                                    | Optional for remote use | Human-facing app URL used for generated links and allowed browser origins. Leave empty for local-only use.                                                                                                                                                                                                                                                                                                                          |
+| `BB_INFERENCE`          | `beam config`                                    | Optional                | Primary server-side helper model in `<service>/<model>` format, where `<service>` is an AI service a loaded plugin registers (`beam settings ai-services` lists them; `codex` comes with the codex plugin and uses the codex CLI's credentials with no reasoning) or a pi-ai provider the server calls directly with its API key. Defaults to `codex/gpt-5.6-luna`.                                                                 |
+| `BB_INFERENCE_FALLBACK` | `beam config`                                    | Optional                | Helper model used after a transient primary timeout, rate limit, or service-unavailable failure. Defaults to `codex/gpt-5.4-mini`.                                                                                                                                                                                                                                                                                                  |
+| `BB_TRANSCRIPTION`      | `beam config`                                    | Optional                | Voice transcription model in `<service>/<model>` format: a plugin-registered AI service (`codex` with the codex plugin; audio up to 5MB) or `openai/<model>` with `OPENAI_API_KEY`. Defaults to `codex/gpt-transcribe`.                                                                                                                                                                                                             |
+| `BB_MARKETPLACE_URL`    | `beam env`, or environment                       | Startup-only optional   | Public HTTPS manifest URL for remote refreshes of the reserved `bb-community` marketplace, which lists as Beam Community. Unset by default, so Beam uses its bundled snapshot without making remote marketplace requests. Set it to enable refreshes at startup and every two hours. It controls only `bb-community`; other marketplaces are added with `beam marketplace add`. A full launcher or desktop app restart is required. |
+| `BB_SERVER_URL`         | `beam config`                                    | Remote CLI/host use     | Server URL for standalone `beam`/`bb` CLI and `host-daemon` commands on the current machine. The CLI defaults to `http://127.0.0.1:48886` when unset.                                                                                                                                                                                                                                                                               |
+| `BB_SERVER_BIND_HOST`   | `beam env`, environment, or `--server-bind-host` | Startup-only            | Server listener host. Defaults to `127.0.0.1`; accepts only `127.0.0.1` or `0.0.0.0`. A full launcher or desktop app restart is required; until then, a previous `0.0.0.0` listener remains exposed. This is not a `beam config` key.                                                                                                                                                                                               |
+| `BB_SERVER_PORT`        | `beam env`, environment, or `--server-port`      | Startup-only            | HTTP listener port. Defaults to `48886`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                                                        |
+| `BB_HOST_DAEMON_PORT`   | `beam env`, environment, or `--host-daemon-port` | Startup-only            | Local host-daemon API port. Defaults to `48887`. A full launcher or desktop app restart is required after a persistent set or unset.                                                                                                                                                                                                                                                                                                |
+| `BB_LOG_LEVEL`          | `beam config`                                    | Startup-only debugging  | Log level: `trace`, `debug`, `info`, `warn`, `error`, or `fatal`. A full launcher or desktop app restart is required.                                                                                                                                                                                                                                                                                                               |
+| `OPENAI_API_KEY`        | `beam env`                                       | OpenAI opt-in routes    | Required only when selecting explicit OpenAI provider routes such as `openai/gpt-4o-mini` or `openai/gpt-transcribe`.                                                                                                                                                                                                                                                                                                               |
 
 By default, helper inference and voice transcription use Codex credentials from
 the host daemon. Run `codex login` on the host for the default path. Set
@@ -153,7 +160,7 @@ provider env keys only when opting into a non-Codex provider route.
 
 With a ChatGPT subscription login, `codex/` voice transcription posts to a
 `chatgpt.com` endpoint that sits behind Cloudflare bot protection. On some
-networks Cloudflare challenges that request; bb retries, then reports
+networks Cloudflare challenges that request; Beam retries, then reports
 "Voice transcription is temporarily unavailable" and logs the Cloudflare
 challenge on the server. If that happens often, route transcription through an
 API key instead: `codex login --with-api-key`, or set `BB_TRANSCRIPTION` to
@@ -161,30 +168,30 @@ API key instead: `codex login --with-api-key`, or set `BB_TRANSCRIPTION` to
 
 The microphone picker in Settings → Voice Input is client-local. It stores the
 selected browser `MediaDevices` device id in localStorage as
-`bb.voiceInput.audioInputDeviceId`; it does not change `bb-app config` or the
+`bb.voiceInput.audioInputDeviceId`; it does not change `beam config` or the
 server-side transcription model.
 
 The builtin Keep Awake plugin has one autosaving configuration page with an
 enable switch and an all-or-selected host picker. On selected macOS hosts it
 runs `/usr/bin/caffeinate -i -w <worker-pid>` while enabled, preventing system
-idle sleep while bb is running. It only blocks idle sleep: closing a laptop lid
+idle sleep while Beam is running. It only blocks idle sleep: closing a laptop lid
 or choosing Sleep manually still sleeps the Mac. Configure it from an agent or
 terminal with:
 
 ```sh
-bb keep-awake status [--json]
-bb keep-awake enable [--json]
-bb keep-awake disable [--json]
-bb keep-awake hosts all
-bb keep-awake hosts <host-id>...
+beam keep-awake status [--json]
+beam keep-awake enable [--json]
+beam keep-awake disable [--json]
+beam keep-awake hosts all
+beam keep-awake hosts <host-id>...
 ```
 
 The "Show unhandled provider events" toggle in Settings → General exposes raw
-provider events that bb does not yet understand. It defaults to off in packaged
+provider events that Beam does not yet understand. It defaults to off in packaged
 builds because these diagnostic payloads are noisy. Development builds continue
 to show them regardless of the toggle. Set the persisted preference from an
 agent or terminal with
-`bb settings general showUnhandledProviderEvents <true|false>`.
+`beam settings general showUnhandledProviderEvents <true|false>`.
 
 The "Default thread followup behavior" picker in Settings → General changes the
 active-thread composer shortcuts when no typeahead suggestion is active. A
@@ -192,12 +199,12 @@ queued message waits and then runs when the agent stops. A steer message goes
 to the agent during the current run. The picker defaults to "Queue": Enter
 queues and Command+Enter steers. "Steer" swaps them: Enter steers and
 Command+Enter queues. Set it with
-`bb settings general steerActiveThreadOnEnter <true|false>`, where `true` is
+`beam settings general steerActiveThreadOnEnter <true|false>`, where `true` is
 "Steer".
 
 The "Streamer mode" toggle in Settings → General hides every `customModels`
 entry from `~/.beam/config.json` in all model lists: the web and mobile pickers,
-`bb provider models`, and `sdk.providers.models`. Turn it on before a screen
+`beam provider models`, and `sdk.providers.models`. Turn it on before a screen
 share so a private or early-access model id does not appear. It defaults to
 off. The entries stay in `config.json`, and a thread that names a hidden model
 explicitly still runs with it. Default model resolution for a new thread also
@@ -205,7 +212,7 @@ keeps the full list, so a provider whose only models are custom still starts.
 A composer whose stored selection is a hidden model treats it as unavailable
 and falls back to the provider default; the next send records that default, so
 select the custom model again after you turn streamer mode off. Set it with
-`bb settings general streamerMode <true|false>`.
+`beam settings general streamerMode <true|false>`.
 
 Settings → Providers lists every registered agent provider in picker order.
 Move a provider up or down to change the order and choose the default for new
@@ -214,14 +221,14 @@ that lead the picker (ids not listed follow in plugin install order, and an id
 that names no registered provider is ignored) and `defaultProviderId` is the
 provider new threads use when neither the caller nor the project chose one
 (`null` means the first available provider in picker order). Set them with
-`bb settings general providerOrder '["claude-code","codex"]'` and
-`bb settings general defaultProviderId claude-code` (or `null`).
+`beam settings general providerOrder '["claude-code","codex"]'` and
+`beam settings general defaultProviderId claude-code` (or `null`).
 
 Each provider's own options live on its plugin: Codex memory and native
 subagents under the Codex provider plugin, Claude Code memory, native
 subagents and the Workflow tool under the Claude Code provider plugin. Read
 and set them like any plugin setting, for example
-`bb plugin config provider-claude-code set workflowsDisabled true`.
+`beam plugin config provider-claude-code set workflowsDisabled true`.
 
 Outside an open typeahead menu, Shift+Enter inserts a newline. On
 coarse-pointer touch devices, the software-keyboard Return path inserts a
@@ -239,12 +246,12 @@ unlisted. Plugins can add their own rows, listed under "Plugins".
 
 Settings → Keyboard edits app command shortcuts. Overrides are stored in the
 server database, applied live to every connected window, and kept across
-restarts. Resetting a shortcut removes its override so future bb releases can
+restarts. Resetting a shortcut removes its override so future Beam releases can
 continue to update the default. Clearing a shortcut explicitly disables that
 command. Command context and native-only availability remain server-owned and
 are not editable. Actions supported by both clients use the same resolved
 bindings in the browser and desktop app; browsers may still reserve some chords
-before bb receives them.
+before Beam receives them.
 
 `Mod` means Command on macOS and Control on Windows/Linux. Numbered thread and
 pane shortcuts follow Slack's browser-safe convention: web uses
@@ -255,7 +262,7 @@ untouched. Previous and next thread use `Mod+Shift+[/]` on desktop and
 
 The "Show keyboard hints when holding CMD / Control" preference defaults
 to on. Set it with
-`bb settings keyboard hints <true|false>`. Turning it off hides the
+`beam settings keyboard hints <true|false>`. Turning it off hides the
 delayed shortcut badges without disabling any shortcuts.
 
 | Area      | Command                                   | Default                           | Availability             |
@@ -298,9 +305,9 @@ The desktop application menu uses the same resolved bindings for New Thread,
 New Window, New Tab, Close, and Settings. There is no separate menu shortcut
 configuration.
 
-`BB_SERVER_URL` does not change where full `npx bb-app` startup binds locally.
+`BB_SERVER_URL` does not change where full packaged `beam` startup binds locally.
 It is for commands that need to target an already-running server, such as the
-bundled `bb` CLI or a standalone host daemon. The CLI can omit it when targeting
+bundled `beam` CLI or a standalone host daemon. The CLI can omit it when targeting
 the default local packaged server at `http://127.0.0.1:48886`; set it for remote
 or non-default servers.
 
@@ -326,14 +333,14 @@ Example:
 }
 ```
 
-When a remote bb page asks the local helper to open a work-host path, the helper
+When a remote Beam page asks the local helper to open a work-host path, the helper
 uses this mapping to launch remote-capable editors and terminals over SSH.
-Browsers or devices without a helper can still use bb; local editor actions are
+Browsers or devices without a helper can still use Beam; local editor actions are
 simply unavailable.
 
 ## Custom ACP Agents
 
-Known ACP agents appear when their CLI is installed on the host. bb exposes
+Known ACP agents appear when their CLI is installed on the host. Beam exposes
 `acp-opencode` when `opencode` is on PATH and can be launched as `opencode acp`,
 `acp-omp` when `omp` (oh-my-pi) is on PATH, `acp-grok` when Grok Build's `grok`
 CLI is on PATH and can be launched as `grok agent stdio`, and
@@ -345,18 +352,18 @@ which holds a JSON array. In the app it is the multi-line editor on the
 plugin's settings page (Settings → Plugins → ACP providers); from the CLI:
 
 ```bash
-bb plugin config provider-acp set customAgents '[
+beam plugin config provider-acp set customAgents '[
   {"id": "amp", "displayName": "Amp", "command": "amp", "args": ["acp"]}
 ]'
 ```
 
 Each entry needs `id` (lowercase letters, digits and dashes), `displayName`,
-and `command`. bb derives the provider id `acp-<id>`; it never changes once a
-thread has used it. An id bb always lists (`cursor`) is reserved; an id bb
+and `command`. Beam derives the provider id `acp-<id>`; it never changes once a
+thread has used it. An id Beam always lists (`cursor`) is reserved; an id Beam
 lists only where the agent is installed (`opencode`, `omp`, `grok`,
 `hermes-agent`) is not, so an entry with that id REPLACES the shipped agent.
 A replacing entry keeps the shipped agent's `nativeSkillRoots` unless it sets
-its own, and bb still lists the roots that agent's host config names (its
+its own, and Beam still lists the roots that agent's host config names (its
 config directory, compat trees, configured paths, plugins) either way.
 Optional fields: `args`, `env`, `cwd`, `modelCli` (CLI model listing and
 selection), `reasoningCli` (launch-time reasoning flags), `nativeReasoning`
@@ -365,8 +372,8 @@ in the composer, as `{"user": [...], "project": [...]}` relative paths; an
 entry is a path or `{"path": ..., "recursive": true, "ancestors": true}` for
 an agent that nests skills or reads them from every ancestor directory),
 `permissionCli` (permission-mode launch flags), `supportsManualCompaction`
-(only if the agent accepts an explicit compaction request — bb hides
-`/compact` otherwise), and `dialect` (the vendor side channels bb reads for
+(only if the agent accepts an explicit compaction request — Beam hides
+`/compact` otherwise), and `dialect` (the vendor side channels Beam reads for
 the agent: `cursor`, `opencode`, `omp`, or `grok`).
 
 The change applies immediately: the plugin re-registers its providers when the
@@ -383,7 +390,7 @@ working, logs a deprecation warning for each one, and never writes to it.
 Support ends in 0.41 — move each entry into the `customAgents` setting above.
 The two shapes are identical except that the setting has no `logo` field: a
 plugin-registered provider's icon is a host glyph or an asset the plugin ships,
-so a configured agent shows the generic tool glyph, and bb drops the field when
+so a configured agent shows the generic tool glyph, and Beam drops the field when
 it reads the old array. A setting entry wins over a config entry with the same
 `id`.
 
@@ -392,7 +399,7 @@ it reads the old array. A setting entry wins over a config entry with the same
 Register extra picker models by editing top-level `customModels` in
 `~/.beam/config.json`. Use this for a model the provider accepts but does not
 list, such as a non-public preview id. This list has no set/unset CLI surface:
-edit the JSON, then run `npx bb-app config refresh` or restart bb. `bb-app config list` prints the entries.
+edit the JSON, then run `beam config refresh` or restart Beam. `beam config list` prints the entries.
 
 ```json
 {
@@ -410,13 +417,13 @@ edit the JSON, then run `npx bb-app config refresh` or restart bb. `bb-app confi
 `providerId` accepts a built-in provider id (`codex`, `claude-code`, `pi`,
 `acp-cursor`) or any `acp-*` provider id: an installed-only plugin provider
 such as `acp-opencode`, or a custom ACP agent's derived `acp-<id>`. `displayName` is
-optional; bb derives the label from the model id when it is omitted. bb skips
+optional; Beam derives the label from the model id when it is omitted. Beam skips
 an invalid entry with a warning and keeps the rest of the config.
 
-Each entry appears in `bb provider models <providerId>` and in the model
+Each entry appears in `beam provider models <providerId>` and in the model
 picker after the provider's own catalog. The provider catalog wins on a model
 id collision. The "Streamer mode" General setting
-(`bb settings general streamerMode true`) hides every entry from these lists
+(`beam settings general streamerMode true`) hides every entry from these lists
 until you turn it off again.
 
 A `customModels` entry only makes the id selectable; the provider must still
@@ -424,18 +431,18 @@ accept it. Built-in providers such as `claude-code` and `codex` accept
 unlisted ids. An ACP agent receives the id over the protocol at session start
 and can reject it. OpenCode rejects a model that is not in its own catalog,
 so do not pin OpenCode models here: add the model to the OpenCode config and
-bb discovers it automatically.
+Beam discovers it automatically.
 
 An OpenCode "agent" (build, plan, or a custom primary agent) is a session
-mode, not a model, so it does not belong in `customModels`. bb does not select
+mode, not a model, so it does not belong in `customModels`. Beam does not select
 OpenCode agents; set the default agent in the OpenCode config instead.
 
 ## Agent Instructions
 
-bb can inject user-level and workspace-level agent instructions into every
+Beam can inject user-level and workspace-level agent instructions into every
 provider-backed thread's system prompt, alongside the skills convention.
 
-For user-level defaults across projects, create `AGENTS.md` in the bb data dir:
+For user-level defaults across projects, create `AGENTS.md` in the Beam data dir:
 
 ```
 <dataDir>/AGENTS.md
@@ -447,7 +454,7 @@ For repo-specific guidance, create `.bb/AGENTS.md` at the workspace root:
 <workspace>/.bb/AGENTS.md
 ```
 
-The file contents are appended to bb's standard agent instructions when a
+The file contents are appended to Beam's standard agent instructions when a
 provider session starts, so the guidance applies regardless of which provider
 runs. When both files exist, `<dataDir>/AGENTS.md` is appended first and
 `<workspace>/.bb/AGENTS.md` second. An empty or whitespace-only file is treated
@@ -455,12 +462,12 @@ as absent.
 
 No agent loads `.bb/AGENTS.md` natively, and provider-native instruction files
 (`CLAUDE.md` for Claude Code, a repo-root `AGENTS.md` for Codex) remain
-provider-specific. bb reads the files above itself and injects them, so use them
-for guidance you want every bb thread to receive regardless of provider.
+provider-specific. Beam reads the files above itself and injects them, so use them
+for guidance you want every Beam thread to receive regardless of provider.
 
 ## Skills
 
-User-level bb skills live under `<dataDir>/skills/<name>/SKILL.md`; for the
+User-level Beam skills live under `<dataDir>/skills/<name>/SKILL.md`; for the
 packaged app this is usually `~/.beam/skills`. Project skills live under
 `<workspace>/.bb/skills/<name>/SKILL.md` and override same-named user or built-in
 skills. Running plugins contribute a third tier: every `skills/<name>/SKILL.md`
@@ -468,11 +475,11 @@ in an installed plugin (relocatable via the manifest's `bb.skills` field) is
 auto-imported while the plugin is loaded — overridden by project and user
 skills by name, overriding built-ins.
 
-bb indexes each provider's native skill roots for that provider's `/` command
+Beam indexes each provider's native skill roots for that provider's `/` command
 menu. Each provider plugin declares where its agent keeps skills and slash
 commands, and resolves on the host what only that machine and workspace know
-(a moved config directory, installed vendor plugins, config-file entries); bb
-itself knows no agent's layout. The Skills page and `bb skill list` show
+(a moved config directory, installed vendor plugins, config-file entries); Beam
+itself knows no agent's layout. The Skills page and `beam skill list` show
 native skills for every provider whose plugin declares or resolves roots. The
 table lists what the shipped plugins declare and resolve.
 
@@ -490,7 +497,7 @@ table lists what the shipped plugins declare and resolve.
 OpenCode also uses `$OPENCODE_CONFIG_DIR/skills` when that variable exists.
 Pi and omp use `$PI_CODING_AGENT_DIR` when that variable exists. omp also uses
 `$OMP_PROFILE` or `$PI_PROFILE` to select its active profile root. Cursor and
-Hermes can organize skills in category directories. bb scans those roots
+Hermes can organize skills in category directories. Beam scans those roots
 recursively. Pi settings and packages can add skill paths. omp reads
 `skills.customDirectories` from its YAML configuration. Hermes reads
 `skills.external_dirs` from `config.yaml`.
@@ -504,14 +511,14 @@ compatibility roots follow the related config and environment switches.
 Settings → Machines can enroll,
 rename, and remove machines; project settings can add a path or clone source on
 each machine; and thread creation can target any enrolled machine with a usable
-source. The CLI equivalents are `bb machine list`, `bb project create
---machine <id-or-name> ...`, `bb project source add --machine <id-or-name>
-...`, and `bb thread spawn --machine <id-or-name> ...`.
+source. The CLI equivalents are `beam machine list`, `beam project create
+--machine <id-or-name> ...`, `beam project source add --machine <id-or-name>
+...`, and `beam thread spawn --machine <id-or-name> ...`.
 
-Multi-machine execution is independent of browser access. Tailscale and bb
-connect let another browser reach the bb server; multi-machine support lets
+Multi-machine execution is independent of browser access. Tailscale and Beam
+connect let another browser reach the Beam server; multi-machine support lets
 that server dispatch work to non-primary host daemons. The Settings → Machines
-installer can use a paired bb connect account to route the daemon and its CLI
+installer can use a paired Beam Connect account to route the daemon and its CLI
 back to the server. Machine credentials remain locally managed as described at
 the top of this document.
 
@@ -522,25 +529,26 @@ Approve for me or Accept Edits. A provider that supports no mode under the
 ceiling is refused on that machine. Only an owner session sets it, on the machine
 page (Settings → Machines → the machine, which also carries that machine's
 projects, provider CLIs, update state, and rename/remove); it is deliberately
-absent from the SDK and the `bb` CLI,
-and machine credentials are rejected at both the bb connect gate and the
+absent from the SDK and the `beam` CLI,
+and machine credentials are rejected at both the Beam Connect gate and the
 server. The boundary it defends is machine-to-machine: a process already
 running on the server machine has the data directory and the server itself, so
 it is trusted as the owner here exactly as it is for renaming or removing a
 machine. The current value is readable through the host API and
-`bb machine list --json`.
+`beam machine list --json`.
 
 Machine installation and daemon protocol repair use the owning server as the
 distribution source: `/install/version` reports the server package/protocol and
-`/install/bb-app.tgz` serves its exact installable package. The installer falls
-back to the npm registry only when the package route returns 404. It installs
-the package under the machine's bb data directory rather than npm's system-wide
-prefix, so enrollment needs neither `sudo` nor a global npm configuration.
+`/install/bb-app.tgz` serves its exact installable package. A missing or
+unreachable package fails closed; the installer never substitutes the upstream
+npm package or a `bb-app` found on `PATH`. It installs the package under the
+machine's Beam data directory rather than npm's system-wide prefix, so enrollment
+needs neither `sudo` nor a global npm configuration.
 Installed services enable `--auto-update`; remove that flag from the launchd
 plist or systemd user unit and reload the service to opt out. Updates only move
 to a newer server protocol, retry failures with a persisted exponential backoff
 from 5 seconds to 5 minutes, and never downgrade a daemon. Settings → Machines
-and `bb machine retry-update <id-or-name>` can bypass the current backoff after
+and `beam machine retry-update <id-or-name>` can bypass the current backoff after
 a transient failure.
 
 ## Thread splits
@@ -556,80 +564,82 @@ and both the split tree and maximized pane restore after reload. Compact
 viewports show the ordinary single-page surface while preserving that desktop
 layout state.
 It also enables explicit split placement through
-`bb thread open <thread-id> --split right|down|left|top|replace` and the matching
+`beam thread open <thread-id> --split right|down|left|top|replace` and the matching
 SDK request, plus pane presentation controls through
-`bb thread pane maximize|restore|toggle|spotlight|clear-spotlight [thread-id]` and
+`beam thread pane maximize|restore|toggle|spotlight|clear-spotlight [thread-id]` and
 `sdk.threads.paneAction({ threadId, action })`. Pane actions apply only when the
 target thread is already open in a multi-pane app window; the response reports
 how many connected clients received the broadcast. `spotlight` focuses the
 target pane and persistently dims the others; `clear-spotlight` focuses it and
 persistently restores undimmed splits.
 
-## bb connect
+## Beam Connect
 
-`bb connect --code <code> --server https://<handle>.getbb.app` pairs this bb
-server for browser access at `<handle>.getbb.app` (claim a handle and copy the
-command at https://getbb.app). Remote access is owned by the builtin
-**connect plugin** (`plugins/connect/`): pairing redeems the code and stores
+Beam does not ship with a production Connect domain. After an operator
+provisions a Beam-owned Connect deployment, its dashboard provides a command
+such as `beam connect --code <code> --server https://<handle>.<connect-domain>`.
+The non-routable `connect.beam.invalid` default prevents an unconfigured Beam
+from contacting upstream BB infrastructure. Remote access is owned by the
+builtin **connect plugin** (`plugins/connect/`): pairing redeems the code and stores
 the durable credential in the plugin's kv storage (in `bb.db`), and the
 plugin's background service holds the connect tunnel — dialing the gate,
 proxying relayed requests to the server's own loopback (which serves the SPA
 
 - `/api` + `/ws`), and reconnecting with capped backoff. The tunnel therefore
-  lives as long as the bb server runs (with the plugin enabled) and
+  lives as long as the Beam server runs (with the plugin enabled) and
   re-establishes on restart; there is no foreground client. Pair from a machine
   with Beam installed via `beam connect …`.
-  `bb connect status` shows the connect state and every share's host and URL;
-  `bb connect off` disconnects and clears the pairing. After pairing,
-  `bb connect expose <port>` run from a thread shares that thread environment's
-  enrolled host. Server-host URLs remain
-  `https://<server-label>--<port>.getbb.app`; other machines use
-  `https://<machine-label>--<port>.getbb.app` and proxy directly through the
-  owning daemon. Outside a thread the command defaults to the server host;
+  `beam connect status` shows the connect state and every share's host and URL;
+  `beam connect off` disconnects and clears the pairing. After pairing,
+  `beam connect expose <port>` run from a thread shares that thread environment's
+  enrolled host. Server-host URLs use
+  `https://<server-label>--<port>.<connect-domain>`; other machines use
+  `https://<machine-label>--<port>.<connect-domain>` and proxy directly through
+  the owning daemon. Outside a thread the command defaults to the server host;
   `--host <name-or-id>` overrides host resolution. Access requires the owner's
-  getbb.app session (not a public link). `bb connect unexpose <port>` and
-  `bb connect shares` use the same host resolution and accept the same
+  Beam Connect session (not a public link). `beam connect unexpose <port>` and
+  `beam connect shares` use the same host resolution and accept the same
   `--host` override. Their JSON rows include `hostId`, `hostName`, `port`, and
   `url`; `shares --json` also includes the resolved `host`. A machine without
   a live Connect enrollment fails fast with instructions to remove and re-add
   it in Settings → Machines. Disabling the plugin
-  (`bb plugin disable connect`) cuts off all remote access;
-  `bb plugin enable connect` restores it.
+  (`beam plugin disable connect`) cuts off all remote access;
+  `beam plugin enable connect` restores it.
 
 The tunnel client lives in `plugins/connect/`; the CLI command is proxied to
 the plugin, and Settings → Connect drives the plugin's rpc (including shared
 ports).
 
-### Pairing the bb mobile app
+### Pairing the Beam mobile app
 
-The bb mobile app reaches a paired bb through the same connect route. It
-enrolls as a connect **machine** — its own credential on the getbb.app account,
+The Beam mobile app reaches a paired Beam through the same connect route. It
+enrolls as a connect **machine** — its own credential on the Beam Connect account,
 separate from the server's pairing secret and individually revocable — so
-pairing starts from the bb, not from the phone. Both pairing surfaces sit
+pairing starts from the Beam, not from the phone. Both pairing surfaces sit
 behind the `mobileApp` experiment (Settings → Experiments → **Mobile app**, or
-`bb settings experiment mobileApp true`) until the app is generally available;
+`beam settings experiment mobileApp true`) until the app is generally available;
 the connect plugin reads the experiment from `/system/config` on every call,
 so a toggle applies without a plugin reload:
 
 - Settings → Remote access → **Add mobile device** mints a one-time code and
   shows it as a QR code plus copyable text with a countdown.
-- `bb connect machine-code` prints the same code, server URL, connect apex,
-  and expiry; `bb connect machine-code --json` returns
+- `beam connect machine-code` prints the same code, server URL, connect apex,
+  and expiry; `beam connect machine-code --json` returns
   `{code, serverUrl, apex, expiresAt}` (the QR encodes that JSON).
 
 Scan or type the code in the mobile app. The code lasts 10 minutes and works
-once. The phone then appears in the getbb.app dashboard machine list, where you
-can revoke it; every enrollment takes one of the account's machine slots
+once. The phone then appears in the Beam Connect dashboard machine list, where
+you can revoke it; every enrollment takes one of the account's machine slots
 (desktop apps, remote execution machines, and phones all count), so a
 machine-limit error asks you to revoke an unused device first. Both surfaces
-need the experiment on, the bb paired (`bb connect --code …`), and the connect
+need the experiment on, the Beam paired (`beam connect --code …`), and the connect
 plugin enabled; with the experiment off the panel hides the section and
-`bb connect machine-code` exits 1 with a pointer to the toggle.
+`beam connect machine-code` exits 1 with a pointer to the toggle.
 
 ## Experiments
 
 Experimental surfaces are changed in Settings → Experiments or with
-`bb settings experiment <key> <true|false>`. Most start off; `editMessages`
+`beam settings experiment <key> <true|false>`. Most start off; `editMessages`
 starts on and its toggle is the opt-out.
 The default-off `changelogPreview` experiment shows the latest release notes
 as a compact, dismissible card on Settings → Updates.
@@ -641,22 +651,22 @@ history; if the thread is running, submission stops the current turn and waits
 for it to settle before atomically replacing that message and every later turn
 while keeping workspace changes.
 
-The `mobileApp` experiment turns on pairing for the bb mobile app: the
+The `mobileApp` experiment turns on pairing for the Beam mobile app: the
 **Add mobile device** card under Settings → Remote access and the
-`bb connect machine-code` command (see "Pairing the bb mobile app" above). It
+`beam connect machine-code` command (see "Pairing the Beam mobile app" above). It
 is off by default while the app is in early access.
 
 The `providerSessionReaping` experiment extends idle session release to every
-restorable provider. BB releases those sessions after 30 idle minutes. The
+restorable provider. Beam releases those sessions after 30 idle minutes. The
 daemon reads the setting before each five-minute maintenance pass. Active
 turns, commands, agents, workflows, and monitors keep their sessions loaded.
-The experiment does not gate release: BB releases idle Codex sessions with the
+The experiment does not gate release: Beam releases idle Codex sessions with the
 experiment off, which is the behavior it had before this setting.
 
 The `timelineWindowing` experiment is off by default. When enabled, long
 timelines and large expanded timeline details retain stable height-preserving
 wrappers while mounting only rows near their active scrollport. Toggle it with
-`bb settings experiment timelineWindowing <true|false>`.
+`beam settings experiment timelineWindowing <true|false>`.
 
 ## Thread Timeline Window
 
@@ -696,8 +706,8 @@ raising `BB_LOG_LEVEL`.
 
 ## Plugins
 
-Plugins are on by default. Builtin plugins, including connect, ship with bb;
-user-installed plugins come from `bb plugin install` or the bundled official
+Plugins are on by default. Builtin plugins, including connect, ship with Beam;
+user-installed plugins come from `beam plugin install` or the bundled official
 store.
 
 Plugin state lives under the data dir:
@@ -706,7 +716,7 @@ Plugin state lives under the data dir:
 <dataDir>/plugins/<id>/data.db     Per-plugin SQLite database
 <dataDir>/plugins/<id>/secrets/    Secret settings and the plugin HTTP token
 <dataDir>/plugins/<id>/logs/       bb.log output (plugin.log, JSONL, rotated
-                                   at 5MB; read with `bb plugin logs <id>`)
+                                   at 5MB; read with `beam plugin logs <id>`)
 <dataDir>/plugins/git/, npm/       Managed installs for git:/npm: sources
 <dataDir>/marketplaces/staging/    Throwaway checkouts a git: marketplace
                                    refresh reads its manifest from, deleted
@@ -716,16 +726,16 @@ Plugin state lives under the data dir:
                                    commands, injected into agent threads)
 ```
 
-BB's official plugins (GitHub, Docs, Memory, and Tasks) ship bundled
+Beam's official plugins (GitHub, Docs, Memory, and Tasks) ship bundled
 inside the app and install from the local bundled copy — no network, no remote catalog.
-Discover them with `bb plugin search` or Extensions → Plugins → Browse; users
+Discover them with `beam plugin search` or Extensions → Plugins → Browse; users
 cannot add, remove, or configure the bundled official plugin set. Installed official
-plugins are pinned to the bundled copy and update with BB app releases. Local
-path installs remain available directly through `bb plugin install ./path` or
+plugins are pinned to the bundled copy and update with Beam app releases. Local
+path installs remain available directly through `beam plugin install ./path` or
 `path:...`, and direct `npm:`/`git:` installs stay supported.
 
-Marketplace catalogs and their validated icon bytes live in the bb database,
-not on disk. `bb marketplace add|list|refresh|remove` and Settings → Plugin
+Marketplace catalogs and their validated icon bytes live in the Beam database,
+not on disk. `beam marketplace add|list|refresh|remove` and Settings → Plugin
 marketplaces manage them; the reserved `bb-community` marketplace comes from
 `BB_MARKETPLACE_URL` and cannot be added or removed. Adding a marketplace
 installs nothing, and removing one keeps its installed plugins as direct
@@ -739,7 +749,7 @@ manifest at the repository root indexes them:
 
 ```json
 {
-  "$schema": "https://getbb.app/schemas/plugins.schema.json",
+  "$schema": "https://raw.githubusercontent.com/divyesh-puri/beam/main/apps/web/public/schemas/plugins.schema.json",
   "schemaVersion": 1,
   "name": "acme-plugins",
   "plugins": [
@@ -757,28 +767,28 @@ invalid file is rejected whole. The manifest is an index only; it never
 overrides a plugin's identity, branding, entry points, or engine ranges.
 
 Install one plugin of the repository with
-`bb plugin install git:<url>[@<ref|semver-range>] --plugin <name>` (resolves a collection
+`beam plugin install git:<url>[@<ref|semver-range>] --plugin <name>` (resolves a collection
 entry) or `--subdirectory <relative-path>` (the primitive, which needs no
 collection manifest). Both flags work for `path:` sources and are mutually
 exclusive. Installs from the same repository and commit share one cached
 checkout, and the selected subdirectory is recorded with the install, so
-`bb plugin outdated`, `update`, rollback, and `remove` act per plugin. A
+`beam plugin outdated`, `update`, rollback, and `remove` act per plugin. A
 repository that has a collection manifest and is not a plugin itself refuses
 an unselected install and lists its entry names.
 
 ### Plugin updates
 
-Bundled builtin and official plugins update with BB app releases. For direct
-`git:`/`npm:` installs, update application is manual: `bb plugin outdated` or
+Bundled builtin and official plugins update with Beam app releases. For direct
+`git:`/`npm:` installs, update application is manual: `beam plugin outdated` or
 the "Check for updates" key on the Plugins page checks tracking sources, and
-`bb plugin update <id>` / `bb plugin update --all` or the "Update x.y.z" pill
+`beam plugin update <id>` / `beam plugin update --all` or the "Update x.y.z" pill
 applies compatible candidates. The server also checks every installed plugin
 every 6 hours (the first check runs when any plugin has no recorded check or
 the oldest one is older than 6 hours), at most four plugins at a time, and a
 manual check joins a sweep already in flight; a check only records what is
 available and never installs or runs plugin code. There is no automatic plugin update
 application or update audit feed. Reinstalling an already-installed managed plugin is
-refused — use `bb plugin update`. Before activation bb snapshots the plugin
+refused — use `beam plugin update`. Before activation Beam snapshots the plugin
 database, host-managed settings/storage/schedules, secrets, and registration.
 A failed activation restores that snapshot and records the latest failure on
 the plugin so it can be surfaced as needing attention.
@@ -791,31 +801,31 @@ resets when the failed turn was accepted, the provider has stopped its own
 retries, and the original execution settings remain available. Prior output or
 tool activity does not block recovery. Recovery sends one agent-only
 `Please continue.` turn on the existing provider conversation. Disable it
-under Extensions → Plugins or with `bb plugin disable provider-retry`.
+under Extensions → Plugins or with `beam plugin disable provider-retry`.
 The `maximumWait` setting defaults to `6 hours`; resets beyond that horizon are
 not scheduled. Choose `24 hours` or `No limit` under the plugin settings, or
 configure it from the CLI:
 
 ```bash
-bb plugin config provider-retry set maximumWait "24 hours"
+beam plugin config provider-retry set maximumWait "24 hours"
 ```
 
 Pending waits are coordinated by machine/provider subscription and live only
-in the current server/plugin process. Restarting bb, reloading the plugin, or
+in the current server/plugin process. Restarting Beam, reloading the plugin, or
 disabling it clears the timers without changing the original failed thread. A
 later 429 without a fresh provider rate-limit update can still inherit the last
 blocked window during that process.
-Inspect them with `bb provider-retry status`, or cancel one from its composer
-banner or with `bb provider-retry cancel <thread-id>`. Run
-`bb provider-retry retry <thread-id>` for a manual recovery, including credit
+Inspect them with `beam provider-retry status`, or cancel one from its composer
+banner or with `beam provider-retry cancel <thread-id>`. Run
+`beam provider-retry retry <thread-id>` for a manual recovery, including credit
 or spend-control limits that do not report a reset time.
 
 ### Workflows plugin
 
 The builtin Workflows plugin is disabled on fresh installations. Enable it
-under Extensions → Plugins or with `bb plugin enable workflows`. Its six
+under Extensions → Plugins or with `beam plugin enable workflows`. Its six
 settings accept base-10 integer strings through Extensions → Plugins or
-`bb plugin config workflows set <key> <value>`:
+`beam plugin config workflows set <key> <value>`:
 
 | Key                    |    Default |       Allowed range | Behavior                                               |
 | ---------------------- | ---------: | ------------------: | ------------------------------------------------------ |
@@ -829,12 +839,12 @@ settings accept base-10 integer strings through Extensions → Plugins or
 The five settings other than `maxActiveRuns` are snapshotted into each new run.
 Settings changes do not require a plugin reload.
 
-`bb plugin install npm:<package>[@<version|tag|range>]` requires `npm` on PATH
+`beam plugin install npm:<package>[@<version|tag|range>]` requires `npm` on PATH
 (packages are installed with `--ignore-scripts`). Git plugins also use npm with
-lifecycle scripts disabled, so they may depend on third-party packages; bb
+lifecycle scripts disabled, so they may depend on third-party packages; Beam
 then builds both their server and frontend bundles. `node_modules` is
 retained, because a dependency can load data files that bundling cannot
-inline. A committed `dist/` is always replaced by the bundles bb builds.
+inline. A committed `dist/` is always replaced by the bundles Beam builds.
 Dependency resolution and bundling run on install and update-apply only —
 never on an update check, which reads the manifest and stops. An omitted npm
 spec tracks the newest compatible stable release, ranges track within the
@@ -843,44 +853,44 @@ Git repository URL or `git:<url>[@<ref|semver-range>]` requires `git`; an
 omitted ref tracks the repository's default branch, explicit branches track
 their head, and tags and commits are pinned. A semver range
 (`git:<url>@^1.2.0`, or `@semver:<range>` to state the intent explicitly)
-tracks the repository's `[<tag-prefix>]vX.Y.Z` release tags: bb installs the
+tracks the repository's `[<tag-prefix>]vX.Y.Z` release tags: Beam installs the
 highest release the range allows, excludes prereleases unless the range names
 one, records the tag and the commit it pointed at, and refuses that tag later
 if it moved. `--tag-prefix <prefix>` ranges over one plugin's tags in a
 multi-plugin repository. A bare range that is also a literal branch or tag
 name fails the install and asks for `@semver:` or `@ref:`. Local
 path installs register the directory in place and never delete it. Builtin
-plugins use `builtin:<name>` and ship with bb unless removed. Managed
+plugins use `builtin:<name>` and ship with Beam unless removed. Managed
 (`git:`/`npm:`) installs
 refuse plugins whose optional `engines.bb` or `engines.bbPluginSdk` ranges
-do not match the running bb/SDK, or whose `dist/*.meta.json` plugin identity
+do not match the running Beam/SDK, or whose `dist/*.meta.json` plugin identity
 does not match the package manifest; installing a non-builtin source whose
 derived id collides with a builtin name (automations, connect,
 custom-instructions, inline-vis, secrets, workflows) is also refused.
 
-`engines.bbPluginSdk` is a floor, not a ceiling. bb reads the lowest version
+`engines.bbPluginSdk` is a floor, not a ceiling. Beam reads the lowest version
 the range allows and runs the plugin on any SDK at or above it within the same
 major, so a caret range such as `^0.4.1` keeps working after the SDK moves to
-`0.4.3` or a later `0.x`. Only a plugin that asks for a newer SDK than this bb
+`0.4.3` or a later `0.x`. Only a plugin that asks for a newer SDK than this Beam
 provides, or one pinned to a different major, is incompatible. Declare the
 oldest SDK you need (`>=0.4.3`); a breaking plugin API change bumps the major.
 
-The same tracking intent drives updates: `bb plugin outdated` checks for
+The same tracking intent drives updates: `beam plugin outdated` checks for
 compatible candidates (and reports blocked incompatible newer releases);
-`bb plugin update <id>` / `bb plugin update --all` applies them. Pinned source
+`beam plugin update <id>` / `beam plugin update --all` applies them. Pinned source
 intent is never widened by update; remove and reinstall to choose a different
-source intent. Dev builds (bb `0.0.0`) do not enforce `engines.bb` and annotate
+source intent. Dev builds (Beam `0.0.0`) do not enforce `engines.bb` and annotate
 that on check results.
 Update confirmation matches install (full-trust code; `--yes` skips; non-TTY
-refuses without it). Plugins are full-trust code running inside the bb server
-process: they can read all local bb data, including other plugins' secrets.
+refuses without it). Plugins are full-trust code running inside the Beam server
+process: they can read all local Beam data, including other plugins' secrets.
 
 ## Startup Flags
 
 Use launcher flags for per-run startup details:
 
 ```bash
-npx bb-app --data-dir ~/.bb-test --server-port 48886 --host-daemon-port 48887
+beam --data-dir ~/.beam-test --server-port 48886 --host-daemon-port 48887
 ```
 
 The server listens on `127.0.0.1` by default. Set
@@ -889,21 +899,21 @@ trusted network boundary must reach the listener directly. The public API is
 unauthenticated and permits command execution and file reads, so never expose a
 wildcard-bound server to an untrusted network. The only accepted bind hosts are
 `127.0.0.1` and `0.0.0.0`; this startup-only setting is not available through
-`bb-app config`.
+`beam config`.
 
 The startup `Server listening` and `app` lines show the actual listener address.
-With wildcard binding they show `http://0.0.0.0:<port>`, while bb's health check
+With wildcard binding they show `http://0.0.0.0:<port>`, while Beam's health check
 and colocated host daemon continue to connect through `127.0.0.1`. That local
 connection does not narrow the listener. `0.0.0.0` exposes IPv4 interfaces only;
-bb does not currently offer an IPv6 wildcard bind option.
+Beam does not currently offer an IPv6 wildcard bind option.
 
-The data directory is the root directory for all bb-managed state: the SQLite
+The data directory is the root directory for all Beam-managed state: the SQLite
 database, logs, host identity, thread storage, custom themes (`theme/`,
 including optional Pierre / VS Code `pierre-dark.json` and `pierre-light.json`),
 and
 plugins. It defaults to `~/.beam/` for the packaged app and never migrates or
 falls back to `~/.bb/`. The `pnpm dev` source launcher derives an isolated data
-directory under `~/.bb-dev/<checkout-instance>/` from the checkout path. The
+directory under `~/.beam-dev/<checkout-instance>/` from the checkout path. The
 checkout instance id is the sanitized path to the checkout, relative to your
 home directory, plus a short hash suffix. Use `--data-dir` to point packaged-app
 instances at different data directories for fully isolated environments.
@@ -917,7 +927,7 @@ defeat side-by-side data, port, and server isolation.
 If the default ports are already in use, set explicit ports before starting:
 
 ```bash
-npx bb-app --server-port 48886 --host-daemon-port 48887
+beam --server-port 48886 --host-daemon-port 48887
 ```
 
 The Settings → Machines installer assigns every enrolled standalone host daemon
@@ -960,12 +970,12 @@ app while reading build outputs directly from `apps/app`, `apps/server`, and
 `packages/bb-app/dist/bb-app.js host-daemon` entrypoint. Source-only scripts do
 not own production ports or data-dir defaults.
 
-Source checkout commands such as `pnpm bb`, `pnpm bb:dev`, and `pnpm reset`
+Source checkout commands such as `pnpm beam`, `pnpm beam:dev`, and `pnpm reset`
 are thin wrappers around `@bb/scripts`. Those wrappers force `NODE_ENV` to the
-intended mode so ambient shell state does not silently retarget bb.
+intended mode so ambient shell state does not silently retarget Beam.
 
 Use `pnpm reset` or `pnpm reset:dev` to clear a data directory. These only
-remove bb-managed state, not provider credentials.
+remove Beam-managed state, not provider credentials.
 
 `BB_PROVIDER_BRIDGE_RECORD_DIR=<dir>` in the host daemon's environment turns
 on bridge record mode: every provider bridge writes the lines that cross its

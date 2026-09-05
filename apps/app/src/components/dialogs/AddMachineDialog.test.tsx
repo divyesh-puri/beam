@@ -60,7 +60,7 @@ function connectPlugin(
     version: "0.1.0",
     provenance: "builtin",
     isOrphanedBuiltin: false,
-    publisherLabel: "BB Official",
+    publisherLabel: "Beam Official",
     sourceDisplay: "builtin · connect",
     updateState: {},
     description: null,
@@ -113,7 +113,7 @@ describe("AddMachineDialog", () => {
     vi.mocked(sdk.plugins.callRpc).mockResolvedValue({
       code: "mc_test456",
       expiresAt: Date.now() + 10 * 60 * 1000,
-      serverUrl: "https://example.getbb.app",
+      serverUrl: "https://example.connect.beam.invalid",
     });
     vi.mocked(sdk.hosts.list).mockResolvedValue([existingHost]);
 
@@ -139,15 +139,17 @@ describe("AddMachineDialog", () => {
     );
     expect(command.textContent).toContain("--host-id host_new");
     expect(command.textContent).toContain(
-      "curl -fL --progress-meter --connect-timeout 10 --max-time 60 --retry 2 https://example.getbb.app/install.sh",
+      "curl -fL --progress-meter --connect-timeout 10 --max-time 60 --retry 2 https://example.connect.beam.invalid/install.sh",
     );
-    expect(command.textContent).toContain("--server https://example.getbb.app");
+    expect(command.textContent).toContain(
+      "--server https://example.connect.beam.invalid",
+    );
     expect(command.textContent).toContain("--machine-code mc_test456");
     expect(command.textContent).not.toContain(window.location.origin);
     expect(command.closest("[data-add-machine-command]")).not.toBeNull();
     expect(
       screen.getByText(
-        /It installs bb and keeps the machine connected to this server/u,
+        /It installs Beam and keeps the machine connected to this server/u,
       ),
     ).toBeDefined();
     expect(screen.getByText(/Code expires in \d+:\d{2}/)).toBeDefined();

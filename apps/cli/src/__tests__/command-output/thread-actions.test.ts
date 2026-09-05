@@ -11,13 +11,13 @@ import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import * as fixtures from "../helpers/command-output-fixtures.js";
 import { registerThreadCommands } from "../../commands/thread/index.js";
 
-describe("bb thread action command output", () => {
+describe("beam thread action command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
     registerThreadCommands(program, () => "http://server");
 
-  it("bb thread archive sends the thread id from args", async () => {
+  it("beam thread archive sends the thread id from args", async () => {
     const archivePost = vi.fn(async () => ({
       ok: true,
       archivedThreadIds: ["thread-archive-1"],
@@ -34,7 +34,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread archive reports related threads when cascading", async () => {
+  it("beam thread archive reports related threads when cascading", async () => {
     const archivePost = vi.fn(async () => ({
       ok: true,
       archivedThreadIds: ["thread-child-1", "thread-archive-1"],
@@ -51,7 +51,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread archive --self resolves from BB_THREAD_ID", async () => {
+  it("beam thread archive --self resolves from BB_THREAD_ID", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-archive-2");
     const archivePost = vi.fn(async () => ({
       ok: true,
@@ -66,7 +66,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread archive prefixes failures with thread context", async () => {
+  it("beam thread archive prefixes failures with thread context", async () => {
     const archivePost = vi.fn(async () => {
       throw new Error("HTTP 404: missing");
     });
@@ -84,7 +84,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread unarchive --self resolves from BB_THREAD_ID", async () => {
+  it("beam thread unarchive --self resolves from BB_THREAD_ID", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-unarchive-1");
     const unarchivePost = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.unarchive.$post": unarchivePost });
@@ -99,7 +99,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread edit-message targets the latest editable message by default", async () => {
+  it("beam thread edit-message targets the latest editable message by default", async () => {
     const submitEdit = vi.fn(async () => ({
       ok: true,
       operationId: "edit-op-server",
@@ -126,7 +126,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread edit-message preserves an agent caller when targeting another thread", async () => {
+  it("beam thread edit-message preserves an agent caller when targeting another thread", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-agent-caller");
     const submitEdit = vi.fn(async () => ({
       ok: true,
@@ -158,7 +158,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread edit-message accepts an explicit stale-edit guard", async () => {
+  it("beam thread edit-message accepts an explicit stale-edit guard", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-edit-self");
     const submitEdit = vi.fn(async () => ({
       ok: true,
@@ -196,7 +196,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread edit-message rejects a partially numeric request sequence", async () => {
+  it("beam thread edit-message rejects a partially numeric request sequence", async () => {
     const submitEdit = vi.fn();
     stubServerApi({ "v1.threads.:id.edit-message.$post": submitEdit });
 
@@ -221,7 +221,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread pin sends the thread id from args", async () => {
+  it("beam thread pin sends the thread id from args", async () => {
     const pinnedThread = fixtures.makeThread({
       id: "thread-pin-1",
       projectId: "proj-1",
@@ -241,7 +241,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread unpin --self resolves from BB_THREAD_ID", async () => {
+  it("beam thread unpin --self resolves from BB_THREAD_ID", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-unpin-1");
     const unpinnedThread = fixtures.makeThread({
       id: "thread-unpin-1",
@@ -262,7 +262,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread delete prompts before deleting", async () => {
+  it("beam thread delete prompts before deleting", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-delete-1",
       projectId: "proj-1",
@@ -295,7 +295,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread delete cancels when confirmation is declined", async () => {
+  it("beam thread delete cancels when confirmation is declined", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-delete-2",
       projectId: "proj-1",
@@ -320,7 +320,7 @@ describe("bb thread action command output", () => {
     );
   });
 
-  it("bb thread delete --yes skips confirmation (requires explicit id)", async () => {
+  it("beam thread delete --yes skips confirmation (requires explicit id)", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-delete-3",
       projectId: "proj-1",
@@ -348,7 +348,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread delete forwards explicit child-thread confirmation", async () => {
+  it("beam thread delete forwards explicit child-thread confirmation", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-delete-children",
       projectId: "proj-1",
@@ -381,7 +381,7 @@ describe("bb thread action command output", () => {
     });
   });
 
-  it("bb thread stop lets the server no-op when the thread is already idle", async () => {
+  it("beam thread stop lets the server no-op when the thread is already idle", async () => {
     const get = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-stop-idle",
@@ -407,7 +407,7 @@ describe("bb thread action command output", () => {
     expect(stopPost).toHaveBeenCalledTimes(1);
   });
 
-  it("bb thread stop lets the server no-op when the thread is in error", async () => {
+  it("beam thread stop lets the server no-op when the thread is in error", async () => {
     const get = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-stop-error",
@@ -433,7 +433,7 @@ describe("bb thread action command output", () => {
     expect(stopPost).toHaveBeenCalledTimes(1);
   });
 
-  it("bb thread stop still stops active threads", async () => {
+  it("beam thread stop still stops active threads", async () => {
     const get = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-stop-active",
@@ -458,7 +458,7 @@ describe("bb thread action command output", () => {
     expect(stopPost).toHaveBeenCalledTimes(1);
   });
 
-  it("bb thread compact calls the manual compaction endpoint", async () => {
+  it("beam thread compact calls the manual compaction endpoint", async () => {
     const post = vi.fn(async () => ({ ok: true }));
     stubServerApi({ "v1.threads.:id.compact.$post": post });
 
@@ -474,7 +474,7 @@ describe("bb thread action command output", () => {
     ["cancel-plan", "plan.cancel", "exited Plan mode"],
     ["clear-goal", "goal.clear", "cleared its Goal"],
   ])(
-    "bb thread %s calls the authoritative banner action",
+    "beam thread %s calls the authoritative banner action",
     async (command, route, output) => {
       const post = vi.fn(async () => ({ ok: true }));
       stubServerApi({ [`v1.threads.:id.${route}.$post`]: post });

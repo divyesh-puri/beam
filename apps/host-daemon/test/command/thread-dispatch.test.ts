@@ -2248,7 +2248,7 @@ describe("thread command dispatch", () => {
       providerOptions: { acpLaunchSpec: customAcpLaunchSpec() },
     };
     const threadInstructions = [
-      "You are a thread in a project inside bb.",
+      "You are a thread in a project inside Beam.",
       "Prefer concise user updates.",
       "Delegate implementation quickly.",
       "Parent Project",

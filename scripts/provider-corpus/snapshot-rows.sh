@@ -5,7 +5,7 @@
 #                                                      # diff not in allowlist
 #   scripts/provider-corpus/snapshot-rows.sh write     # mint a new baseline
 #
-# Requires BB_PROVIDER_CORPUS_DIR (defaults to ~/.bb/provider-corpus when that
+# Requires BB_PROVIDER_CORPUS_DIR (defaults to ~/.beam/provider-corpus when that
 # directory exists). See docs/debugging-and-qa.md, "Provider corpus".
 #
 # snapshots/rows is the baseline minted on main and shared by every
@@ -14,7 +14,7 @@
 #
 #   BB_PROVIDER_CORPUS_ALLOWLIST=apps/server/test/provider-corpus/allowlists/<ws>.json \
 #     scripts/provider-corpus/snapshot-rows.sh compare
-#   BB_PROVIDER_CORPUS_SNAPSHOT_DIR=$HOME/.bb/provider-corpus/snapshots/rows.<ws> \
+#   BB_PROVIDER_CORPUS_SNAPSHOT_DIR=$HOME/.beam/provider-corpus/snapshots/rows.<ws> \
 #     scripts/provider-corpus/snapshot-rows.sh write      # shadow snapshot
 #   BB_PROVIDER_CORPUS_ROW_CLASSES=apps/server/test/provider-corpus/allowlists/<ws>-row-classes.json \
 #     scripts/provider-corpus/snapshot-rows.sh compare    # identity-based classes
@@ -33,8 +33,8 @@ esac
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 repo_root="$(cd -- "${script_dir}/../.." && pwd -P)"
 
-if [[ -z "${BB_PROVIDER_CORPUS_DIR:-}" && -f "${HOME}/.bb/provider-corpus/manifest.json" ]]; then
-  export BB_PROVIDER_CORPUS_DIR="${HOME}/.bb/provider-corpus"
+if [[ -z "${BB_PROVIDER_CORPUS_DIR:-}" && -f "${HOME}/.beam/provider-corpus/manifest.json" ]]; then
+  export BB_PROVIDER_CORPUS_DIR="${HOME}/.beam/provider-corpus"
 fi
 if [[ -z "${BB_PROVIDER_CORPUS_DIR:-}" || ! -f "${BB_PROVIDER_CORPUS_DIR}/manifest.json" ]]; then
   echo "BB_PROVIDER_CORPUS_DIR must point at a corpus directory with manifest.json" >&2

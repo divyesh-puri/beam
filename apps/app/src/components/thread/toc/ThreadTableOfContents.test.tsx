@@ -723,7 +723,7 @@ describe("ThreadTableOfContents", () => {
         id: "u2",
         role: "user",
         preview:
-          "[bb message from thread:thr_worker] Release bug report: the calendar is stale.",
+          "[Beam message from thread:thr_worker] Release bug report: the calendar is stale.",
         attachmentSummary: null,
       },
       {
@@ -742,7 +742,7 @@ describe("ThreadTableOfContents", () => {
       screen.getByText("Release bug report: the calendar is stale."),
     ).not.toBeNull();
     expect(
-      screen.queryByText(/\[bb message from thread:thr_worker\]/),
+      screen.queryByText(/\[Beam message from thread:thr_worker\]/),
     ).toBeNull();
   });
 
@@ -776,7 +776,7 @@ describe("ThreadTableOfContents", () => {
         id: "u2",
         role: "user",
         preview:
-          "[bb message from thread:thr_worker] Release bug report: the calendar is stale.",
+          "[Beam message from thread:thr_worker] Release bug report: the calendar is stale.",
         attachmentSummary: null,
       },
       {

@@ -56,7 +56,7 @@ const USER_SHELL_ENV_TIMEOUT_MS = 3_000;
 const USER_SHELL_ENV_FORCE_KILL_AFTER_MS = 1_000;
 
 function getDefaultCliExecutablePath(): string {
-  return fileURLToPath(new URL("../../cli/bin/bb", import.meta.url));
+  return fileURLToPath(new URL("../../cli/bin/beam", import.meta.url));
 }
 
 function getDefaultCliRuntimePath(): string {
@@ -81,7 +81,7 @@ async function resolveCliEntryPath(cliExecutablePath: string): Promise<string> {
   try {
     const stats = await fs.stat(cliEntryPath);
     if (!stats.isFile()) {
-      throw new Error(`Resolved bb CLI entry is not a file: ${cliEntryPath}`);
+      throw new Error(`Resolved Beam CLI entry is not a file: ${cliEntryPath}`);
     }
     if (process.platform !== "win32") {
       try {
@@ -89,7 +89,7 @@ async function resolveCliEntryPath(cliExecutablePath: string): Promise<string> {
       } catch (error) {
         if (getErrorCode(error) === "EACCES") {
           throw new Error(
-            `Resolved bb CLI entry is not executable: ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
+            `Resolved Beam CLI entry is not executable: ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
           );
         }
         throw error;
@@ -98,7 +98,7 @@ async function resolveCliEntryPath(cliExecutablePath: string): Promise<string> {
   } catch (error) {
     if (getErrorCode(error) === "ENOENT") {
       throw new Error(
-        `Missing built bb CLI entry at ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
+        `Missing built Beam CLI entry at ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
       );
     }
     throw error;
@@ -114,13 +114,13 @@ async function requireCliRuntimePath(cliRuntimePath: string): Promise<void> {
     const stats = await fs.stat(resolvedCliRuntimePath);
     if (!stats.isFile()) {
       throw new Error(
-        `Resolved bb CLI runtime is not a file: ${resolvedCliRuntimePath}`,
+        `Resolved Beam CLI runtime is not a file: ${resolvedCliRuntimePath}`,
       );
     }
   } catch (error) {
     if (getErrorCode(error) === "ENOENT") {
       throw new Error(
-        `Missing built bb CLI runtime at ${resolvedCliRuntimePath}. Build @bb/cli before starting the host daemon.`,
+        `Missing built Beam CLI runtime at ${resolvedCliRuntimePath}. Build @bb/cli before starting the host daemon.`,
       );
     }
     throw error;
@@ -399,7 +399,7 @@ export async function resolveLocalBbExecutablePath(
 }
 
 function bbExecutableFileName(): string {
-  return "bb";
+  return "beam";
 }
 
 export function resolveBbExecutablePathInDirectory(

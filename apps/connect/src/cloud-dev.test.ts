@@ -10,8 +10,8 @@ import {
 describe("local Cloud request routing", () => {
   it("accepts the launcher host and selects HTTP cookies only in local Cloud", () => {
     const runtime = resolveConnectRuntime({
-      ACCOUNT_APP_URL: "http://bb.localhost:8787",
-      BASE_DOMAIN: "bb.localhost",
+      ACCOUNT_APP_URL: "http://beam.localhost:8787",
+      BASE_DOMAIN: "beam.localhost",
       CLOUD_DEV: "true",
     });
     const headers = new Headers({
@@ -19,12 +19,12 @@ describe("local Cloud request routing", () => {
       [CLOUD_DEV_HOST_HEADER]: "sawyer--3000",
     });
     expect(resolveConnectRequestHost(headers, runtime)).toBe(
-      "sawyer--3000.bb.localhost",
+      "sawyer--3000.beam.localhost",
     );
     expect(runtime.sessionCookieName).toBe("better-auth.session_token");
     expect(runtime.desktopSessionCookieName).toBe("bb-connect.desktop_session");
     expect(publicConnectOrigin("sawyer--3000", runtime)).toBe(
-      "http://sawyer--3000.bb.localhost:8787",
+      "http://sawyer--3000.beam.localhost:8787",
     );
     expect(
       resolveConnectRequestUrl(
@@ -32,17 +32,19 @@ describe("local Cloud request routing", () => {
         headers,
         runtime,
       ).toString(),
-    ).toBe("http://sawyer--3000.bb.localhost:8787/threads/thr_1?view=full");
+    ).toBe("http://sawyer--3000.beam.localhost:8787/threads/thr_1?view=full");
   });
 
   it("ignores the launcher header in production", () => {
-    const runtime = resolveConnectRuntime({ BASE_DOMAIN: "getbb.app" });
+    const runtime = resolveConnectRuntime({
+      BASE_DOMAIN: "connect.beam.invalid",
+    });
     const headers = new Headers({
-      host: "sawyer.getbb.app",
+      host: "sawyer.connect.beam.invalid",
       [CLOUD_DEV_HOST_HEADER]: "attacker",
     });
     expect(resolveConnectRequestHost(headers, runtime)).toBe(
-      "sawyer.getbb.app",
+      "sawyer.connect.beam.invalid",
     );
     expect(runtime.sessionCookieName).toBe(
       "__Secure-better-auth.session_token",
@@ -52,8 +54,8 @@ describe("local Cloud request routing", () => {
   it("rejects deployed credential auth", () => {
     expect(() =>
       resolveConnectRuntime({
-        ACCOUNT_APP_URL: "https://getbb.app",
-        BASE_DOMAIN: "getbb.app",
+        ACCOUNT_APP_URL: "https://connect.beam.invalid",
+        BASE_DOMAIN: "connect.beam.invalid",
         CLOUD_DEV: "true",
       }),
     ).toThrow("only allowed for local Cloud development");

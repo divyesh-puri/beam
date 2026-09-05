@@ -1,8 +1,10 @@
 {
   "name": "bb-app",
   "version": "0.40.0",
-  "description": "bb app launcher for npx",
+  "private": true,
+  "description": "Beam runtime compatibility package",
   "keywords": [
+    "beam",
     "bb",
     "coding-agent",
     "agent",
@@ -11,13 +13,13 @@
     "codex",
     "claude-code"
   ],
-  "homepage": "https://github.com/get-bb/bb#readme",
+  "homepage": "https://github.com/divyesh-puri/beam#readme",
   "bugs": {
-    "url": "https://github.com/get-bb/bb/issues"
+    "url": "https://github.com/divyesh-puri/beam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/get-bb/bb.git",
+    "url": "git+https://github.com/divyesh-puri/beam.git",
     "directory": "packages/bb-app"
   },
   "type": "module",
@@ -48,6 +50,7 @@
     "dist",
     "!dist/*.map",
     "host-daemon/dist/bb",
+    "host-daemon/dist/beam",
     "host-daemon/dist/bb-chunks",
     "host-daemon/dist/bb-parcel-watcher-child.mjs",
     "host-daemon/dist/bb-plugin-host-worker.mjs",

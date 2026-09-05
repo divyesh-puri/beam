@@ -24,9 +24,9 @@ const acme = {
 const official = {
   ...acme,
   name: "bb-community",
-  displayName: "BB Community",
+  displayName: "Beam Community",
   official: true,
-  source: "https://getbb.app/marketplace/v1/marketplace.json",
+  source: "Bundled with Beam",
   entryCount: 5,
 };
 
@@ -37,7 +37,7 @@ function json(value: object, status = 200): Response {
   });
 }
 
-describe("bb marketplace", () => {
+describe("beam marketplace", () => {
   setupCommandOutputTestEnvironment();
   const register: CommandRegistrar = (program) =>
     registerMarketplaceCommands(program, () => "http://server");
@@ -61,7 +61,7 @@ describe("bb marketplace", () => {
     const output = collectLogPayloads(vi.mocked(console.log)).join("\n");
     expect(output).toContain("Added marketplace acme-plugins");
     expect(output).toContain("Adding a marketplace installs nothing");
-    expect(output).toContain("bb plugin install <id>@acme-plugins");
+    expect(output).toContain("beam plugin install <id>@acme-plugins");
   });
 
   it("resolves a relative path: source on the invoking machine", async () => {

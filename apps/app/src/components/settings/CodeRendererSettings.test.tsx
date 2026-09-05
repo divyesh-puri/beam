@@ -45,7 +45,7 @@ describe("CodeRendererSettings", () => {
     expect(screen.queryByRole("button", { name: "Diffs" })).toBeNull();
   });
 
-  it("pins BB's diff renderer without touching the source-code choice", async () => {
+  it("pins Beam's diff renderer without touching the source-code choice", async () => {
     setPluginSlotRegistrations("inkwell", {
       ...EMPTY_REGISTRATIONS,
       sourceCodeRenderers: [

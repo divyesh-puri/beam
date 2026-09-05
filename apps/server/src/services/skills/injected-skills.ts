@@ -248,7 +248,7 @@ export function hashSkillTreeEntries(
   entries: readonly SkillTreeEntry[],
 ): string {
   const hash = createHash("sha256");
-  hash.update("bb-skill-tree-v1");
+  hash.update("beam-skill-tree-v1");
   for (const entry of [...entries].sort((left, right) =>
     compareStringsByCodePoint(left.path, right.path),
   )) {

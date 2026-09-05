@@ -714,7 +714,7 @@ export function createPluginRuntime(context: PluginRuntimeContext) {
       return undefined;
     }
     if (!semver.satisfies(version, manifest.bbEngineRange)) {
-      return `requires bb ${manifest.bbEngineRange}, this is ${version.version}`;
+      return `requires Beam ${manifest.bbEngineRange}, this is ${version.version}`;
     }
     return undefined;
   }
@@ -1407,7 +1407,7 @@ export function createPluginRuntime(context: PluginRuntimeContext) {
       const factory = mod.default;
       if (typeof factory !== "function") {
         throw new Error(
-          `server entry must default-export a factory (bb) => void, got ${typeof factory}`,
+          `server entry must default-export a factory (api) => void, got ${typeof factory}`,
         );
       }
       await runFactoryTimeBoxed(
@@ -1424,7 +1424,7 @@ export function createPluginRuntime(context: PluginRuntimeContext) {
       handle.invalidate();
       let message = error instanceof Error ? error.message : String(error);
       if (/ERR_DLOPEN_FAILED|\.node/.test(message)) {
-        message += " (native dependencies are not supported in BB plugins)";
+        message += " (native dependencies are not supported in Beam plugins)";
       }
       if (previous !== undefined) {
         setStatus(row.id, "running", `reload failed: ${message}`);

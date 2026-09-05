@@ -16,6 +16,7 @@ interface StartTestServerArgs {
 }
 
 const testServers: TestServer[] = [];
+const TEST_SERVER_TIMEOUT_MS = 2_000;
 
 function writeJson(
   response: ServerResponse,
@@ -90,7 +91,7 @@ describe("probeBbServer", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
-  it("accepts a server with bb health and system config endpoints", async () => {
+  it("accepts a server with Beam health and system config endpoints", async () => {
     const testServer = await startTestServer({
       handler(request, response) {
         if (request.url === "/health") {
@@ -114,7 +115,10 @@ describe("probeBbServer", () => {
     });
 
     await expect(
-      probeBbServer({ serverUrl: testServer.url, timeoutMs: 500 }),
+      probeBbServer({
+        serverUrl: testServer.url,
+        timeoutMs: TEST_SERVER_TIMEOUT_MS,
+      }),
     ).resolves.toEqual({
       dataDir: null,
       kind: "compatible",
@@ -160,7 +164,7 @@ describe("probeBbServer", () => {
 
     const result = await probeBbServer({
       serverUrl: testServer.url,
-      timeoutMs: 500,
+      timeoutMs: TEST_SERVER_TIMEOUT_MS,
     });
 
     expect(result.kind).toBe("incompatible");
@@ -196,7 +200,10 @@ describe("probeBbServer", () => {
     });
 
     await expect(
-      probeBbServer({ serverUrl: testServer.url, timeoutMs: 500 }),
+      probeBbServer({
+        serverUrl: testServer.url,
+        timeoutMs: TEST_SERVER_TIMEOUT_MS,
+      }),
     ).resolves.toEqual({
       dataDir: null,
       kind: "compatible",

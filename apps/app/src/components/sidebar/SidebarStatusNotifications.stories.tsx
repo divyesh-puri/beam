@@ -284,7 +284,7 @@ function makeWorktreeComboThreads(combo: readonly RollupSignal[]) {
   const environmentFields = {
     environmentId,
     environmentHostId: HOST_IDS.local,
-    environmentBranchName: `bb/status-${key}`,
+    environmentBranchName: `beam/status-${key}`,
     environmentWorkspaceDisplayKind: "managed-worktree",
   } satisfies Partial<ThreadListEntry>;
 

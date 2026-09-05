@@ -18,9 +18,9 @@ import { createProjectFixture, createReadyHostThread, createReadyReuseThread } f
 if (process.platform !== "darwin") throw new Error("The Browser CLI Electron boundary journey currently supports Darwin only");
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-const outputRoot = await mkdtemp(join(tmpdir(), "bb-browser-cli-e2e-"));
+const outputRoot = await mkdtemp(join(tmpdir(), "beam-browser-cli-e2e-"));
 const staticRoot = join(outputRoot, "static");
-const cliPath = join(repositoryRoot, "apps/cli/bin/bb");
+const cliPath = join(repositoryRoot, "apps/cli/bin/beam");
 const experimentsOn = {
   browserAutomation: true,
   changelogPreview: false,
@@ -115,7 +115,7 @@ async function runCli(args: string[], env: NodeJS.ProcessEnv, expectSuccess = tr
   const code = await new Promise<number | null>((resolveExit, reject) => {
     const timer = setTimeout(() => {
       child.kill("SIGKILL");
-      reject(new Error(`CLI timed out: bb ${args.join(" ")}`));
+      reject(new Error(`CLI timed out: beam ${args.join(" ")}`));
     }, 25_000);
     child.once("error", reject);
     child.once("exit", (exitCode) => {
@@ -125,8 +125,8 @@ async function runCli(args: string[], env: NodeJS.ProcessEnv, expectSuccess = tr
   });
   const stdoutText = Buffer.concat(stdout).toString("utf8").trim();
   const stderrText = Buffer.concat(stderr).toString("utf8").trim();
-  if (expectSuccess) assert(code === 0, `CLI failed: bb ${args.join(" ")}\n${stdoutText}\n${stderrText}`);
-  else assert(code !== 0, `CLI unexpectedly passed: bb ${args.join(" ")}`);
+  if (expectSuccess) assert(code === 0, `CLI failed: beam ${args.join(" ")}\n${stdoutText}\n${stderrText}`);
+  else assert(code !== 0, `CLI unexpectedly passed: beam ${args.join(" ")}`);
   const json: unknown = stdoutText.length === 0 ? null : JSON.parse(stdoutText);
   return { code, json, stderr: stderrText, stdout: stdoutText };
 }
@@ -172,7 +172,7 @@ let electron: ReturnType<typeof spawn> | null = null;
 let agentTrialTemporaryStateFile: string | null = null;
 try {
   await mkdir(staticRoot, { recursive: true });
-  await writeFile(join(staticRoot, "index.html"), '<!doctype html><html><body><main>BB Browser CLI integration renderer</main><script type="module" src="/renderer.js"></script></body></html>');
+  await writeFile(join(staticRoot, "index.html"), '<!doctype html><html><body><main>Beam Browser CLI integration renderer</main><script type="module" src="/renderer.js"></script></body></html>');
   const mainOutput = join(outputRoot, "electron-main.cjs");
   const preloadOutput = join(outputRoot, "preload.cjs");
   const browserBundle = join(outputRoot, "fixture.js");

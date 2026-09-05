@@ -132,7 +132,7 @@ describe("scaffold frontend", () => {
     await slot.behavior.emitRealtime("todos-changed", { count: 0 });
     await slot.findByText(/Nothing to do/);
     slot.lifecycle.unmount();
-  });
+  }, 15_000);
 });
 `;
 
@@ -457,7 +457,7 @@ describe("external plugin scaffold types", () => {
       exports: Record<string, { import: string; types: string }>;
     };
     expect(installedManifest.version).toBe(PLUGIN_SDK_VERSION);
-    expect(installedManifest.private).not.toBe(true);
+    expect(installedManifest.private).toBe(true);
     expect(JSON.stringify(installedManifest.dependencies ?? {})).not.toContain(
       "workspace:",
     );

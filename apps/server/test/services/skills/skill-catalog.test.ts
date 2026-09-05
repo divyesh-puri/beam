@@ -17,21 +17,21 @@ afterEach(async () => {
 });
 
 describe("resolveSkillCatalog", () => {
-  it("injects the built-in bb-browser skill only while browser automation is enabled", async () => {
+  it("injects the built-in beam-browser skill only while browser automation is enabled", async () => {
     harness = await createTestAppHarness();
     const skillRoot = join(
       harness.config.builtinSkillsRootPath,
-      "bb-browser",
+      "beam-browser",
     );
     await mkdir(skillRoot, { recursive: true });
     await writeFile(
       join(skillRoot, "SKILL.md"),
-      "---\nname: bb-browser\ndescription: Control the visible Browser.\n---\n",
+      "---\nname: beam-browser\ndescription: Control the visible Browser.\n---\n",
     );
 
     expect(
       resolveSkillCatalog(harness.deps).some(
-        (entry) => entry.runtimeSource.name === "bb-browser",
+        (entry) => entry.runtimeSource.name === "beam-browser",
       ),
     ).toBe(false);
 
@@ -43,7 +43,7 @@ describe("resolveSkillCatalog", () => {
       resolveSkillCatalog(harness.deps).some(
         (entry) =>
           entry.provenance.kind === "builtin" &&
-          entry.runtimeSource.name === "bb-browser",
+          entry.runtimeSource.name === "beam-browser",
       ),
     ).toBe(true);
   });

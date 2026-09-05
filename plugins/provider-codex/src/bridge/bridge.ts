@@ -268,7 +268,7 @@ const CODEX_APP_SERVER_COMMAND_ENV = "BB_CODEX_BRIDGE_APP_SERVER_COMMAND";
 const CODEX_APP_SERVER_ARGS_ENV = "BB_CODEX_BRIDGE_APP_SERVER_ARGS";
 
 const CODEX_INITIALIZE_PARAMS = {
-  clientInfo: { name: "bb", version: "1.0.0", title: null },
+  clientInfo: { name: "beam", version: "1.0.0", title: null },
   capabilities: { experimentalApi: true },
 };
 
@@ -324,7 +324,7 @@ async function delay(ms: number): Promise<void> {
   });
 }
 const MISSING_CODEX_CLI_GUIDANCE =
-  "bb could not find the Codex CLI on this machine. Install Codex (https://developers.openai.com/codex/cli) or put `codex` on PATH, then retry.";
+  "Beam could not find the Codex CLI on this machine. Install Codex (https://developers.openai.com/codex/cli) or put `codex` on PATH, then retry.";
 
 function resolveAppServerLaunch(): { command: string; args: string[] } {
   const command = process.env[CODEX_APP_SERVER_COMMAND_ENV];

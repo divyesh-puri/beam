@@ -54,7 +54,7 @@ export function pluginCliCollisionWarning(
   commandName: string,
 ): string | null {
   if (!RESERVED_BB_CLI_COMMANDS.includes(commandName)) return null;
-  return `CLI command "${commandName}" collides with core command "bb ${commandName}"; core keeps the short form. Use "bb plugin run ${pluginId}" to invoke this plugin.`;
+  return `CLI command "${commandName}" collides with core command "beam ${commandName}"; core keeps the short form. Use "beam plugin run ${pluginId}" to invoke this plugin.`;
 }
 
 /**
@@ -86,7 +86,7 @@ export const RPC_METHOD_PATTERN = /^[a-zA-Z0-9_-]+$/;
 // Service/schedule names appear in status text and plugin_schedules rows.
 export const BACKGROUND_NAME_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
-// CLI command names become `bb <name>` invocations.
+// CLI command names become `beam <name>` invocations.
 export const CLI_COMMAND_NAME_PATTERN = /^[a-z0-9-]+$/;
 
 // Agent tool names are shown to (and called by) the model.
@@ -740,7 +740,7 @@ const PROVIDER_MODEL_CATALOG_SCOPES = [
 
 /**
  * How far one `model/list` answer travels. Absent means `"workspace"`: a
- * bridge bb knows nothing about may read the workspace path, and probing per
+ * bridge Beam knows nothing about may read the workspace path, and probing per
  * workspace is the answer that can only cost a redundant probe.
  */
 function validateProviderModelCatalogScope(
@@ -1260,7 +1260,7 @@ export function validatePluginProviderDeclaration(
   });
   // Maintenance support: an omitted object or key means the bridge does not
   // implement that request. Filled here once, then an explicit boolean
-  // everywhere inside bb.
+  // everywhere inside Beam.
   const maintenance = declaration.maintenance ?? {};
   if (typeof maintenance !== "object" || maintenance === null) {
     throw new Error(`provider "${id}" maintenance must be an object`);
@@ -1718,7 +1718,7 @@ const RENAMED_AGENT_TOOL_FIELDS: ReadonlyMap<string, string> = new Map([
  * rule configure() output follows in the plugin service). The production
  * host and the fake host both call this before parsing `presentation`, so
  * a registration built against an older SDK fails a plugin's own unit test
- * with the message bb would give it.
+ * with the message Beam would give it.
  */
 export function rejectStaleAgentToolFields(
   toolName: string,
@@ -1746,7 +1746,7 @@ export function rejectStaleAgentToolFields(
  * a plugin's object cannot smuggle prototypes or extra markup into the
  * persisted row. Labels share the status-label length cap. The production
  * host and the fake host both call this, so a presentation that registers
- * in a plugin unit test registers in bb, and one bb rejects is rejected
+ * in a plugin unit test registers in Beam, and one Beam rejects is rejected
  * with the same message.
  */
 export function parsePluginAgentToolPresentation(

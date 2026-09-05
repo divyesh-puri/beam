@@ -178,7 +178,7 @@ const ONLINE_RPC_RESPONSE_RESULT_FIXTURES: OnlineRpcResponseResultFixtures = {
   "plugin.host.dispose": { disposed: true },
   "connect-tunnel.ensure-identity": {
     label: "sawyer-air",
-    baseDomain: "getbb.app",
+    baseDomain: "connect.beam.invalid",
   },
   "host.list_files": {
     files: [
@@ -262,15 +262,15 @@ const ONLINE_RPC_RESPONSE_RESULT_FIXTURES: OnlineRpcResponseResultFixtures = {
   "host.global_skills_status": {
     entries: [
       {
-        name: "bb-cli",
-        path: "/home/user/.agents/skills/bb-cli",
+        name: "beam-cli",
+        path: "/home/user/.agents/skills/beam-cli",
         treeHash: "c".repeat(64),
       },
     ],
   },
   "host.install_global_skills": {
     installations: [
-      { name: "bb-cli", path: "/home/user/.agents/skills/bb-cli" },
+      { name: "beam-cli", path: "/home/user/.agents/skills/beam-cli" },
     ],
   },
   "host.inspect_git_source": {
@@ -935,7 +935,7 @@ const ACP_BRIDGE_LAUNCH = {
 
 describe("host-daemon command schemas", () => {
   it("uses the current host-daemon protocol version", () => {
-    expect(HOST_DAEMON_PROTOCOL_VERSION).toBe(174);
+    expect(HOST_DAEMON_PROTOCOL_VERSION).toBe(175);
     expect(HOST_ARTIFACT_MAX_BYTES).toBe(256 * 1024 * 1024);
   });
 
@@ -3514,7 +3514,7 @@ describe("host-daemon session schemas", () => {
         ports: [3000],
         tunnel: {
           label: "sawyer-air",
-          baseDomain: "getbb.app",
+          baseDomain: "connect.beam.invalid",
         },
       }).success,
     ).toBe(false);
@@ -3522,11 +3522,11 @@ describe("host-daemon session schemas", () => {
     expect(
       hostDaemonDaemonWsMessageSchema.parse({
         type: "connect-tunnel.identity",
-        identity: { label: "sawyer-air", baseDomain: "getbb.app" },
+        identity: { label: "sawyer-air", baseDomain: "connect.beam.invalid" },
       }),
     ).toEqual({
       type: "connect-tunnel.identity",
-      identity: { label: "sawyer-air", baseDomain: "getbb.app" },
+      identity: { label: "sawyer-air", baseDomain: "connect.beam.invalid" },
     });
 
     expect(

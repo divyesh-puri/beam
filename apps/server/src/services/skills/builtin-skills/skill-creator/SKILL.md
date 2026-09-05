@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Create new bb skills and improve existing ones. Use whenever a user asks to create, write, edit, refine, test, or optimize a skill; turn a workflow into a reusable skill; fix skill triggering; or improve a SKILL.md file.
+description: Create new Beam skills and improve existing ones. Use whenever a user asks to create, write, edit, refine, test, or optimize a skill; turn a workflow into a reusable skill; fix skill triggering; or improve a SKILL.md file.
 ---
 
 # Skill creator
@@ -12,7 +12,7 @@ Create skills that trigger for the correct requests and improve agent results.
 1. Read the conversation and the existing skill before asking questions.
 2. Confirm the trigger, expected result, inputs, edge cases, and dependencies.
 3. Write or revise the skill and any required resources.
-4. Test realistic prompts in fresh BB threads.
+4. Test realistic prompts in fresh Beam threads.
 5. Compare the results with the previous skill or no-skill baseline.
 6. Revise until further changes do not give a useful improvement.
 
@@ -32,7 +32,7 @@ skill-name/
 ```
 
 Only `SKILL.md` is required. User skills live at
-`~/.bb/skills/<name>/SKILL.md`.
+`~/.beam/skills/<name>/SKILL.md`.
 
 The file starts with YAML frontmatter:
 
@@ -50,14 +50,14 @@ cannot exceed 1024 characters.
 Put all trigger conditions in the description. Include concrete tasks and
 nearby user phrases. Keep procedural instructions in the body.
 
-BB discovers edits for newly spawned threads. An existing thread does not
+Beam discovers edits for newly spawned threads. An existing thread does not
 receive a skill revision after it starts.
 
 ## Progressive disclosure
 
-BB loads skill information in three levels:
+Beam loads skill information in three levels:
 
-1. BB always loads the name and description.
+1. Beam always loads the name and description.
 2. An agent reads `SKILL.md` after the skill triggers.
 3. The agent reads or runs bundled resources only when the task needs them.
 
@@ -88,11 +88,11 @@ prompt. Include near-miss prompts when you tune the description.
 Spawn a fresh thread for every test:
 
 ```sh
-bb thread spawn --project "$BB_PROJECT_ID" --prompt "<test prompt>" --json
-bb thread wait <thread-id>
-bb thread output <thread-id>
-bb thread log <thread-id>
-bb thread show <thread-id> --git-diff
+beam thread spawn --project "$BB_PROJECT_ID" --prompt "<test prompt>" --json
+beam thread wait <thread-id>
+beam thread output <thread-id>
+beam thread log <thread-id>
+beam thread show <thread-id> --git-diff
 ```
 
 Read the transcript, not only the final answer. Check whether the skill

@@ -108,7 +108,7 @@ function LabHeader({
           checked={embedOriginal}
           onChange={(event) => onEmbedOriginalChange(event.target.checked)}
         />
-        Embed BB original
+        Embed Beam original
       </label>
       <button
         type="button"

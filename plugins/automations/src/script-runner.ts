@@ -20,7 +20,7 @@ const SCRIPT_OUTPUT_MAX_BYTES = 1024 * 1024;
 let resolvedBbPath: string | null = null;
 
 const BB_NOT_INJECTED_WARNING =
-  "[bb] warning: could not locate the bb CLI, so `bb` is not on PATH for this script.";
+  "[beam] warning: could not locate the Beam CLI, so `beam` is not on PATH for this script.";
 
 async function commandWorks(command: string, args: string[]): Promise<boolean> {
   try {
@@ -44,15 +44,22 @@ export function bbBinaryCandidates(env: NodeJS.ProcessEnv): string[] {
   }
   const fromCliDir = env.BB_CLI_DIR?.trim();
   if (fromCliDir !== undefined && fromCliDir.length > 0) {
+    pushIfAbsolute(join(fromCliDir, "beam"));
     pushIfAbsolute(join(fromCliDir, "bb"));
   }
   for (const entry of (env.PATH ?? "").split(delimiter)) {
     const trimmed = entry.trim();
     if (trimmed.length > 0) {
+      pushIfAbsolute(join(trimmed, "beam"));
       pushIfAbsolute(join(trimmed, "bb"));
     }
   }
-  candidates.push("/opt/homebrew/bin/bb", "/usr/local/bin/bb");
+  candidates.push(
+    "/opt/homebrew/bin/beam",
+    "/usr/local/bin/beam",
+    "/opt/homebrew/bin/bb",
+    "/usr/local/bin/bb",
+  );
   return candidates;
 }
 

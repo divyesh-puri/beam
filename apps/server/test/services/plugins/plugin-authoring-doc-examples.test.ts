@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 const SKILL_ROOT = fileURLToPath(
   new URL(
-    "../../../src/services/skills/builtin-skills/bb-plugin-authoring/",
+    "../../../src/services/skills/builtin-skills/beam-plugin-authoring/",
     import.meta.url,
   ),
 );
@@ -136,7 +136,7 @@ const PROBE_TSCONFIG = {
   files: ["probe.ts"],
 };
 
-describe("bb-plugin-authoring skill examples", () => {
+describe("beam-plugin-authoring skill examples", () => {
   let workDir: string;
 
   beforeEach(async () => {

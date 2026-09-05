@@ -685,7 +685,7 @@ const hostDeleteSkillCommandSchema = z
       context.addIssue({
         code: "custom",
         path: ["rootPath"],
-        message: "rootPath must be null for a bb skill",
+        message: "rootPath must be null for a Beam skill",
       });
     }
     if (!isBbScope && command.rootPath === null) {

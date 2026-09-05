@@ -1,4 +1,4 @@
-# Demo server end-to-end: first run → add the bb demo server by Direct URL →
+# Demo server end-to-end: first run → add the Beam demo server by Direct URL →
 # thread list → open a thread → send a message → "Working…" → the scripted
 # reply arrives and the indicator clears.
 #
@@ -12,13 +12,13 @@
 #   cd apps/mobile && maestro test e2e/manual/demo-server.yaml
 #
 # To rehearse against the deployed worker, set SERVER_URL to its https URL.
-appId: app.getbb.mobile
+appId: com.divyeshpuri.beam.mobile
 env:
   METRO_URL: "http://127.0.0.1:8082"
   SERVER_URL: "http://127.0.0.1:8799"
 ---
 # The E2E build wipes profiles on launch, so the shared subflow lands on
-# "Connect to a bb server" and adds SERVER_URL as a Direct URL. The probe
+# "Connect to a Beam server" and adds SERVER_URL as a Direct URL. The probe
 # (/health + /system/config) must pass against the worker.
 #
 # Launch is inlined rather than `runFlow: ../subflows/launch-to-home.yaml`
@@ -39,7 +39,7 @@ env:
 # evaluates immediately and skips while Metro is still serving. The E2E build
 # wipes profiles on launch, so first run is guaranteed here.
 - extendedWaitUntil:
-    visible: "Connect to a bb server"
+    visible: "Connect to a Beam server"
     timeout: 60000
 - tapOn:
     id: "server-url-input"

@@ -90,7 +90,7 @@ async function makeTempDir(prefix: string): Promise<string> {
 async function initRepo(): Promise<string> {
   const repoPath = await makeTempDir("bb-workspace-repo-");
   await runGit({ args: ["init", "-b", "main"], cwd: repoPath });
-  await runGit({ args: ["config", "user.name", "BB Tests"], cwd: repoPath });
+  await runGit({ args: ["config", "user.name", "Beam Tests"], cwd: repoPath });
   await runGit({
     args: ["config", "user.email", "bb@example.com"],
     cwd: repoPath,

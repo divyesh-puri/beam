@@ -301,7 +301,7 @@ export class TunnelSession {
       if (initialThreadLoad) {
         respHeaders.push([
           "server-timing",
-          `bb_connect_origin;dur=${roundDurationMs(originTtfbMs)}`,
+          `beam_connect_origin;dur=${roundDurationMs(originTtfbMs)}`,
         ]);
       }
       this.send({
@@ -322,7 +322,7 @@ export class TunnelSession {
         const totalMs = performance.now() - startedAt;
         this.options.log.info?.(
           [
-            "bb connect thread load",
+            "Beam Connect thread load",
             `path=${meta.path}`,
             `status=${res.statusCode ?? 502}`,
             `originTtfbMs=${roundDurationMs(originTtfbMs)}`,

@@ -68,7 +68,7 @@ function writeNotFound(response: ServerResponse): void {
 function renderSmokePage(expectedDesktopVersion: string): string {
   return `<!doctype html>
 <meta charset="utf-8">
-<title>bb desktop smoke</title>
+<title>Beam desktop smoke</title>
 <main>desktop smoke</main>
 <script>
 (async () => {

@@ -51,8 +51,8 @@ describe("humanizeTransportError", () => {
     const refused = Object.assign(new Error("connect ECONNREFUSED"), {
       code: "ECONNREFUSED",
     });
-    expect(humanizeTransportError(refused, "getbb.app")).toBe(
-      "can't reach getbb.app — connection refused",
+    expect(humanizeTransportError(refused, "connect.beam.invalid")).toBe(
+      "can't reach connect.beam.invalid — connection refused",
     );
   });
 

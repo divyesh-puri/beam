@@ -22,7 +22,7 @@ const MAX_STAGED_SKILL_FILES = 1_000;
 const MAX_STAGED_SKILL_BYTES = 10 * 1024 * 1024;
 const MAX_STAGED_SKILL_DEPTH = 24;
 export const EMPTY_SKILL_CATALOG_HASH = createHash("sha256")
-  .update("bb-global-skills-v1-empty")
+  .update("beam-global-skills-v1-empty")
   .digest("hex");
 
 export interface InjectedSkillsLogger {
@@ -377,7 +377,7 @@ async function collectSkillTree(
 
 function hashCollectedTrees(trees: readonly CollectedSkillTree[]): string {
   const hash = createHash("sha256");
-  hash.update("bb-global-skills-v1");
+  hash.update("beam-global-skills-v1");
   for (const tree of trees) {
     hash.update("\0skill\0");
     hash.update(tree.source.name);
@@ -599,7 +599,7 @@ function validatedTreeEntries(tree: HostDaemonSkillTree): CollectedSkillFile[] {
 
 function hashStoredTreeFiles(files: readonly CollectedSkillFile[]): string {
   const hash = createHash("sha256");
-  hash.update("bb-skill-tree-v1");
+  hash.update("beam-skill-tree-v1");
   for (const file of files) {
     hash.update("\0file\0");
     hash.update(file.relativePath);

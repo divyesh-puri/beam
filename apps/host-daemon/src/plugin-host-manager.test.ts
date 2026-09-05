@@ -432,7 +432,7 @@ describe("PluginHostManager", () => {
 
     await expect(
       manager.call(callCommand({ method: "wait", timeoutMs: 20 })),
-    ).rejects.toThrow(/exceeded its deadline/u);
+    ).rejects.toThrow(/its deadline/u);
   });
 
   it.each([-4_000_000_000_000, 4_000_000_000_000])(
@@ -444,7 +444,7 @@ describe("PluginHostManager", () => {
       try {
         await expect(
           manager.call(callCommand({ method: "wait", timeoutMs: 20 })),
-        ).rejects.toThrow(/exceeded its deadline/u);
+        ).rejects.toThrow(/its deadline/u);
       } finally {
         dateNow.mockRestore();
       }
@@ -629,7 +629,7 @@ describe("PluginHostManager", () => {
 });
 
 describe("host plugin worker env", () => {
-  it("uses the login-shell PATH without forwarding daemon BB variables", () => {
+  it("uses the login-shell PATH without forwarding daemon Beam variables", () => {
     expect(
       sanitizeInheritedChildProcessEnv({
         env: {

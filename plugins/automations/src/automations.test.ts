@@ -1367,7 +1367,7 @@ describe("automation CLI --script-file", () => {
       expect(created.stdout).toContain(`Copied ${sourcePath}`);
       expect(created.stdout).toContain(`to ${storedPath}`);
       expect(created.stdout).toContain(
-        `bb automation update ${automationId} --project proj_test --script-file ${sourcePath} --interpreter bash --timeout 120000`,
+        `beam automation update ${automationId} --project proj_test --script-file ${sourcePath} --interpreter bash --timeout 120000`,
       );
 
       const shown = await t.cli.run(
@@ -1562,7 +1562,7 @@ describe("automation CLI --script-file", () => {
       expect(created.exitCode).toBe(0);
       const automationId = idFrom(created.stdout);
       expect(created.stdout).toContain(
-        `bb automation update ${automationId} --project proj_test --script-file '${sourcePath}' --interpreter python3 --timeout 5000 --env-json '{"CHANNEL":"qa","MSG":"it'\\''s"}'`,
+        `beam automation update ${automationId} --project proj_test --script-file '${sourcePath}' --interpreter python3 --timeout 5000 --env-json '{"CHANNEL":"qa","MSG":"it'\\''s"}'`,
       );
     } finally {
       await t.cleanup();
@@ -1570,7 +1570,7 @@ describe("automation CLI --script-file", () => {
   });
 });
 
-describe("bb CLI injection for script runs", () => {
+describe("Beam CLI injection for script runs", () => {
   it("prefers the env pointers over PATH and macOS install locations", () => {
     expect(
       bbBinaryCandidates({
@@ -1579,14 +1579,18 @@ describe("bb CLI injection for script runs", () => {
       })[0],
     ).toBe("/daemon/bundle/bb");
     expect(bbBinaryCandidates({ BB_CLI_DIR: "/daemon/bundle" })[0]).toBe(
-      "/daemon/bundle/bb",
+      "/daemon/bundle/beam",
     );
   });
 
   it("expands PATH itself so every candidate is absolute", () => {
     expect(bbBinaryCandidates({ PATH: "/usr/bin:/opt/tools" })).toEqual([
+      "/usr/bin/beam",
       "/usr/bin/bb",
+      "/opt/tools/beam",
       "/opt/tools/bb",
+      "/opt/homebrew/bin/beam",
+      "/usr/local/bin/beam",
       "/opt/homebrew/bin/bb",
       "/usr/local/bin/bb",
     ]);
@@ -1597,20 +1601,34 @@ describe("bb CLI injection for script runs", () => {
 
   it("drops entries that would resolve against the wrong directory", () => {
     expect(bbBinaryCandidates({ PATH: "/usr/bin::/bin" })).toEqual([
+      "/usr/bin/beam",
       "/usr/bin/bb",
+      "/bin/beam",
       "/bin/bb",
+      "/opt/homebrew/bin/beam",
+      "/usr/local/bin/beam",
       "/opt/homebrew/bin/bb",
       "/usr/local/bin/bb",
     ]);
     expect(
       bbBinaryCandidates({ BB_CLI: "  ", BB_CLI_DIR: "", PATH: "" }),
-    ).toEqual(["/opt/homebrew/bin/bb", "/usr/local/bin/bb"]);
+    ).toEqual([
+      "/opt/homebrew/bin/beam",
+      "/usr/local/bin/beam",
+      "/opt/homebrew/bin/bb",
+      "/usr/local/bin/bb",
+    ]);
     expect(
       bbBinaryCandidates({ BB_CLI: "./bb", BB_CLI_DIR: "rel/dir", PATH: "" }),
-    ).toEqual(["/opt/homebrew/bin/bb", "/usr/local/bin/bb"]);
+    ).toEqual([
+      "/opt/homebrew/bin/beam",
+      "/usr/local/bin/beam",
+      "/opt/homebrew/bin/bb",
+      "/usr/local/bin/bb",
+    ]);
   });
 
-  it("prepends bb's directory to PATH only when it is absolute", () => {
+  it("prepends Beam's directory to PATH only when it is absolute", () => {
     expect(scriptPathEnv("/daemon/bundle/bb", "/usr/bin:/bin")).toBe(
       "/daemon/bundle:/usr/bin:/bin",
     );

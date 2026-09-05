@@ -44,8 +44,8 @@ describe("builtin skills copy", () => {
       targetPath,
     );
     await expect(
-      readFile(path.join(targetPath, "bb-cli", "SKILL.md"), "utf8"),
-    ).resolves.toBe(await readBuiltinSkill("bb-cli"));
+      readFile(path.join(targetPath, "beam-cli", "SKILL.md"), "utf8"),
+    ).resolves.toBe(await readBuiltinSkill("beam-cli"));
   });
 
   it("throws when the sentinel skill is missing beside the module", async () => {

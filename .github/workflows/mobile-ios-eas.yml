@@ -1,7 +1,7 @@
-# Build the bb mobile app for iOS on EAS and (optionally) submit it to
-# TestFlight. Runs on its own from the Actions tab and as the nightly job in
-# publish-bb-app.yml. EAS builds on its own macOS workers, so this only needs
-# an Ubuntu runner that starts the build and waits for the result.
+# Build the Beam mobile app for iOS on EAS and (optionally) submit it to
+# TestFlight. Runs from the Actions tab in the Beam fork. EAS builds on its own
+# macOS workers, so this only needs an Ubuntu runner that starts the build and
+# waits for the result.
 name: Mobile iOS (EAS)
 
 on:
@@ -56,7 +56,8 @@ permissions:
 
 jobs:
   build:
-    name: Build bb iOS on EAS (${{ inputs.profile }})
+    name: Build Beam iOS on EAS (${{ inputs.profile }})
+    if: ${{ github.repository == 'divyesh-puri/beam' }}
     runs-on: ubuntu-latest
     # The job waits for the EAS build and the TestFlight upload. On the free
     # EAS tier the build and submit queues alone can take 30+ minutes each.

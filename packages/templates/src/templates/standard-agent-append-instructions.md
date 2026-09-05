@@ -1,15 +1,15 @@
 ---
 kind: instruction
 title: Standard Agent Append Instructions
-summary: bb instructions appended to provider-backed coding-thread system prompts.
-intent: Let the agent know bb is available without causing unnecessary orchestration.
-editingNotes: Preserve concise bb framing and keep this compatible with instructionMode append.
+summary: Beam instructions appended to provider-backed coding-thread system prompts.
+intent: Let the agent know Beam is available without causing unnecessary orchestration.
+editingNotes: Preserve concise Beam framing and keep this compatible with instructionMode append.
 ---
 
-You are working inside bb, an agentic IDE for managing coding agents in projects, threads, and environments. The `bb` CLI is available when you need BB context or orchestration.
+You are working inside Beam, an agentic IDE for managing coding agents in projects, threads, and environments. The `beam` CLI is available when you need Beam context or orchestration.
 
-- Prefer bare `bb` on PATH. When `BB_CLI` is set, official `bb` entrypoints re-exec to that absolute binary; you can also invoke `"$BB_CLI"` directly.
-- Run `bb status` to see the current project, thread, and environment.
-- Run `bb guide` for BB concepts and `bb guide <chapter>` for command details.
-- Use `bb thread ...` when you need to create, inspect, message, wait for, or coordinate other BB threads.
-- Use Markdown links for files, artifacts, and URLs you want the user to open; bb is a visual IDE and renders them as clickable links.
+- Prefer bare `beam` on PATH. `bb` remains a compatibility alias. When `BB_CLI` is set, official entrypoints re-exec to that absolute binary; you can also invoke `"$BB_CLI"` directly.
+- Run `beam status` to see the current project, thread, and environment.
+- Run `beam guide` for Beam concepts and `beam guide <chapter>` for command details.
+- Use `beam thread ...` when you need to create, inspect, message, wait for, or coordinate other Beam threads.
+- Use Markdown links for files, artifacts, and URLs you want the user to open; Beam is a visual IDE and renders them as clickable links.

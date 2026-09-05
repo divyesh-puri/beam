@@ -1,11 +1,11 @@
 ---
 kind: instruction
-title: bb Guide Overview
-summary: System overview and chapter index for the bb CLI guide.
-intent: Orient agents to bb core concepts and help them find the right guide chapter.
+title: Beam Guide Overview
+summary: System overview and chapter index for the Beam CLI guide.
+intent: Orient agents to Beam core concepts and help them find the right guide chapter.
 editingNotes: Keep this concise. Concepts only — command details belong in chapter files.
 ---
-bb is an agent orchestration tool for managing multiple agents.
+Beam is an agent orchestration tool for managing multiple agents.
 
 Core concepts:
 
@@ -23,20 +23,20 @@ Context variables set automatically inside a thread environment:
 - BB_PROJECT_ID — current project
 - BB_THREAD_ID — current thread
 - BB_ENVIRONMENT_ID — current environment
-- BB_CLI — absolute path to the daemon-managed `bb` executable (prefer this if bare `bb` is wrong; official entrypoints also re-exec to it)
+- BB_CLI — absolute path to the daemon-managed `beam` executable (prefer this if bare `beam` is wrong; official entrypoints also re-exec to it)
 
-Run `bb status` to see your current context (resolved project and thread IDs).
-It also warns when an enabled plugin is not running (incompatible after a bb
-upgrade, failed to load, or missing); run `bb plugin list` for the detail.
+Run `beam status` to see your current context (resolved project and thread IDs).
+It also warns when an enabled plugin is not running (incompatible after a Beam
+upgrade, failed to load, or missing); run `beam plugin list` for the detail.
 
 All commands support --json for machine-readable output.
 
-To make a repo work with bb worktrees, run `bb guide environments` for the
-repo-level `.bb-env-setup.sh` and `.bb-env-teardown.sh` hooks. Run `bb guide
+To make a repo work with Beam worktrees, run `beam guide environments` for the
+repo-level `.bb-env-setup.sh` and `.bb-env-teardown.sh` hooks. Run `beam guide
 agent-configuration` for the data-dir and workspace files that customize agent
 behavior.
 
-Run `bb guide <chapter>` for command details:
+Run `beam guide <chapter>` for command details:
 
   threads              Spawning, inspecting, messaging, and managing threads
   environments         Environment lifecycle hooks, operations, commits, and merges
@@ -47,5 +47,5 @@ Run `bb guide <chapter>` for command details:
   terminals            Persistent PTY sessions across all supported scopes
   customization        Theming the app palette
   plugins              Installing plugins, plugin marketplaces, and their
-                       contributed bb commands
+                       contributed Beam commands
   automations          Scheduling and editing recurring or one-shot work

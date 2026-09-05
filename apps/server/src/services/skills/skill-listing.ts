@@ -455,7 +455,7 @@ export async function writeProjectSkill(
     throw new ApiError(
       403,
       "forbidden",
-      "Bundled skills cannot be edited in bb",
+      "Bundled skills cannot be edited in Beam",
     );
   }
   if (editableScope.data === "bb-project" && args.workspace.cwd === null) {
@@ -475,7 +475,7 @@ export async function writeProjectSkill(
       throw new ApiError(409, "conflict", "Skill changed before it was saved");
     }
     const currentMode = (await fs.stat(skillFilePath)).mode & 0o777;
-    const temporaryPath = `${skillFilePath}.bb-write-${randomUUID()}`;
+    const temporaryPath = `${skillFilePath}.beam-write-${randomUUID()}`;
     try {
       const handle = await fs.open(temporaryPath, "wx", currentMode);
       try {
@@ -552,7 +552,7 @@ export async function deleteProjectSkill(
     throw new ApiError(
       403,
       "forbidden",
-      "Bundled skills cannot be deleted in bb",
+      "Bundled skills cannot be deleted in Beam",
     );
   }
   if (editableScope.data === "bb-project" && args.workspace.cwd === null) {

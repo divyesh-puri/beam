@@ -24,7 +24,7 @@ export function unmanagedAttachRefusal(
   args: UnmanagedAttachCheckArgs,
 ): UnmanagedAttachRefusal | null {
   const foreignManagedMessage =
-    "Workspace path is a bb-managed workspace owned by another project";
+    "Workspace path is a Beam-managed workspace owned by another project";
 
   if (
     findForeignManagedEnvironmentAtHostPath(db, {

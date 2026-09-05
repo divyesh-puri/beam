@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { runBbCli } from "../launcher.js";
+import { runBeam } from "../launcher.js";
 
-void runBbCli().catch((error) => {
+void runBeam().catch((error) => {
   const message =
     error instanceof Error ? (error.stack ?? error.message) : String(error);
   process.stderr.write(`${message}\n`);

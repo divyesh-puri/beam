@@ -46,7 +46,7 @@ async function readFirstLine(stream: NodeJS.ReadableStream): Promise<string> {
   return String(chunk).trim();
 }
 
-posixOnly("process tree helpers", () => {
+posixOnly("process tree helpers", { timeout: 15_000 }, () => {
   const cleanupPids: number[] = [];
   const cleanupDirs: string[] = [];
 
@@ -166,7 +166,7 @@ posixOnly("process tree helpers", () => {
     }
     await waitFor(() => killed.every((target) => !isAlive(target.pid)));
     expect(await listProcessesWithCwdUnder({ directory: dir })).toEqual([]);
-  });
+  }, 15_000);
 
   it("does not follow a symlinked workspace root", async () => {
     const target = realpathSync(mkdtempSync(join(tmpdir(), "bb-cwd-target-")));

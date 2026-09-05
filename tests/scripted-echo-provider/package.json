@@ -9,7 +9,7 @@
   },
   "bb": {
     "name": "Scripted echo provider (test harness)",
-    "description": "The echo bridge plus the scripted directives bb's runtime and integration suites drive. Not a product plugin.",
+    "description": "The echo bridge plus the scripted directives Beam's runtime and integration suites drive. Not a product plugin.",
     "branding": {
       "icon": "Zap"
     },

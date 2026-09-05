@@ -334,7 +334,7 @@ function makeThreadStoragePathResponse(
 ): ThreadStoragePathListResponse {
   return {
     paths: [...paths],
-    storageRootPath: "/Users/michael/.bb-dev/thread-storage/thr_demo",
+    storageRootPath: "/Users/michael/.beam-dev/thread-storage/thr_demo",
     truncated: false,
   };
 }
@@ -511,7 +511,7 @@ function NewTabPanelStory({
       </div>
     ) : outcome.kind === "terminal" ? (
       <div className="flex min-h-full flex-col justify-center bg-neutral-950 px-4 font-mono text-xs text-emerald-100">
-        <p>$ bb terminal start</p>
+        <p>$ beam terminal start</p>
         <p className="pt-1 text-emerald-300">
           Terminal tab opened from the New tab page
           {outcome.hostName === null ? "." : ` on ${outcome.hostName}.`}

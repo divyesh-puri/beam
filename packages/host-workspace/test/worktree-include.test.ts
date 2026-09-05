@@ -23,7 +23,7 @@ async function writeFile(filePath: string, contents: string): Promise<void> {
 async function initRepo(gitignore: string): Promise<string> {
   const repoPath = await makeTempDir("bb-worktree-include-repo-");
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await writeFile(path.join(repoPath, "README.md"), "hello\n");
   await writeFile(path.join(repoPath, ".gitignore"), gitignore);

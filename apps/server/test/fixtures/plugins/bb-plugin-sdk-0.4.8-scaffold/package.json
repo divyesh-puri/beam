@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Sdk Upgrade Fixture",
-    "description": "A BB plugin.",
+    "description": "A Beam plugin.",
     "branding": {
       "icon": "Zap"
     },

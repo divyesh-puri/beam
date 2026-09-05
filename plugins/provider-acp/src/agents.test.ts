@@ -111,7 +111,7 @@ describe("parseCustomAcpAgents", () => {
   it.each([
     ["an absolute skill root", { nativeSkillRoots: { user: ["/etc/skills"] } }],
     [
-      "a level outside bb's ladder",
+      "a level outside Beam's ladder",
       { reasoningCli: { flag: "-e", supportedLevels: ["turbo"] } },
     ],
     [

@@ -1,4 +1,4 @@
-# bb mobile design system (`src/ui`, `src/theme`)
+# Beam mobile design system (`src/ui`, `src/theme`)
 
 NativeWind v5 (Tailwind v4) primitives that mirror `@bb/shared-ui`'s variant
 names, driven by the tokens generated from the web app's `theme.css`. Import

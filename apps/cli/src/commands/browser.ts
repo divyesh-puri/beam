@@ -124,7 +124,7 @@ async function materializeScreenshot(args: { artifactId: string; bytes: Uint8Arr
 }
 
 export function registerBrowserCommands(program: Command, getUrl: () => string, getContext: () => ContextSnapshot): void {
-  const browser = program.command("browser").description("Control visible BB Browser automation targets");
+  const browser = program.command("browser").description("Control visible Beam Browser automation targets");
 
   addCommonOptions(browser.command("open <url>").description("Open a fresh visible Browser target")).action(action(async (url: string, opts: BrowserOptions) => {
     const target = await browserSdk(getUrl()).browser.open({

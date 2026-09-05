@@ -109,7 +109,7 @@ describe("RuntimeThreadIdentityRegistry", () => {
     ).toBeUndefined();
   });
 
-  it("stamps projected events with the resolved bb thread id", () => {
+  it("stamps projected events with the resolved Beam thread id", () => {
     const event: ThreadEvent = {
       type: "turn/started",
       threadId: "provider-thread-1",

@@ -9,7 +9,7 @@
  * bridge half of the same facade the root export already is for
  * `BbPluginApi`/`@bb/domain` types.
  *
- * Curated by hand, never `export *`. The list below is the surface bb promises
+ * Curated by hand, never `export *`. The list below is the surface Beam promises
  * bridge authors; a name that is not here is bb-internal and may move. It is
  * grouped the way a bridge consumes it:
  *
@@ -27,7 +27,7 @@
  * (PromptInput, permission/interaction payloads, dynamic tools, rate limits,
  * reasoning levels) plus the enum/status types the delta shapes reference
  * (item status, turn status, plan steps, usage breakdowns). Those live in
- * `@bb/domain` — bb's persisted vocabulary shared by the server, the app and
+ * `@bb/domain` — Beam's persisted vocabulary shared by the server, the app and
  * the runtime — so the SDK names them here and the published bundle inlines
  * them, exactly as the root export already does for `PromptInput` and
  * friends.

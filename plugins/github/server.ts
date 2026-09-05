@@ -11,7 +11,7 @@ const CLOSED_PR_PAGE = 30;
 
 const GH_HINT =
   "Install the GitHub CLI (https://cli.github.com) and run `gh auth login`, " +
-  "then `bb plugin reload github`.";
+  "then `beam plugin reload github`.";
 
 const repoNameSchema = z.string().regex(/^[\w.-]+\/[\w.-]+$/);
 const itemNumberSchema = z.number().int().positive();
@@ -519,14 +519,14 @@ export default async function plugin(bb: BbPluginApi) {
       type: "string",
       label: "Extra repositories",
       description:
-        'Comma-separated "owner/repo" list to track in addition to repos discovered from BB projects.',
+        'Comma-separated "owner/repo" list to track in addition to repos discovered from Beam projects.',
       default: "",
     },
     defaultProject: {
       type: "project",
-      label: "Default BB project",
+      label: "Default Beam project",
       description:
-        "Where agent threads spawn for repos that are not attached to a BB project.",
+        "Where agent threads spawn for repos that are not attached to a Beam project.",
     },
   });
 
@@ -924,7 +924,7 @@ export default async function plugin(bb: BbPluginApi) {
     const { defaultProject } = await settings.get();
     if (defaultProject) return defaultProject;
     throw new Error(
-      `No BB project is attached to ${repo}. Create a project whose checkout has ` +
+      `No Beam project is attached to ${repo}. Create a project whose checkout has ` +
         "that origin remote, or set the defaultProject plugin setting.",
     );
   }
@@ -1608,10 +1608,10 @@ export default async function plugin(bb: BbPluginApi) {
 
   const USAGE = [
     "Usage:",
-    "  bb github repos              List tracked repositories",
-    "  bb github issues [repo]      List cached open issues",
-    "  bb github prs [repo]         List cached open pull requests",
-    "  bb github sync               Refresh the cache from GitHub now",
+    "  beam github repos              List tracked repositories",
+    "  beam github issues [repo]      List cached open issues",
+    "  beam github prs [repo]         List cached open pull requests",
+    "  beam github sync               Refresh the cache from GitHub now",
   ].join("\n");
 
   bb.cli.register({
@@ -1621,22 +1621,22 @@ export default async function plugin(bb: BbPluginApi) {
       {
         name: "repos",
         summary: "List tracked repositories",
-        usage: "bb github repos",
+        usage: "beam github repos",
       },
       {
         name: "issues",
         summary: "List cached open issues",
-        usage: "bb github issues [owner/repo]",
+        usage: "beam github issues [owner/repo]",
       },
       {
         name: "prs",
         summary: "List cached open pull requests",
-        usage: "bb github prs [owner/repo]",
+        usage: "beam github prs [owner/repo]",
       },
       {
         name: "sync",
         summary: "Refresh the cache from GitHub now",
-        usage: "bb github sync",
+        usage: "beam github sync",
       },
     ],
     async run(argv) {
@@ -1683,7 +1683,7 @@ export default async function plugin(bb: BbPluginApi) {
           if (items.length === 0) {
             return {
               exitCode: 0,
-              stdout: "Nothing cached. Run `bb github sync` first.",
+              stdout: "Nothing cached. Run `beam github sync` first.",
             };
           }
           return {

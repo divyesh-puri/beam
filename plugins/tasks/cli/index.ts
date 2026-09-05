@@ -54,7 +54,7 @@ const ACTIVE_THREAD_STATUSES = new Set(["starting", "working"]);
 const DEFAULT_PROJECT_COLOR = "blue";
 const DEFAULT_LABEL_COLOR = "gray";
 
-const ROOT_HELP = `Usage: bb tasks <command> [options]
+const ROOT_HELP = `Usage: beam tasks <command> [options]
 
 Commands:
   status                         Show plugin status
@@ -74,57 +74,57 @@ Commands:
   threads                        List threads attached to a task
   seed-demo                      Create sample data (requires --yes)
 
-Run bb tasks <command> --help for command usage.`;
+Run beam tasks <command> --help for command usage.`;
 
 const PROJECT_HELP = `Usage:
-  bb tasks project create --name <name> [--prefix X] [--folder <id-or-name>] [--link-bb-project <proj_id>] [--color <color>] [--json]
-  bb tasks project list [--json]
-  bb tasks project show <prefix-or-id> [--json]
-  bb tasks project update <prefix-or-id> [--name <name>] [--color <color>] [--folder <id-or-name> | --no-folder] [--link-bb-project <proj_id> | --unlink-bb-project] [--rename-prefix X] [--json]`;
+  beam tasks project create --name <name> [--prefix X] [--folder <id-or-name>] [--link-beam-project <proj_id>] [--color <color>] [--json]
+  beam tasks project list [--json]
+  beam tasks project show <prefix-or-id> [--json]
+  beam tasks project update <prefix-or-id> [--name <name>] [--color <color>] [--folder <id-or-name> | --no-folder] [--link-beam-project <proj_id> | --unlink-beam-project] [--rename-prefix X] [--json]`;
 
 const FOLDER_HELP = `Usage:
-  bb tasks folder create --name <name> [--parent <id-or-name>] [--json]
-  bb tasks folder list [--json]
-  bb tasks folder update <id-or-name> [--name <name>] [--parent <id-or-name> | --no-parent] [--json]
-  bb tasks folder delete <id-or-name> [--json]
+  beam tasks folder create --name <name> [--parent <id-or-name>] [--json]
+  beam tasks folder list [--json]
+  beam tasks folder update <id-or-name> [--name <name>] [--parent <id-or-name> | --no-parent] [--json]
+  beam tasks folder delete <id-or-name> [--json]
 
 Deleting a folder moves its projects and subfolders to the top level. No
 tasks are deleted.`;
 
 const CREATE_HELP =
-  "Usage: bb tasks create [--project <prefix-or-id>] --title <title> [--description <markdown> | --description-file <path>] [--priority <priority>] [--label <name>]... [--due YYYY-MM-DD] [--parent <key-or-id>] [--attach <path>]... [--machine <id-or-name>] [--json]";
-const LIST_HELP = `Usage: bb tasks list [--project <prefix-or-id>] [--status <status>]... [--priority <priority>]... [--label <name>]... [--active] [--search <query>] [--sort manual|priority|due] [--limit <1-${TASKS_PAGE_MAX_LIMIT}>] [--cursor <opaque>] [--json]`;
-const SHOW_HELP = "Usage: bb tasks show <key-or-id> [--json]";
+  "Usage: beam tasks create [--project <prefix-or-id>] --title <title> [--description <markdown> | --description-file <path>] [--priority <priority>] [--label <name>]... [--due YYYY-MM-DD] [--parent <key-or-id>] [--attach <path>]... [--machine <id-or-name>] [--json]";
+const LIST_HELP = `Usage: beam tasks list [--project <prefix-or-id>] [--status <status>]... [--priority <priority>]... [--label <name>]... [--active] [--search <query>] [--sort manual|priority|due] [--limit <1-${TASKS_PAGE_MAX_LIMIT}>] [--cursor <opaque>] [--json]`;
+const SHOW_HELP = "Usage: beam tasks show <key-or-id> [--json]";
 const UPDATE_HELP =
-  "Usage: bb tasks update <key-or-id> [--status <status>] [--priority <priority>] [--title <title>] [--description <markdown> | --description-file <path>] [--due YYYY-MM-DD | --no-due] [--parent <key-or-id> | --no-parent] [--add-label <name>]... [--remove-label <name>]... [--machine <id-or-name>] [--json]";
+  "Usage: beam tasks update <key-or-id> [--status <status>] [--priority <priority>] [--title <title>] [--description <markdown> | --description-file <path>] [--due YYYY-MM-DD | --no-due] [--parent <key-or-id> | --no-parent] [--add-label <name>]... [--remove-label <name>]... [--machine <id-or-name>] [--json]";
 const COMMENT_HELP =
-  "Usage: bb tasks comment <key-or-id> (--body <markdown> | --body-file <path>) [--author <name>] [--machine <id-or-name>] [--notify] [--json]";
+  "Usage: beam tasks comment <key-or-id> (--body <markdown> | --body-file <path>) [--author <name>] [--machine <id-or-name>] [--notify] [--json]";
 const LABEL_HELP = `Usage:
-  bb tasks label create --project <prefix-or-id> --name <name> [--color <color>] [--json]
-  bb tasks label list --project <prefix-or-id> [--json]
-  bb tasks label delete --project <prefix-or-id> <name-or-id> [--json]`;
+  beam tasks label create --project <prefix-or-id> --name <name> [--color <color>] [--json]
+  beam tasks label list --project <prefix-or-id> [--json]
+  beam tasks label delete --project <prefix-or-id> <name-or-id> [--json]`;
 const ATTACHMENT_HELP = `Usage:
-  bb tasks attachment add <key-or-comment-id> --file <path> [--name <name>] [--machine <id-or-name>] [--json]
-  bb tasks attachment get <attachment-id> --out <path> [--machine <id-or-name>] [--json]
-  bb tasks attachment list <key> [--json]
-  bb tasks attachment remove <attachment-id> [--remove-references] [--json]
+  beam tasks attachment add <key-or-comment-id> --file <path> [--name <name>] [--machine <id-or-name>] [--json]
+  beam tasks attachment get <attachment-id> --out <path> [--machine <id-or-name>] [--json]
+  beam tasks attachment list <key> [--json]
+  beam tasks attachment remove <attachment-id> [--remove-references] [--json]
 
 File paths are read from and written to the invoking machine: the thread's
 machine when run inside an agent thread, otherwise the server's machine.
 Pass --machine to target another enrolled machine explicitly.`;
 const PRESET_HELP = `Usage:
-  bb tasks preset list [--json]
-  bb tasks preset show <name-or-id> [--json]
-  bb tasks preset create --name <name> --provider <id> --model <id> --reasoning <level> --permission <accept-edits|auto|full> [--service-tier default|fast|none] [--environment project-default|worktree] [--base-branch <branch>] [--machine <id-or-name>] [--instructions <text>] [--json]
-  bb tasks preset update <name-or-id> [--name <name>] [--provider <id>] [--model <id>] [--reasoning <level>] [--permission <accept-edits|auto|full>] [--service-tier default|fast|none] [--environment project-default|worktree] [--base-branch <branch>] [--machine <id-or-name>] [--instructions <text>] [--json]
-  bb tasks preset delete <name-or-id> [--json]`;
+  beam tasks preset list [--json]
+  beam tasks preset show <name-or-id> [--json]
+  beam tasks preset create --name <name> --provider <id> --model <id> --reasoning <level> --permission <accept-edits|auto|full> [--service-tier default|fast|none] [--environment project-default|worktree] [--base-branch <branch>] [--machine <id-or-name>] [--instructions <text>] [--json]
+  beam tasks preset update <name-or-id> [--name <name>] [--provider <id>] [--model <id>] [--reasoning <level>] [--permission <accept-edits|auto|full>] [--service-tier default|fast|none] [--environment project-default|worktree] [--base-branch <branch>] [--machine <id-or-name>] [--instructions <text>] [--json]
+  beam tasks preset delete <name-or-id> [--json]`;
 const DISPATCH_HELP =
-  "Usage: bb tasks dispatch <key> --preset <name> [--instructions <extra>] [--json]";
+  "Usage: beam tasks dispatch <key> --preset <name> [--instructions <extra>] [--json]";
 const ATTACH_HELP =
-  "Usage: bb tasks attach <key> [--thread <thread-id>] [--json]";
+  "Usage: beam tasks attach <key> [--thread <thread-id>] [--json]";
 const DETACH_HELP =
-  "Usage: bb tasks detach <key> [--thread <thread-id>] [--json]";
-const THREADS_HELP = "Usage: bb tasks threads <key> [--json]";
+  "Usage: beam tasks detach <key> [--thread <thread-id>] [--json]";
+const THREADS_HELP = "Usage: beam tasks threads <key> [--json]";
 
 interface PluginStatus {
   name: string;
@@ -298,7 +298,7 @@ async function defaultProject(
   if (!ctx.projectId) {
     if (required) {
       throw new CliError(
-        "missing --project and no BB project context is available",
+        "missing --project and no Beam project context is available",
       );
     }
     return undefined;
@@ -308,12 +308,12 @@ async function defaultProject(
   );
   if (matches.length === 0) {
     throw new CliError(
-      `no tracker project is linked to BB project ${ctx.projectId}; pass --project or link one with bb tasks project update`,
+      `no tracker project is linked to Beam project ${ctx.projectId}; pass --project or link one with beam tasks project update`,
     );
   }
   if (matches.length > 1) {
     throw new CliError(
-      `multiple tracker projects are linked to BB project ${ctx.projectId}; pass --project explicitly`,
+      `multiple tracker projects are linked to Beam project ${ctx.projectId}; pass --project explicitly`,
     );
   }
   return matches[0];
@@ -519,7 +519,7 @@ function projectTable(
     folders.map((folder) => [folder.id, folder.name]),
   );
   return table(
-    ["PREFIX", "NAME", "FOLDER", "BB PROJECT", "ID"],
+    ["PREFIX", "NAME", "FOLDER", "BEAM PROJECT", "ID"],
     projects.map((project) => [
       project.prefix,
       project.name,
@@ -553,6 +553,7 @@ async function runProject(
       "name",
       "prefix",
       "folder",
+      "link-beam-project",
       "link-bb-project",
       "color",
     ]);
@@ -563,6 +564,14 @@ async function runProject(
     const folder = folderAddress
       ? await resolveFolder(domain, folderAddress)
       : undefined;
+    const beamProjectLink = option(args, "link-beam-project");
+    const legacyBbProjectLink = option(args, "link-bb-project");
+    validateSingleFlagChoice(
+      beamProjectLink,
+      legacyBbProjectLink !== undefined,
+      "link-beam-project",
+      "link-bb-project",
+    );
     const result = tasksRpcContract.createProject.output.parse(
       await domain.createProject(
         tasksRpcContract.createProject.input.parse({
@@ -572,7 +581,7 @@ async function runProject(
             : derivePrefix(name, projects),
           color: option(args, "color") ?? DEFAULT_PROJECT_COLOR,
           folderId: folder?.id ?? null,
-          linkedBbProjectId: option(args, "link-bb-project") ?? null,
+          linkedBbProjectId: beamProjectLink ?? legacyBbProjectLink ?? null,
         }),
       ),
     );
@@ -583,7 +592,7 @@ async function runProject(
 
   if (action === "list") {
     assertAllowed(args, []);
-    requirePositionals(args, 0, "bb tasks project list [--json]");
+    requirePositionals(args, 0, "beam tasks project list [--json]");
     const projects = await listProjects(domain);
     const folders = tasksRpcContract.listFolders.output.parse(
       await domain.listFolders(tasksRpcContract.listFolders.input.parse(null)),
@@ -598,7 +607,7 @@ async function runProject(
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks project show <prefix-or-id> [--json]",
+      "beam tasks project show <prefix-or-id> [--json]",
     );
     const project = await resolveProject(domain, address!);
     const folder = project.folderId
@@ -610,7 +619,7 @@ async function runProject(
       ["ID", project.id],
       ["Color", project.color],
       ["Folder", folder?.name ?? "-"],
-      ["BB project", project.linkedBbProjectId ?? "-"],
+      ["Beam project", project.linkedBbProjectId ?? "-"],
       ["Next task", `${project.prefix}-${project.nextTaskNumber}`],
       ["Created", project.createdAt],
     ]);
@@ -619,17 +628,25 @@ async function runProject(
   if (action === "update") {
     assertAllowed(
       args,
-      ["name", "color", "folder", "link-bb-project", "rename-prefix"],
-      ["no-folder", "unlink-bb-project"],
+      [
+        "name",
+        "color",
+        "folder",
+        "link-beam-project",
+        "link-bb-project",
+        "rename-prefix",
+      ],
+      ["no-folder", "unlink-beam-project", "unlink-bb-project"],
     );
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks project update <prefix-or-id> [options] [--json]",
+      "beam tasks project update <prefix-or-id> [options] [--json]",
     );
     const project = await resolveProject(domain, address!);
     const folderAddress = option(args, "folder");
-    const linkedBbProjectId = option(args, "link-bb-project");
+    const beamProjectLink = option(args, "link-beam-project");
+    const legacyBbProjectLink = option(args, "link-bb-project");
     validateSingleFlagChoice(
       folderAddress,
       args.flags.has("no-folder"),
@@ -637,10 +654,26 @@ async function runProject(
       "no-folder",
     );
     validateSingleFlagChoice(
-      linkedBbProjectId,
-      args.flags.has("unlink-bb-project"),
+      beamProjectLink,
+      legacyBbProjectLink !== undefined,
+      "link-beam-project",
       "link-bb-project",
+    );
+    const linkedBbProjectId = beamProjectLink ?? legacyBbProjectLink;
+    const unlinkBeamProject = args.flags.has("unlink-beam-project");
+    const unlinkBbProject = args.flags.has("unlink-bb-project");
+    validateSingleFlagChoice(
+      unlinkBeamProject ? "selected" : undefined,
+      unlinkBbProject,
+      "unlink-beam-project",
       "unlink-bb-project",
+    );
+    const unlinkProject = unlinkBeamProject || unlinkBbProject;
+    validateSingleFlagChoice(
+      linkedBbProjectId,
+      unlinkProject,
+      "link-beam-project",
+      "unlink-beam-project",
     );
     const folder = folderAddress
       ? await resolveFolder(domain, folderAddress)
@@ -649,9 +682,7 @@ async function runProject(
       name: option(args, "name"),
       color: option(args, "color"),
       folderId: args.flags.has("no-folder") ? null : folder?.id,
-      linkedBbProjectId: args.flags.has("unlink-bb-project")
-        ? null
-        : linkedBbProjectId,
+      linkedBbProjectId: unlinkProject ? null : linkedBbProjectId,
     };
     const renamePrefix = option(args, "rename-prefix");
     if (
@@ -723,7 +754,7 @@ async function runFolder(
     requirePositionals(
       args,
       0,
-      "bb tasks folder create --name <name> [options]",
+      "beam tasks folder create --name <name> [options]",
     );
     const parentAddress = option(args, "parent");
     const parent = parentAddress
@@ -744,7 +775,7 @@ async function runFolder(
 
   if (action === "list") {
     assertAllowed(args, []);
-    requirePositionals(args, 0, "bb tasks folder list [--json]");
+    requirePositionals(args, 0, "beam tasks folder list [--json]");
     const result = tasksRpcContract.listFolders.output.parse(
       await domain.listFolders(tasksRpcContract.listFolders.input.parse(null)),
     );
@@ -771,7 +802,7 @@ async function runFolder(
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks folder update <id-or-name> [options] [--json]",
+      "beam tasks folder update <id-or-name> [options] [--json]",
     );
     const folder = await resolveFolder(domain, address!);
     const parentAddress = option(args, "parent");
@@ -823,7 +854,7 @@ async function runFolder(
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks folder delete <id-or-name> [--json]",
+      "beam tasks folder delete <id-or-name> [--json]",
     );
     const folder = await resolveFolder(domain, address!);
     const result = tasksRpcContract.deleteFolder.output.parse(
@@ -966,7 +997,7 @@ async function runCreate(
         ...(failedAttachments.length > 0
           ? failedAttachments.map(
               (failure) =>
-                `Retry with: bb tasks attachment add ${task.key} --file ${failure.path}`,
+                `Retry with: beam tasks attachment add ${task.key} --file ${failure.path}`,
             )
           : []),
       ].join("\n");
@@ -1395,7 +1426,7 @@ async function runLabel(domain: TasksDomain, argv: string[]): Promise<string> {
     requirePositionals(
       args,
       0,
-      "bb tasks label create --project <project> --name <name>",
+      "beam tasks label create --project <project> --name <name>",
     );
     const project = await resolveProject(
       domain,
@@ -1417,7 +1448,7 @@ async function runLabel(domain: TasksDomain, argv: string[]): Promise<string> {
 
   if (action === "list") {
     assertAllowed(args, ["project"]);
-    requirePositionals(args, 0, "bb tasks label list --project <project>");
+    requirePositionals(args, 0, "beam tasks label list --project <project>");
     const project = await resolveProject(
       domain,
       requireOption(args, "project"),
@@ -1437,7 +1468,7 @@ async function runLabel(domain: TasksDomain, argv: string[]): Promise<string> {
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks label delete --project <project> <name-or-id>",
+      "beam tasks label delete --project <project> <name-or-id>",
     );
     const project = await resolveProject(
       domain,
@@ -1477,7 +1508,7 @@ async function runAttachment(
     const [ownerAddress] = requirePositionals(
       args,
       1,
-      "bb tasks attachment add <key-or-comment-id> --file <path> [--name <name>] [--machine <id-or-name>] [--json]",
+      "beam tasks attachment add <key-or-comment-id> --file <path> [--name <name>] [--machine <id-or-name>] [--json]",
     );
     const sourceOption = requireOption(args, "file");
     const sourcePath = resolve(ctx.cwd ?? process.cwd(), sourceOption);
@@ -1512,7 +1543,7 @@ async function runAttachment(
     const [attachmentId] = requirePositionals(
       args,
       1,
-      "bb tasks attachment get <attachment-id> --out <path> [--machine <id-or-name>] [--json]",
+      "beam tasks attachment get <attachment-id> --out <path> [--machine <id-or-name>] [--json]",
     );
     const outOption = requireOption(args, "out");
     const outPath = resolve(ctx.cwd ?? process.cwd(), outOption);
@@ -1532,7 +1563,7 @@ async function runAttachment(
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks attachment list <key> [--json]",
+      "beam tasks attachment list <key> [--json]",
     );
     const task = await resolveTask(domain, address!);
     const directAttachments = tasksRpcContract.listAttachments.output.parse(
@@ -1577,7 +1608,7 @@ async function runAttachment(
     const [attachmentId] = requirePositionals(
       args,
       1,
-      "bb tasks attachment remove <attachment-id> [--remove-references] [--json]",
+      "beam tasks attachment remove <attachment-id> [--remove-references] [--json]",
     );
     const result = tasksRpcContract.deleteAttachment.output.parse(
       await domain.deleteAttachment(
@@ -1607,7 +1638,7 @@ async function runPreset(domain: TasksDomain, argv: string[]): Promise<string> {
 
   if (action === "list") {
     assertAllowed(args, []);
-    requirePositionals(args, 0, "bb tasks preset list [--json]");
+    requirePositionals(args, 0, "beam tasks preset list [--json]");
     const presets = await listPresets(domain);
     return args.flags.has("json")
       ? JSON.stringify({ presets })
@@ -1649,7 +1680,7 @@ async function runPreset(domain: TasksDomain, argv: string[]): Promise<string> {
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks preset show <name-or-id> [--json]",
+      "beam tasks preset show <name-or-id> [--json]",
     );
     const preset = resolvePreset(await listPresets(domain), address!);
     return args.flags.has("json")
@@ -1737,7 +1768,7 @@ async function runPreset(domain: TasksDomain, argv: string[]): Promise<string> {
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks preset update <name-or-id> [options] [--json]",
+      "beam tasks preset update <name-or-id> [options] [--json]",
     );
     const preset = resolvePreset(await listPresets(domain), address!);
     const environmentOption = option(args, "environment");
@@ -1786,7 +1817,7 @@ async function runPreset(domain: TasksDomain, argv: string[]): Promise<string> {
     const [address] = requirePositionals(
       args,
       1,
-      "bb tasks preset delete <name-or-id> [--json]",
+      "beam tasks preset delete <name-or-id> [--json]",
     );
     const preset = resolvePreset(await listPresets(domain), address!);
     const result = tasksRpcContract.deletePreset.output.parse(
@@ -1963,7 +1994,7 @@ export function registerTasksCli(
       {
         name: "status",
         summary: "Show the Tasks plugin name and version",
-        usage: "bb tasks status [--json]",
+        usage: "beam tasks status [--json]",
       },
       {
         name: "project",
@@ -2038,7 +2069,7 @@ export function registerTasksCli(
       {
         name: "seed-demo",
         summary: "Create sample folders, projects, labels, tasks, and comments",
-        usage: "bb tasks seed-demo --yes [--json]",
+        usage: "beam tasks seed-demo --yes [--json]",
       },
     ],
     async run(argv, ctx): Promise<PluginCliResult> {
@@ -2052,7 +2083,7 @@ export function registerTasksCli(
           case "status": {
             const args = parseArgs(rest);
             assertAllowed(args, []);
-            requirePositionals(args, 0, "bb tasks status [--json]");
+            requirePositionals(args, 0, "beam tasks status [--json]");
             stdout = args.flags.has("json")
               ? JSON.stringify(status)
               : `${status.name} ${status.version}`;
@@ -2107,7 +2138,7 @@ export function registerTasksCli(
           case "seed-demo": {
             const args = parseArgs(rest);
             assertAllowed(args, [], ["yes"]);
-            requirePositionals(args, 0, "bb tasks seed-demo --yes [--json]");
+            requirePositionals(args, 0, "beam tasks seed-demo --yes [--json]");
             if (!args.flags.has("yes")) {
               throw new CliError(
                 "seed-demo creates sample data; re-run with --yes",
@@ -2122,13 +2153,13 @@ export function registerTasksCli(
                   ["Labels", result.labelsCreated],
                   ["Tasks", result.tasksCreated],
                   ["Comments", result.commentsCreated],
-                  ["BB project", result.linkedBbProjectId ?? "-"],
+                  ["Beam project", result.linkedBbProjectId ?? "-"],
                 ]);
             break;
           }
           default:
             throw new CliError(
-              `unknown command: ${command}; run bb tasks --help`,
+              `unknown command: ${command}; run beam tasks --help`,
             );
         }
         return { exitCode: 0, stdout };

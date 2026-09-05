@@ -9,7 +9,7 @@ export function buildPluginEditThreadPrompt({
   name: string;
   path: string;
 }): string {
-  return `Edit the bb plugin ${quoteResourceName(name)} at ${path}. I want to `;
+  return `Edit the Beam plugin ${quoteResourceName(name)} at ${path}. I want to `;
 }
 
 export function buildSkillEditThreadPrompt({
@@ -21,7 +21,7 @@ export function buildSkillEditThreadPrompt({
   name: string;
   path: string;
 }): string {
-  return `Edit the bb skill ${quoteResourceName(name)} (ID ${id}) at ${path}. Inspect it with bb skill show ${id} --json and pass that revision to bb skill update when saving. I want to `;
+  return `Edit the Beam skill ${quoteResourceName(name)} (ID ${id}) at ${path}. Inspect it with beam skill show ${id} --json and pass that revision to beam skill update when saving. I want to `;
 }
 
 export function buildAutomationEditThreadPrompt({
@@ -33,5 +33,5 @@ export function buildAutomationEditThreadPrompt({
   projectId: string;
   automationId: string;
 }): string {
-  return `Edit the bb automation ${quoteResourceName(name)} (ID ${automationId}) in project ${projectId}. I want to `;
+  return `Edit the Beam automation ${quoteResourceName(name)} (ID ${automationId}) in project ${projectId}. I want to `;
 }

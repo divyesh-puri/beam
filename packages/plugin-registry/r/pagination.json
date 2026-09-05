@@ -3,7 +3,7 @@
   "name": "pagination",
   "type": "registry:ui",
   "title": "pagination",
-  "description": "BB ui \"pagination\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"pagination\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "lucide-react"
   ],

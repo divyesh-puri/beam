@@ -257,7 +257,7 @@ async function unresolvedHostSdkError(args: {
 }
 
 function privateBbImportError(specifier: string): string {
-  return `host entries cannot import private BB workspace package "${specifier}"; use @get-bb/plugin-sdk, Node APIs, or a regular plugin dependency`;
+  return `host entries cannot import private Beam workspace package "${specifier}"; use @get-bb/plugin-sdk, Node APIs, or a regular plugin dependency`;
 }
 
 async function owningPackageName(

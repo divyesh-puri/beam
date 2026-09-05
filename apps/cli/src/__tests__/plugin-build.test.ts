@@ -178,7 +178,7 @@ describe("buildPluginApp", () => {
     expect(css).not.toContain(`${scope}.fixture-highlight`);
   });
 
-  it("throws at import time without the BB runtime and loads once slots are set", async () => {
+  it("throws at import time without the Beam runtime and loads once slots are set", async () => {
     await writeFixture();
     const { jsPath } = await buildPluginApp(
       root,
@@ -188,7 +188,7 @@ describe("buildPluginApp", () => {
     const url = pathToFileURL(jsPath).href;
 
     await expect(import(/* @vite-ignore */ url)).rejects.toThrow(
-      /must be loaded by the BB app/,
+      /must be loaded by the Beam app/,
     );
 
     (globalThis as { __bbPluginRuntime?: unknown }).__bbPluginRuntime = {
@@ -342,7 +342,7 @@ describe("buildPluginApp", () => {
     expect(result.jsPath).toBe(join(root, "dist", "app.js"));
   });
 
-  it("builds the `bb plugin new` scaffold end to end", async () => {
+  it("builds the `beam plugin new` scaffold end to end", async () => {
     const targetDir = join(root, "bb-plugin-scaffolded");
     await scaffoldPlugin({
       targetDir,

@@ -53,7 +53,7 @@ afterEach(async () => {
 describe("run-dev", () => {
   it("derives stable data and ports from a managed checkout", () => {
     const homeDir = "/Users/tester";
-    const repoRoot = "/Users/tester/.bb-dev/projects/env_q7e5i54kxt/bb";
+    const repoRoot = "/Users/tester/.beam-dev/projects/env_q7e5i54kxt/bb";
     const config = resolveDevInstanceConfig({ homeDir, repoRoot });
 
     expect(config.instanceId).toBe(
@@ -76,6 +76,8 @@ describe("run-dev", () => {
       [1, "/repo/port-3079"],
       [3886, "/repo/port-3186"],
       [3887, "/repo/port-6427"],
+      [5886, "/repo/port-beam-134"],
+      [5887, "/repo/port-beam-10204"],
       [7998, "/repo/port-57923"],
       [7999, "/repo/port-7517"],
     ]);
@@ -92,6 +94,8 @@ describe("run-dev", () => {
     expect(portsByOffset.get(7999)?.cloudPort).toBe(42999);
     expect(portsByOffset.get(0)?.cloudWorkerPort).toBe(43000);
     expect(portsByOffset.get(1)?.cloudWorkerPort).toBe(43001);
+    expect(portsByOffset.get(5886)?.cloudWorkerPort).toBe(59002);
+    expect(portsByOffset.get(5887)?.cloudWorkerPort).toBe(59003);
     expect(
       new Set(
         [...portsByOffset.values()].flatMap(
@@ -115,10 +119,10 @@ describe("run-dev", () => {
   it("overrides instance selectors while preserving unrelated environment", () => {
     const config = resolveDevInstanceConfig({
       homeDir: "/Users/tester",
-      repoRoot: "/Users/tester/.bb-dev/projects/env_q7e5i54kxt/bb",
+      repoRoot: "/Users/tester/.beam-dev/projects/env_q7e5i54kxt/bb",
     });
     const baseEnv: NodeJS.ProcessEnv = {
-      BB_DATA_DIR: "/Users/tester/.bb-dev",
+      BB_DATA_DIR: "/Users/tester/.beam-dev",
       BB_SERVER_PORT: "3334",
       NODE_ENV: "production",
       OPENAI_API_KEY: "test-key",
@@ -134,21 +138,21 @@ describe("run-dev", () => {
     expect(env.BB_HOST_DAEMON_PORT).toBe(String(config.ports.hostDaemonPort));
     expect(env.BB_DEV_APP_PORT).toBe(String(config.ports.appPort));
     expect(env.BB_DEV_CONNECT_BASE_URL).toBe(
-      `http://bb.localhost:${config.ports.cloudPort}`,
+      `http://beam.localhost:${config.ports.cloudPort}`,
     );
   });
 
-  it("inherits parent bb skills for managed worktree dev apps", () => {
+  it("inherits parent Beam skills for managed worktree dev apps", () => {
     const homeDir = "/Users/tester";
     const repoRoot =
-      "/Users/tester/.bb-dev/code-bb-abc123/worktrees/env_feature/bb";
+      "/Users/tester/.beam-dev/code-bb-abc123/worktrees/env_feature/bb";
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot,
     });
 
     const inheritedSkillsRootPaths = [
-      "/Users/tester/.bb-dev/code-bb-abc123/skills",
+      "/Users/tester/.beam-dev/code-bb-abc123/skills",
       "/Users/tester/.beam/skills",
     ];
     expect(resolveInheritedDevSkillsRootPaths({ homeDir, repoRoot })).toEqual(
@@ -159,7 +163,7 @@ describe("run-dev", () => {
     });
   });
 
-  it("does not inherit upstream BB skills for BB-managed Beam worktrees", () => {
+  it("does not inherit upstream BB skills for Beam-managed worktrees", () => {
     const homeDir = "/Users/tester";
     const repoRoot = "/Users/tester/.bb/worktrees/env_feature/bb";
     const config = resolveDevInstanceConfig({
@@ -239,7 +243,7 @@ describe("run-dev", () => {
       "--conditions=source",
       "--import",
       "tsx",
-      path.resolve(import.meta.dirname, "../../..", "scripts/start-bb.mjs"),
+      path.resolve(import.meta.dirname, "../../..", "scripts/start-beam.mjs"),
       "--worktree-runtime-policy",
     ]);
   });
@@ -284,7 +288,7 @@ describe("run-dev", () => {
 
   it("migrates legacy flat dev data into the checkout instance", async () => {
     const homeDir = await makeTempDir("bb-dev-home-");
-    const legacyDataDir = path.join(homeDir, ".bb-dev");
+    const legacyDataDir = path.join(homeDir, ".beam-dev");
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot: path.join(homeDir, "src", "bb"),
@@ -364,7 +368,7 @@ describe("run-dev", () => {
 
   it("skips migration when the target instance already has data", async () => {
     const homeDir = await makeTempDir("bb-dev-home-");
-    const legacyDataDir = path.join(homeDir, ".bb-dev");
+    const legacyDataDir = path.join(homeDir, ".beam-dev");
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot: path.join(homeDir, "src", "bb"),
@@ -400,9 +404,29 @@ describe("run-dev", () => {
     expect(await pathExists(config.dataDir)).toBe(false);
   });
 
+  it("does not migrate upstream BB development data", async () => {
+    const homeDir = await makeTempDir("bb-dev-home-");
+    const upstreamDataDir = path.join(homeDir, ".bb-dev");
+    const config = resolveDevInstanceConfig({
+      homeDir,
+      repoRoot: path.join(homeDir, "src", "beam"),
+    });
+    await fs.mkdir(upstreamDataDir, { recursive: true });
+    await fs.writeFile(path.join(upstreamDataDir, "bb.db"), "upstream", "utf8");
+
+    await expect(migrateLegacyDevData({ config })).resolves.toEqual({
+      migratedEntries: [],
+      skippedReason: "legacy-data-not-found",
+    });
+    await expect(
+      fs.readFile(path.join(upstreamDataDir, "bb.db"), "utf8"),
+    ).resolves.toBe("upstream");
+    expect(await pathExists(config.dataDir)).toBe(false);
+  });
+
   it("skips migration when legacy dev data has no migratable entries", async () => {
     const homeDir = await makeTempDir("bb-dev-home-");
-    const legacyDataDir = path.join(homeDir, ".bb-dev");
+    const legacyDataDir = path.join(homeDir, ".beam-dev");
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot: path.join(homeDir, "src", "bb"),
@@ -419,7 +443,7 @@ describe("run-dev", () => {
 
   it("rolls back already moved entries when migration rename fails", async () => {
     const homeDir = await makeTempDir("bb-dev-home-");
-    const legacyDataDir = path.join(homeDir, ".bb-dev");
+    const legacyDataDir = path.join(homeDir, ".beam-dev");
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot: path.join(homeDir, "src", "bb"),
@@ -465,7 +489,7 @@ describe("run-dev", () => {
 
   it("does not migrate legacy data while a legacy dev supervisor is running", async () => {
     const homeDir = await makeTempDir("bb-dev-home-");
-    const legacyDataDir = path.join(homeDir, ".bb-dev");
+    const legacyDataDir = path.join(homeDir, ".beam-dev");
     const config = resolveDevInstanceConfig({
       homeDir,
       repoRoot: path.join(homeDir, "src", "bb"),

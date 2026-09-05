@@ -3,7 +3,7 @@
   "name": "card",
   "type": "registry:ui",
   "title": "card",
-  "description": "BB ui \"card\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"card\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "registryDependencies": [
     "@bb/utils"
   ],

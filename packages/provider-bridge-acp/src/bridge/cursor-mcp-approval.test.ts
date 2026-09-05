@@ -7,7 +7,10 @@ import {
   buildCursorMcpApprovalIdentifier,
   revokeCursorSessionMcpServer,
 } from "./cursor-mcp-approval.js";
-import type { AcpMcpServerConfig } from "./tool-proxy-mcp.js";
+import {
+  ACP_BRIDGE_MCP_SERVER_NAME,
+  type AcpMcpServerConfig,
+} from "./tool-proxy-mcp.js";
 
 const tempDirs: string[] = [];
 
@@ -19,7 +22,7 @@ function makeTempDir(prefix: string): string {
 
 function mcpConfig(threadId = "thread-1"): AcpMcpServerConfig {
   return {
-    name: "bb-bridge",
+    name: ACP_BRIDGE_MCP_SERVER_NAME,
     command: "/usr/local/bin/node",
     args: ["/app/bridge.js", "--mcp-stdio"],
     env: [
@@ -42,7 +45,7 @@ describe("Cursor ACP session MCP approvals", () => {
         config: mcpConfig(),
         projectRoot: "/workspace/project",
       }),
-    ).toBe("bb-bridge-d4709a3db84ddb48");
+    ).toBe("beam-bridge-d4709a3db84ddb48");
   });
 
   it("does not touch Cursor data for other ACP agents", async () => {
@@ -104,7 +107,7 @@ describe("Cursor ACP session MCP approvals", () => {
     expect(JSON.parse(readFileSync(first.path, "utf8")) as unknown).toEqual([
       "user-approved-server",
     ]);
-    expect(() => readFileSync(`${first.path}.bb-lock`)).toThrow();
+    expect(() => readFileSync(`${first.path}.beam-lock`)).toThrow();
   });
 
   it("does not remove an approval Cursor already had", async () => {

@@ -22,7 +22,7 @@ export function createAuth(env: Env) {
     appUrl.port ? `:${appUrl.port}` : ""
   }`;
   return betterAuth({
-    appName: "bb connect",
+    appName: "Beam Connect",
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.APP_URL,
     trustedOrigins: [env.APP_URL, subdomainOrigin],

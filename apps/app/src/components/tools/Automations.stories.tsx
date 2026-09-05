@@ -215,7 +215,7 @@ const PROJECT_AUTOMATION: AutomationResponse = {
       hostId: "host_local",
       workspace: {
         type: "unmanaged",
-        path: "/Users/you/Code/bb",
+        path: "/Users/you/Code/beam",
         branch: { kind: "existing", name: "agent/tools-hub-schedules" },
       },
     },
@@ -306,13 +306,13 @@ mkdir -p "$output_dir"
 for repository in api app docs integrations; do
   echo "Collecting $repository activity for $report_date"
   gh pr list \\
-    --repo "bb/$repository" \\
+    --repo "acme/$repository" \\
     --state all \\
     --json number,title,state,updatedAt \\
     > "$output_dir/$repository-$report_date.json"
 
   gh issue list \\
-    --repo "bb/$repository" \\
+    --repo "acme/$repository" \\
     --state all \\
     --json number,title,state,updatedAt \\
     > "$output_dir/$repository-issues-$report_date.json"

@@ -93,7 +93,7 @@ describe("submit-a-plugin skill", () => {
     const skill = await readSkillTree();
 
     expect(skill).toContain("A submission request does not approve a release.");
-    expect(skill).toContain("npm ci --ignore-scripts");
+    expect(skill).toContain("pnpm install --ignore-scripts");
     expect(skill).toContain("npm pack --dry-run --ignore-scripts");
     expect(skill).toContain("npm publish --ignore-scripts");
     expect(skill).not.toContain("PLUGIN_DISPLAY_NAME");
@@ -102,9 +102,9 @@ describe("submit-a-plugin skill", () => {
   it("provides a local submission path without gh", async () => {
     const skill = await readSkillTree();
 
-    expect(skill).toContain("If gh is unavailable or authentication fails");
+    expect(skill).toContain("If `gh` is unavailable or authentication fails");
     expect(skill).toContain(
-      "git clone https://github.com/get-bb/marketplace.git /SAFE/NEW/PATH/marketplace",
+      "git clone https://github.com/divyesh-puri/beam.git /SAFE/NEW/PATH/beam",
     );
     expect(skill).toMatch(
       /Return their paths, the clone path,\s+branch name, and results\./,

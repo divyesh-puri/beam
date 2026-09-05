@@ -406,7 +406,7 @@ async function handleRequest(message) {
     case "turn/start": {
       // A prompt the provider handles locally: accepted and answered, but with
       // no turn/started and no turn/completed, so nothing in the child's
-      // output can open or settle a bb turn (#1431).
+      // output can open or settle a Beam turn (#1431).
       if (firstInputText(params.input) === ZERO_WORK_PROMPT_TEXT) {
         respond(id, {});
         return;

@@ -3,7 +3,7 @@
   "name": "tabs",
   "type": "registry:ui",
   "title": "tabs",
-  "description": "BB ui \"tabs\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"tabs\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "dependencies": [
     "@radix-ui/react-tabs"
   ],

@@ -1,13 +1,14 @@
 {
   "name": "@get-bb/plugin-sdk",
   "version": "0.4.29",
-  "homepage": "https://github.com/get-bb/bb#readme",
+  "private": true,
+  "homepage": "https://github.com/divyesh-puri/beam#readme",
   "bugs": {
-    "url": "https://github.com/get-bb/bb/issues"
+    "url": "https://github.com/divyesh-puri/beam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/get-bb/bb.git",
+    "url": "git+https://github.com/divyesh-puri/beam.git",
     "directory": "packages/plugin-sdk"
   },
   "type": "module",

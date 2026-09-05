@@ -62,7 +62,7 @@ describe("InstalledPluginRow", () => {
     renderRow(
       plugin({
         status: "incompatible",
-        statusDetail: "requires bb >=0.38.0 <0.39.0, this is 0.39.0",
+        statusDetail: "requires Beam >=0.38.0 <0.39.0, this is 0.39.0",
       }),
     );
 
@@ -70,7 +70,7 @@ describe("InstalledPluginRow", () => {
       "Incompatible",
     );
     expect(
-      screen.getByText("requires bb >=0.38.0 <0.39.0, this is 0.39.0"),
+      screen.getByText("requires Beam >=0.38.0 <0.39.0, this is 0.39.0"),
     ).toBeTruthy();
     expect(
       screen

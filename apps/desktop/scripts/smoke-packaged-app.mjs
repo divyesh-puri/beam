@@ -149,7 +149,7 @@ function createDesktopVersionFeed(platform, version) {
 function renderSmokePage(expectedDesktopPlatform, expectedDesktopVersion) {
   return `<!doctype html>
 <meta charset="utf-8">
-<title>bb packaged desktop smoke</title>
+<title>Beam packaged desktop smoke</title>
 <main>packaged desktop smoke</main>
 <script>
 (async () => {

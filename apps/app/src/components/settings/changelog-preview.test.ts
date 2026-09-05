@@ -25,7 +25,7 @@ Turn on **Edit messages** in Settings → Experiments.
 ## 0.36.0
 
 - Fixed a [crash](https://example.test) on launch.
-- Tidied \`bb status\` output.
+- Tidied \`beam status\` output.
 `;
 
 describe("parseChangelogEntries", () => {
@@ -75,7 +75,7 @@ describe("parseChangelogEntries", () => {
         kind: "list",
         items: [
           "Fixed a [crash](https://example.test) on launch.",
-          "Tidied `bb status` output.",
+          "Tidied `beam status` output.",
         ],
       },
     ]);

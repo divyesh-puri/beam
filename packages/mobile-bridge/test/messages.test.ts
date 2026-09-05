@@ -40,7 +40,7 @@ describe("parsePageToShellMessage", () => {
         id: "r1-2",
         request: {
           kind: "share",
-          payload: { url: "https://bee.getbb.app/threads/thr_1" },
+          payload: { url: "https://bee.connect.beam.invalid/threads/thr_1" },
         },
       },
     ];
@@ -97,7 +97,7 @@ describe("parsePageToShellMessage", () => {
       "javascript:alert(1)",
       "data:text/html,<script>alert(1)</script>",
       "file:///etc/passwd",
-      "bb://settings",
+      "beam://settings",
       "not a url",
     ]) {
       expect(

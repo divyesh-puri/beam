@@ -110,7 +110,7 @@ describe("plugin catalog routes", () => {
             JSON.stringify({
               schemaVersion: 1,
               name: "bb-community",
-              displayName: "BB Community",
+              displayName: "Beam Community",
               plugins: [
                 {
                   id: "widgets",

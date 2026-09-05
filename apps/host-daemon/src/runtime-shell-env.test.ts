@@ -180,7 +180,7 @@ describe("resolveLocalBbExecutablePath", () => {
         cliRuntimePath,
       }),
     ).rejects.toThrow(
-      `Missing built bb CLI runtime at ${cliRuntimePath}. Build @bb/cli before starting the host daemon.`,
+      `Missing built Beam CLI runtime at ${cliRuntimePath}. Build @bb/cli before starting the host daemon.`,
     );
   });
 
@@ -194,7 +194,7 @@ describe("resolveLocalBbExecutablePath", () => {
         cliExecutablePath: cliEntryPath,
       }),
     ).rejects.toThrow(
-      `Missing built bb CLI entry at ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
+      `Missing built Beam CLI entry at ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
     );
   });
 
@@ -208,7 +208,7 @@ describe("resolveLocalBbExecutablePath", () => {
         cliExecutablePath: cliEntryPath,
       }),
     ).rejects.toThrow(
-      `Resolved bb CLI entry is not executable: ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
+      `Resolved Beam CLI entry is not executable: ${cliEntryPath}. Build @bb/cli before starting the host daemon.`,
     );
   });
 
@@ -421,7 +421,7 @@ describe("prepareRuntimeShellEnv", () => {
     expect(env).not.toHaveProperty("BB_CONNECT_MACHINE_CREDENTIAL");
   });
 
-  it("prepends the configured bb executable directory to PATH and sets BB_CLI", () => {
+  it("prepends the configured Beam executable directory to PATH and sets BB_CLI", () => {
     expect(
       prepareRuntimeShellEnv({
         bbExecutableDirectory: "/tmp/bb-bin",
@@ -431,7 +431,7 @@ describe("prepareRuntimeShellEnv", () => {
       }),
     ).toEqual({
       PATH: `/tmp/bb-bin${delimiter}/usr/bin`,
-      BB_CLI: path.resolve("/tmp/bb-bin", "bb"),
+      BB_CLI: path.resolve("/tmp/bb-bin", "beam"),
       BB_SERVER_URL: "http://127.0.0.1:3334",
       BB_HOST_DAEMON_PORT: "3002",
     });
@@ -462,7 +462,7 @@ describe("prepareRuntimeShellEnv", () => {
       }),
     ).toEqual({
       PATH: `/tmp/bb-bin${delimiter}/usr/local/bin:/usr/bin`,
-      BB_CLI: path.resolve("/tmp/bb-bin", "bb"),
+      BB_CLI: path.resolve("/tmp/bb-bin", "beam"),
       BB_SERVER_URL: "http://127.0.0.1:3334",
       BB_HOST_DAEMON_PORT: "3002",
     });
@@ -477,7 +477,7 @@ describe("prepareRuntimeShellEnv", () => {
       }),
     ).toEqual({
       PATH: `/tmp/bb-bin${delimiter}/usr/bin`,
-      BB_CLI: path.resolve("/tmp/bb-bin", "bb"),
+      BB_CLI: path.resolve("/tmp/bb-bin", "beam"),
       BB_SERVER_URL: "http://127.0.0.1:3334",
     });
   });

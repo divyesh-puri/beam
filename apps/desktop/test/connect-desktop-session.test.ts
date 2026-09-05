@@ -9,7 +9,7 @@ import {
 const CREDENTIAL = {
   credential: "bbcm_desktop",
   handle: "laptop",
-  serverUrl: "https://laptop.getbb.app",
+  serverUrl: "https://laptop.connect.beam.invalid",
 };
 
 function createCookieStore(): DesktopCookieStore {
@@ -25,7 +25,7 @@ function createCookieStore(): DesktopCookieStore {
 }
 
 const COOKIE = {
-  domain: ".getbb.app",
+  domain: ".connect.beam.invalid",
   expiresAt: 1_800_000,
   name: "__Secure-bb-connect.desktop_session",
   value: "signed-session",
@@ -53,23 +53,23 @@ describe("installConnectDesktopSession", () => {
       installConnectDesktopSession({
         cookieStore,
         mintCookie: successfulSource(),
-        remoteServerUrl: "https://laptop.getbb.app",
+        remoteServerUrl: "https://laptop.connect.beam.invalid",
       }),
     ).resolves.toEqual({ expiresAt: 1_800_000, ok: true });
     expect(set).toHaveBeenCalledWith({
-      domain: ".getbb.app",
+      domain: ".connect.beam.invalid",
       expirationDate: 1800,
       httpOnly: true,
       name: "__Secure-bb-connect.desktop_session",
       path: "/",
       sameSite: "lax",
       secure: true,
-      url: "https://laptop.getbb.app",
+      url: "https://laptop.connect.beam.invalid",
       value: "signed-session",
     });
     expect(get).toHaveBeenCalledWith({
       name: "__Secure-bb-connect.desktop_session",
-      url: "https://laptop.getbb.app",
+      url: "https://laptop.connect.beam.invalid",
     });
   });
 
@@ -82,7 +82,7 @@ describe("installConnectDesktopSession", () => {
           detail: "revoked",
           ok: false,
         }),
-        remoteServerUrl: "https://laptop.getbb.app",
+        remoteServerUrl: "https://laptop.connect.beam.invalid",
       }),
     ).resolves.toEqual({ code: "unauthorized", detail: "revoked", ok: false });
   });
@@ -99,7 +99,7 @@ describe("installConnectDesktopSession", () => {
           },
         },
         mintCookie: successfulSource(),
-        remoteServerUrl: "https://laptop.getbb.app",
+        remoteServerUrl: "https://laptop.connect.beam.invalid",
       }),
     ).resolves.toEqual({
       code: "cookie_install_failed",
@@ -116,7 +116,7 @@ describe("installConnectDesktopSession", () => {
           async set() {},
         },
         mintCookie: successfulSource(),
-        remoteServerUrl: "https://laptop.getbb.app",
+        remoteServerUrl: "https://laptop.connect.beam.invalid",
       }),
     ).resolves.toEqual({
       code: "cookie_verification_failed",
@@ -184,7 +184,7 @@ describe("createCredentialCookieSource", () => {
       createCredentialCookieSource({ credential: CREDENTIAL, fetchImpl })(),
     ).resolves.toEqual({ cookie: COOKIE, ok: true });
     expect(fetchImpl).toHaveBeenCalledWith(
-      "https://laptop.getbb.app/api/connect/desktop-session",
+      "https://laptop.connect.beam.invalid/api/connect/desktop-session",
       expect.objectContaining({
         headers: { "x-bb-connect-machine": "bbcm_desktop" },
         method: "POST",

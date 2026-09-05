@@ -1,6 +1,6 @@
 {
-  "name": "bb",
-  "short_name": "bb",
+  "name": "Beam",
+  "short_name": "Beam",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

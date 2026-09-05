@@ -1245,7 +1245,7 @@ describe("editThreadMessage", () => {
   });
 
   it.each(["completed", "failed", "interrupted"] as const)(
-    "does not send a bb turn id to Codex when a %s turn has no checkpoint",
+    "does not send a Beam turn id to Codex when a %s turn has no checkpoint",
     async (firstCompletionStatus) => {
       await withTestHarness(async (harness) => {
         const { environment, thread } = seedEditableThread(harness, {

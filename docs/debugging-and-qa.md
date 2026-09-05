@@ -6,29 +6,29 @@
 - Entity IDs in URLs (`proj_*`, `thr_*`) are primary keys. Query them directly against the active data dir: `sqlite3 <data>/bb.db "SELECT * FROM threads WHERE id = 'thr_xxx';"`.
 - API routes are under `/api/v1/`, for example `GET /api/v1/threads/:id`.
 - Use `curl` against the server API to isolate frontend issues from server behavior.
-- Use the CLI to inspect state: `pnpm bb thread show <id>`, `pnpm bb project list`, `pnpm bb status`. From source, use `pnpm bb:dev`.
+- Use the CLI to inspect state: `pnpm beam thread show <id>`, `pnpm beam project list`, `pnpm beam status`. From source, use `pnpm beam:dev`.
 
 ## Local Dev QA Launcher
 
-Use `scripts/bb-dev-app` when validating changes in the desktop dev app or helping QA from this checkout:
+Use `scripts/beam-dev-app` when validating changes in the desktop dev app or helping QA from this checkout:
 
-- `pnpm dev:status` runs `scripts/bb-dev-app status` to print the active branch, Node runtime, dev URLs, data dir, and logs.
-- `scripts/bb-dev-app current` restarts the dev server on the current branch.
-- `scripts/bb-dev-app main` fetches `origin/main`, fast-forwards `main`, and launches the dev server from this checkout.
-- `scripts/bb-dev-app branch <branch>` switches to a local branch, or creates it from `origin/<branch>`, then launches the dev server.
-- `pnpm dev:stop` runs `scripts/bb-dev-app stop` to stop the launcher-managed dev server and desktop.
-- `scripts/bb-dev-app logs dev` and `scripts/bb-dev-app logs desktop` follow logs.
+- `pnpm dev:status` runs `scripts/beam-dev-app status` to print the active branch, Node runtime, dev URLs, data dir, and logs.
+- `scripts/beam-dev-app current` restarts the dev server on the current branch.
+- `scripts/beam-dev-app main` fetches `origin/main`, fast-forwards `main`, and launches the dev server from this checkout.
+- `scripts/beam-dev-app branch <branch>` switches to a local branch, or creates it from `origin/<branch>`, then launches the dev server.
+- `pnpm dev:stop` runs `scripts/beam-dev-app stop` to stop the launcher-managed dev server and desktop.
+- `scripts/beam-dev-app logs dev` and `scripts/beam-dev-app logs desktop` follow logs.
 
-By default the launcher starts only the dev server (web frontend, server, host daemon) and prints the URL without opening a browser. Pass `--open` to open the browser after startup. Pass `--desktop` (e.g. `scripts/bb-dev-app current --desktop`) to also launch the Electron desktop shell — only do this when the user is testing a desktop-only change.
+By default the launcher starts only the dev server (web frontend, server, host daemon) and prints the URL without opening a browser. Pass `--open` to open the browser after startup. Pass `--desktop` (e.g. `scripts/beam-dev-app current --desktop`) to also launch the Electron desktop shell — only do this when the user is testing a desktop-only change.
 
 The launcher uses the Node executable from the caller's `PATH`. It does not select another installed Node version. The `.nvmrc` file pins the primary development runtime to Node 22.19.0. Node 24 and Node 26 remain compatibility targets. Desktop development requires Node 22.19 or newer in the Node 22 release line.
 
-A bb connect shared-port URL is a different browser origin from localhost. If
+A Beam Connect shared-port URL is a different browser origin from localhost. If
 QA through that URL needs the browser-local host daemon, restart the dev app
 with the share origin configured after exposing its app port:
 
 ```bash
-BB_APP_URL=https://<handle>--<app-port>.getbb.app scripts/bb-dev-app current
+BB_APP_URL=https://<handle>--<app-port>.<connect-domain> scripts/beam-dev-app current
 ```
 
 The port remains stable for the checkout, so the existing share continues to
@@ -38,13 +38,13 @@ API.
 
 Branch switches intentionally keep dirty work in this checkout; git will stop if a local file would be overwritten. Set `BB_DEV_APP_STASH_DIRTY=1` for a one-off launch that stashes first.
 
-For CLI QA against the dev instance, run `eval "$(scripts/bb-dev-app env)"` first. This sets `BB_SERVER_URL`, `BB_HOST_DAEMON_PORT`, and `BB_PROJECT_ID=proj_personal` so `pnpm bb:dev ...` does not accidentally target the packaged app.
+For CLI QA against the dev instance, run `eval "$(scripts/beam-dev-app env)"` first. This sets `BB_SERVER_URL`, `BB_HOST_DAEMON_PORT`, and `BB_PROJECT_ID=proj_personal` so `pnpm beam:dev ...` does not accidentally target the packaged app.
 
 Test agents with:
 
 ```bash
-eval "$(scripts/bb-dev-app env)"
-pnpm bb:dev thread spawn --project proj_personal --provider codex --permission-mode accept-edits --title "Smoke test" --prompt "Reply only with ok." --json
+eval "$(scripts/beam-dev-app env)"
+pnpm beam:dev thread spawn --project proj_personal --provider codex --permission-mode accept-edits --title "Smoke test" --prompt "Reply only with ok." --json
 ```
 
 ## Record Provider Bridge Traffic
@@ -53,10 +53,10 @@ Export `BB_PROVIDER_BRIDGE_RECORD_DIR` before you start the dev app and every
 provider bridge records its runtime and provider wires as NDJSON:
 
 ```bash
-BB_PROVIDER_BRIDGE_RECORD_DIR=$HOME/.bb/provider-recordings/raw scripts/bb-dev-app current
-eval "$(scripts/bb-dev-app env)"
-pnpm bb:dev thread spawn --project proj_personal --provider codex --prompt "Run git status." --json
-ls ~/.bb/provider-recordings/raw/codex/
+BB_PROVIDER_BRIDGE_RECORD_DIR=$HOME/.beam/provider-recordings/raw scripts/beam-dev-app current
+eval "$(scripts/beam-dev-app env)"
+pnpm beam:dev thread spawn --project proj_personal --provider codex --prompt "Run git status." --json
+ls ~/.beam/provider-recordings/raw/codex/
 ```
 
 The layout is `<dir>/<providerId>/<threadId>/<direction>.ndjson`, plus a
@@ -79,10 +79,10 @@ Use `pnpm seed:perf` to fill a dev database with a large, realistic fixture:
 many projects, ~1,200 threads, and ~400k event rows with production-like
 payloads. Use it to reproduce performance problems that only appear at scale.
 
-- Start the dev app once first (`scripts/bb-dev-app current`), then stop it and
+- Start the dev app once first (`scripts/beam-dev-app current`), then stop it and
   seed. The fixture then attaches to the real local host, so agents still run.
 - By default the command seeds this checkout's dev data dir. Pass
-  `--data-dir <path>` for another target. The command refuses to touch `~/.bb`.
+  `--data-dir <path>` for another target. The command refuses to touch `~/.beam`.
 - Scale flags: `--projects`, `--threads`, `--events`, `--seed`. `--reset`
   deletes the database file first. Without `--reset` the fixture appends.
 - Example: `pnpm seed:perf -- --reset --events 400000`.
@@ -96,7 +96,7 @@ the same rows and build timelines at the same speed. The corpus contains real
 prompts, code, and paths, so it is **never committed**; `.gitignore` blocks
 every `provider-corpus/` directory except the in-repo harness and scripts.
 
-- Location: `~/.bb/provider-corpus/` by default. Tests read it through
+- Suggested location: `~/.beam/provider-corpus/`. Tests read it through
   `BB_PROVIDER_CORPUS_DIR` and skip when the variable is unset or the directory
   has no `manifest.json`, so CI and fresh checkouts stay green.
 - Layout: `manifest.json` (thread selection and reasons), `profile.json`,
@@ -186,7 +186,7 @@ two directories offline:
 
 ```bash
 pnpm exec tsx scripts/provider-corpus/classify-row-diff.ts \
-  ~/.bb/provider-corpus/snapshots/rows ~/.bb/provider-corpus/snapshots/rows.<ws> \
+  ~/.beam/provider-corpus/snapshots/rows ~/.beam/provider-corpus/snapshots/rows.<ws> \
   --classes apps/server/test/provider-corpus/allowlists/<ws>-row-classes.json --verbose
 ```
 
@@ -215,15 +215,15 @@ pnpm cloud:dev
 
 The command applies migrations and prints the dashboard URL. Create a local
 email/password account, claim a handle, create a pairing code, and run the
-displayed `bb connect` command against a bb started with `pnpm dev`. The same
-worktree-specific local origin serves the dashboard at `bb.localhost` and
-routes `<handle>.bb.localhost` through the Connect worker. Email/password auth
+displayed `beam connect` command against a Beam started with `pnpm dev`. The same
+worktree-specific local origin serves the dashboard at `beam.localhost` and
+routes `<handle>.beam.localhost` through the Connect worker. Email/password auth
 is enabled only for this loopback workflow; production remains GitHub-only.
 `pnpm dev` automatically sets `BB_DEV_CONNECT_BASE_URL` to that worktree's
-local Cloud origin. While the bb is unpaired, Extensions → Plugins → Connect
+local Cloud origin. While the Beam is unpaired, Extensions → Plugins → Connect
 therefore opens the local dashboard and a pasted code redeems locally. An
-explicit `bb connect --server ...` or `--base-url ...` still wins, so the dev bb
-can still pair with getbb.app.
+explicit `beam connect --server ...` or `--base-url ...` still wins, so the dev Beam
+can pair with an operator-provisioned Connect deployment.
 Local machine enrollment follows the same origin: local `http:` server URLs
 produce `ws:` machine tunnels and `http:` share URLs, while non-local machine
 enrollment remains HTTPS-only.
@@ -240,5 +240,5 @@ per-file count against `scripts/provider-literal-baseline.json`. The count may
 only go down. Adding a provider-id branch to core fails CI. When you remove
 literals, regenerate the baseline with `--write` and commit it so the reduction
 is recorded. `--list` prints every hit. When the baseline reaches zero, delete
-it and the guard. This is guardrail G1 of the provider-plugin migration
-(the provider-plugin API design (docs/provider-plugin-api.md, added by the v3 contract PR; overview at https://get-bb.github.io/reports/design/provider-plugin-api.html)).
+it and the guard. This is guardrail G1 of the provider-plugin migration; see
+[the provider-plugin API design](provider-plugin-api.md).

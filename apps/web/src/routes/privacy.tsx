@@ -8,9 +8,9 @@ import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal
 import landingCss from "../landing/landing.css?url";
 import blogCss from "../blog/blog.css?url";
 
-const PAGE_TITLE = "Privacy — bb";
+const PAGE_TITLE = "Privacy — Beam";
 const PAGE_DESCRIPTION =
-  "What bb collects, what stays on your own machines, and what bb connect can see.";
+  "What Beam collects, what stays on your own machines, and what Beam Connect can see.";
 
 const LAST_UPDATED = "August 20, 2026";
 const CONTACT_EMAIL = "sawyer@terragonlabs.com";
@@ -54,8 +54,8 @@ function PrivacyRoute() {
           <h1>Privacy</h1>
 
           <p className="lede">
-            bb runs on your own machines. Your prompts, your code, and your
-            files go to the bb server that you run, and from there to the AI
+            Beam runs on your own machines. Your prompts, your code, and your
+            files go to the Beam server that you run, and from there to the AI
             provider that you choose. They do not come to us.
           </p>
 
@@ -65,23 +65,22 @@ function PrivacyRoute() {
           </p>
           <ol>
             <li>
-              <strong>The bb apps</strong> — the desktop app, the CLI, and the
+              <strong>The Beam apps</strong> — the desktop app, the CLI, and the
               iOS app.
             </li>
             <li>
-              <strong>bb connect</strong> — the optional relay at{" "}
-              <code>getbb.app</code> that lets you reach your own machine from
-              somewhere else.
+              <strong>Beam Connect</strong> — an optional, operator-provisioned
+              relay that lets you reach your own machine from somewhere else.
             </li>
             <li>
-              <strong>This website</strong> — <code>getbb.app</code>.
+              <strong>This website</strong> — the Beam site serving this policy.
             </li>
           </ol>
 
-          <h2>1. The bb apps</h2>
+          <h2>1. The Beam apps</h2>
 
           <p>
-            The apps talk to a bb server that you run. We do not operate that
+            The apps talk to a Beam server that you run. We do not operate that
             server and we do not receive its data. This includes your prompts,
             your agent conversations, your source code, your files, your
             terminal output, and your provider API keys.
@@ -90,7 +89,7 @@ function PrivacyRoute() {
           <p>The iOS app keeps this on the device:</p>
           <ul>
             <li>
-              <strong>Server profiles</strong> — the address of each bb server
+              <strong>Server profiles</strong> — the address of each Beam server
               you added, and the credential that reaches it. These live in the
               iOS Keychain.
             </li>
@@ -109,28 +108,28 @@ function PrivacyRoute() {
           <p>
             The app asks for the camera, the microphone, and the photo library
             only when you attach an image or dictate a prompt. That content goes
-            to your bb server. It does not go to us.
+            to your Beam server. It does not go to us.
           </p>
 
-          <h2>2. bb connect</h2>
+          <h2>2. Beam Connect</h2>
 
           <p>
-            bb connect is optional. It gives your machine an address such as{" "}
-            <code>yourhandle.getbb.app</code>, so the iOS app can reach it from
-            a phone network. If you only use bb on your own network, you never
-            touch it.
+            Beam Connect is optional. A configured deployment gives your machine
+            an address such as <code>yourhandle.&lt;connect-domain&gt;</code>,
+            so the iOS app can reach it from a phone network. If you only use
+            Beam on your own network, you never touch it.
           </p>
 
-          <p>When you sign in to bb connect, we store:</p>
+          <p>When you sign in to Beam Connect, we store:</p>
           <ul>
             <li>
               Your GitHub account details: name, email address, GitHub login,
               and avatar URL.
             </li>
             <li>
-              The access tokens that keep you signed in to GitHub, and your bb
-              sign-in sessions. A session record includes the IP address and the
-              browser user agent that created it.
+              The access tokens that keep you signed in to GitHub, and your Beam
+              instance sign-in sessions. A session record includes the IP
+              address and the browser user agent that created it.
             </li>
             <li>
               Your handle, and a record of each machine and server you enroll:
@@ -163,9 +162,10 @@ function PrivacyRoute() {
           <h2>3. This website</h2>
 
           <p>
-            The marketing pages use PostHog to measure how people find bb.
-            Automatic event capture is off. The pages send page views, the
-            referrer and any campaign parameters in the URL, and a small set of
+            The marketing pages use PostHog only when the site operator supplies
+            a PostHog key and explicitly enables telemetry. Automatic event
+            capture is off. When enabled, the pages send page views, the
+            referrer and campaign parameters in the URL, and a small set of
             named events, such as a click on a download link or a copy of the
             install command.
           </p>
@@ -189,29 +189,29 @@ function PrivacyRoute() {
           <h2>Keeping and deleting data</h2>
 
           <p>
-            We keep your bb connect account data until you delete the account.
+            We keep your Beam Connect account data until you delete the account.
             Sign-in sessions and pairing codes expire on their own. Write to us
             at the address below to delete your account, and we will remove your
             account record, your machines, and your handle.
           </p>
 
           <p>
-            Data held by the bb apps is yours. Deleting the iOS app removes its
-            profiles, preferences, and drafts from the device.
+            Data held by the Beam apps is yours. Deleting the iOS app removes
+            its profiles, preferences, and drafts from the device.
           </p>
 
           <h2>Children</h2>
 
           <p>
-            bb is a developer tool. It is not directed at children under 13, and
-            we do not knowingly collect their data.
+            Beam is a developer tool. It is not directed at children under 13,
+            and we do not knowingly collect their data.
           </p>
 
           <h2>Changes</h2>
 
           <p>
             We will update this page when the product changes, and we will move
-            the date at the top. bb is open source, so you can also read the
+            the date at the top. Beam is open source, so you can also read the
             history of this page in the repository.
           </p>
 
@@ -220,7 +220,7 @@ function PrivacyRoute() {
           <p>
             Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>{" "}
             with any question about this policy, or open an issue on{" "}
-            <a href="https://github.com/get-bb/bb">GitHub</a>.
+            <a href="https://github.com/divyesh-puri/beam">GitHub</a>.
           </p>
         </div>
       </article>

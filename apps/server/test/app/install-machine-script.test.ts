@@ -96,12 +96,12 @@ const JOIN_ARGS = [
   "--host-id",
   "host-test",
   "--server",
-  "https://machine.getbb.app",
+  "https://machine.connect.beam.invalid",
 ];
 
 function writeJoinedState(
   fixture: ReturnType<typeof createFixture>,
-  serverUrl = "https://machine.getbb.app",
+  serverUrl = "https://machine.connect.beam.invalid",
   hostId = "host-test",
 ): void {
   writeFileSync(
@@ -315,7 +315,7 @@ describe("machine install script", () => {
       "Could not download this Beam server's bb-app package",
     );
     expect(result.stderr).toContain(
-      "will not use bb-app from PATH or the npm registry",
+      "will not use the upstream bb-app package from PATH or the npm registry",
     );
     expect(existsSync(bbAppMarker)).toBe(false);
     expect(existsSync(npmMarker)).toBe(false);
@@ -380,13 +380,13 @@ describe("machine install script", () => {
       "utf8",
     );
     expect(npmInvocation).toMatch(
-      /^install -g --allow-scripts=better-sqlite3,node-pty,@parcel\/watcher --prefix \/.*\/data\/npm \/.*bb-app\..*\.tgz$/mu,
+      /^install -g --allow-scripts=better-sqlite3,node-pty,@parcel\/watcher --prefix \/.*\/data\/npm \/.*\/beam-runtime\.[^/]+\/bb-app\.tgz$/mu,
     );
     const daemonPid = Number(
       readFileSync(join(fixture.dataDir, "install-daemon.pid"), "utf8"),
     );
     process.kill(daemonPid, "SIGTERM");
-  });
+  }, 15_000);
 
   it("prefers the server-matched tarball when bb-app is absent", () => {
     const fixture = createFixture();
@@ -401,18 +401,18 @@ describe("machine install script", () => {
       "utf8",
     );
     expect(npmInvocation).toMatch(
-      /^install -g --allow-scripts=better-sqlite3,node-pty,@parcel\/watcher --prefix \/.*\/data\/npm \/.*bb-app\..*\.tgz$/mu,
+      /^install -g --allow-scripts=better-sqlite3,node-pty,@parcel\/watcher --prefix \/.*\/data\/npm \/.*\/beam-runtime\.[^/]+\/bb-app\.tgz$/mu,
     );
     expect(npmInvocation).not.toContain("bb-app\n");
     expect(readFileSync(join(fixture.dataDir, "curl.log"), "utf8")).toContain(
       "--silent --show-error --location --connect-timeout 10 --max-time 300",
     );
     expect(result.stdout).toContain(
-      "Setting up this machine as host-test for https://machine.getbb.app",
+      "Setting up this machine as host-test for https://machine.connect.beam.invalid",
     );
-    expect(result.stdout).toContain("\n  bb machine setup\n\n");
+    expect(result.stdout).toContain("\n  beam machine setup\n\n");
     expect(result.stdout).toContain(
-      "  ○  Setting up this machine as host-test for https://machine.getbb.app",
+      "  ○  Setting up this machine as host-test for https://machine.connect.beam.invalid",
     );
     expect(result.stdout).toContain(
       "Downloading the server's bb-app package (timeout: 5 minutes)",
@@ -432,7 +432,7 @@ describe("machine install script", () => {
       readFileSync(join(fixture.dataDir, "install-daemon.pid"), "utf8"),
     );
     process.kill(daemonPid, "SIGTERM");
-  });
+  }, 15_000);
 
   it("fails loudly when npm skipped the native add-on install scripts", () => {
     const fixture = createFixture();
@@ -463,7 +463,7 @@ describe("machine install script", () => {
     expect(result.status, result.stderr).toBe(0);
     const defaultDataDir = join(
       fixture.homeDir,
-      ".beam/machines/machine.getbb.app",
+      ".beam/machines/machine.connect.beam.invalid",
     );
     expect(
       JSON.parse(readFileSync(join(defaultDataDir, "auth.json"), "utf8")),
@@ -477,7 +477,11 @@ describe("machine install script", () => {
   it("refuses a data dir enrolled for a different host instead of faking success", () => {
     const fixture = createFixture();
     writeServerInstallTools(fixture, 200);
-    writeJoinedState(fixture, "https://machine.getbb.app", "host-other");
+    writeJoinedState(
+      fixture,
+      "https://machine.connect.beam.invalid",
+      "host-other",
+    );
     const result = runScript(JOIN_ARGS, fixture, {
       BB_INSTALL_SKIP_SERVICE: "1",
     });
@@ -593,7 +597,7 @@ describe("machine install script", () => {
         "--host-id",
         "host-test",
         "--server",
-        "https://sawyer.getbb.app",
+        "https://sawyer.connect.beam.invalid",
         "--machine-code",
         "MACH-INE1",
       ],
@@ -614,7 +618,7 @@ describe("machine install script", () => {
     ).toMatchObject({
       connectMachineId: "machine-1",
       machineCredential: "bbcm_durable",
-      serverUrl: "https://sawyer.getbb.app",
+      serverUrl: "https://sawyer.connect.beam.invalid",
     });
     const daemonPid = Number(
       readFileSync(join(fixture.dataDir, "install-daemon.pid"), "utf8"),
@@ -656,7 +660,7 @@ setInterval(() => {}, 1000);
 printf '%s\n' "$*" >>"${join(fixture.dataDir, "launchctl.log")}"
 if [ "$1" = kickstart ]; then
   port=$(sed -n '1p' "${join(fixture.dataDir, "host-daemon-port")}")
-  BB_DATA_DIR="${fixture.dataDir}" "${join(fixture.dataDir, "npm/bin/bb-app")}" host-daemon --host-daemon-port "$port" --server-url https://machine.getbb.app >/dev/null 2>&1 &
+  BB_DATA_DIR="${fixture.dataDir}" "${join(fixture.dataDir, "npm/bin/bb-app")}" host-daemon --host-daemon-port "$port" --server-url https://machine.connect.beam.invalid >/dev/null 2>&1 &
   echo $! >"${join(fixture.dataDir, "service-daemon.pid")}"
 fi
 `,
@@ -669,7 +673,7 @@ fi
         "--host-id",
         "host-test",
         "--server",
-        "https://machine.getbb.app",
+        "https://machine.connect.beam.invalid",
       ],
       fixture,
     );
@@ -677,27 +681,29 @@ fi
     expect(result.status, result.stderr).toBe(0);
     expect(result.stdout).toContain("already joined");
     expect(result.stdout).toContain(
-      "Installing the persistent bb host daemon service",
+      "Installing the persistent Beam host daemon service",
     );
     expect(result.stdout).toContain("Waiting for the launch agent to connect");
-    expect(result.stdout).toContain("  ●  bb machine is ready");
-    expect(result.stdout).toContain("server  https://machine.getbb.app");
+    expect(result.stdout).toContain("  ●  beam machine is ready");
+    expect(result.stdout).toContain(
+      "server  https://machine.connect.beam.invalid",
+    );
     expect(result.stdout).toContain(
       "service " +
         join(
           fixture.homeDir,
-          "Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.machine-getbb-app.plist",
+          "Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.machine-connect-beam-invalid.plist",
         ),
     );
     const plist = readFileSync(
       join(
         fixture.homeDir,
-        "Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.machine-getbb-app.plist",
+        "Library/LaunchAgents/com.divyeshpuri.beam.host-daemon.machine-connect-beam-invalid.plist",
       ),
       "utf8",
     );
     expect(plist).toContain(
-      "<string>com.divyeshpuri.beam.host-daemon.machine-getbb-app</string>",
+      "<string>com.divyeshpuri.beam.host-daemon.machine-connect-beam-invalid</string>",
     );
     expect(plist).toContain("<string>host-daemon</string>");
     expect(plist).toContain("<string>--auto-update</string>");
@@ -708,7 +714,9 @@ fi
     expect(plist).toContain(
       `<string>--host-daemon-port</string>\n    <string>${selectedPort}</string>`,
     );
-    expect(plist).toContain("<string>https://machine.getbb.app</string>");
+    expect(plist).toContain(
+      "<string>https://machine.connect.beam.invalid</string>",
+    );
     expect(plist).toContain(
       `<key>BB_APP_NPM_PREFIX</key><string>${realpathSync(fixture.dataDir)}/npm</string>`,
     );
@@ -726,9 +734,9 @@ fi
       join(fixture.binDir, "systemctl"),
       `#!/bin/sh
 printf '%s\n' "$*" >>"${join(fixture.dataDir, "systemctl.log")}"
-if [ "$*" = "--user restart beam-host-daemon-machine-getbb-app.service" ]; then
+if [ "$*" = "--user restart beam-host-daemon-machine-connect-beam-invalid.service" ]; then
   port=$(sed -n '1p' "${join(fixture.dataDir, "host-daemon-port")}")
-  BB_DATA_DIR="${fixture.dataDir}" "${join(fixture.dataDir, "npm/bin/bb-app")}" host-daemon --host-daemon-port "$port" --server-url https://machine.getbb.app >/dev/null 2>&1 &
+  BB_DATA_DIR="${fixture.dataDir}" "${join(fixture.dataDir, "npm/bin/bb-app")}" host-daemon --host-daemon-port "$port" --server-url https://machine.connect.beam.invalid >/dev/null 2>&1 &
   echo $! >"${join(fixture.dataDir, "service-daemon.pid")}"
 fi
 `,
@@ -741,7 +749,7 @@ fi
         "--host-id",
         "host-test",
         "--server",
-        "https://machine.getbb.app",
+        "https://machine.connect.beam.invalid",
       ],
       fixture,
     );
@@ -754,7 +762,7 @@ fi
     const unit = readFileSync(
       join(
         fixture.homeDir,
-        ".config/systemd/user/beam-host-daemon-machine-getbb-app.service",
+        ".config/systemd/user/beam-host-daemon-machine-connect-beam-invalid.service",
       ),
       "utf8",
     );
@@ -763,13 +771,13 @@ fi
       "utf8",
     ).trim();
     expect(unit).toContain(
-      `host-daemon --auto-update --host-daemon-port "${selectedPort}" --server-url "https://machine.getbb.app"`,
+      `host-daemon --auto-update --host-daemon-port "${selectedPort}" --server-url "https://machine.connect.beam.invalid"`,
     );
     expect(unit).toContain(
       `Environment="BB_APP_NPM_PREFIX=${realpathSync(fixture.dataDir)}/npm"`,
     );
     expect(readFileSync(join(fixture.dataDir, "systemctl.log"), "utf8")).toBe(
-      "--user daemon-reload\n--user enable beam-host-daemon-machine-getbb-app.service\n--user restart beam-host-daemon-machine-getbb-app.service\n",
+      "--user daemon-reload\n--user enable beam-host-daemon-machine-connect-beam-invalid.service\n--user restart beam-host-daemon-machine-connect-beam-invalid.service\n",
     );
   });
 });

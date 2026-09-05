@@ -40,7 +40,7 @@ const bucket = bucketOf({
 });
 
 function request(path: string, headers: Record<string, string> = {}): Request {
-  return new Request(`https://getbb.app${path}`, { headers });
+  return new Request(`https://connect.beam.invalid${path}`, { headers });
 }
 
 describe("marketplaceObjectKey", () => {

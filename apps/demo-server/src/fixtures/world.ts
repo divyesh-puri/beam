@@ -167,10 +167,10 @@ export const EMPTY_TABS: ThreadTabsResponse = { revision: 0, tabs: [] };
 export const SYSTEM_VERSION: SystemVersionResponse = {
   currentVersion: "0.39.0",
   latestVersion: "0.39.0",
-  source: "npm",
+  source: "github",
   updateAvailable: false,
   isDevelopment: false,
-  releaseUrl: "https://www.npmjs.com/package/bb-app",
+  releaseUrl: "https://github.com/divyesh-puri/beam/releases",
 };
 
 export const PLUGIN_CONTRIBUTIONS = { cliCommands: [], mentionProviders: [] };

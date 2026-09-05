@@ -58,7 +58,7 @@ describe("app surface request metadata", () => {
     );
   });
 
-  it("marks requests from the bb mobile shell as mobile", () => {
+  it("marks requests from the Beam mobile shell as mobile", () => {
     const fakeWindow: Record<string, unknown> = {
       ReactNativeWebView: { postMessage: () => {} },
     };

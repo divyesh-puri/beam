@@ -3,7 +3,7 @@
   "name": "skeleton",
   "type": "registry:ui",
   "title": "skeleton",
-  "description": "BB ui \"skeleton\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"skeleton\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "registryDependencies": [
     "@bb/utils"
   ],

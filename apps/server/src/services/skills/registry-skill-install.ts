@@ -286,7 +286,7 @@ function installConflict(skillId: string): ApiError {
   return new ApiError(
     409,
     "skill_install_conflict",
-    `Skill "${skillId}" already exists with different or unsafe contents; bb left it unchanged`,
+    `Skill "${skillId}" already exists with different or unsafe contents; Beam left it unchanged`,
   );
 }
 
@@ -332,7 +332,7 @@ export async function installServerRegistrySkill(args: {
       throw new ApiError(
         409,
         "skill_already_installed",
-        `Skill "${args.skillId}" is already installed in bb`,
+        `Skill "${args.skillId}" is already installed in Beam`,
       );
     }
     const result = await runRegistrySkillsCli({
@@ -407,7 +407,7 @@ export async function installServerRegistrySkill(args: {
         throw new ApiError(
           409,
           "skill_already_installed",
-          `Skill "${args.skillId}" is already installed in bb`,
+          `Skill "${args.skillId}" is already installed in Beam`,
         );
       }
       throw error;

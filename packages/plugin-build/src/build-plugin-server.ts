@@ -40,7 +40,7 @@ async function unresolvedSdkSubpathError(args: {
   resolveDir: string;
   esbuildErrors: readonly { text: string }[];
 }): Promise<string> {
-  const need = `a server entry's "${args.specifier}" import is bundled from the plugin's own SDK install (bb serves only the bare "${PLUGIN_SDK_SPECIFIER}" at load time), so the plugin needs`;
+  const need = `a server entry's "${args.specifier}" import is bundled from the plugin's own SDK install (Beam serves only the bare "${PLUGIN_SDK_SPECIFIER}" at load time), so the plugin needs`;
   const packageDir = await installedPluginSdkDirectory(args.resolveDir);
   if (packageDir === null) {
     return `"${args.specifier}" is not installed for this plugin (no node_modules/${PLUGIN_SDK_PACKAGE_NAME}); ${need} the SDK as a dependency`;

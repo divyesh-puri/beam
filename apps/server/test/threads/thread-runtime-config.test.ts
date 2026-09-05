@@ -753,7 +753,7 @@ describe("thread runtime config", () => {
         rootPath: path.join(harness.config.dataDir, "skills"),
       });
       const builtinSourceRootPath = await writeRuntimeSkill({
-        name: "bb-cli",
+        name: "beam-cli",
         rootPath: harness.config.builtinSkillsRootPath,
       });
       const workspacePath = path.join(
@@ -805,8 +805,8 @@ describe("thread runtime config", () => {
         {
           kind: "tree",
           sourceType: "builtin",
-          name: "bb-cli",
-          description: "Use bb-cli when server runtime tests run.",
+          name: "beam-cli",
+          description: "Use beam-cli when server runtime tests run.",
           treeHash: readSkillTreeManifest(builtinSourceRootPath).treeHash,
           entryPath: "SKILL.md",
         },
@@ -1174,10 +1174,10 @@ describe("thread runtime config", () => {
         }),
       ]);
       expect(runtimeConfig.instructions).toContain(
-        "You are working inside bb, an agentic IDE",
+        "You are working inside Beam, an agentic IDE",
       );
-      expect(runtimeConfig.instructions).toContain("bb status");
-      expect(runtimeConfig.instructions).toContain("bb guide");
+      expect(runtimeConfig.instructions).toContain("beam status");
+      expect(runtimeConfig.instructions).toContain("beam guide");
       expect(runtimeConfig.instructions).toContain("Markdown links");
       expect(runtimeConfig.instructions).toContain(
         "update_environment_directory",
@@ -1231,7 +1231,7 @@ describe("thread runtime config", () => {
 
       expect(runtimeConfig.instructionMode).toBe("append");
       expect(runtimeConfig.instructions).toContain(
-        "You are working inside bb, an agentic IDE",
+        "You are working inside Beam, an agentic IDE",
       );
       expect(runtimeConfig.instructions).toContain(
         "The following workspace instructions come from .bb/AGENTS.md:",
@@ -1664,9 +1664,9 @@ describe("thread runtime config", () => {
         );
 
         const toolHeader =
-          'The following instructions come from the BB plugin "tooldemo" for its tool "demo_lookup":';
+          'The following instructions come from the Beam plugin "tooldemo" for its tool "demo_lookup":';
         const pluginHeader =
-          'The following instructions come from the BB plugin "connect":';
+          'The following instructions come from the Beam plugin "connect":';
         const dataDirHeader =
           "The following user instructions come from <dataDir>/AGENTS.md:";
         const instructions = runtimeConfig.instructions;
@@ -1749,19 +1749,19 @@ describe("thread runtime config", () => {
 
         const instructions = runtimeConfig.instructions;
         expect(instructions).not.toContain(
-          'The following instructions come from the BB plugin "nuller":',
+          'The following instructions come from the Beam plugin "nuller":',
         );
         expect(instructions).not.toContain(
-          'The following instructions come from the BB plugin "blank":',
+          'The following instructions come from the Beam plugin "blank":',
         );
         expect(instructions).not.toContain(
-          'The following instructions come from the BB plugin "boom":',
+          'The following instructions come from the Beam plugin "boom":',
         );
         expect(instructions).toContain(
-          'The following instructions come from the BB plugin "verbose":',
+          'The following instructions come from the Beam plugin "verbose":',
         );
         expect(instructions).toContain(
-          'The following instructions come from the BB plugin "ok":',
+          'The following instructions come from the Beam plugin "ok":',
         );
         expect(instructions).toContain("still contributes");
         expect(instructions).not.toContain(longBody);

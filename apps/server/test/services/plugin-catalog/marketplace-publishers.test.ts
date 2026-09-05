@@ -43,7 +43,7 @@ describe("marketplace publisher labels", () => {
       JSON.stringify({
         schemaVersion: 1,
         name: "bb-community",
-        displayName: "BB Community",
+        displayName: "Beam Community",
         plugins: [],
       }),
     );
@@ -66,7 +66,7 @@ describe("marketplace publisher labels", () => {
         catalogMarketplaceName: "bb-community",
         labels,
       }),
-    ).toBe("BB Community");
+    ).toBe("Beam Community");
     expect(
       pluginPublisherLabel({
         sourceKind: "npm",
@@ -77,7 +77,7 @@ describe("marketplace publisher labels", () => {
     ).toBe("Acme Plugins");
   });
 
-  it("refuses a reserved label to a marketplace that is not BB's", () => {
+  it("refuses a reserved label to a marketplace that is not Beam's", () => {
     const db = connect();
     register(
       db,
@@ -85,7 +85,7 @@ describe("marketplace publisher labels", () => {
       JSON.stringify({
         schemaVersion: 1,
         name: "acme",
-        displayName: "BB Official",
+        displayName: "Beam Official",
         plugins: [],
       }),
     );
@@ -102,15 +102,15 @@ describe("marketplace publisher labels", () => {
     expect(
       marketplacePublisherLabel({
         marketplaceName: "acme",
-        displayName: "BB Community",
+        displayName: "Beam Community",
       }),
     ).toBe("acme");
     expect(
       marketplacePublisherLabel({
         marketplaceName: "bb-community",
-        displayName: "BB Community",
+        displayName: "Beam Community",
       }),
-    ).toBe("BB Community");
+    ).toBe("Beam Community");
   });
 
   it("keeps a badge when the stored manifest no longer parses", () => {
@@ -128,7 +128,7 @@ describe("marketplace publisher labels", () => {
     ).toBe("acme");
   });
 
-  it("keeps a store-installed bundled plugin on BB Official", () => {
+  it("keeps a store-installed bundled plugin on Beam Official", () => {
     const db = connect();
     register(
       db,
@@ -136,7 +136,7 @@ describe("marketplace publisher labels", () => {
       JSON.stringify({
         schemaVersion: 1,
         name: "bb-community",
-        displayName: "BB Community",
+        displayName: "Beam Community",
         plugins: [],
       }),
     );
@@ -149,10 +149,10 @@ describe("marketplace publisher labels", () => {
         catalogMarketplaceName: "bb-community",
         labels,
       }),
-    ).toBe("BB Official");
+    ).toBe("Beam Official");
   });
 
-  it("badges bundled plugins BB Official and user installs not at all", () => {
+  it("badges bundled plugins Beam Official and user installs not at all", () => {
     const labels = marketplacePublisherLabels(connect());
 
     expect(
@@ -162,7 +162,7 @@ describe("marketplace publisher labels", () => {
         catalogMarketplaceName: null,
         labels,
       }),
-    ).toBe("BB Official");
+    ).toBe("Beam Official");
     expect(
       pluginPublisherLabel({
         sourceKind: "git",
@@ -173,7 +173,7 @@ describe("marketplace publisher labels", () => {
     ).toBeNull();
   });
 
-  it("does not reuse BB Official for the marketplace bb curates", () => {
-    expect(BUNDLED_CURATED_MARKETPLACE.displayName).toBe("BB Community");
+  it("does not reuse Beam Official for the marketplace Beam curates", () => {
+    expect(BUNDLED_CURATED_MARKETPLACE.displayName).toBe("Beam Community");
   });
 });

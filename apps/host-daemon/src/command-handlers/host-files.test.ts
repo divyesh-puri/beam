@@ -36,7 +36,7 @@ async function runGit(
 async function initRepo(): Promise<string> {
   const repoPath = await makeTempDir("bb-host-files-test-");
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   return repoPath;
 }

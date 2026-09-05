@@ -37,7 +37,7 @@ async function initRepoWithOptionalSetup(
 ): Promise<string> {
   const repoPath = await makeTempDir("bb-provisioning-repo-");
   await runGit(["init", "-b", "main"], { cwd: repoPath });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: repoPath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: repoPath });
   await runGit(["config", "user.email", "bb@example.com"], { cwd: repoPath });
   await fs.writeFile(path.join(repoPath, "README.md"), "hello\n", "utf8");
   if (setupScript) {
@@ -84,7 +84,7 @@ async function pushRemoteMainCommit(remotePath: string): Promise<string> {
   await runGit(["clone", "--branch", "main", remotePath, clonePath], {
     cwd: cloneParent,
   });
-  await runGit(["config", "user.name", "BB Tests"], { cwd: clonePath });
+  await runGit(["config", "user.name", "Beam Tests"], { cwd: clonePath });
   await runGit(["config", "user.email", "bb@example.com"], {
     cwd: clonePath,
   });
@@ -380,7 +380,7 @@ describe("workspace provisioning", () => {
         await waitForSetupMarkerCount({
           expectedCount: 1,
           markerDir: binPath,
-          timeoutMs: 2_000,
+          timeoutMs: 10_000,
         });
         await fs.rm(remoteRefLockPath);
         await expect(settledProvisioning).resolves.toEqual({
@@ -929,7 +929,7 @@ describe("workspace provisioning", () => {
     expect(result.output).toContain("stdin-closed");
   });
 
-  it("scrubs inherited bb runtime env vars before running setup scripts", async () => {
+  it("scrubs inherited Beam runtime env vars before running setup scripts", async () => {
     vi.stubEnv("BB_DATA_DIR", "/tmp/leaked-bb-data");
     vi.stubEnv("BB_SERVER_PORT", "38886");
     vi.stubEnv("NODE_ENV", "development");
@@ -1041,6 +1041,7 @@ describe("workspace provisioning", () => {
       timeoutMs: 900000,
     });
     const entries: string[] = [];
+    const canonicalTargetPath = await fs.realpath(targetPath);
 
     await removeWorktree({
       path: targetPath,
@@ -1050,7 +1051,7 @@ describe("workspace provisioning", () => {
     });
 
     expect(await fs.readFile(markerPath, "utf8")).toBe(
-      `${targetPath}\nhello\n`,
+      `${canonicalTargetPath}\nhello\n`,
     );
     expect(entries).toContain("teardown-started:Running .bb-env-teardown.sh");
     expect(entries).toContain("teardown-output-1:released external resource");

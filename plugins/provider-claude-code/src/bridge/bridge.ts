@@ -1039,7 +1039,7 @@ function buildPermissionEscalationTrackingHooks(
             hookEventName: "PreToolUse",
             permissionDecision: "deny",
             permissionDecisionReason:
-              "bb has disabled Claude Code native subagents; use bb delegation instead.",
+              "Beam has disabled Claude Code native subagents; use Beam delegation instead.",
           },
         };
       }
@@ -1053,7 +1053,7 @@ function buildPermissionEscalationTrackingHooks(
             hookEventName: "PreToolUse",
             permissionDecision: "deny",
             permissionDecisionReason:
-              "bb has disabled the Claude Code Workflow tool.",
+              "Beam has disabled the Claude Code Workflow tool.",
           },
         };
       }

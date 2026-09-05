@@ -46,7 +46,7 @@ interface CliRun {
   urls: string[];
 }
 
-describe("bb startup module graph", () => {
+describe("beam startup module graph", () => {
   let tempDir: string;
   let registerHooksPath: string;
   let distEntry: string;
@@ -136,7 +136,7 @@ describe("bb startup module graph", () => {
     }
   }, 30_000);
 
-  it("loads only the named command group for `bb thread`", async () => {
+  it("loads only the named command group for `beam thread`", async () => {
     const run = await runCli("source", ["thread", "--help"]);
 
     expect(run.stdout).toContain("Usage: beam thread");
@@ -211,7 +211,7 @@ describe("bb startup module graph", () => {
       }
     }, 30_000);
 
-    it("loads only the thread chunk for `bb thread`", async () => {
+    it("loads only the thread chunk for `beam thread`", async () => {
       const run = await runCli("dist", ["thread", "--help"]);
 
       expect(run.stdout).toContain("Usage: beam thread");
@@ -241,7 +241,7 @@ describe("bb startup module graph", () => {
                     {
                       name: "inspect",
                       summary: "Inspect a fixture",
-                      usage: "bb fixture inspect <id>",
+                      usage: "beam fixture inspect <id>",
                     },
                   ],
                 },
@@ -285,7 +285,7 @@ describe("bb startup module graph", () => {
             ["fixture", "inspect", helpFlag],
             serverUrl,
           );
-          expect(run.stdout).toBe("bb fixture inspect <id>\n");
+          expect(run.stdout).toBe("beam fixture inspect <id>\n");
         }
         expect(pluginCalls).toBe(0);
 

@@ -40,8 +40,8 @@ const commandApproval: PendingInteraction = {
     subject: {
       kind: "command",
       itemId: "item_cmd",
-      command: "git push origin bb/promptbox-stories",
-      cwd: "/Users/michael/Projects/bb",
+      command: "git push origin Beam/promptbox-stories",
+      cwd: "/Users/michael/Projects/beam",
       actions: [],
       sessionGrant: null,
     },
@@ -61,7 +61,7 @@ const longCommandApproval: PendingInteraction = {
       itemId: "item_cmd_long",
       command:
         "pnpm exec turbo run typecheck --filter=@bb/app --filter=@bb/server --filter=@bb/domain --filter=@bb/server-contract --force",
-      cwd: "/Users/michael/Projects/bb",
+      cwd: "/Users/michael/Projects/beam",
       actions: [],
       sessionGrant: null,
     },
@@ -111,11 +111,11 @@ const permissionGrant: PendingInteraction = {
         network: null,
         fileSystem: {
           read: [
-            "/Users/michael/Projects/bb/apps/app",
-            "/Users/michael/Projects/bb/packages",
+            "/Users/michael/Projects/beam/apps/app",
+            "/Users/michael/Projects/beam/packages",
           ],
           write: [
-            "/Users/michael/Projects/bb/apps/app/src/components/promptbox",
+            "/Users/michael/Projects/beam/apps/app/src/components/promptbox",
           ],
         },
       },
@@ -139,7 +139,7 @@ const toolUse: PendingInteraction = {
       presentation: {
         label: { pending: "Creating issue", completed: "Created issue" },
         icon: { glyph: "Globe" },
-        title: "get-bb/bb · Banner clips long titles",
+        title: "divyesh-puri/beam · Banner clips long titles",
         detail: "Opens a **bug** issue with the repro steps from this thread.",
         tint: { light: "#2563eb", dark: "#93c5fd" },
       },

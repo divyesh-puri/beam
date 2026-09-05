@@ -3,7 +3,7 @@
   "name": "table",
   "type": "registry:ui",
   "title": "table",
-  "description": "BB ui \"table\" — vendored from the BB app's own source (version-matched to this BB release).",
+  "description": "Beam ui \"table\" — vendored from the Beam app's own source (version-matched to this Beam release).",
   "registryDependencies": [
     "@bb/utils"
   ],

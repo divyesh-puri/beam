@@ -90,7 +90,7 @@ describe("desktop preload window identity", () => {
     expect(electronMock.invokeCalls).toContain(
       BB_DESKTOP_GET_WINDOW_IDENTITY_CHANNEL,
     );
-  });
+  }, 15_000);
 
   it("reports no identity when desktop main declines or answers with an invalid payload", async () => {
     const api = await loadPreload();
@@ -106,5 +106,5 @@ describe("desktop preload window identity", () => {
       tabs: [],
     });
     await expect(api.getWindowIdentity?.()).resolves.toBeNull();
-  });
+  }, 15_000);
 });

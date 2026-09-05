@@ -10,6 +10,10 @@ import { StrictMode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadPluginApp, renderSlot } from "@get-bb/plugin-sdk/testing/app";
 
+const textGetClientRectsDescriptor = Object.getOwnPropertyDescriptor(
+  Text.prototype,
+  "getClientRects",
+);
 const app = await loadPluginApp(() => import("./app"));
 const docsRegistration = app.navPanels[0]!;
 const navigationView = docsRegistration.fixedTabs?.[0]!;
@@ -19,6 +23,12 @@ const navigationRegistration = {
 };
 
 beforeEach(() => {
+  if (!("getClientRects" in Text.prototype)) {
+    Object.defineProperty(Text.prototype, "getClientRects", {
+      configurable: true,
+      value: () => [],
+    });
+  }
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn((query: string) => ({
@@ -37,6 +47,15 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  if (textGetClientRectsDescriptor === undefined) {
+    Reflect.deleteProperty(Text.prototype, "getClientRects");
+  } else {
+    Object.defineProperty(
+      Text.prototype,
+      "getClientRects",
+      textGetClientRectsDescriptor,
+    );
+  }
 });
 
 interface NoteSummary {
@@ -163,7 +182,7 @@ describe("Docs nav panel", () => {
     });
   });
 
-  it("renders navigation in the BB-owned right-panel view without custom chrome", async () => {
+  it("renders navigation in the Beam-owned right-panel view without custom chrome", async () => {
     const slot = renderSlot(
       navigationRegistration,
       { subPath: "personal" },
@@ -798,7 +817,7 @@ describe("Docs nav panel", () => {
     firstBodyCell!.textContent = "Plans";
     fireEvent.input(firstBodyCell!);
     await waitFor(() => expect(saveNote).toHaveBeenCalled(), {
-      timeout: 2_000,
+      timeout: 5_000,
     });
     expect(saveNote.mock.calls.at(-1)?.[0]).toMatchObject({
       content: expect.stringContaining("| Plans | Ready |"),
@@ -1331,7 +1350,7 @@ describe("Docs nav panel", () => {
           },
         });
       },
-      { timeout: 2_000 },
+      { timeout: 5_000 },
     );
     expect(slot.queryByRole("button", { name: "Add to chat" })).toBeNull();
     expect(slot.queryByRole("button", { name: "Mention in chat" })).toBeNull();

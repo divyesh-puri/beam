@@ -5,7 +5,7 @@ import { createConnection } from "node:net";
 import { createInterface } from "node:readline";
 import { z } from "zod";
 
-export const ACP_BRIDGE_MCP_SERVER_NAME = "bb-bridge";
+export const ACP_BRIDGE_MCP_SERVER_NAME = "beam-bridge";
 
 const ENV_HOST = "BB_ACP_DYNAMIC_TOOL_HOST";
 const ENV_PORT = "BB_ACP_DYNAMIC_TOOL_PORT";
@@ -245,7 +245,7 @@ async function handleRequest(
         toolCount: env.tools.length,
       }).catch((error) => {
         process.stderr.write(
-          `bb-bridge MCP: failed to report initialize: ${
+          `Beam bridge MCP: failed to report initialize: ${
             error instanceof Error ? error.message : String(error)
           }\n`,
         );

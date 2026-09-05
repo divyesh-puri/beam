@@ -23,7 +23,7 @@ const providers: readonly SkillRootProviderId[] = [
 ];
 const skillName = "bb-runtime-skill-integration";
 const skillDescription =
-  "Use when asked for the BB runtime dynamic skill integration token.";
+  "Use when asked for the Beam runtime dynamic skill integration token.";
 
 interface CreateSkillRootArgs {
   token: string;
@@ -37,7 +37,7 @@ function createSkillMarkdown(token: string): string {
     `description: ${skillDescription}`,
     "---",
     "",
-    "# BB Runtime Skill Integration",
+    "# Beam Runtime Skill Integration",
     "",
     "When asked for the runtime skill integration token, reply with exactly:",
     token,

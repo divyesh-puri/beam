@@ -58,7 +58,7 @@ import {
   type ChangelogBlock,
 } from "@/components/settings/changelog-preview";
 import { appToast } from "@/components/ui/app-toast";
-import { BbLogo } from "@/components/ui/bb-logo";
+import { BeamLogo } from "@/components/ui/beam-logo";
 import { OverflowFade } from "@/components/ui/overflow-fade";
 import {
   SettingsBadge,
@@ -93,7 +93,8 @@ const EMPTY_PROVIDER_CLI_FAILURES: ReadonlyMap<
   string,
   ProviderCliInstallFailure
 > = new Map();
-const CHANGELOG_URL = "https://getbb.app/changelog";
+const CHANGELOG_URL =
+  "https://github.com/divyesh-puri/beam/blob/main/CHANGELOG.md";
 const CHANGELOG_STALE_TIME_MS = 5 * 60_000;
 const CHANGELOG_DISMISSED_VERSION_STORAGE_KEY =
   "bb.settings.updates.dismissed-changelog-version";
@@ -580,7 +581,7 @@ export function ChangelogPreviewCard() {
                   variant="ghost"
                   size="icon"
                   className="size-7 text-muted-foreground hover:text-foreground"
-                  aria-label={`Dismiss bb ${entry.version} changelog preview`}
+                  aria-label={`Dismiss Beam ${entry.version} changelog preview`}
                   onClick={() => {
                     rawStringLocalStorage.setItem(
                       CHANGELOG_DISMISSED_VERSION_STORAGE_KEY,
@@ -663,7 +664,7 @@ export function ChangelogPreviewCard() {
               <button
                 type="button"
                 disabled={!releaseVisible}
-                aria-label={`Open the full bb ${entry.version} changelog`}
+                aria-label={`Open the full Beam ${entry.version} changelog`}
                 onClick={() =>
                   openUrlInExternalBrowser(
                     `${CHANGELOG_URL}#${entry.version.replaceAll(".", "-")}`,
@@ -706,7 +707,7 @@ export function ChangelogPreviewCard() {
                   You're all caught up
                 </h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  We'll show the next bb release here.
+                  We'll show the next Beam release here.
                 </p>
               </div>
             </div>
@@ -743,7 +744,7 @@ export function BbAppUpdateRows({
     <UpdatesRow
       leading={
         <span data-bb-update-role="app" aria-hidden>
-          <BbLogo className="size-4" />
+          <BeamLogo className="size-4" />
         </span>
       }
     >
@@ -756,7 +757,7 @@ export function BbAppUpdateRows({
   );
   if (isDesktop && desktopInfo === null) {
     return row(
-      <RowName name="bb app" current={null} latest={null} />,
+      <RowName name="Beam app" current={null} latest={null} />,
       <RowStateControl live state="in-progress" />,
     );
   }
@@ -766,7 +767,7 @@ export function BbAppUpdateRows({
       desktopInfo.pendingVersion ?? desktopInfo.latestVersion;
     const latest = desktopInfo.updateAvailable ? pendingVersion : null;
     const name = (
-      <RowName name="bb app" current={desktopInfo.version} latest={latest} />
+      <RowName name="Beam app" current={desktopInfo.version} latest={latest} />
     );
 
     if (desktopInfo.updateDownloaded) {
@@ -774,9 +775,9 @@ export function BbAppUpdateRows({
         name,
         <RowStateControl
           state="restart-required"
-          buttonLeading={<BbLogo className="size-3" />}
+          buttonLeading={<BeamLogo className="size-3" />}
           buttonLabel="Relaunch"
-          actionLabel="Relaunch bb to finish updating"
+          actionLabel="Relaunch Beam to finish updating"
           onClick={() => onRelaunchDesktop?.()}
         />,
       );
@@ -804,14 +805,14 @@ export function BbAppUpdateRows({
 
   if (systemVersion === undefined) {
     return row(
-      <RowName name="bb app" current={null} latest={null} />,
+      <RowName name="Beam app" current={null} latest={null} />,
       <RowStateControl state="in-progress" />,
     );
   }
 
   const name = (
     <RowName
-      name="bb app"
+      name="Beam app"
       detail={
         systemVersion.updateAvailable ? (
           <span className="hidden truncate font-mono text-2xs text-muted-foreground sm:inline">
@@ -931,10 +932,10 @@ export function BbDaemonUpdateRow({
       onOpen={() => onOpenMachine(host.id)}
       leading={
         <span data-bb-update-role="daemon" aria-hidden>
-          <BbLogo className="size-4" />
+          <BeamLogo className="size-4" />
         </span>
       }
-      title="bb daemon"
+      title="Beam daemon"
       state={daemonCaption}
       trailingMeta={null}
       actions={

@@ -198,7 +198,7 @@ async function runCommand(manager: DesktopBrowserViewManager, hostWindow: Deskto
 async function runAcceptance(): Promise<string[]> {
   const fixture = await createFixtureServer();
   const hostWindow = new BrowserWindow({ width: 820, height: 640, show: true });
-  await hostWindow.loadURL("data:text/html,<title>bb browser fixture host</title>");
+  await hostWindow.loadURL("data:text/html,<title>beam browser fixture host</title>");
   const manager = createDesktopBrowserViewManager({
     activateHostWindow: () => {
       app.focus({ steal: true });
@@ -206,7 +206,7 @@ async function runAcceptance(): Promise<string[]> {
     },
     dispatchAppCommand: () => {},
     focusHostWebContents: () => {},
-    partition: `persist:bb-browser-acceptance-${process.pid}`,
+    partition: `persist:beam-browser-acceptance-${process.pid}`,
     resolveAppCommand: () => null,
   });
   const host: DesktopBrowserHostWindow = hostWindow;

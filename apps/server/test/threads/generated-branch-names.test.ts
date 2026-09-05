@@ -141,7 +141,7 @@ describe("generated managed branch names", () => {
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
       expect(managedCommand.command.branchName).toBe(
-        `bb/improve-branch-names-${thread.id}`,
+        `beam/improve-branch-names-${thread.id}`,
       );
       expect(piAiMocks.complete).toHaveBeenCalledTimes(1);
     });
@@ -242,7 +242,7 @@ describe("generated managed branch names", () => {
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
       expect(managedCommand.command.branchName).toBe(
-        `bb/early-visible-provisioning-${thread.id}`,
+        `beam/early-visible-provisioning-${thread.id}`,
       );
     });
   });
@@ -462,7 +462,7 @@ describe("generated managed branch names", () => {
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
       expect(managedCommand.command.branchName).toBe(
-        `bb/prepared-sweep-safe-${thread.id}`,
+        `beam/prepared-sweep-safe-${thread.id}`,
       );
       expect(
         getEnvironment(harness.db, preparedThread.environmentId)?.status,
@@ -522,7 +522,7 @@ describe("generated managed branch names", () => {
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
       expect(managedCommand.command.branchName).toBe(
-        `bb/recovered-managed-metadata-${thread.id}`,
+        `beam/recovered-managed-metadata-${thread.id}`,
       );
       expect(piAiMocks.complete).toHaveBeenCalledTimes(2);
     });
@@ -584,7 +584,7 @@ describe("generated managed branch names", () => {
         provision,
         {
           path: "/tmp/generated-title-rename-project/.bb-worktrees/thread",
-          branchName: `bb/generated-rename-title-${thread.id}`,
+          branchName: `beam/generated-rename-title-${thread.id}`,
           defaultBranch: "main",
           isGitRepo: true,
           isWorktree: true,
@@ -737,14 +737,14 @@ describe("generated managed branch names", () => {
       const managedProvision =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(provision);
       expect(managedProvision.command.branchName).toBe(
-        `bb/user-picked-title-${thread.id}`,
+        `beam/user-picked-title-${thread.id}`,
       );
       await reportQueuedCommandSuccess(
         harness,
         provision,
         {
           path: "/tmp/user-title-no-rename-project/.bb-worktrees/thread",
-          branchName: `bb/user-picked-title-${thread.id}`,
+          branchName: `beam/user-picked-title-${thread.id}`,
           defaultBranch: "main",
           isGitRepo: true,
           isWorktree: true,
@@ -1055,7 +1055,7 @@ describe("generated managed branch names", () => {
       );
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
-      expect(managedCommand.command.branchName).toBe(`bb/${thread.id}`);
+      expect(managedCommand.command.branchName).toBe(`beam/${thread.id}`);
       expect(piAiMocks.complete).toHaveBeenCalledTimes(1);
     });
   });
@@ -1108,7 +1108,7 @@ describe("generated managed branch names", () => {
         );
         const managedCommand =
           requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
-        expect(managedCommand.command.branchName).toBe(`bb/${thread.id}`);
+        expect(managedCommand.command.branchName).toBe(`beam/${thread.id}`);
         expect(piAiMocks.getModel).toHaveBeenCalledWith(
           "openai",
           "gpt-4o-mini",
@@ -1170,7 +1170,7 @@ describe("generated managed branch names", () => {
       const managedCommand =
         requireManagedWorktreeEnvironmentProvisionLiveCommand(queued);
       expect(managedCommand.command.branchName).toBe(
-        `bb/canonical-generated-title-${thread.id}`,
+        `beam/canonical-generated-title-${thread.id}`,
       );
       expect(piAiMocks.complete).toHaveBeenCalledTimes(1);
     });

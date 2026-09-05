@@ -1,6 +1,7 @@
 {
   "name": "@bb/provider-bridge-acp",
   "version": "0.0.1",
+  "private": true,
   "type": "module",
   "exports": {
     ".": {

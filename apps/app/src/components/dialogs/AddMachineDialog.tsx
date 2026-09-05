@@ -159,7 +159,7 @@ function UnreachableServerNotice({
       <p className="text-xs text-subtle-foreground">
         The pairing command would target{" "}
         <span className="font-mono">{serverUrl}</span>, which points to the
-        machine that runs it, not to this bb.{" "}
+        machine that runs it, not to this Beam instance.{" "}
         {reason === "disabled"
           ? "The Connect plugin is disabled, so remote access is off. Enable it, then come back here to get a pairing command that works from anywhere."
           : "Set up remote access first, then come back here to get a pairing command that works from anywhere."}
@@ -178,7 +178,7 @@ function UnreachableServerNotice({
           )}
         </Button>
         <a
-          href="https://github.com/get-bb/bb/blob/main/docs/multiple-devices.md"
+          href="https://github.com/divyesh-puri/beam/blob/main/docs/multiple-devices.md"
           target="_blank"
           rel="noreferrer"
           className="text-xs text-subtle-foreground underline underline-offset-2"
@@ -275,7 +275,7 @@ function AddMachineDialogContent({
         <DialogDescription>
           {unreachable !== null
             ? "Pair a machine to run projects and threads on it."
-            : "Run this command on the machine you want to add. It installs bb and keeps the machine connected to this server."}
+            : "Run this command on the machine you want to add. It installs Beam and keeps the machine connected to this server."}
         </DialogDescription>
       </DialogHeader>
       <div className="space-y-3">

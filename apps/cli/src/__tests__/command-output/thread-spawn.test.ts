@@ -12,7 +12,7 @@ import type { CommandRegistrar } from "../helpers/command-output-harness.js";
 import * as fixtures from "../helpers/command-output-fixtures.js";
 import { registerThreadCommands } from "../../commands/thread/index.js";
 
-describe("bb thread spawn command output", () => {
+describe("beam thread spawn command output", () => {
   setupCommandOutputTestEnvironment();
 
   const register: CommandRegistrar = (program) =>
@@ -22,7 +22,7 @@ describe("bb thread spawn command output", () => {
     return vi.spyOn(process.stderr, "write").mockImplementation(() => true);
   }
 
-  it("bb thread spawn omits provider and model when the user relies on project defaults", async () => {
+  it("beam thread spawn omits provider and model when the user relies on project defaults", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-1",
@@ -56,7 +56,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn forwards host-readable paths without reading them on the CLI machine", async () => {
+  it("beam thread spawn forwards host-readable paths without reading them on the CLI machine", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-attachments",
       projectId: "proj-1",
@@ -92,7 +92,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn --plan opens the thread with the composer's /plan command mention", async () => {
+  it("beam thread spawn --plan opens the thread with the composer's /plan command mention", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-plan",
       projectId: "proj-1",
@@ -137,7 +137,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn requires an explicit --project", async () => {
+  it("beam thread spawn requires an explicit --project", async () => {
     vi.stubEnv("BB_PROJECT_ID", undefined);
     const post = vi.fn();
     const stderrWrite = captureCommanderErrors();
@@ -156,7 +156,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn ignores BB_PROJECT_ID when --project is omitted", async () => {
+  it("beam thread spawn ignores BB_PROJECT_ID when --project is omitted", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-env");
     const post = vi.fn();
     const stderrWrite = captureCommanderErrors();
@@ -175,7 +175,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn uses the personal workspace when the personal project is explicit", async () => {
+  it("beam thread spawn uses the personal workspace when the personal project is explicit", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-personal",
       projectId: domain.PERSONAL_PROJECT_ID,
@@ -216,7 +216,7 @@ describe("bb thread spawn command output", () => {
     expect(collectLogLines(vi.mocked(console.log))).toContain("  Project:  -");
   });
 
-  it("bb thread spawn forwards explicit execution overrides", async () => {
+  it("beam thread spawn forwards explicit execution overrides", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-overrides",
@@ -272,7 +272,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn forwards hidden visibility", async () => {
+  it("beam thread spawn forwards hidden visibility", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-hidden",
       projectId: "proj-1",
@@ -304,7 +304,7 @@ describe("bb thread spawn command output", () => {
     );
   });
 
-  it("bb thread spawn allows sections for hidden workers", async () => {
+  it("beam thread spawn allows sections for hidden workers", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       sectionId: "sec_work",
       id: "thread-hidden-section",
@@ -339,14 +339,14 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn help lists product permission modes", async () => {
+  it("beam thread spawn help lists product permission modes", async () => {
     const helpOutput = await getHelpOutput(["thread", "spawn"], register);
     expect(helpOutput).toContain("--permission-mode <mode>");
     expect(helpOutput).toContain("--visibility <visibility>");
     expect(helpOutput).toMatch(/Permission mode: accept-edits, auto, or full/);
   });
 
-  it("bb thread spawn reports invalid permission mode choices", async () => {
+  it("beam thread spawn reports invalid permission mode choices", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
 
     await expect(
@@ -370,7 +370,7 @@ describe("bb thread spawn command output", () => {
     );
   });
 
-  it("bb thread spawn normalizes deprecated workspace-write to accept-edits", async () => {
+  it("beam thread spawn normalizes deprecated workspace-write to accept-edits", async () => {
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-legacy-permission",
       projectId: "proj-1",
@@ -398,7 +398,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn --json prints the raw thread", async () => {
+  it("beam thread spawn --json prints the raw thread", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-json-spawn",
@@ -433,7 +433,7 @@ describe("bb thread spawn command output", () => {
     ).toEqual(thread);
   });
 
-  it("bb thread spawn prefixes model-catalog failures with context", async () => {
+  it("beam thread spawn prefixes model-catalog failures with context", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const post = vi.fn(async () => {
       throw new Error(
@@ -454,7 +454,7 @@ describe("bb thread spawn command output", () => {
     );
   });
 
-  it("bb thread spawn with --parent-thread forwards parent thread id", async () => {
+  it("beam thread spawn with --parent-thread forwards parent thread id", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-2",
@@ -505,7 +505,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn does not default parent thread id from BB_THREAD_ID", async () => {
+  it("beam thread spawn does not default parent thread id from BB_THREAD_ID", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     vi.stubEnv("BB_THREAD_ID", "thread-context-parent");
     const thread: domain.Thread = fixtures.makeThread({
@@ -554,7 +554,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn with --parent-self forwards BB_THREAD_ID as parent thread id", async () => {
+  it("beam thread spawn with --parent-self forwards BB_THREAD_ID as parent thread id", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     vi.stubEnv("BB_THREAD_ID", "thread-context-parent");
     const thread: domain.Thread = fixtures.makeThread({
@@ -596,7 +596,7 @@ describe("bb thread spawn command output", () => {
     );
   });
 
-  it("bb thread spawn rejects --parent-self without BB_THREAD_ID", async () => {
+  it("beam thread spawn rejects --parent-self without BB_THREAD_ID", async () => {
     const post = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-parent-self-missing-context",
@@ -631,7 +631,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn rejects combining --parent-thread and --parent-self", async () => {
+  it("beam thread spawn rejects combining --parent-thread and --parent-self", async () => {
     vi.stubEnv("BB_THREAD_ID", "thread-context-parent");
     const post = vi.fn(async () =>
       fixtures.makeThread({
@@ -669,7 +669,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn rejects invalid parent-thread values", async () => {
+  it("beam thread spawn rejects invalid parent-thread values", async () => {
     const post = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-invalid-parent",
@@ -705,7 +705,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn forwards a valid --environment ID", async () => {
+  it("beam thread spawn forwards a valid --environment ID", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-env-1",
@@ -751,7 +751,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn forwards an absolute --environment path as an unmanaged workspace", async () => {
+  it("beam thread spawn forwards an absolute --environment path as an unmanaged workspace", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const workspacePath = "/Users/michael/Projects/bb";
     const thread: domain.Thread = fixtures.makeThread({
@@ -803,7 +803,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn rejects invalid non-path --environment IDs", async () => {
+  it("beam thread spawn rejects invalid non-path --environment IDs", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const post = vi.fn();
     stubServerApi({ "v1.threads.$post": post });
@@ -834,7 +834,7 @@ describe("bb thread spawn command output", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  it("bb thread spawn forwards --new-environment", async () => {
+  it("beam thread spawn forwards --new-environment", async () => {
     vi.stubEnv("BB_PROJECT_ID", "proj-1");
     const thread: domain.Thread = fixtures.makeThread({
       id: "thread-env-1",
@@ -887,7 +887,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn targets an unambiguous machine name", async () => {
+  it("beam thread spawn targets an unambiguous machine name", async () => {
     const thread = fixtures.makeThread({
       id: "thread-machine",
       projectId: "proj-1",
@@ -935,7 +935,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn combines --host with an unmanaged path", async () => {
+  it("beam thread spawn combines --host with an unmanaged path", async () => {
     const post = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-machine-path",
@@ -985,7 +985,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn creates a managed worktree on the selected machine", async () => {
+  it("beam thread spawn creates a managed worktree on the selected machine", async () => {
     const post = vi.fn(async () =>
       fixtures.makeThread({
         id: "thread-machine-worktree",
@@ -1040,7 +1040,7 @@ describe("bb thread spawn command output", () => {
     });
   });
 
-  it("bb thread spawn rejects selecting a machine for a reused environment", async () => {
+  it("beam thread spawn rejects selecting a machine for a reused environment", async () => {
     const post = vi.fn();
     stubServerApi({ "v1.threads.$post": post });
 

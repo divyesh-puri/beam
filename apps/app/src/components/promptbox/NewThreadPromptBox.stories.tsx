@@ -635,7 +635,7 @@ export function UnsupportedCodexCli() {
       <StoryCard>
         <StoryRow
           label="unsupported Codex CLI"
-          hint="Codex is installed but below bb's minimum supported version"
+          hint="Codex is installed but below Beam's minimum supported version"
         >
           <UnsupportedCodexCliRow />
         </StoryRow>

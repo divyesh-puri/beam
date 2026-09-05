@@ -1,24 +1,24 @@
-# Phase 7 plugins against the checkout's dev server (`scripts/bb-dev-app
+# Phase 7 plugins against the checkout's dev server (`scripts/beam-dev-app
 # current`; server port 20304 for this worktree — edit SERVER_URL for another
 # checkout), which runs the real builtin plugins. Read-mostly: opens the
 # Automations detail (settings-less builtin → "no settings" state, Updates →
 # "bundled" note, logs viewer), the default-enabled provider-retry settings,
-# and Browse (BB Official group). Not part of `pnpm e2e:ios` (e2e/flows)
+# and Browse (Beam Official group). Not part of `pnpm e2e:ios` (e2e/flows)
 # because it needs a running dev server.
-appId: app.getbb.mobile
+appId: com.divyeshpuri.beam.mobile
 env:
   METRO_URL: "http://127.0.0.1:8082"
   SERVER_URL: "http://127.0.0.1:20304"
 ---
 # Wipe any saved profile first (dev builds accept the reset deep link) so the
 # launch subflow adds the dev server instead of reusing a harness profile.
-# The app must already be running from Metro (a cold `bb://` link lands on
+# The app must already be running from Metro (a cold `beam://` link lands on
 # the dev-client launcher) and sitting on a screen that survives losing the
 # profile (home), so: launch, reset, launch again → first run → add server.
 - runFlow: ../subflows/launch-app.yaml
-- openLink: "bb://e2e/reset"
+- openLink: "beam://e2e/reset"
 - extendedWaitUntil:
-    visible: ".*Connect to a bb server.*"
+    visible: ".*Connect to a Beam server.*"
     timeout: 60000
 - runFlow: ../subflows/launch-to-home.yaml
 - runFlow: ../subflows/open-settings.yaml
@@ -129,7 +129,7 @@ env:
 - takeScreenshot: p7-plugins-dev-browse
 # Leave the simulator at first run again for the harness flows.
 - runFlow: ../subflows/launch-app.yaml
-- openLink: "bb://e2e/reset"
+- openLink: "beam://e2e/reset"
 - extendedWaitUntil:
-    visible: ".*Connect to a bb server.*"
+    visible: ".*Connect to a Beam server.*"
     timeout: 60000

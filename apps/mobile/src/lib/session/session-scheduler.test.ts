@@ -10,7 +10,7 @@ const MINUTE = 60 * 1000;
 const profile: ConnectServerProfile = {
   id: "p1",
   mode: "connect",
-  serverUrl: "https://bee.getbb.app",
+  serverUrl: "https://bee.connect.beam.invalid",
   label: "bee",
   handle: "bee",
   credential: "bbcm_secret",
@@ -22,7 +22,7 @@ function session(expiresAt: number, value = "sess"): DesktopSession {
     cookie: {
       name: "bb_desktop_session",
       value,
-      domain: ".getbb.app",
+      domain: ".connect.beam.invalid",
       expiresAt,
     },
   };
@@ -72,11 +72,11 @@ describe("createSessionScheduler", () => {
     });
     expect(cookies.map((c) => c.useWebKit)).toEqual([false, true]);
     expect(cookies[0]).toMatchObject({
-      url: "https://bee.getbb.app",
+      url: "https://bee.connect.beam.invalid",
       cookie: {
         name: "bb_desktop_session",
         value: "one",
-        domain: ".getbb.app",
+        domain: ".connect.beam.invalid",
         path: "/",
         secure: true,
         httpOnly: true,

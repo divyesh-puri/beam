@@ -1,11 +1,11 @@
 ---
 name: submit-a-plugin
-description: Submit a bb plugin to the BB Community marketplace. Use whenever a user asks to submit, list, publish, or add a plugin to the BB marketplace, or asks for a marketplace pull request. This skill validates the plugin and release, creates the marketplace entry and icon, and opens the pull request.
+description: Submit a Beam plugin to the Beam Community marketplace. Use whenever a user asks to submit, list, publish, or add a plugin to the Beam marketplace, or asks for a marketplace pull request. This skill validates the plugin and release, updates the Beam-owned marketplace manifest, and opens the pull request.
 ---
 
 # Submit a plugin
 
-Submit a public plugin to the BB Community marketplace. The marketplace stores
+Submit a public plugin to the Beam Community marketplace. The marketplace stores
 plugin metadata. The plugin code stays in its Git repository or npm package.
 
 ## Choose the task
@@ -21,17 +21,18 @@ A submission request does not approve a release. Before the first Git push, tag,
 npm publication, or other release mutation, show the exact account, repository,
 commit, package, version, source, and commands. Get approval for that release.
 
-Do not expose credentials, private URLs, or local secrets.
+Do not expose credentials, private URLs, or local secrets. Never submit to the
+upstream BB marketplace.
 
 ## Read current contracts
 
-The marketplace contract can change independently from BB releases. Read these
-files from the default branch of https://github.com/get-bb/marketplace:
+Read these files from the default branch of
+https://github.com/divyesh-puri/beam:
 
-- README.md
-- schema/marketplace.schema.json
-- icons/README.md
-- At least two current files in entries/
+- AGENTS.md
+- apps/server/src/services/plugin-catalog/beam-community-marketplace.json
+- apps/web/public/schemas/marketplace.schema.json
+- apps/server/src/services/skills/builtin-skills/submit-a-plugin/references/marketplace-entry.md
 
 Treat those files as the contract. Use this skill for workflow and quality
 rules.
@@ -39,22 +40,22 @@ rules.
 ## Workflow
 
 1. Read repository instructions, package.json, Git state, and release state.
-2. Validate the plugin with its package manager and bb plugin build.
+2. Validate the plugin with its package manager and `beam plugin build`.
 3. Select and verify one public release source.
 4. Get separate approval before any release mutation.
-5. Create one marketplace entry and a vendored icon.
-6. Validate the marketplace repository.
-7. Commit only the entry and icon.
-8. Open a pull request from the submitter account.
+5. Add one marketplace entry and, when needed, a vendored icon.
+6. Validate the Beam repository's marketplace tests and formatting.
+7. Commit only the marketplace entry, icon, and required generated output.
+8. Open a pull request to `divyesh-puri/beam` from the submitter account.
 
 Read these references as the task reaches each stage:
 
 - Read references/plugin-release.md before validating or releasing a plugin.
 - Read references/marketplace-entry.md before creating the entry or icon.
 - Read references/pull-request.md before cloning, validating, or submitting
-  the marketplace repository.
+  the Beam repository.
 
-Use scripts/derive-plugin-id.mjs to calculate the same plugin ID that BB uses:
+Use scripts/derive-plugin-id.mjs to calculate the same plugin ID that Beam uses:
 
 ```sh
 node /PATH/TO/THIS/SKILL/scripts/derive-plugin-id.mjs /PATH/TO/PLUGIN/package.json

@@ -35,12 +35,12 @@ import type { PluginFrontendDiagnostic } from "@/lib/plugin-frontend";
 const GITHUB_PLUGIN = {
   id: "github",
   source: "builtin:github",
-  rootDir: "/Users/you/.bb/plugins/github",
+  rootDir: "/Users/you/.beam/plugins/github",
   version: "0.1.0",
   enabled: true,
   status: "running",
   statusDetail: null,
-  description: "Browse GitHub issues and pull requests in BB.",
+  description: "Browse GitHub issues and pull requests in Beam.",
   name: "GitHub",
   icon: "Github",
   compactIconUrl: null,
@@ -56,8 +56,8 @@ const GITHUB_PLUGIN = {
   provenance: "catalog" as const,
   isOrphanedBuiltin: false,
   catalogEntryId: "github",
-  publisherLabel: "BB Community",
-  sourceDisplay: "BB Official · GitHub",
+  publisherLabel: "Beam Community",
+  sourceDisplay: "Beam Official · GitHub",
   updateState: EMPTY_PLUGIN_UPDATE_STATE,
 } satisfies PluginListItem;
 
@@ -66,16 +66,16 @@ const GITHUB_CATALOG_ENTRY = {
   marketplace: "bb-community",
   pluginId: "github",
   displayName: "GitHub",
-  description: "Browse GitHub issues and pull requests in BB.",
+  description: "Browse GitHub issues and pull requests in Beam.",
   icon: "Github",
   iconUrl: null,
   iconTinted: false,
   category: "Developer tools",
   source: "builtin:github",
   repositoryUrl: null,
-  marketplaceDisplayName: "BB Official",
+  marketplaceDisplayName: "Beam Official",
   publisherKey: "builtin",
-  publisherLabel: "BB Official",
+  publisherLabel: "Beam Official",
   official: true,
   author: null,
   installed: false,
@@ -92,7 +92,7 @@ afterEach(() => {
 });
 
 describe("PluginDetail official catalog lifecycle", () => {
-  it("offers Install from an unowned BB Official plugin detail page", () => {
+  it("offers Install from an unowned Beam Official plugin detail page", () => {
     const onInstall = vi.fn();
     const { container } = render(
       <CatalogPluginDetail
@@ -102,10 +102,10 @@ describe("PluginDetail official catalog lifecycle", () => {
     );
 
     expect(screen.getByRole("heading", { name: "GitHub" })).toBeTruthy();
-    expect(screen.getByText("BB Official")).toBeTruthy();
+    expect(screen.getByText("Beam Official")).toBeTruthy();
     expect(screen.getByText("Developer tools")).toBeTruthy();
     expect(
-      screen.getByText("Browse GitHub issues and pull requests in BB."),
+      screen.getByText("Browse GitHub issues and pull requests in Beam."),
     ).toBeTruthy();
     expect(screen.queryByText("Capabilities")).toBeNull();
     expect(container.querySelector('[data-icon="Github"]')).not.toBeNull();
@@ -136,7 +136,7 @@ describe("PluginDetail official catalog lifecycle", () => {
     const incompatibleEntry = {
       ...GITHUB_CATALOG_ENTRY,
       compatible: false,
-      incompatibleReason: "Requires bb 0.20 or newer.",
+      incompatibleReason: "Requires Beam 0.20 or newer.",
     };
     render(
       <>
@@ -147,15 +147,15 @@ describe("PluginDetail official catalog lifecycle", () => {
 
     expect(screen.queryByRole("alert")).toBeNull();
     const compatibilityStatus = screen
-      .getByText("Update bb to install this plugin")
+      .getByText("Update Beam to install this plugin")
       .closest("div[class*='bg-surface-recessed']");
     expect(compatibilityStatus).not.toBeNull();
     if (compatibilityStatus === null) return;
     expect(compatibilityStatus.textContent).toContain(
-      "Update bb to install this plugin",
+      "Update Beam to install this plugin",
     );
     expect(compatibilityStatus.textContent).toContain(
-      "Requires bb 0.20 or newer.",
+      "Requires Beam 0.20 or newer.",
     );
     expect(
       screen
@@ -210,7 +210,7 @@ describe("PluginDetail official catalog lifecycle", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.queryByText("BB Official")).toBeNull();
+    expect(screen.queryByText("Beam Official")).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Uninstall GitHub" }),
     ).toBeNull();
@@ -218,7 +218,7 @@ describe("PluginDetail official catalog lifecycle", () => {
     expect(screen.getByText("About")).toBeTruthy();
     expect(screen.getByText("Release")).toBeTruthy();
     expect(
-      screen.getByText("Browse GitHub issues and pull requests in BB."),
+      screen.getByText("Browse GitHub issues and pull requests in Beam."),
     ).toBeTruthy();
     const meta = screen.getByText("0.1.0");
     expect(
@@ -226,16 +226,16 @@ describe("PluginDetail official catalog lifecycle", () => {
         .closest("[data-resource-detail-section]")
         ?.getAttribute("data-resource-detail-section"),
     ).toBe("release");
-    expect(screen.getByText("~/.bb/plugins/github")).toBeTruthy();
+    expect(screen.getByText("~/.beam/plugins/github")).toBeTruthy();
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Copy plugin path: /Users/you/.bb/plugins/github",
+        name: "Copy plugin path: /Users/you/.beam/plugins/github",
       }),
     );
     await waitFor(() => {
-      expect(writeText).toHaveBeenCalledWith("/Users/you/.bb/plugins/github");
+      expect(writeText).toHaveBeenCalledWith("/Users/you/.beam/plugins/github");
     });
-    expect(screen.getByText("Updates with bb")).toBeTruthy();
+    expect(screen.getByText("Updates with Beam")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Check now" })).toBeNull();
 
     expect(container.querySelector('[data-icon="Github"]')).not.toBeNull();
@@ -282,7 +282,7 @@ describe("PluginDetail official catalog lifecycle", () => {
       name: "Update GitHub to 1.5.0",
     });
     const activation = screen.getByRole("switch", { name: "Disable GitHub" });
-    const path = screen.getByText("~/.bb/plugins/github");
+    const path = screen.getByText("~/.beam/plugins/github");
     const releaseSection = document.querySelector(
       '[data-resource-detail-section="release"]',
     );
@@ -341,7 +341,7 @@ describe("PluginDetail official catalog lifecycle", () => {
 
     expect(screen.getByRole("rowheader", { name: "Installed" })).toBeTruthy();
     expect(screen.getByText("Install date unavailable")).toBeTruthy();
-    expect(screen.queryByText("Updates with bb")).toBeNull();
+    expect(screen.queryByText("Updates with Beam")).toBeNull();
   });
 
   it.each([
@@ -364,7 +364,7 @@ describe("PluginDetail official catalog lifecycle", () => {
       updateState: {
         ...EMPTY_PLUGIN_UPDATE_STATE,
         blockedVersion: "2.0.0",
-        blockedReasons: ["Requires bb 0.20 or newer."],
+        blockedReasons: ["Requires Beam 0.20 or newer."],
       },
       expected: "Update blocked",
       actionName: null,
@@ -460,7 +460,7 @@ describe("PluginDetail official catalog lifecycle", () => {
       provenance: "builtin" as const,
       catalogEntryId: null,
       publisherKey: "builtin",
-      publisherLabel: "BB Official",
+      publisherLabel: "Beam Official",
     };
     const { wrapper: QueryClientWrapper } = createQueryClientTestHarness();
     render(
@@ -480,7 +480,7 @@ describe("PluginDetail official catalog lifecycle", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("BB Official")).toBeTruthy();
+    expect(screen.getByText("Beam Official")).toBeTruthy();
     expect(
       screen.getByRole("switch", { name: "Disable Automations" }),
     ).toBeTruthy();
@@ -497,13 +497,13 @@ describe("PluginDetail official catalog lifecycle", () => {
     fireEvent.pointerMove(uninstall);
     expect(
       await screen.findAllByText(
-        "Included with BB; disable this plugin instead.",
+        "Included with Beam; disable this plugin instead.",
       ),
     ).not.toHaveLength(0);
   });
 });
 
-describe("BB Official plugin detail routing", () => {
+describe("Beam Official plugin detail routing", () => {
   it("resolves an uninstalled catalog plugin and opens its install confirmation", async () => {
     vi.stubGlobal(
       "fetch",
@@ -561,7 +561,7 @@ describe("plugin removal confirmation", () => {
       sourceDisplay: "path · /Users/you/src/bb-plugin-github",
       updateState: {},
       enabled: true,
-      description: "Browse GitHub issues and pull requests in BB.",
+      description: "Browse GitHub issues and pull requests in Beam.",
       name: "GitHub",
       icon: "Github",
       iconUrl: null,
@@ -611,13 +611,13 @@ describe("plugin removal confirmation", () => {
       screen.getByRole("button", { name: "GitHub actions" }),
     );
     fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Remove from bb" }),
+      await screen.findByRole("menuitem", { name: "Remove from Beam" }),
     );
 
     expect(
-      await screen.findByRole("heading", { name: "Remove plugin from bb?" }),
+      await screen.findByRole("heading", { name: "Remove plugin from Beam?" }),
     ).toBeTruthy();
-    const description = screen.getByText(/Remove "github" from bb/);
+    const description = screen.getByText(/Remove "github" from Beam/);
     expect(description.textContent).toContain(
       "delete its settings, secrets, and schedules",
     );
@@ -646,7 +646,7 @@ describe("PluginDetail banner precedence", () => {
       ...EMPTY_PLUGIN_UPDATE_STATE,
       availableVersion: "1.5.0",
       blockedVersion: "2.0.0",
-      blockedReasons: ["Requires a newer bb."],
+      blockedReasons: ["Requires a newer Beam."],
       lastFailure: {
         version: "1.4.5",
         at: null,
@@ -737,7 +737,7 @@ describe("PluginDetail runtime health", () => {
       provenance: "builtin" as const,
       catalogEntryId: null,
       publisherKey: "builtin",
-      publisherLabel: "BB Official",
+      publisherLabel: "Beam Official",
       status,
       statusDetail: "The runtime reported a problem.",
       ...overrides,
@@ -793,7 +793,7 @@ describe("PluginDetail runtime health", () => {
       "Wait a moment, then reload the plugin.",
     );
     expect(alert.textContent).not.toContain("issue-sync");
-    expect(alert.textContent).not.toContain("Restart bb");
+    expect(alert.textContent).not.toContain("Restart Beam");
     expect(screen.getByRole("button", { name: "Reload" })).toBeTruthy();
   });
 
@@ -823,13 +823,13 @@ describe("PluginDetail runtime health", () => {
   it.each([
     [
       "incompatible",
-      "This plugin version isn't compatible with your version of bb.",
-      "Update bb to load a compatible bundled plugin.",
+      "This plugin version isn't compatible with your version of Beam.",
+      "Update Beam to load a compatible bundled plugin.",
     ],
     [
       "missing",
       "The plugin's files are missing.",
-      "Restart bb. If the files are still missing, reinstall bb.",
+      "Restart Beam. If the files are still missing, reinstall Beam.",
     ],
   ] as const)(
     "explains the %s condition and a supported recovery",
@@ -852,7 +852,7 @@ describe("PluginDetail runtime health", () => {
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("An API token is required.");
     expect(alert.textContent).toContain(
-      "Complete the Configuration section; bb reloads the plugin after you save.",
+      "Complete the Configuration section; Beam reloads the plugin after you save.",
     );
     expect(screen.queryByRole("button", { name: "Reload" })).toBeNull();
   });
@@ -1058,7 +1058,7 @@ describe("PluginDetail capability inventory", () => {
       "Adds a page to the app sidebar.",
       "enhance-prompt",
       "Adds an action beside the thread composer.",
-      "bb capability",
+      "beam capability",
       "Inspect contributed capabilities.",
       "review",
       "Review repository changes.",
