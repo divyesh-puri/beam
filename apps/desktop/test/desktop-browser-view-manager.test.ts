@@ -517,6 +517,10 @@ const electronMock = vi.hoisted(() => {
     setVisible(visible: boolean): void {
       this.visible = visible;
     }
+
+    invalidateWebContents(): void {
+      Object.defineProperty(this, "webContents", { value: undefined });
+    }
   }
 
   class FakeSession {
@@ -1669,6 +1673,27 @@ describe("DesktopBrowserViewManager", () => {
     manager.focus({ hostWindow, tabId: "browser:focused" });
 
     expect(focusedView.webContents.focusCalls).toBe(1);
+  });
+
+  it("ignores a reload after Electron invalidates a view's web contents", () => {
+    const manager = createDesktopBrowserViewManager({ partition: "persist:test" });
+    const hostWindow = new FakeHostWindow({
+      contentBounds: { width: 900, height: 600 },
+      webContentsId: 82,
+    });
+    attachBrowserTab({
+      manager,
+      hostWindow,
+      tabId: "browser:invalidated",
+      url: "https://example.com/invalidated",
+    });
+    const view = requireFakeView(0);
+    view.invalidateWebContents();
+
+    expect(() => manager.reload({
+      hostWindow,
+      tabId: "browser:invalidated",
+    })).not.toThrow();
   });
 
   it("hides only the reloading window's browser views until they reattach", () => {

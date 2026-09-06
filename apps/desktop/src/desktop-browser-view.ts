@@ -671,7 +671,7 @@ export function createDesktopBrowserViewManager(
     fn: (entry: BrowserViewEntry) => void,
   ): void {
     const entry = entries.get(browserViewKey(args.hostWindow, args.tabId));
-    if (!entry || entry.view.webContents.isDestroyed()) {
+    if (!entry || entry.view.webContents?.isDestroyed() !== false) {
       return;
     }
     fn(entry);
