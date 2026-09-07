@@ -1,4 +1,10 @@
-import { Menu, WebContentsView, session, type Session } from "electron";
+import {
+  Menu,
+  WebContentsView,
+  session,
+  type Session,
+  type WebContents,
+} from "electron";
 import {
   BB_DESKTOP_BROWSER_MAX_TITLE_LENGTH,
   BB_DESKTOP_BROWSER_MAX_URL_LENGTH,
@@ -668,13 +674,14 @@ export function createDesktopBrowserViewManager(
 
   function withEntry(
     args: HostScopedTabArgs,
-    fn: (entry: BrowserViewEntry) => void,
+    fn: (entry: BrowserViewEntry, webContents: WebContents) => void,
   ): void {
     const entry = entries.get(browserViewKey(args.hostWindow, args.tabId));
-    if (!entry || entry.view.webContents?.isDestroyed() !== false) {
+    const webContents = entry?.view?.webContents;
+    if (!entry || !webContents || webContents.isDestroyed()) {
       return;
     }
-    fn(entry);
+    fn(entry, webContents);
   }
 
   function hasOtherVisibleEntry(
@@ -787,10 +794,16 @@ export function createDesktopBrowserViewManager(
       });
     },
     reload({ hostWindow, tabId }) {
-      withEntry({ hostWindow, tabId }, (entry) => {
+      withEntry({ hostWindow, tabId }, (entry, webContents) => {
         resetEntryRendererRecovery(entry);
-        entry.view.webContents.reload();
-        applyEntryVisibility(entry, hostWindow);
+        webContents.reload();
+        if (!webContents.isDestroyed()) {
+          entry.view.setVisible(
+            entry.visible &&
+              entry.rendererRecoveryState === "healthy" &&
+              !isHostResizing(hostWindow),
+          );
+        }
       });
     },
     stop({ hostWindow, tabId }) {
