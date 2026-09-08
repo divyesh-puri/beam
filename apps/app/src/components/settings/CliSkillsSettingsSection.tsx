@@ -58,7 +58,7 @@ export function CliSkillsSettingsSectionContent({
 }: CliSkillsSettingsSectionContentProps) {
   return (
     <SettingsSection
-      title="Skills & MCP"
+      title="Skills"
       description="Make Beam capabilities discoverable to the agents running on your machines."
     >
       <SettingsWithControl
