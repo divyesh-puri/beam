@@ -60,7 +60,7 @@
   `beam skill registry detail <registry-skill-id>`.
   Install with `beam skill install <registry-skill-id>`; never infer an install
   source from a display name.
-- `beam skill install-cli-skills` copies Beam's built-in CLI skills into a machine's
+- `beam skill install-cli-skills` copies Beam's built-in agent skills, including the visible Browser skill, into a machine's
   global agent skill roots (`~/.agents/skills` and `~/.claude/skills`) so agents
   outside Beam can drive it. It targets every connected machine unless you pass
   the repeatable `--machine <id-or-name>`, and reports each machine's outcome.

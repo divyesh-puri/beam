@@ -12,15 +12,20 @@ import { withTestHarness, type TestAppHarness } from "../helpers/test-app.js";
 import { resolveServerOwnedSkillCatalogEntries } from "../../src/services/skills/injected-skills.js";
 
 async function writeBuiltinCliSkill(harness: TestAppHarness): Promise<void> {
-  const skillDirectory = join(
-    harness.deps.config.builtinSkillsRootPath,
-    "beam-cli",
-  );
-  await mkdir(skillDirectory, { recursive: true });
-  await writeFile(
-    join(skillDirectory, "SKILL.md"),
-    "---\nname: beam-cli\ndescription: Control Beam from the CLI.\n---\n",
-  );
+  for (const [name, description] of [
+    ["beam-browser", "Use Beam's visible in-app Browser."],
+    ["beam-cli", "Control Beam from the CLI."],
+  ]) {
+    const skillDirectory = join(
+      harness.deps.config.builtinSkillsRootPath,
+      name,
+    );
+    await mkdir(skillDirectory, { recursive: true });
+    await writeFile(
+      join(skillDirectory, "SKILL.md"),
+      `---\nname: ${name}\ndescription: ${description}\n---\n`,
+    );
+  }
 }
 
 function expectedCliSkillTreeHash(harness: TestAppHarness): string {
@@ -45,7 +50,7 @@ function installRequest(hostIds: string[]): Request {
 }
 
 describe("install cli skills", () => {
-  it("installs the built-in beam-cli tree on every requested machine", async () => {
+  it("installs the built-in Beam agent skills on every requested machine", async () => {
     await withTestHarness(async (harness) => {
       await writeBuiltinCliSkill(harness);
       const laptop = seedHostSession(harness.deps, { id: "host-laptop" });
@@ -57,12 +62,19 @@ describe("install cli skills", () => {
           handle: (request) => {
             expect(request.command).toMatchObject({
               type: "host.install_global_skills",
-              skills: [{ name: "beam-cli", entryPath: "SKILL.md" }],
+              skills: [
+                { name: "beam-browser", entryPath: "SKILL.md" },
+                { name: "beam-cli", entryPath: "SKILL.md" },
+              ],
             });
             return {
               ok: true,
               result: {
                 installations: [
+                  {
+                    name: "beam-browser",
+                    path: `/home/${host.id}/.agents/skills`,
+                  },
                   { name: "beam-cli", path: `/home/${host.id}/.agents/skills` },
                 ],
               },
@@ -100,6 +112,7 @@ describe("install cli skills", () => {
           ok: true,
           result: {
             installations: [
+              { name: "beam-browser", path: "/home/u/.agents/skills" },
               { name: "beam-cli", path: "/home/u/.agents/skills" },
             ],
           },
@@ -165,12 +178,17 @@ describe("install cli skills", () => {
           handle: (request) => {
             expect(request.command).toMatchObject({
               type: "host.global_skills_status",
-              names: ["beam-cli"],
+              names: ["beam-browser", "beam-cli"],
             });
             return {
               ok: true,
               result: {
                 entries: [
+                  {
+                    name: "beam-browser",
+                    path: `/home/${host.id}/.agents/skills/beam-browser`,
+                    treeHash: hashByHostId[host.id] ?? null,
+                  },
                   {
                     name: "beam-cli",
                     path: `/home/${host.id}/.agents/skills/beam-cli`,

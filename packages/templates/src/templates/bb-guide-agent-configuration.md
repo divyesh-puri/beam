@@ -62,7 +62,7 @@ Skills (.bb/skills/):
   identity into Beam user skills. Registry commands are server-wide and do not
   accept workspace selectors.
 
-  Use `beam skill install-cli-skills` to copy Beam's built-in CLI skills into a
+  Use `beam skill install-cli-skills` to copy Beam's built-in agent skills, including the visible Browser skill, into a
   machine's global agent skill roots (`~/.agents/skills` and
   `~/.claude/skills`) so agents running outside Beam can drive it. It installs on
   every connected machine unless you pass `--machine <id-or-name>`, which is

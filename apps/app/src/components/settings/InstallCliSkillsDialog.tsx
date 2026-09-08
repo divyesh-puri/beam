@@ -61,7 +61,7 @@ function InstallCliSkillsDialogContent({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Install Beam CLI skills</DialogTitle>
+        <DialogTitle>Install Beam agent skills</DialogTitle>
         <DialogDescription>
           {choosable
             ? "Choose the machines to install them onto. Each one gets the skills in ~/.agents/skills and ~/.claude/skills, replacing any copy already there."

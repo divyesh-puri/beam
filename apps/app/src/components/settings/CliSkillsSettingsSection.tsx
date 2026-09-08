@@ -16,7 +16,7 @@ import { useInstallCliSkills } from "@/hooks/mutations/settings-mutations";
 import { useHosts } from "@/hooks/queries/host-queries";
 import { useCliSkillsStatus } from "@/hooks/queries/system-queries";
 
-const CLI_SKILLS_SETTING_LABEL = "Beam CLI skills";
+const CLI_SKILLS_SETTING_LABEL = "Beam agent skills";
 
 interface CliSkillsSettingsSectionContentProps {
   hasConnectedMachine: boolean;
@@ -27,8 +27,8 @@ interface CliSkillsSettingsSectionContentProps {
 
 function installDescription(hasConnectedMachine: boolean): string {
   return hasConnectedMachine
-    ? "Install them into ~/.agents/skills and ~/.claude/skills so agents outside Beam can use the Beam CLI."
-    : "Connect a machine to install them into ~/.agents/skills and ~/.claude/skills.";
+    ? "Install Beam's CLI and Browser skills into ~/.agents/skills and ~/.claude/skills so Codex, Claude, and other agents can discover them."
+    : "Connect a machine to install Beam's CLI and Browser skills into ~/.agents/skills and ~/.claude/skills.";
 }
 
 export function summarizeMachineStatuses(
@@ -57,7 +57,10 @@ export function CliSkillsSettingsSectionContent({
   statusBadge,
 }: CliSkillsSettingsSectionContentProps) {
   return (
-    <SettingsSection title="Skills">
+    <SettingsSection
+      title="Skills & MCP"
+      description="Make Beam capabilities discoverable to the agents running on your machines."
+    >
       <SettingsWithControl
         label={CLI_SKILLS_SETTING_LABEL}
         {...(statusBadge === null ? {} : { labelBadge: statusBadge })}
@@ -83,7 +86,7 @@ function reportInstallResults(result: SystemInstallCliSkillsResponse): void {
   const failed = result.results.filter((entry) => !entry.ok);
   if (installed.length > 0) {
     appToast.success(
-      `Installed the Beam CLI skills on ${installed
+      `Installed the Beam agent skills on ${installed
         .map((entry) => entry.hostName)
         .join(", ")}`,
     );

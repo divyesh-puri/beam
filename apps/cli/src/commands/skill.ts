@@ -398,7 +398,7 @@ export function registerSkillCommands(
   skill
     .command("cli-skills-status")
     .description(
-      "Show whether each machine has Beam's built-in CLI skills installed",
+      "Show whether each machine has Beam's built-in agent skills installed",
     )
     .option(
       "--machine <id-or-name>",
@@ -438,7 +438,7 @@ export function registerSkillCommands(
   skill
     .command("install-cli-skills")
     .description(
-      "Install Beam's built-in CLI skills into ~/.agents/skills and ~/.claude/skills on a machine",
+      "Install Beam's built-in agent skills into ~/.agents/skills and ~/.claude/skills on a machine",
     )
     .option(
       "--machine <id-or-name>",

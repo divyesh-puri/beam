@@ -13,7 +13,7 @@ afterEach(() => {
 
 function installButton(): HTMLButtonElement {
   const button = screen.getByRole("button", {
-    name: "Install Beam CLI skills",
+    name: "Install Beam agent skills",
   });
   if (!(button instanceof HTMLButtonElement)) {
     throw new Error("Install control is not a button");
@@ -48,7 +48,7 @@ describe("CliSkillsSettingsSectionContent", () => {
     expect(installButton().disabled).toBe(true);
     expect(
       screen.getByText(
-        "Connect a machine to install them into ~/.agents/skills and ~/.claude/skills.",
+        "Connect a machine to install Beam's CLI and Browser skills into ~/.agents/skills and ~/.claude/skills.",
       ),
     ).toBeDefined();
   });

@@ -14,7 +14,7 @@ import type { AppDeps } from "../../types.js";
 import { callHostOnlineRpc } from "../hosts/online-rpc.js";
 import { resolveServerOwnedSkillCatalogEntries } from "./injected-skills.js";
 
-const GLOBAL_CLI_SKILL_NAMES: readonly string[] = ["beam-cli"];
+const GLOBAL_CLI_SKILL_NAMES: readonly string[] = ["beam-browser", "beam-cli"];
 
 const STATUS_TIMEOUT_MS = 5_000;
 
