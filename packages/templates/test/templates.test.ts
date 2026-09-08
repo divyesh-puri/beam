@@ -48,6 +48,9 @@ describe("@bb/templates", () => {
 
     expect(rendered).toContain("You are working inside Beam");
     expect(rendered).toContain("agentic IDE");
+    expect(rendered).toContain(
+      "use Beam's visible in-app Browser through `beam browser`",
+    );
     expect(rendered).not.toContain(
       "Ask the user a blocking question only when",
     );

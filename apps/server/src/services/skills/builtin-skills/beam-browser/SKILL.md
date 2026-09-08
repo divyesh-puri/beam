@@ -5,9 +5,9 @@ description: Use this when an agent must inspect or interact with a web applicat
 
 # Beam Browser
 
-Use `beam browser` for visible, user-stoppable web QA. Browser automation is an
-internal experiment and works only when the owning thread is open in a compatible
-Beam desktop app on the same trusted host as the CLI.
+Use `beam browser` for visible, user-stoppable web QA. It works when the owning
+thread is open in a compatible Beam desktop app on the same trusted host as the
+CLI.
 
 ## Safe workflow
 

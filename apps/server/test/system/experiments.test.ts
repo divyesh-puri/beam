@@ -14,7 +14,7 @@ describe("experiments settings", () => {
       expect(response.status).toBe(200);
       const body = systemConfigResponseSchema.parse(await readJson(response));
       expect(body.experiments).toEqual({
-        browserAutomation: false,
+        browserAutomation: true,
         changelogPreview: false,
         editMessages: true,
         mobileApp: false,

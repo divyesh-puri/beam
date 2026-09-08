@@ -15,7 +15,7 @@ export const experimentsSchema = z.record(experimentKeySchema, z.boolean());
 export type Experiments = z.infer<typeof experimentsSchema>;
 
 export const defaultExperiments: Experiments = {
-  browserAutomation: false,
+  browserAutomation: true,
   changelogPreview: false,
   editMessages: true,
   mobileApp: false,
